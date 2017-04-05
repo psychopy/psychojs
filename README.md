@@ -1,6 +1,7 @@
 # PsychoJS for PsychoPy experiments online
 
-This folder contains the code for _PsychoJS_, a JavaScript port of the _PsychoPy_ Python library, written by http://www.ilixa.com
+This project contains the code for _PsychoJS_, a JavaScript port of the _PsychoPy_ Python library, written by http://www.ilixa.com
+It is also a git submodule in https://github.com/psychopy/psychopy
 
 ## Why is this good?
 
