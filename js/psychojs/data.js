@@ -1,10 +1,10 @@
 /**
  * Data component of psychoJS
- * 
- * 
+ *
+ *
  * This file is part of the psychoJS javascript engine of PsychoPy.
  * Copyright (c) 2016 Ilixa Ltd. (www.ilixa.com)
- * 
+ *
  * Distributed under the terms of the GNU General Public License (GPL).
  */
 
@@ -17,7 +17,7 @@ psychoJS.data = {}
 
 /**
  * Import a list of conditions from an .xlsx, .csv, or .pkl file
- * 
+ *
  * <p>The output is suitable as an input to 'TrialHandler', 'trialTypes' or
  * 'MultiStairHandler' as a 'conditions' list.
  *
@@ -43,45 +43,45 @@ psychoJS.data = {}
  *    "-10:2:"    #tenth from last to the last in steps of 2
  *    slice(-10,2,None) #the same as above
  *    random(5)*8 #5 random vals 0-8</p>
- * 
+ *
  * @param {String} resourceName - the name of the resource containing the list of conditions
  * It must be registered with the resource manager.
  * @param {Object} [selection] - the selection
  * @return {Object} the parsed list of conditions
- * 
+ *
  * @throws {String} Throws a JSON string exception if importing the conditions failed.
  */
 psychoJS.data.importConditions = function(resourceName, selection) {
 	try {
 		var resourceValue = psychoJS.resourceManager.getResource(resourceName);
-		
+
 		// parse the selection:
 		if (undefined !== selection) {
 			// TODO
 			throw 'selection currently not supported.';
 		}
-	
+
 		// decode resource value based on resourceName extension:
 		var resourceExtension = resourceName.split('.').pop();
-		
+
 		// comma separated file .csv:
 		if (resourceExtension === 'csv') {
 			// remove potential trailing line break:
 			resourceValue = resourceValue.replace(/\n$/, "");
-			
+
 			// parse csv:
 			var parsingResult = Papa.parse(resourceValue, {header: true, dynamicsTyping: true});
-			
+
 			// select the parsed results:
 			// TODO
-			
-			return parsingResult.data;			
+
+			return parsingResult.data;
 		}
-		
+
 		/*
 		// Excel spreadsheet .xls or .xlsx:
 		else if (resourceExtension === 'xls' || resourceExtension === 'xlsx') {
-			
+
 			JSZip.loadAsync(resourceValue).then(
 				function (zip) {
 					zip.forEach(function (relativePath, zipEntry) {
@@ -98,7 +98,7 @@ psychoJS.data.importConditions = function(resourceName, selection) {
 			var workbook = XLSX.read(resourceValue, {type: "binary"});
 			console.log(workbook);
 		}*/
-		
+
 		else {
 			throw 'extension: ' + resourceExtension + ' currently not supported.';
 		}
@@ -110,14 +110,14 @@ psychoJS.data.importConditions = function(resourceName, selection) {
 
 
 /**
- * 
+ *
  */
 psychoJS.data.TrialHandler = function(attribs) {
 	this.name = psychoJS.getAttrib(attribs, 'name', []);
 	this.trialList = psychoJS.getAttrib(attribs, 'trialList', []);
 	this.nReps = psychoJS.getAttrib(attribs, 'nReps', []);
 	this.nTotal = this.nReps * this.trialList.length;
-	this.nRemaining = this.nTotal // subtract 1 each trial
+	this.nRemaining = this.nTotal; // subtract 1 each trial
 	this.method = psychoJS.getAttrib(attribs, 'method', 'random');
 	this.thisRepN = 0;        // records which repetition or pass we are on
 	this.thisTrialN = -1;    // records which trial number within this repetition
@@ -153,13 +153,13 @@ psychoJS.data.TrialHandler.prototype.updateAttributesAtBegin = function() {
 	this.thisTrialN ++; 	// number of trial this pass
 	this.thisN ++;			 	//number of trial in total
 	this.nRemaining --;
-	
+
 	// start a new repetition:
 	if (this.thisTrialN === this.trialList.length) {
 		this.thisTrialN = 0;
 		this.thisRepN ++;
 	}
-	
+
 	/* TODO
 	#fetch the trial info
         if self.method in ['random','sequential','fullRandom']:
@@ -175,7 +175,7 @@ psychoJS.data.TrialHandler.prototype.updateAttributesAtBegin = function() {
 
 /**
  * Create a new experiment handler.
- * 
+ *
  * <p>A container class for keeping track of multiple loops/handlers
  *
  *   Useful for generating a single data file from an experiment with many
@@ -186,12 +186,12 @@ psychoJS.data.TrialHandler.prototype.updateAttributesAtBegin = function() {
  *       exp = data.ExperimentHandler({'name' : 'Face Preference', 'version' = '0.1.0'})
  *  </p>
  * @constructor
- * 
+ *
  * @param {Object} attribs associative array used to store the following parameters:
  * @param {string} attribs.name - name of the experiment
  * @param {('LOCAL_EXCEL'|'OSF'|'OSF_VIA_EXPERIMENT_SERVER'|'EXPERIMENT_SERVER')}
  * attribs.saveTo - repository to which the data is saved
- * 
+ *
  */
 psychoJS.data.ExperimentHandler = function(attribs) {
 	var errorPrefix = '{ "function" : "data.ExperimentHandler", "context" : "when creating ExperimentHandler", "error" : ';
@@ -208,7 +208,7 @@ psychoJS.data.ExperimentHandler = function(attribs) {
 	// loop handlers:
 	this._loops = [];
 	this._unfinishedLoops = [];
-	
+
 	// data dictionaries (one per trial) and current data dictionary:
 	this._trialsKeys = [];
 	this._trialsData = [];
@@ -265,7 +265,7 @@ psychoJS.data.ExperimentHandler.prototype.addData = function(key, value) {
 	if (this._trialsKeys.indexOf(key) === -1) {
 		this._trialsKeys.push(key);
 	};
-	
+
 	this._currentTrialData[key] = value;
 }
 
@@ -279,13 +279,13 @@ psychoJS.data.ExperimentHandler.prototype.nextEntry = function() {
 	// fetch data from each (potentially-nested) loop
 	for (var l = 0; l < this._unfinishedLoops.length; l++) {
 		var loop = this._unfinishedLoops[l];
-		
+
 		var attributes = this.getLoopAttributes(loop);
 		for (a in attributes)
 			if (attributes.hasOwnProperty(a))
 				this._currentTrialData[a] = attributes[a];
 	}
-	
+
 	// add the extraInfo dict to the data
 	for (a in this.extraInfo)
 		if (this.extraInfo.hasOwnProperty(a))
@@ -314,12 +314,12 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
 
 	// prepare the csv file:
 	var csv = "";
-	
+
 	// (a) build the header:
 	var header = this._trialsKeys;
 	for (var l = 0; l < this._loops.length; l++) {
 		var loop = this._loops[l];
-		
+
 		var loopAttributes = this.getLoopAttributes(loop);
 		for (a in loopAttributes)
 			if (loopAttributes.hasOwnProperty(a))
@@ -336,7 +336,7 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
 		csv = csv + header[h];
 	}
 	csv = csv + '\n';
-	
+
 	// (b) build the records:
 	for (var r = 0; r < this._trialsData.length; r++) {
 		for (var h = 0; h < header.length; h++) {
@@ -351,7 +351,7 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
 	// upload data to the experiment server:
 	if (this.saveTo === 'EXPERIMENT_SERVER') {
 		psychoJS.resourceManager.EXPUploadData(session, 'RESULT', csv);
-	}	
+	}
 	// upload data to OSF via the experiment server:
 	else if (this.saveTo === 'OSF_VIA_EXPERIMENT_SERVER') {
 		psychoJS.resourceManager.OSFEXPUploadData(session, 'RESULT', csv);
@@ -367,30 +367,30 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
  * Returns the attribute names and values for the current trial of a particular loop.
  * Does not return data inputs from the subject, only info relating to the trial
  * execution.
- * 
+ *
  * @param {Object} loop - the loop
  */
 psychoJS.data.ExperimentHandler.prototype.getLoopAttributes = function(loop) {
 	var attributes = {};
-	
+
 	var loopName = loop['name'];
-	
+
 	// standard attributes:
-	var properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent']; 
+	var properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent'];
 	for (var p = 0; p < properties.length; p++) {
 		var property = properties[p];
-		
+
 		for (var loopProperty in loop)
 			if (loop.hasOwnProperty(loopProperty) && loopProperty === property) {
 				if (property === 'stepSizeCurrent')
 					var key = loopName + '.stepSize';
 				else
 					key = loopName + '.' + property;
-				
+
 				attributes[key] = loop[property];
 			}
 	}
-	
+
 	/* TODO
 	// method of constants
 	if hasattr(loop, 'thisTrial'):
@@ -406,7 +406,7 @@ psychoJS.data.ExperimentHandler.prototype.getLoopAttributes = function(loop) {
 			else:
 					names.append(loopName+'.thisTrial')
 					vals.append(trial)
-					
+
 	// single StairHandler
 	elif hasattr(loop, 'intensities'):
 			names.append(loopName+'.intensity')
