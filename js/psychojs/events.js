@@ -17,30 +17,17 @@ psychoJS._keyBuffer = []
 
 
 psychoJS.event._keyDownHandler = function(e) {
-	//console.log("key press: keyCode=" + e.keyCode + " code=" + e.code + " identifier=" + e.keyIdentifier);
+	//console.log("key press: code=" + e.code + " key=" + e.key);
 	psychoJS._keyBuffer.push({
-		keyCode: e.keyCode,
 		code : e.code,
-		keyIdentifier : e.keyIdentifier,
+		key : e.key,
 		timestamp : psychoJS.core.getTime()
 	});
-//	console.log("keys pressed : " + JSON.stringify(psychoJS._keyBuffer));
+	//console.log("keys pressed : " + JSON.stringify(psychoJS._keyBuffer));
 }
 
 psychoJS.event.clearKeys = function() {
 	psychoJS._keyBuffer = [];
-}
-
-psychoJS.event._keyMap = { 
-	left : 37,
-	up: 38,
-	right : 39,
-	down: 40,
-	escape : 27
-};
-psychoJS.event._reverseKeyMap = {};
-for(keyName in psychoJS.event._keyMap) {
-	psychoJS.event._reverseKeyMap[psychoJS.event._keyMap[keyName]] = keyName;
 }
 
 /**
@@ -48,6 +35,10 @@ for(keyName in psychoJS.event._keyMap) {
  * @param keyList - undefined or []. Allows the user to specify a set of keys to check for. Only keypresses from this set of keys will be removed from the keyboard buffer. If the keyList is None all keys will be checked and the key buffer will be cleared completely.
  * @param {boolean} timeStamped - If true will return a list of tuples instead of a list of keynames. Each tuple has (keyname, time).
  * @return the list of keys that were pressed.
+ *
+ * The w3c key-event viewer can be used to see possible values for the items in the keyList given the user's keyboard and chosen layout.
+ * URL: https://w3c.github.io/uievents/tools/key-event-viewer.html
+ * The "key" and "code" columns in the UI Events fields are the relevant values for the keyList argument. 
  */
 psychoJS.event.getKeys = function(attribs) {
 	var keyList = psychoJS.getAttrib(attribs, "keyList", undefined);
@@ -61,22 +52,16 @@ psychoJS.event.getKeys = function(attribs) {
 		
 		var keyId = undefined;
 		if (keyList) {
-			var index= keyList.indexOf(key.keyCode);
+			var index= keyList.indexOf(key.code);
 			if (index < 0) {
-				index = keyList.indexOf(psychoJS.event._reverseKeyMap[key.keyCode]);
-			}
-			if (index < 0) {
-				index = keyList.indexOf(key.code);
-			}
-			if (index < 0) {
-				index = keyList.indexOf(key.keyIdentifier);
+				index = keyList.indexOf(key.key);
 			}
 			if (index >= 0) {
 				keyId = keyList[index];
 			}
 		}
 		else {
-			keyId = key.keyCode;
+			keyId = key.code;
 		}
 	
 		if (keyId) {
