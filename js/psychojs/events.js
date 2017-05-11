@@ -17,10 +17,11 @@ psychoJS._keyBuffer = []
 
 
 psychoJS.event._keyDownHandler = function(e) {
-	//console.log("key press: code=" + e.code + " key=" + e.key);
+	//console.log("key press: code=" + e.code + " key=" + e.key + " keyCode=" + e.keyCode);
 	psychoJS._keyBuffer.push({
 		code : e.code,
 		key : e.key,
+		keyCode: e.keyCode,
 		timestamp : psychoJS.core.getTime()
 	});
 	//console.log("keys pressed : " + JSON.stringify(psychoJS._keyBuffer));
@@ -28,6 +29,19 @@ psychoJS.event._keyDownHandler = function(e) {
 
 psychoJS.event.clearKeys = function() {
 	psychoJS._keyBuffer = [];
+}
+
+psychoJS.event._keyMap = { 
+    left : 37,
+    up: 38,
+    right : 39,
+    down: 40,
+    escape : 27,
+    space : 32
+};
+psychoJS.event._reverseKeyMap = {};
+for(keyName in psychoJS.event._keyMap) {
+    psychoJS.event._reverseKeyMap[psychoJS.event._keyMap[keyName]] = keyName;
 }
 
 /**
@@ -56,6 +70,9 @@ psychoJS.event.getKeys = function(attribs) {
 			if (index < 0) {
 				index = keyList.indexOf(key.key);
 			}
+			if (index < 0) {
+        index = keyList.indexOf(psychoJS.event._reverseKeyMap[key.keyCode]);
+      }
 			if (index >= 0) {
 				keyId = keyList[index];
 			}
