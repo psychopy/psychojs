@@ -17,10 +17,11 @@ psychoJS._keyBuffer = []
 
 
 psychoJS.event._keyDownHandler = function(e) {
-	//console.log("key press: code=" + e.code + " key=" + e.key);
+	//console.log("key press: code=" + e.code + " key=" + e.key + " keyCode=" + e.keyCode);
 	psychoJS._keyBuffer.push({
 		code : e.code,
 		key : e.key,
+		keyCode: e.keyCode,
 		timestamp : psychoJS.core.getTime()
 	});
 	//console.log("keys pressed : " + JSON.stringify(psychoJS._keyBuffer));
@@ -28,6 +29,209 @@ psychoJS.event._keyDownHandler = function(e) {
 
 psychoJS.event.clearKeys = function() {
 	psychoJS._keyBuffer = [];
+}
+
+/**
+ * provide support for browser versions that have not yet adopted the W3C KeyboardEvent.code standard
+ * for detecting key presses. This table maps the deprecated KayboardEvent.keycode values to the W3C UI event codes
+ .*/
+psychoJS.event._keycodeMap = { 
+	49 : "Digit1",
+	50 : "Digit2",
+	51 : "Digit3",
+	52 : "Digit4",
+	53 : "Digit5",
+	54 : "Digit6",
+	55 : "Digit7",
+	56 : "Digit8",
+	57 : "Digit9",
+	48 : "Digit0",
+	65 : "KeyA",
+	66 : "KeyB",
+	67 : "KeyC",
+	68 : "KeyD",
+	69 : "KeyE",
+	70 : "KeyF",
+	71 : "KeyG",
+	72 : "KeyH",
+	73 : "KeyI",
+	74 : "KeyJ",
+	75 : "KeyK",
+	76 : "KeyL",
+	77 : "KeyM",
+	78 : "KeyN",
+	79 : "KeyO",
+	80 : "KeyP",
+	81 : "KeyQ",
+	82 : "KeyR",
+	83 : "KeyS",
+	84 : "KeyT",
+	85 : "KeyU",
+	86 : "KeyV",
+	87 : "KeyW",
+	88 : "KeyX",
+	89 : "KeyY",
+	90 : "KeyZ",
+	188 : "Comma",
+	190 : "Period",
+	186 : "Semicolon",
+	222 : "Quote",
+	219 : "BracketLeft",
+	221 : "BracketRight",
+	192 : "Backquote",
+	220 : "Backslash",
+	189 : "Minus",
+	187 : "Equal",
+	144 : "NumLock",
+	96 : "Numpad0",
+	97 : "Numpad1",
+	98 : "Numpad2",
+	99 : "Numpad3",
+	100 : "Numpad4",
+	101 : "Numpad5",
+	102 : "Numpad6",
+	103 : "Numpad7",
+	104 : "Numpad8",
+	105 : "Numpad9",
+	107 : "NumpadAdd",
+	194 : "NumpadComma",
+	194 : "NumpadComma",
+	110 : "NumpadDecimal",
+	110 : "NumpadDecimal",
+	111 : "NumpadDivide",
+	13 : "NumpadEnter",
+	12 : "NumpadEqual",
+	106 : "NumpadMultiply",
+	109 : "NumpadSubtract",
+	37 : "ArrowLeft",
+	38 : "ArrowUp",
+	39 : "ArrowRight",
+	40 : "ArrowDown",
+	27 : "Escape",
+	32 : "Space"
+};
+
+/**
+ * mapping table for pyglet key names to corresponding W3C KeyboardEvent.codes
+ .*/
+psychoJS.event._pygletMap = {
+	//  writing system keys
+	"grave" : "Backquote",
+	"backslash" : "Backslash",
+	"backspace" : "Backspace",
+	"bracketleft" : "BracketLeft",
+	"bracketright" : "BracketRight",
+	"comma" : "Comma",
+	"0" : "Digit0",
+	"1" : "Digit1",
+	"2" : "Digit2",
+	"3" : "Digit3",
+	"4" : "Digit4",
+	"5" : "Digit5",
+	"6" : "Digit6",
+	"7" : "Digit7",
+	"8" : "Digit8",
+	"9" : "Digit9",
+	"equal" : "Equal",
+	"a" : "KeyA",
+	"b" : "KeyB",
+	"c" : "KeyC",
+	"d" : "KeyD",
+	"e" : "KeyE",
+	"f" : "KeyF",
+	"g" : "KeyG",
+	"h" : "KeyH",
+	"i" : "KeyI",
+	"j" : "KeyJ",
+	"k" : "KeyK",
+	"l" : "KeyL",
+	"m" : "KeyM",
+	"n" : "KeyN",
+	"o" : "KeyO",
+	"p" : "KeyP",
+	"q" : "KeyQ",
+	"r" : "KeyR",
+	"s" : "KeyS",
+	"t" : "KeyT",
+	"u" : "KeyU",
+	"v" : "KeyV",
+	"w" : "KeyW",
+	"x" : "KeyX",
+	"y" : "KeyY",
+	"z" : "KeyZ",
+	"minus" : "Minus",
+	"period" : "Period",
+	"apostrophe" : "Quote",
+	"semicolon" : "Semicolon",
+	"slash" : "Slash",
+	
+	//  functional keys
+	
+	"escape" : "Escape",
+	"loption" : "AltLeft",
+	"roption" : "AltRight",
+	"capslock" : "CapsLock",
+	"lcontrol" : "ControlLeft",
+	"rcontrol" : "ControlRight",
+	"return" : "Enter",
+	"lcommand" : "MetaLeft",
+	"rcommand" : "MetaRight",
+	"lshift" : "ShiftLeft",
+	"rshift" : "ShiftRight",
+	"space" : "Space",
+	"tab" : "Tab",
+	
+	//  arrowpad
+	
+	"down" : "ArrowDown",
+	"left" : "ArrowLeft",
+	"right" : "ArrowRight",
+	"up" : "ArrowUp",
+	
+	//  numeric pad
+	
+	"num_0" : "Numpad0",
+	"num_1" : "Numpad1",
+	"num_2" : "Numpad2",
+	"num_3" : "Numpad3",
+	"num_4" : "Numpad4",
+	"num_5" : "Numpad5",
+	"num_6" : "Numpad6",
+	"num_7" : "Numpad7",
+	"num_8" : "Numpad8",
+	"num_9" : "Numpad9",
+	"num_decimal" : "NumpadDecimal",
+	"num_enter" : "NumpadEnter",
+	"num_add" : "NumpadAdd",
+	"num_subtract" : "NumpadSubtract",
+	"num_multiply" : "NumpadMultiply",
+	"num_divide" : "NumpadDivide",
+	"num_equal" : "NumpadEqual",
+	"num_numlock" : "NumpadNumlock"
+}
+
+psychoJS.event._reversePygletMap = {};
+for(keyName in psychoJS.event._pygletMap) {
+    psychoJS.event._reversePygletMap[psychoJS.event._pygletMap[keyName]] = keyName;
+}
+
+
+/**
+ * convert a keylist that uses pyglet key names to one that uses W3C KeyboardEvent.code values.
+ * This allows key lists that work in the builder environment to work in psychoJS web experiments
+ .*/
+
+psychoJS.event.pyglet2w3c = function(oldKeyList) {
+	newKeyList = [];
+	for (i = 0; i < oldKeyList.length; i++) {
+		if (psychoJS.event._pygletMap[oldKeyList[i]] == undefined) {
+			newKeyList.push(oldKeyList[i]);
+		}
+		else {
+			newKeyList.push(psychoJS.event._pygletMap[oldKeyList[i]]);
+		}
+	}
+	return newKeyList;
 }
 
 /**
@@ -43,25 +247,26 @@ psychoJS.event.clearKeys = function() {
 psychoJS.event.getKeys = function(attribs) {
 	var keyList = psychoJS.getAttrib(attribs, "keyList", undefined);
 	var timeStamped = psychoJS.getAttrib(attribs, "timeStamped", false);
-	
+
 	var newBuffer = [];
 	var keys = [];
-	
+	if (keyList) {
+		keyList = psychoJS.event.pyglet2w3c(keyList);
+	}
 	for(var i = 0; i < psychoJS._keyBuffer.length; ++i) {
 		var key = psychoJS._keyBuffer[i];
-		
 		var keyId = undefined;
 		if (keyList) {
 			var index= keyList.indexOf(key.code);
 			if (index < 0) {
-				index = keyList.indexOf(key.key);
-			}
+				index = keyList.indexOf(psychoJS.event._keycodeMap[key.keyCode]);
+	  }
 			if (index >= 0) {
-				keyId = keyList[index];
+				keyId = psychoJS.event._reversePygletMap[keyList[index]];
 			}
 		}
 		else {
-			keyId = key.code;
+			keyId = psychoJS.event._reversePygletMap[key.code];
 		}
 	
 		if (keyId) {
