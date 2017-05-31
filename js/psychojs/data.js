@@ -131,6 +131,64 @@ psychoJS.data.TrialHandler = function(attribs) {
 
 	this.finished = false;
 	this._experimentHandler = null;
+	this.sequenceIndices = psychoJS.data.makeIndices(this.trialList.length,this.nReps);
+	this.trialSequence = psychoJS.data.makeSequence(this.sequenceIndices, this.method);
+}
+
+psychoJS.data.makeIndices = function(nt,nr){
+/*
+	make a 2 dimensional array nReps x trialList.length
+	of indices into the trialList array
+*/
+	var seq, temp, r, n
+	seq = [];
+	for (r=0;r<nr;r++) {
+		temp = [];
+		for (n=0;n<nt;n++) {
+			temp.push(n);
+		}
+		seq.push(temp);
+	}
+	return seq;
+}
+
+psychoJS.data.makeSequence = function(indices,method){
+/*
+	convert the 2 dimensional array of indices into a one dimensional array
+	representing the sequence of trials to be run. This will be used by the index.html
+	file to schedule all of the trials when a loop is initiated.
+*/
+	if (method == 'sequential') {
+		// flatten the indices 2D array into one dimension and parse it back into an  1D array
+		return JSON.parse("[" + indices.join() + "]");
+	} else if (method == 'random') {
+		// shuffle each repetition individually then flatten
+		for (i=0;i<indices.length;i++) {
+			indices[i] = psychoJS.data.shuffle(indices[i]);
+		}
+		return JSON.parse("[" + indices.join() + "]");
+	} else if (method == 'fullRandom') {
+		// flatten the 2D array and then shuffle
+		return psychoJS.data.shuffle(JSON.parse("[" + indices.join() + "]"));
+	}
+}
+
+psychoJS.data.shuffle = function(array) {
+/*
+	 Shuffle and array making sure we create a clone of the array and not shuffling in place
+*/
+	var m = array.length
+	var newArray = [], t, i;
+	// clone the array to a newArray
+	for (i=0;i<m;i++) newArray[i] = JSON.parse(JSON.stringify(array[i]));
+	// and shuffle it
+	while (m) {
+		i = Math.floor(Math.random() * m--);
+		t = newArray[m];
+		newArray[m] = newArray[i];
+		newArray[i] = t;
+	}
+	return newArray;
 }
 
 
@@ -153,7 +211,8 @@ psychoJS.data.TrialHandler.prototype.updateAttributesAtBegin = function() {
 	this.thisTrialN ++; 	// number of trial this pass
 	this.thisN ++;			 	//number of trial in total
 	this.nRemaining --;
-
+	this.thisIndex = this.trialSequence[this.thisN];
+	this.thisTrial = this.trialList[this.trialSequence[this.thisN]];
 	// start a new repetition:
 	if (this.thisTrialN === this.trialList.length) {
 		this.thisTrialN = 0;
@@ -279,7 +338,11 @@ psychoJS.data.ExperimentHandler.prototype.nextEntry = function() {
 	// fetch data from each (potentially-nested) loop
 	for (var l = 0; l < this._unfinishedLoops.length; l++) {
 		var loop = this._unfinishedLoops[l];
-
+		var trialAttributes = loop.thisTrial;
+		// add condition columns to current trial data
+		for (a in trialAttributes) {
+			this._currentTrialData[a] = trialAttributes[a];
+		}
 		var attributes = this.getLoopAttributes(loop);
 		for (a in attributes)
 			if (attributes.hasOwnProperty(a))
@@ -319,17 +382,19 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
 	var header = this._trialsKeys;
 	for (var l = 0; l < this._loops.length; l++) {
 		var loop = this._loops[l];
-
+		// add headers for condition columns
+		if (typeof(loop.thisTrial) != 'undefined') {
+			for (a in loop.thisTrial) header.push(a);
+		}
 		var loopAttributes = this.getLoopAttributes(loop);
-		for (a in loopAttributes)
-			if (loopAttributes.hasOwnProperty(a))
-				header.push(a);
+		for (a in loopAttributes) {
+			if (loopAttributes.hasOwnProperty(a)) header.push(a);
+		}
 	}
 	for (a in this.extraInfo) {
 		if (this.extraInfo.hasOwnProperty(a))
 			header.push(a);
 	}
-
 	for (var h = 0; h < header.length; h++) {
 		if (h > 0)
 			csv = csv + ', ';
@@ -340,9 +405,9 @@ psychoJS.data.ExperimentHandler.prototype.save = function(attribs) {
 	// (b) build the records:
 	for (var r = 0; r < this._trialsData.length; r++) {
 		for (var h = 0; h < header.length; h++) {
-			if (h > 0)
-				csv = csv + ', ';
-			csv = csv + this._trialsData[r][header[h]];
+			if (h > 0) csv = csv + ', ';
+			// leave 'undefined' values blank in the data file
+			if (typeof(this._trialsData[r][header[h]]) != 'undefined') csv = csv + this._trialsData[r][header[h]];
 		}
 		csv = csv + '\n';
 	}
