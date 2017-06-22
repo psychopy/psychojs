@@ -127,8 +127,13 @@ psychoJS.data.TrialHandler = function(attribs) {
 	this.finished = false;
 	this.extraInfo = psychoJS.getAttrib(attribs, 'extraInfo', []);
 	this._warnUseOfNext = true;
-	this.seed = psychoJS.getAttrib(attribs, 'seed', []);
-
+	this.seed = psychoJS.getAttrib(attribs, 'seed', undefined);
+	if (typeof(this.seed) != 'undefined') {
+		Math.seedrandom(this.seed);
+	}
+	else {
+		Math.seedrandom();
+	}
 	this.finished = false;
 	this._experimentHandler = null;
 	this.sequenceIndices = psychoJS.data.makeIndices(this.trialList.length,this.nReps);
