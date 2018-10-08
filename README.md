@@ -28,8 +28,8 @@ There are however notable differences between the the PsychoJs and PsychoPy libr
 Under the hood PsychoJs relies on [PixiJs](http://www.pixijs.com) to present stimuli and collect responses. PixiJs is a multi-platform, accelerated, 2-D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considering improving the rendering performance.
 
 
-### Hosting experiments
-A convenient way to make experiment available to participants is to host them on [pavlovia.org](pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.
+### Hosting Experiments
+A convenient way to make experiment available to participants is to host them on [pavlovia.org](https://www.pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.
 
 
 ## Which PsychoPy Components are supported by PsychoJs?
@@ -46,10 +46,11 @@ PsychoJs currently supports the following Components:
 * Mouse
 * Keyboard
 
+We are constantly adding new Components and are regularly updating this list.
 
 ## Authors
 
-The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintain by the creators of PsychoPy, at the [University of Nottingham](nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
+The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy, at the [University of Nottingham](https://www.nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
 
 
 ## License
