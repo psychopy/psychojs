@@ -10,7 +10,7 @@ Many studies in behavioural sciences (e.g. psychology, neuroscience, linguistics
 
 With high-speed broadband, improved web technologies and smart devices everywhere, studies can now go online without sacrificing too much temporal precision. This is a “game changer”. Data can be collected on larger, more varied, international populations. We can study people in environments they do not find intimidating. Experiments can be run multiple times per day, without data collection becoming impractical.
 
-The idea behind PsychoJS is to make PsychoPy experiments available online, from a web page, so participants can run them on any device equipped with a web browser such as desktops, laptops, or tablets. In some circumstance, they can even use their phone!
+The idea behind PsychoJs is to make PsychoPy experiments available online, from a web page, so participants can run them on any device equipped with a web browser such as desktops, laptops, or tablets. In some circumstance, they can even use their phone!
 
 
 ## Getting Started
@@ -29,7 +29,7 @@ Under the hood PsychoJs relies on [PixiJs](http://www.pixijs.com) to present sti
 
 
 ### Hosting Experiments
-A convenient way to make experiment available to participants is to host them on [pavlovia.org](https://www.pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.
+A convenient way to make experiment available to participants is to host them on [pavlovia.org](https://www.pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.org.
 
 
 ## Which PsychoPy Components are supported by PsychoJs?
@@ -38,11 +38,11 @@ PsychoJs currently supports the following Components:
 ### Stimuli:
 * ImageStim
 * TextStim
-* BaseShapeStim
+* BaseShapeStim (Polygon)
 * Rect
 * Sound (tones and tracks)
 
-### Event:
+### Events:
 * Mouse
 * Keyboard
 
@@ -50,7 +50,7 @@ We are constantly adding new Components and are regularly updating this list.
 
 ## Authors
 
-The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy, at the [University of Nottingham](https://www.nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
+The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy, at the University of Nottingham (https://www.nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
 
 
 ## License
