@@ -1,40 +1,57 @@
-# PsychoJS for PsychoPy experiments online
+# PsychoJs
 
-This project contains the code for _PsychoJS_, a JavaScript port of the _PsychoPy_ Python library, written by http://www.ilixa.com
-It is also a git submodule in https://github.com/psychopy/psychopy
+PsychoJs is a javascript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy]((http://www.psychopy.org/) Python library.
+It is also a git submodule: https://github.com/psychopy/psychopy
 
-## Why is this good?
 
-The idea is that your PsychoPy experiment will be available to your participants from a web page. That means they can run it from any device equipped with a browser (we're talking about desktop, laptop, iPads or Android tablets. Heck they can use their phone!)
+## Motivation
 
-Builder will output the web files you need, you can upload them to an experiment server, send the server’s URL to your participants, and download the experiment data when they are done. Many of your existing Builder experiments will "just work", subject to the currently supported Components.
+Many studies in behavioural sciences (e.g. psychology, neuroscience, linguistics or mental health) use computers to present stimuli and record responses in a precise manner. These studies are still typically conducted on small numbers of people in laboratory environments equipped with dedicated hardware.
 
-## How does this work?
+With high-speed broadband, improved web technologies and smart devices everywhere, studies can now go online without sacrificing too much temporal precision. This is a “game changer”. Data can be collected on larger, more varied, international populations. We can study people in environments they do not find intimidating. Experiments can be run multiple times per day, without data collection becoming impractical.
 
-A variety of technologies are used to run PsychoPy experiments online.
+The idea behind PsychoJS is to make PsychoPy experiments available online, from a web page, so participants can run them on any device equipped with a web browser such as desktops, laptops, or tablets. In some circumstance, they can even use their phone!
 
-**JavaScript:** The most obvious part is that there's an HTML web page and a JavaScript library that are needed to present stimuli and collect responses. _PsychoJS_ is pretty much a direct JavaScript port of the PsychoPy Python library and operates in a very similar way. That means you get the same level of control, to the level of frame-by-frame updates, and you have complete control over the structure of your trials/blocks, etc. in just the same way that you can under PsychoPy. Under the hood _PsychoJS_ uses `pixi.js` for stimulus presentation and response collection. `pixi.js` is a multi-platform, accelerated, 2-D renderer, that runs in most modern browsers. It uses `WebGL` where supported and silently falling back to an `HTML5 canvas` where not. WebGL has some performance advantages (it's more efficient than `canvas` by using the graphics card to do the work rather than the CPU) but the features should be the same.
 
-The JavaScript code runs in the browser of the participant in your study (programmers call this "client-side"), and communicates with the experiment server to download resources and upload data and logs.
+## Getting Started
 
-**PHP:** PHP is used "server-side" to control the transfer of resources. That means downloading the experiment’s conditions and images to the participant’s browser and uploading theirs data and logs to the experiment server at the end of the experiment.
+Running PsychoPy experiments online requires the generation of an index.html file and of a javascript file, which contains the code describing the experiment. Those files need to be hosted on a web server to which participants will point their browser in order to run the experiment. The server will also need to host the PsychoJs library, and various additional vendor libraries, such as those we use to display stimuli (PixiJs) or play sounds (HowlerJs).
 
-**Open Science Framework:** PsychoPy now supports synchronising projects with OSF.io. If you use this then all you need to do is to upload your experiment’s resources to your OSF project page, and upload the PsychoJS  PHP script, HTML file and JavaScript library to your experiment server. To access your OSF project even when it is private, the PHP experiment server needs the project’s private key. But don't worry: because communications with OSF are done "server-side", they are invisible to participants (i.e. participants and nosey parkers don't have access to the key that allows project access). The PHP script also enables you to download the resources from the OSF project page to store them locally, which makes it possible to change the resources via the OSF.io platform, without having to bother your web admin with access to the server.
+### PsychoPy Builder
+Starting with PsychoPy version 3.0, [PsychoPy Builder](http://www.psychopy.org/builder/builder.html) can automatically generate the javascript and html files. Many of the existing Builder experiments should "just work", subject to the Components being currently supported by PsychoJs (see below).
 
-**PsychoPy Builder:** Just as PsychoPy Builder currently automatically generates a Python script for you using the PsychoPy Python library, the new version is going to automatically generate the required HTML and PHP files.
+### JavaScript Code
+We built the PsychoJs library to make the javascript experiment files look and behave in very much the same way as to the Builder-generated Python files. PsychoJs offers classes such as `Window` and `ImageStim`, with very similar attributes to their Python equivalents. Experiment designers familiar with the PsychoPy library should feel at home with PsychoJs, and can expect the same level of control they have with PsychoPy, from the the structure of the trials/loops all the way down to frame-by-frame updates.
 
-The PsychoPy Builder interface code to export the necessary PsychoJS (HTML and PHP) files isn't finished yet but you can already use it to see roughly what experiments look like converted to JavaScript.
+There are however notable differences between the the PsychoJs and PsychoPy libraries, most of which have to do with the way a web browser interprets and runs javascripts, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJs introduces  the concept of Scheduler. As their name indicate, Scheduler's offer a way to organise various tasks along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).
 
-## Can I write my own online experiments using PsychoJS?
+Under the hood PsychoJs relies on [PixiJs](http://www.pixijs.com) to present stimuli and collect responses. PixiJs is a multi-platform, accelerated, 2-D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considering improving the rendering performance.
 
-The _PsychoJS_ library looks much like its PsychoPy equivalents; it has classes like `Window` and `ImageStim` and these have the same attributes as their Python equivalents. So, from that aspect, things are relatively similar and you can probably hack your PsychoJS script if you're fairly familiar with the PsychoPy lib.
 
-The main difference between PsychoJS and PsychoPy is that the former is not as sequential as the latter. A typical web page will carry on creating itself while its images are downloading, for instance. As a result, PsychoJS adds the concept of `Scheduler`s, which are used to determine when things occur. For instance, you could think of the Flow in PsychoPy as being a Schedule with various items on it, but then some of those, such as trial loops also schedule further events (the individual trials to be run). If you export a script from one of your Builder experiments you can examine this to see how it works.
+### Hosting experiments
+A convenient way to make experiment available to participants is to host them on [pavlovia.org](pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.
 
-## Where do the participant’s data go?
 
-The participant’s data and logs are saved to a data folder on the experiment server. Optionally, they can also be pushed to your OSF project if you have connected one with the experiment.
+## Which PsychoPy Components are supported by PsychoJs?
+PsychoJs currently supports the following Components:
 
-## What parts of my Builder experiment are supported?
+### Stimuli:
+* ImageStim
+* TextStim
+* BaseShapeStim
+* Rect
+* Sound (tones and tracks)
 
-See http://www.psychopy.org/online/status.html for more information.
+### Event:
+* Mouse
+* Keyboard
+
+
+## Authors
+
+The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintain by the creators of PsychoPy, at the [University of Nottingham](nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
+
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
