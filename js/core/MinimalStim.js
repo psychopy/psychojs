@@ -44,7 +44,7 @@ export class MinimalStim extends PsychObject {
 
 
 	/**
-	 * Setter for autoDraw attribute.
+	 * Setter for the autoDraw attribute.
 	 *
 	 * @name module:core.MinimalStim#setAutoDraw
 	 * @function

@@ -50,7 +50,7 @@ We are constantly adding new Components and are regularly updating this list.
 
 ## Authors
 
-The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy, at the University of Nottingham (https://www.nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
+The PsychoJs library is written and maintained by Ilixa Ltd. (http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the University of Nottingham (https://www.nottingham.ac.uk). Both efforts are generously supported by the Wellcome Trust (https://wellcome.ac.uk).
 
 
 ## License

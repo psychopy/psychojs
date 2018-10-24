@@ -104,7 +104,6 @@ export class ExperimentHandler extends PsychObject {
 	/**
 	 * Add the key/value pair.
 	 *
-	 * <p> This method is typically called by a {@link TrialHandler}. </p>
 	 * <p> Multiple key/value pairs can be added to any given entry of the data file. There are
 	 * considered part of the same entry until a call to {@link nextEntry} is made. </p>
 	 *
@@ -133,15 +132,15 @@ export class ExperimentHandler extends PsychObject {
 	 */
 	nextEntry() {
 		// fetch data from each (potentially-nested) loop:
-		for (const loop of this._unfinishedLoops) {
+		for (let loop of this._unfinishedLoops) {
 			var attributes = this.getLoopAttributes(loop);
-			for (const a in attributes)
+			for (let a in attributes)
 				if (attributes.hasOwnProperty(a))
 					this._currentTrialData[a] = attributes[a];
 		}
 
 		// add the extraInfo dict to the data:
-		for (const a in this.extraInfo)
+		for (let a in this.extraInfo)
 			if (this.extraInfo.hasOwnProperty(a))
 				this._currentTrialData[a] = this.extraInfo[a];
 
@@ -177,22 +176,22 @@ export class ExperimentHandler extends PsychObject {
 
 		// data is in the csv format:
 		// build the csv header:
-		var csv = "";
-		var header = this._trialsKeys;
-		for (var l = 0; l < this._loops.length; l++) {
-			var loop = this._loops[l];
+		let csv = "";
+		let header = this._trialsKeys.slice();
+		for (let l = 0; l < this._loops.length; l++) {
+			const loop = this._loops[l];
 
-			var loopAttributes = this.getLoopAttributes(loop);
-			for (var a in loopAttributes)
+			const loopAttributes = this.getLoopAttributes(loop);
+			for (let a in loopAttributes)
 				if (loopAttributes.hasOwnProperty(a))
 					header.push(a);
 		}
-		for (var a in this.extraInfo) {
+		for (let a in this.extraInfo) {
 			if (this.extraInfo.hasOwnProperty(a))
 				header.push(a);
 		}
 
-		for (var h = 0; h < header.length; h++) {
+		for (let h = 0; h < header.length; h++) {
 			if (h > 0)
 				csv = csv + ', ';
 			csv = csv + header[h];
@@ -200,8 +199,8 @@ export class ExperimentHandler extends PsychObject {
 		csv = csv + '\n';
 
 		// build the records:
-		for (var r = 0; r < this._trialsData.length; r++) {
-			for (var h = 0; h < header.length; h++) {
+		for (let r = 0; r < this._trialsData.length; r++) {
+			for (let h = 0; h < header.length; h++) {
 				if (h > 0)
 					csv = csv + ', ';
 				csv = csv + this._trialsData[r][header[h]];

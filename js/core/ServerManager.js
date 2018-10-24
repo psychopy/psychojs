@@ -433,7 +433,8 @@ export class ServerManager extends PsychObject {
 		// error: we throw an exception
 		this._resourceQueue.addEventListener("error", event => {
 			self.setStatus(ServerManager.Status.ERROR);
-			throw { ...response, error: 'unable to download resource: ' + event.data.id + ' (' + event.title + ')' };
+			const resourceId = (typeof event.data !== 'undefined')?event.data.id:'UNKNOWN RESOURCE';
+			throw { ...response, error: 'unable to download resource: ' + resourceId + ' (' + event.title + ')' };
 		});
 
 
@@ -458,7 +459,14 @@ export class ServerManager extends PsychObject {
 
 
 		// (*) start loading non-sound resources:
-		this._resourceQueue.loadManifest(manifest);
+		if (manifest.length > 0)
+			this._resourceQueue.loadManifest(manifest);
+		else {
+			if (this._nbLoadedResources == this._nbResources) {
+				this.setStatus(ServerManager.Status.READY);
+				this.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
+			}
+		}
 
 
 		// (*) prepare and start loading sound resources:

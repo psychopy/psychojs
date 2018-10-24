@@ -1,6 +1,6 @@
 /** @module sound */
 /**
- * @file Sound stimulus
+ * @file Sound stimulus.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
