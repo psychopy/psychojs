@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/MinimalStim.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/MinimalStim.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Base class for all stimuli.
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+import { PsychObject } from '../util/PsychObject';
+import { PsychoJS } from './PsychoJS';
+
+
+/**
+ * &lt;p>MinimalStim is the base class for all stimuli.&lt;/p>
+ * 
+ * @name module:core.MinimalStim
+ * @class
+ * @extends PsychObject
+ * @param {Object} options
+ * @param {String} options.name - the name used when logging messages from this stimulus
+ * @param {Window} options.win - the associated Window
+ * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+ * @param {boolean} [options.autoLog= false] - whether or not to log
+ */
+export class MinimalStim extends PsychObject {
+
+	constructor({
+		name,
+		win,
+		autoDraw = false,
+		autoLog = false
+	} = {}) {
+		super(win._psychoJS, name);
+
+		// the PIXI representation of the stimulus:
+		this._pixi = undefined;
+
+		this._addAttributes(MinimalStim, win, autoDraw, autoLog);
+
+		this._needUpdate = false;
+		this.status = PsychoJS.Status.NOT_STARTED;
+	}
+
+
+	/**
+	 * Setter for the autoDraw attribute.
+	 *
+	 * @name module:core.MinimalStim#setAutoDraw
+	 * @function
+	 * @public
+	 * @param {boolean} autoDraw - the new value
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAutoDraw(autoDraw, log = false) {
+		let errorPrefix = { origin : 'MinimalStim.setAutoDraw', context: 'when setting the autoDraw attribute of stimulus: ' + this._name };
+
+		this._setAttribute('autoDraw', autoDraw, log);
+
+		const index = this.win._drawList.indexOf(this);
+
+		// autoDraw = true: add the stimulus to the draw list if it's not there already
+		if (this._autoDraw) {
+			if (this.win) {
+				// if the stimilus is not already in the draw list:
+				if (index &lt; 0) {
+					// update the stimulus if need be before we add its PIXI representation to the window container:
+					this._updateIfNeeded();
+					if (typeof this._pixi === 'undefined')
+						throw {...errorPrefix, error: 'the PIXI representation of the stimulus is unavailable'};
+
+					this.win._rootContainer.addChild(this._pixi);
+					this.win._drawList.push(this);
+				} else
+				{
+					// the stimulus is already in the list, if it needs to be updated, we remove it
+					// from the window container, update it, then put it back:
+					if (this._needUpdate) {
+						this.win._rootContainer.removeChild(this._pixi);
+						this._updateIfNeeded();
+						this.win._rootContainer.addChild(this._pixi);
+					}
+				}
+			}
+
+			this.status = PsychoJS.Status.STARTED;
+		}
+
+		// autoDraw = false: remove the stimulus from the draw list and window container if it's already there
+		else {
+			if (this.win) {
+				// if the stimulus is in the draw list, remove it from the list and from the window container:
+				if (index >= 0) {
+					this.win._drawList.splice(index, 1);
+					this.win._rootContainer.removeChild(this._pixi);
+				}
+			}
+
+			this.status = PsychoJS.Status.STOPPED;
+		}
+	}
+
+
+	/**
+	 * Draw this stimulus on the next frame draw.
+	 * 
+	 * @name module:core.MinimalStim#draw
+	 * @function
+	 * @public
+	 */
+	draw() {
+		this._updateIfNeeded();
+
+		if (this.win &amp;&amp; this.win._drawList.indexOf(this) &lt; 0) {
+			this.win._container.addChild(this._pixi);
+			this.win._drawList.push(this);
+		}
+	}
+
+
+	/**
+	 * Determine whether an object is inside this stimulus.
+	 * 
+	 * @name module:core.MinimalStim#contains
+	 * @function
+	 * @abstract
+	 * @public
+	 * @param {Object} object - the object
+	 * @param {String} units - the stimulus units
+	 */
+	contains(object, units) {
+		throw {origin: 'MinimalStim.contains', context: 'when determining whether stimulus: ' + this._name + 'contains object: ' + util.toString(object), error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Update the stimulus, if necessary.
+	 *
+	 * Note: this is an abstract function, which should not be called.
+	 * 
+	 * @name module:core.MinimalStim#_updateIfNeeded
+	 * @function
+	 * @abstract
+	 * @private
+	 */
+	_updateIfNeeded() {
+		throw {origin: 'MinimalStim._updateIfNeeded', context: 'when updating stimulus: ' + this._name, error: 'this method is abstract and should not be called.'};
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

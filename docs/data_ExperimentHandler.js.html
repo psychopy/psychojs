@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: data/ExperimentHandler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: data/ExperimentHandler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Experiment Handler
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+import { PsychObject } from '../util/PsychObject'
+import { MonotonicClock } from '../util/Clock'
+
+
+/**
+ * &lt;p>An ExperimentHandler keeps track of multiple loops and handlers. It is particularly useful
+ * for generating a single data file from an experiment with many different loops (e.g. interleaved
+ * staircases or loops within loops.&lt;/p>
+ * 
+ * @name module:data.ExperimentHandler
+ * @class 
+ * @extends PsychObject
+ * @param {Object} options
+ * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {string} options.name - name of the experiment
+ * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
+ */
+export class ExperimentHandler extends PsychObject {
+
+	/**
+	 * Getter for experimentEnded.
+	 * 
+	 * @name module:core.Window#experimentEnded
+	 * @function
+	 * @public
+	 */
+	get experimentEnded() { return this._experimentEnded; }
+
+	/**
+	 * Setter for experimentEnded.
+	 * 
+	 * @name module:core.Window#experimentEnded
+	 * @function
+	 * @public
+	 */
+	set experimentEnded(ended) { this._experimentEnded = ended; }
+
+
+	constructor({
+		psychoJS,
+		name,
+		extraInfo
+	} = {}) {
+		super(psychoJS, name);
+
+		this._addAttributes(ExperimentHandler, name, extraInfo);
+
+		// loop handlers:
+		this._loops = [];
+		this._unfinishedLoops = [];
+
+		// data dictionaries (one per trial) and current data dictionary:
+		this._trialsKeys = [];
+		this._trialsData = [];
+		this._currentTrialData = {};
+
+		this._experimentEnded = false;
+	}
+
+
+	/**
+	 * Add a loop.
+	 * &lt;p> The loop might be a {@link TrialHandler} or a {@link StairHandler}, for instance.&lt;/p>
+	 * &lt;p> Data from this loop will be included in the resulting data files.&lt;/p>
+	 *
+	 * @name module:data.ExperimentHandler#addLoop
+	 * @function
+	 * @public
+	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
+	 */
+	addLoop(loop) {
+		this._loops.push(loop);
+		this._unfinishedLoops.push(loop);
+		loop.experimentHandler = this;
+	}
+
+
+	/**
+	 * Remove the given loop from the list of unfinished loops, e.g. when it has completed.
+	 *
+	 * @name module:data.ExperimentHandler#removeLoop
+	 * @function
+	 * @public
+	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
+	 */
+	removeLoop(loop) {
+		const index = this._unfinishedLoops.indexOf(loop);
+		if (index !== -1) {
+			this._unfinishedLoops.splice(index, 1);
+		}
+	}
+
+
+	/**
+	 * Add the key/value pair.
+	 *
+	 * &lt;p> Multiple key/value pairs can be added to any given entry of the data file. There are
+	 * considered part of the same entry until a call to {@link nextEntry} is made. &lt;/p>
+	 *
+	 * @name module:data.ExperimentHandler#addData
+	 * @function
+	 * @public
+	 * @param {Object} key - the key
+	 * @param {Object} value - the value
+	 */
+	addData(key, value) {
+		if (this._trialsKeys.indexOf(key) === -1) {
+			this._trialsKeys.push(key);
+		};
+
+		this._currentTrialData[key] = value;
+	}
+
+
+	/**
+	 * Inform this ExperimentHandler that the current trial has ended.  Further calls to {@link addData}
+	 * will be associated with the next trial.
+	 *
+	 * @name module:data.ExperimentHandler#nextEntry
+	 * @function
+	 * @public
+	 */
+	nextEntry() {
+		// fetch data from each (potentially-nested) loop:
+		for (let loop of this._unfinishedLoops) {
+			var attributes = this.getLoopAttributes(loop);
+			for (let a in attributes)
+				if (attributes.hasOwnProperty(a))
+					this._currentTrialData[a] = attributes[a];
+		}
+
+		// add the extraInfo dict to the data:
+		for (let a in this.extraInfo)
+			if (this.extraInfo.hasOwnProperty(a))
+				this._currentTrialData[a] = this.extraInfo[a];
+
+		this._trialsData.push(this._currentTrialData);
+
+		this._currentTrialData = {};
+	}
+
+
+	/**
+	 * Save the results of the experiment.
+	 * &lt;p> Results are uploaded to the remote PsychoJS manager running on the remote https://pavlovia.org server&lt;/p>
+	 *
+	 * @name module:data.ExperimentHandler#save
+	 * @function
+	 * @public
+	 * @param {Object} options
+	 * @param {PsychoJS} options.attributes - the attributes to be saved
+	 */
+	async save({
+		attributes = []
+	} = {}) {
+		this._psychoJS.logger.info('[PsychoJS] Save experiment results.');
+
+		// (*) get attributes:
+		if (attributes.length == 0) {
+			attributes = this._trialsKeys.slice();
+			for (let l = 0; l &lt; this._loops.length; l++) {
+				const loop = this._loops[l];
+
+				const loopAttributes = this.getLoopAttributes(loop);
+				for (let a in loopAttributes)
+					if (loopAttributes.hasOwnProperty(a))
+					attributes.push(a);
+			}
+			for (let a in this.extraInfo) {
+				if (this.extraInfo.hasOwnProperty(a))
+				attributes.push(a);
+			}
+		}
+
+
+		// (*) get various experiment info:
+		const info = this.extraInfo;
+		const __experimentName = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
+		const __participant = ((typeof info.participant === 'string' &amp;&amp; info.participant.length > 0) ? info.participant : 'PARTICIPANT');
+		const __session = ((typeof info.session === 'string' &amp;&amp; info.session.length > 0) ? info.session : 'SESSION');
+		const __datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
+		const gitlabConfig = this._psychoJS.config.gitlab;
+		const __projectId = (typeof gitlabConfig !== 'undefined' &amp;&amp; typeof gitlabConfig.projectId !== 'undefined')?gitlabConfig.projectId:undefined;
+
+
+		// (*) save to a .csv file on the remote server:
+		if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.CSV) {
+			let csv = "";
+
+			// build the csv header:
+			for (let h = 0; h &lt; attributes.length; h++) {
+				if (h > 0)
+					csv = csv + ', ';
+				csv = csv + attributes[h];
+			}
+			csv = csv + '\n';
+
+			// build the records:
+			for (let r = 0; r &lt; this._trialsData.length; r++) {
+				for (let h = 0; h &lt; attributes.length; h++) {
+					if (h > 0)
+						csv = csv + ', ';
+					csv = csv + this._trialsData[r][attributes[h]];
+				}
+				csv = csv + '\n';
+			}
+
+			// upload data to the remote PsychoJS manager:
+			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
+			return await this._psychoJS.serverManager.uploadData(key, csv);
+		}
+
+
+		// (*) save in the database on the remote server:
+		else if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.DATABASE) {
+			let documents = [];
+
+			for (let r = 0; r &lt; this._trialsData.length; r++) {
+				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
+				for (let h = 0; h &lt; attributes.length; h++)
+					doc[attributes[h]] = this._trialsData[r][attributes[h]];
+
+				documents.push(doc);
+			}
+
+			// upload data to the remote PsychoJS manager:
+			const key = 'results'; // name of the mongoDB collection
+			return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+		}
+	}
+
+
+	/**
+	 * Get the attribute names and values for the current trial of a given loop.
+	 * &lt;p> Only only info relating to the trial execution are returned.&lt;/p>
+	 * 
+	 * @name module:data.ExperimentHandler#getLoopAttributes
+	 * @function
+	 * @public
+	 * @param {Object} loop - the loop
+	 */
+	getLoopAttributes(loop) {
+		const loopName = loop['name'];
+
+		// standard attributes:
+		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
+		let attributes = {};
+		for (const property of properties)
+			for (const loopProperty in loop)
+				if (loopProperty === property) {
+					if (property === 'stepSizeCurrent')
+						var key = loopName + '.stepSize';
+					else
+						key = loopName + '.' + property;
+
+					attributes[key] = loop[property];
+				}
+
+		// trial's attributes:
+		if (typeof loop.getCurrentTrial === 'function') {
+			const currentTrial = loop.getCurrentTrial();
+			for (const trialProperty in currentTrial)
+				attributes[trialProperty] = currentTrial[trialProperty];
+		}
+
+		/* TODO
+		// method of constants
+		if hasattr(loop, 'thisTrial'):
+				trial = loop.thisTrial
+				if hasattr(trial,'items'):#is a TrialList object or a simple dict
+						for property,val in trial.items():
+								if property not in self._paramNamesSoFar:
+										self._paramNamesSoFar.append(property)
+								names.append(property)
+								vals.append(val)
+				elif trial==[]:#we haven't had 1st trial yet? Not actually sure why this occasionally happens (JWP)
+						pass
+				else:
+						names.append(loopName+'.thisTrial')
+						vals.append(trial)
+						
+		// single StairHandler
+		elif hasattr(loop, 'intensities'):
+				names.append(loopName+'.intensity')
+				if len(loop.intensities)>0:
+						vals.append(loop.intensities[-1])
+				else:
+						vals.append(None)*/
+
+		return attributes;
+	}
+
+};
+
+
+/**
+ * Experiment result format
+ * 
+ * @name module:core.ServerManager#SaveFormat
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+ExperimentHandler.SaveFormat = {
+	/**
+	 * Results are saved to a .csv file
+	 */
+	CSV: Symbol.for('CSV'),
+
+	/**
+	 * Results are saved to a database
+	 */
+	DATABASE: Symbol.for('DATABASE')
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/GUI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/GUI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Graphic User Interface
+ *
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+import { PsychoJS } from './PsychoJS';
+import { ServerManager } from './ServerManager';
+import { Scheduler } from '../util/Scheduler';
+import { Clock } from '../util/Clock';
+import * as util from '../util/Util';
+
+
+/**
+ * @class
+ * Graphic User Interface
+ * 
+ * @name module:core.GUI
+ * @class
+ * @param {PsychoJS} psychoJS the PsychoJS instance
+ */
+export class GUI
+{
+
+	get dialogComponent() { return this._dialogComponent; }
+
+	constructor(psychoJS)
+	{
+		this._psychoJS = psychoJS;
+
+		// gui listens to RESOURCE events from the server manager:
+		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) => { this._onResourceEvents(signal); });
+	}
+
+
+	/**
+	 * &lt;p>Create a dialog box that (a) enables the participant to set some
+	 * experimental values (e.g. the session name), (b) shows progress of resource
+	 * download, and (c) enables the partipant to cancel the experiment.&lt;/p>
+	 * 
+	 * &lt;b>Setting experiment values&lt;/b>
+	 * &lt;p>DlgFromDict displays an input field for all values in the dictionary.
+	 * It is possible to specify default values e.g.:&lt;/p>
+	 * &lt;code>let expName = 'stroop';&lt;br>
+	 * let expInfo = {'participant':'', 'session':'01'};&lt;br>
+	 * psychoJS.schedule(psychoJS.gui.DlgFromDict({dictionary: expInfo, title: expName}));&lt;/code>
+	 * &lt;p>If the participant cancels (by pressing Cancel or by closing the dialog box), then
+	 * the dictionary remains unchanged.&lt;/p>
+	 * 
+	 * @name module:core.GUI#DlgFromDict
+	 * @function
+	 * @public
+	 * @param {Object} options
+	 * @param {Object} options.dictionary - associative array of values for the participant to set
+	 * @param {String} options.title - name of the project
+	 */
+	DlgFromDict({
+		dictionary,
+		title
+	})
+	{
+		// get info from URL:
+		const infoFromUrl = util.getUrlParameters();
+
+		this._progressMsg = '&amp;nbsp;';
+		this._progressBarMax = 0;
+		this._OkButtonDisabled = true;
+
+
+		// prepare PsychoJS component:
+		this._dialogComponent = {};
+		this._dialogComponent.status = PsychoJS.Status.NOT_STARTED;
+		const dialogClock = new Clock();
+		let self = this;
+		let loop = () => {
+			const t = dialogClock.getTime();
+
+			if (t >= 0.0 &amp;&amp; self._dialogComponent.status === PsychoJS.Status.NOT_STARTED) {
+				self._dialogComponent.tStart = t;
+				self._dialogComponent.status = PsychoJS.Status.STARTED;
+				
+				// prepare jquery UI dialog box:
+				let htmlCode = 
+					'&lt;div id="expDialog" title="' + title + '">' + 
+					'&lt;p class="validateTips">Fields marked with an asterisk (*) are required.&lt;/p>';
+				for (const key in dictionary)
+				{
+					// only create an input if the key is not in the URL:
+					let inUrl = false;
+					const cleanedDictKey = key.trim().toLowerCase();
+					for (const [urlKey, urlValue] of infoFromUrl) {
+						const cleanedUrlKey = urlKey.trim().toLowerCase();
+						if (cleanedUrlKey == cleanedDictKey) {
+							inUrl = true;
+							break;
+						}
+					}
+
+					if (!inUrl) {
+						htmlCode = htmlCode + 
+						'&lt;label for="' + key + '">' + key + '&lt;/label>' +
+						'&lt;input type="text" name="' + key + '" id="' + key + '_id" value="' + dictionary[key] + '" class="text ui-widget-content ui-corner-all">';
+					}
+				}
+				htmlCode = htmlCode + '&lt;hr>&lt;div id="progressMsg" class="progress">' + self._progressMsg + '&lt;/div>';
+				htmlCode = htmlCode + '&lt;div id="progressbar">&lt;/div>&lt;/div>';
+				let dialogElement = document.getElementById('root');
+				dialogElement.innerHTML = htmlCode;
+				
+				// init and open dialog box:
+				self._dialogComponent.button = 'Cancel';
+				$("#expDialog").dialog({
+					width: 400,
+					modal: true,
+					closeOnEscape: false,
+					buttons: [
+						{
+							id: "buttonOk",
+							text: "Ok",
+							disabled: self._OkButtonDisabled,
+							click: function() {
+								
+								// update dictionary:
+								for (const key in dictionary) {
+									const input = document.getElementById(key + "_id");
+									if (input)
+										dictionary[key] = input.value;
+								}
+								
+								self._dialogComponent.button = 'OK';
+								$("#expDialog").dialog( "close" );
+
+								// switch to full screen if requested:
+								self._psychoJS.window.adjustScreenSize();
+							}
+						},
+						{
+							id: "buttonCancel",
+							text: "Cancel",
+							click: function() {
+								self._dialogComponent.button = 'Cancel';
+								$("#expDialog").dialog( "close" );
+							}
+						}
+					],
+					// close is called by both buttons and when the user clicks on the cross:
+					close : function() {
+						//$.unblockUI();
+						self._dialogComponent.status = PsychoJS.Status.FINISHED;
+					}
+				})
+				// change colour of title bar
+				.prev(".ui-dialog-titlebar").css("background", "green");
+
+				// block UI until user has pressed dialog button:
+				// note: block UI does not allow for text to be entered in the dialog form boxes, alas!
+				//$.blockUI({ message: "", baseZ: 1});
+				
+				// show dialog box:
+				$("#expDialog").dialog("open");
+				$("#progressbar").progressbar({value: self._progressBarCurrentIncrement});
+				$("#progressbar").progressbar("option", "max", self._progressBarMax);
+			}
+
+			if (self._dialogComponent.status === PsychoJS.Status.FINISHED)
+				return Scheduler.Event.NEXT;
+			else
+				return Scheduler.Event.FLIP_REPEAT;
+		}
+
+		return loop;
+	}
+
+
+	/**
+	 * Listener for resource event from the [Server Manager]{@link ServerManager}.
+	 * 
+	 * @name module:core.GUI#_onResourceEvents
+	 * @function
+	 * @private
+	 * @param {Object.&lt;string, string|Symbol>} signal the signal
+	 */
+	_onResourceEvents(signal) {
+		let response = { origin: 'GUI._onResourceEvents', context: 'when handling a resource event' };
+
+		this._psychoJS.logger.debug('signal: ' + util.toString(signal));
+
+		// all resources have been registered:
+		if (signal.message === ServerManager.Event.RESOURCES_REGISTERED) {
+			// for each resource, we have a 'downloading resource' and a 'resource downloaded' message:
+			this._progressBarMax = signal.count * 2;
+			$("#progressbar").progressbar("option", "max", this._progressBarMax);
+			
+			this._progressBarCurrentIncrement = 0;
+			$("#progressMsg").text('all resources registered.');
+		}
+		
+		// all the resources have been downloaded: show the ok button 
+		else if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED) {
+			this._OkButtonDisabled = false;
+			$("#buttonOk").button({ disabled: this._OkButtonDisabled });
+			$("#progressMsg").text('all resources downloaded.');
+		}
+		
+		// update progress bar:
+		else if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE || signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
+		{
+			if (typeof this._progressBarCurrentIncrement === 'undefined')
+				this._progressBarCurrentIncrement = 0;
+
+			if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE)
+				$("#progressMsg").text(signal.resource + ': downloading...');
+			else
+				$("#progressMsg").text(signal.resource + ': downloaded.');
+
+			++ this._progressBarCurrentIncrement;
+			$("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
+		}
+
+		// unknown message: we just display it
+		else
+			$("#progressMsg").text(signal.message);
+	}
+
+
+	/**
+	 * @callback GUI.onOK
+	 */
+	/**
+	 * Show a message to the participant in a dialog box.
+	 * 
+	 * &lt;p>This function can be used to display both warning and error messages.&lt;/p>
+	 * 
+	 * @name module:core.GUI#dialog
+	 * @function
+	 * @public
+	 * @param {Object} options
+	 * @param {string} options.message - the message to be displayed
+	 * @param {Object.&lt;string, *>} options.error - an exception
+	 * @param {string} options.warning - a warning message
+	 * @param {boolean} [options.showOK=true] - specifies whether to show the OK button
+	 * @param {GUI.onOK} [options.onOK] - function called when the participant presses the OK button
+	 */
+	dialog({
+		message,
+		warning,
+		error,
+		showOK = true,
+		onOK
+	} = {}) {
+		// destroy previous dialog box:
+		this.destroyDialog();
+
+		// we are displaying an error:
+		if (typeof error !== 'undefined') {
+			this._psychoJS.logger.fatal(util.toString(error));
+
+			var htmlCode = '&lt;div id="msgDialog" title="Error">';
+			htmlCode += '&lt;p class="validateTips">Unfortunately we encountered an error:&lt;/p>';
+			
+			// go through the error stack:
+			htmlCode += '&lt;ul>';
+			while (true) {
+				if (typeof error === 'object' &amp;&amp; 'context' in error) {
+					htmlCode += '&lt;li>' + error.context + '&lt;/li>';
+					error = error.error;
+				} else {
+					htmlCode += '&lt;li>&lt;b>' + error  + '&lt;/b>&lt;/li>';
+					break;
+				}		
+			}
+			htmlCode += '&lt;/ul>';
+
+			htmlCode += '&lt;p>Try to run the experiment again. If the error persists, contact the experimenter.&lt;/p>';
+			var titleColour = 'red';
+		}
+
+		// we are displaying a message:
+		else if (typeof message !== 'undefined') {
+			htmlCode = '&lt;div id="msgDialog" title="Message">'
+				+ '&lt;p class="validateTips">' + message + '&lt;/p>';
+			titleColour = 'green';
+		}
+
+		// we are displaying a warning:
+		else if (typeof warning !== 'undefined') {
+			htmlCode = '&lt;div id="msgDialog" title="Warning">'
+				+ '&lt;p class="validateTips">' + warning + '&lt;/p>';
+			titleColour = 'orange';
+		}
+
+		htmlCode = htmlCode + '&lt;/div>';
+		var dialogElement = document.getElementById('root');
+		dialogElement.innerHTML = htmlCode;
+		
+		// init dialog box:
+		$("#msgDialog").dialog({dialogClass: 'no-close', width: '80%', modal: true, closeOnEscape: false})
+		// change colour of title bar
+		.prev(".ui-dialog-titlebar").css("background", titleColour);
+		
+		// add OK button if need be:
+		if (showOK) {
+			$("#msgDialog").dialog("option", "buttons", [
+				{
+					id: "buttonOk",
+					text: "Ok",
+					click: function() {
+						$(this).dialog("close");
+						
+						// execute callback function:
+						if (typeof onOK !== 'undefined')
+							onOK();
+					}
+				}]);
+		}
+
+		// show dialog box:
+		$("#msgDialog").dialog("open");
+	}
+
+
+	/**
+	 * Destroy the currently opened dialog box.
+	 * 
+	 * @name module:core.GUI#dialog
+	 * @function
+	 * @public
+	 */
+	destroyDialog()
+	{
+		if ($("#expDialog").length) {
+			$("#expDialog").dialog("destroy");
+		}
+		if ($("#msgDialog").length) {
+			$("#msgDialog").dialog("destroy");
+		}
+	}
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

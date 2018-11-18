@@ -1,7 +1,7 @@
 # PsychoJs
 
 PsychoJs is a javascript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy](http://www.psychopy.org/) Python library.
-It is also a git submodule: https://github.com/psychopy/psychopy
+It is also a git submodule: [psychopy/psychojs](https://github.com/psychopy/psychojs)
 
 
 ## Motivation

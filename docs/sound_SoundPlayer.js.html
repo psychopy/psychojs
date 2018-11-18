@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sound/SoundPlayer.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sound/SoundPlayer.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Sound player interface
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+import { PsychObject } from '../util/PsychObject';
+
+
+/**
+ * &lt;p>SoundPlayer is an interface for the sound players, who are responsible for actually playing the sounds, i.e. the tracks or the tones.&lt;/p>
+ *
+ * @name module:sound.SoundPlayer
+ * @interface
+ * @extends PsychObject
+ * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+ */
+export class SoundPlayer extends PsychObject
+{
+	constructor(psychoJS)
+	{
+		super(psychoJS);
+	}
+
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
+	 * @name module:sound.SoundPlayer.accept
+	 * @function
+	 * @static
+	 * @public
+	 * @abstract
+	 * @param {module:sound.Sound} - the sound
+	 * @return {Object|undefined} an instance of the SoundPlayer that can play the sound, or undefined if none could be found
+	 */
+	static accept(sound)
+	{
+		throw {origin: 'SoundPlayer.accept', context: 'when evaluating whether this player can play a given sound', error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Start playing the sound.
+	 *
+	 * @name module:sound.SoundPlayer#play
+	 * @function
+	 * @public
+	 * @abstract
+	 * @param {boolean} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 */
+	play(loops)
+	{
+		throw {origin: 'SoundPlayer.play', context: 'when starting the playback of a sound', error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Stop playing the sound immediately.
+	 *
+	 * @name module:sound.SoundPlayer#stop
+	 * @function
+	 * @public
+	 * @abstract
+	 */
+	stop()
+	{
+		throw {origin: 'SoundPlayer.stop', context: 'when stopping the playback of a sound', error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Get the duration of the sound, in seconds.
+	 *
+	 * @name module:sound.SoundPlayer#getDuration
+	 * @function
+	 * @public
+	 * @abstract
+	 */
+	getDuration()
+	{
+		throw {origin: 'SoundPlayer.getDuration', context: 'when getting the duration of the sound', error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Set the number of loops.
+	 *
+	 * @name module:sound.SoundPlayer#setLoops
+	 * @function
+	 * @public
+	 * @abstract
+	 * @param {number} loops - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 */
+	setLoops(loops)
+	{
+		throw {origin: 'SoundPlayer.setLoops', context: 'when setting the number of loops', error: 'this method is abstract and should not be called.'};
+	}
+
+
+	/**
+	 * Set the volume of the tone.
+	 * 
+	 * @name module:sound.SoundPlayer#setVolume
+	 * @function
+	 * @public
+	 * @abstract
+	 * @param {Integer} volume - the volume of the tone
+	 * @param {booleam} [mute= false] - whether or not to mute the tone
+	 */
+	setVolume(volume, mute = false) {
+		throw {origin: 'SoundPlayer.setVolume', context: 'when setting the volume of the sound', error: 'this method is abstract and should not be called.'};
+	}
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

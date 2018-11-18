@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: core/WindowMixin.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: core/WindowMixin.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Mixin implementing various unit-handling measurement methods.
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+/**
+ * &lt;p>This mixin implements various unit-handling measurement methods.&lt;/p>
+ * 
+ * &lt;p>Note: (a) this is the equivalent of PsychoPY's WindowMixin.
+ *          (b) it will most probably be made obsolete by a fully-integrated unit approach.
+ * &lt;/p>
+ * 
+ * @name module:core.WindowMixin
+ * @mixin
+ * 
+ */
+export let WindowMixin = (superclass) => class extends superclass
+{
+	constructor(args)
+	{
+		super(args);
+	}
+
+
+	/**
+	 * Setter for units attribute.
+	 * 
+	 * @name module:core.WindowMixin#setUnits
+	 * @function
+	 * @public
+	 * @param {String} [units= this.win.units] - the units
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setUnits(units = this.win.units, log = false)
+	{
+		this._setAttribute('units', units, log);
+	}
+
+
+	/**
+	 * Convert the given length from stimulus unit to pixel units.
+	 * 
+	 * @name module:core.WindowMixin#_getLengthPix
+	 * @function
+	 * @protected
+	 * @param {number} length - the length in stimulus units
+	 * @return {number} - the length in pixel units
+	 */
+	_getLengthPix(length)
+	{
+		let errorPrefix = { origin: 'WindowMixin._getLengthPix', context: 'when converting a length from stimulus unit to pixel units' };
+
+		if (this._units === 'pix') {
+			return length;
+		}
+		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+			var winSize = this.win.size;
+			return length * winSize[1]/2; // TODO: how do we handle norm when width != height?
+		}
+		else if (this._units === 'height') {
+			const minSize = Math.min(this.win.size[0], this.win.size[1]);
+			return length * minSize;
+		}
+		else {
+			throw {...errorPrefix, error: 'unable to deal with unit: ' + this._units};
+		}
+	}
+
+
+	/**
+	 * Convert the given length from pixel units to the stimulus units
+	 * 
+	 * @name module:core.WindowMixin#_getLengthUnits
+	 * @function
+	 * @protected
+	 * @param {number} length_px - the length in pixel units
+	 * @return {number} - the length in stimulus units
+	 */
+	_getLengthUnits(length_px)
+	{
+		let errorPrefix = { origin: 'WindowMixin._getLengthUnits', context: 'when converting a length from pixel unit to stimulus units' };
+
+		if (this._units === 'pix') {
+			return length_px;
+		}
+		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+			const winSize = this.win.size;
+			return length_px / (winSize[1]/2); // TODO: how do we handle norm when width != height?
+		}
+		else if (this._units === 'height') {
+			const minSize = Math.min(this.win.size[0], this.win.size[1]);
+			return length_px / minSize;
+		}
+		else {
+			throw {...errorPrefix, error: 'unable to deal with unit: ' + this._units};
+		}
+	}
+
+
+	/**
+	 * Convert the given length from pixel units to the stimulus units
+	 * 
+	 * @name module:core.WindowMixin#_getHorLengthPix
+	 * @function
+	 * @protected
+	 * @param {number} length_px - the length in pixel units
+	 * @return {number} - the length in stimulus units
+	 */
+	_getHorLengthPix(length)
+	{
+		let errorPrefix = { origin: 'WindowMixin._getHorLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+
+		if (this._units === 'pix') {
+			return length;
+		}
+		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+			var winSize = this.win.size;
+			return length * winSize[0]/2;
+		}
+		else if (this._units === 'height') {
+			const minSize = Math.min(this.win.size[0], this.win.size[1]);
+			return length * minSize;
+		}
+		else {
+			throw {...errorPrefix, error: 'unable to deal with unit: ' + this._units};
+		}
+	}
+
+	/**
+	 * Convert the given length from pixel units to the stimulus units
+	 * 
+	 * @name module:core.WindowMixin#_getVerLengthPix
+	 * @function
+	 * @protected
+	 * @param {number} length_px - the length in pixel units
+	 * @return {number} - the length in stimulus units
+	 */
+	_getVerLengthPix(length)
+	{
+		let errorPrefix = { origin: 'WindowMixin._getVerLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+
+		if (this._units === 'pix') {
+			return length;
+		}
+		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+			var winSize = this.win.size;
+			return length * winSize[1]/2;
+		}
+		else if (this._units === 'height') {
+			const minSize = Math.min(this.win.size[0], this.win.size[1]);
+			return length * minSize;
+		}
+		else {
+			throw {...errorPrefix, error: 'unable to deal with unit: ' + this._units};
+		}
+	}
+
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

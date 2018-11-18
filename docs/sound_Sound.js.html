@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: sound/Sound.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: sound/Sound.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module sound */
+/**
+ * Sound stimulus.
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+import { PsychoJS } from '../core/PsychoJS';
+import { PsychObject } from '../util/PsychObject';
+import { TonePlayer } from './TonePlayer';
+import { TrackPlayer } from './TrackPlayer';
+
+
+/**
+ * &lt;p>This class handles sound playing (tones and tracks)&lt;/p>
+ * 
+ * &lt;ul>
+ * &lt;li> If value is a number then a tone will be generated at that frequency in Hz.&lt;/li>
+ * &lt;li> It value is a string, it must either be a note in the PsychoPy format (e.g 'A', 'Bfl', 'B', 'C', 'Csh'), in which case an octave must also be given, or the name of the resource track.&lt;/li>
+ * &lt;/ul>
+ * 
+ * @example
+ * [...]
+ * const track = new Sound({
+ *   win: psychoJS.window,
+ *   value: 440,
+ *   secs: 0.5
+ * });
+ * track.setVolume(1.0);
+ * track.play(2);
+ *
+ * @class
+ * @extends PsychObject
+ * @param {Object} options
+ * @param {String} options.name - the name used when logging messages from this stimulus
+ * @param {Window} options.win - the associated Window
+ * @param {number|string} [options.value= 'C'] - the sound value (see above for a full description)
+ * @param {number} [options.octave= 4] - the octave corresponding to the tone (if applicable)
+ * @param {number} [options.secs= 0.5] - duration of the tone (in seconds)
+ * @param {number} [options.startTime= 0] - start of playback for tracks (in seconds)
+ * @param {number} [options.stopTime= -1] - end of playback for tracks (in seconds)
+ * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
+ * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
+ * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played once. If loops == -1, the track or tone will repeat indefinitely until stopped.
+ * @param {boolean} [options.hamming= true] whether or not to apodize the sound (i.e., the onset and offset smoothly ramped up from down to zero). This only affects tones.
+ * @param {boolean} [options.autoLog= true] whether or not to log
+*/
+export class Sound extends PsychObject {
+	constructor({
+		name,
+		win,
+		value = 'C',
+		octave = 4,
+		secs = 0.5,
+		startTime = 0,
+		stopTime = -1,
+		stereo = true,
+		volume = 1.0,
+		loops = 0,
+		hamming = true,
+		autoLog = true
+	} = {}) {
+		super(win._psychoJS, name);
+
+		// the SoundPlayer, e.g. TonePlayer:
+		this._player = undefined;
+
+		this._addAttributes(Sound, win, value, octave, secs, startTime, stopTime, stereo, volume, loops, hamming, autoLog);
+
+		// identify an appropriate player:
+		this._getPlayer();
+
+		this.status = PsychoJS.Status.NOT_STARTED;
+	}
+
+
+	/**
+	 * Start playing the sound.
+	 *
+	 * &lt;p> Note: Sounds are played independently from the stimuli of the experiments, i.e. the experiment will not stop until the sound is finished playing.
+	 * Repeat calls to play may results in the sounds being played on top of each other.&lt;/p>
+	 * 
+	 * @public
+	 * @param {number} [loops= 0] how many times to repeat the sound after it plays once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 * @param {boolean} [log= true] whether or not to log
+	 */
+	play(loops, log = true) {
+		this.status = PsychoJS.Status.STARTED;
+		this._player.play(loops)
+	}
+
+
+	/**
+	 * Stop playing the sound immediately.
+	 *
+	 * @public
+	 * @param {Object} options
+	 * @param {boolean} [options.log= true] - whether or not to log
+	 */
+	stop({
+		log = true
+	} = {}) {
+		this._player.stop();
+		this.status = PsychoJS.Status.STOPPED;
+	}
+
+
+	/**
+	 * Get the duration of the sound, in seconds.
+	 *
+	 * @public
+	 * @return {number} the duration of the sound, in seconds
+	 */
+	getDuration() {
+		return this._player.getDuration();
+	}
+
+
+	/**
+	 * Set the playing volume of the sound.
+	 *
+	 * @public 
+	 * @param {number} volume - the volume (values should be between 0 and 1)
+	 * @param {booleam} [mute= false] - whether or not to mute the sound
+	 * @param {boolean} [log= true] - whether of not to log
+	 */
+	setVolume(volume, mute = false, log = true) {
+		this._setAttribute('volume', volume, log);
+		if (typeof this._player !== 'undefined')
+			this._player.setVolume(volume, mute);
+	}
+
+
+	/**
+	 * Set the number of loops.
+	 *
+	 * @public 
+	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 * @param {boolean} [log=true] - whether of not to log
+	 */
+	setLoops(loops = 0, log = true) {
+		this._setAttribute('loops', loops, log);
+		if (typeof this._player !== 'undefined')
+			this._player.setLoops(loops);
+	}
+
+
+	/**
+	 * Identify the appropriate player for the sound.
+	 *
+	 * @protected
+	 * @return {SoundPlayer} the appropriate SoundPlayer
+	 * @throws {Object.&lt;string, *>} exception if no appropriate SoundPlayer could be found for the sound
+	 */
+	_getPlayer() {
+		const acceptFns = [
+			sound => TonePlayer.accept(sound),
+			sound => TrackPlayer.accept(sound)
+		];
+
+		for (const acceptFn of acceptFns) {
+			this._player = acceptFn(this);
+			if (typeof this._player !== 'undefined')
+				return;
+		}
+
+		throw { origin: 'SoundPlayer._getPlayer', context: 'when finding a player for the sound', error: 'could not find an appropriate player.' };
+	}
+
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 18 2018 20:31:50 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
