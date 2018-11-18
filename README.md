@@ -49,7 +49,7 @@ PsychoJs currently supports the following Components:
 We are constantly adding new Components and are regularly updating this list.
 
 
-### API
+## API
 The full documentation of the PsychoJS API is [here](https://psychopy.github.io/psychojs/).
 
 
