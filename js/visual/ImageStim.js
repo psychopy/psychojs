@@ -1,5 +1,5 @@
 /**
- * @file Image Stimulus.
+ * Image Stimulus.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11

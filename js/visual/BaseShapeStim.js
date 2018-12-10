@@ -1,6 +1,6 @@
 /** @module visual */
 /**
- * @file Basic Shape Stimulus.
+ * Basic Shape Stimulus.
  *
  * @author Alain Pitiot
  * @version 3.0.0b11

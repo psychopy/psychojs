@@ -1,6 +1,6 @@
 /** @module core */
 /**
- * @file Main component of the PsychoJS library.
+ * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -217,7 +217,7 @@ export class PsychoJS {
 
 			// setup the logger:
 			//my.logger.console.setLevel(psychoJS.logging.WARNING);
-			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'saveTo':'EXPERIMENT_SERVER', 'experimentInfo': my.expInfo});
+			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
 			// open a new session:
 			await this._serverManager.openSession();
@@ -277,7 +277,7 @@ export class PsychoJS {
 			await this._experiment.save();
 
 			// close the session:
-			await this._serverManager.closeSession();
+			await this._serverManager.closeSession(isCompleted);
 
 			// stop the main scheduler:
 			this._scheduler.stop();
@@ -343,6 +343,12 @@ export class PsychoJS {
 				throw 'missing psychoJsManager block in configuration';
 			if (!('URL' in this._config.psychoJsManager))
 				throw 'missing URL in psychoJsManager block in configuration';
+
+			// 'CSV' is the default format for the experiment results:
+			if ('saveFormat' in this._config.experiment)
+				this._config.experiment.saveFormat = Symbol.for(this._config.experiment.saveFormat);
+			else
+				this._config.experiment.saveFormat = ExperimentHandler.SaveFormat.CSV;
 
 			return response;
 		}

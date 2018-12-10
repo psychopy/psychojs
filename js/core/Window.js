@@ -1,5 +1,5 @@
 /**
- * @file Window responsible for displaying the experiment stimuli
+ * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -18,6 +18,7 @@ import * as util from '../util/Util';
  * 
  * @name module:core.Window
  * @class
+ * @extends PsychObject
  * @param {Object} options
  * @param {PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {string} [options.name] the name of the window
@@ -25,8 +26,6 @@ import * as util from '../util/Util';
  * @param {Color} [options.color= Color('black')] the background color of the window
  * @param {string} [options.units= 'pix'] the units of the window
  * @param {boolean} [options.autoLog= true] whether or not to log
- * 
- * @extends PsychObject
  */
 export class Window extends PsychObject {
 
@@ -262,6 +261,7 @@ export class Window extends PsychObject {
 
 		// top-level container:
 		this._rootContainer = new PIXI.Container();
+		this._rootContainer.interactive = true;
 
 		// set size of renderer and position of root container:
 		this._onResize(this);

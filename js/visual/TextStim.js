@@ -1,5 +1,5 @@
 /**
- * @file Text Stimulus.
+ * Text Stimulus.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -240,7 +240,7 @@ export class TextStim extends util.mix(BaseVisualStim).with(ColorMixin)
 			this._heightPix = this._getLengthPix(height);
 
 			var fontSize = Math.round(this._heightPix);
-			let color = this._getDesiredColor(this._color, this._contrast);
+			let color = this.getContrastedColor(this._color, this._contrast);
 			var font =
 				(this._bold ? 'bold ' : '') +
 				(this._italic ? 'italic ' : '') +

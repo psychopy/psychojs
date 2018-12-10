@@ -1,5 +1,5 @@
 /**
- * @file Base class for all visual stimuli.
+ * Base class for all visual stimuli.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11

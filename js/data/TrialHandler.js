@@ -1,6 +1,6 @@
 /** @module data */
 /**
- * @file Trial Handler
+ * Trial Handler
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11

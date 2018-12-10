@@ -1,5 +1,5 @@
 /**
- * @file Manager handling the keyboard and mouse/touch events.
+ * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -207,6 +207,14 @@ export class EventManager {
 
 		const view = renderer.view;
 
+		/*
+		// TEMPORARY DEBUG FOR IPAD/IPHONE:
+		for (let eventName of ['click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mouseupoutside', 'pointercancel', 'pointerdown', 'pointermove', 'pointerout', 'pointerover', 'pointertap', 'pointerup', 'pointerupoutside', 'rightclick', 'rightdown', 'rightup', ' rightupoutside', 'tap', 'touchcancel', 'touchend', 'touchendoutside', 'touchmove', 'touchstart'])
+			view.addEventListener(eventName, event => {
+				console.log('event: ' + eventName + ' -> ', event);
+			});
+		*/
+		
 		view.addEventListener("pointerdown", event => {
 			self._mouseInfo.buttons.pressed[event.button] = 1;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
@@ -232,12 +240,13 @@ export class EventManager {
 		view.addEventListener("wheel", event => {
 			self._mouseInfo.wheelRel[0] += event.deltaX;
 			self._mouseInfo.wheelRel[1] += event.deltaY;
-			/*
-			var x = ev.offsetX;
-			var y = ev.offsetY;
-				var msg = "Mouse: wheel shift=(" + ev.deltaX + "," + ev.deltaY + "), pos=(" + x + "," + y + ")";
-				psychoJS.logging.data(msg);*/
+			
+			//var x = ev.offsetX;
+			//var y = ev.offsetY;
+			//var msg = "Mouse: wheel shift=(" + ev.deltaX + "," + ev.deltaY + "), pos=(" + x + "," + y + ")";
+			//psychoJS.logging.data(msg);
 		}, false);
+		
 	}
 
 

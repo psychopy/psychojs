@@ -1,5 +1,5 @@
 /**
- * @file Track Player.
+ * Track Player.
  *
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -136,7 +136,7 @@ export class TrackPlayer extends SoundPlayer {
 	 * @name module:sound.TrackPlayer#play
 	 * @function
 	 * @public
-	 * @param {boolean} [loops] how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
+	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
 	 */
 	play(loops) {
 		if (typeof loops !== 'undefined')

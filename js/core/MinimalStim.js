@@ -1,5 +1,5 @@
 /**
- * @file Base class for all stimuli.
+ * Base class for all stimuli.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11

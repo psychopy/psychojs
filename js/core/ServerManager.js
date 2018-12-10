@@ -1,5 +1,5 @@
 /**
- * @file Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
+ * Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -106,11 +106,16 @@ export class ServerManager extends PsychObject {
 
 		this.setStatus(ServerManager.Status.BUSY);
 
+		let data = {
+			experimentFullPath: this._psychoJS.config.experiment.fullpath
+		};
+		const gitlabConfig = this._psychoJS.config.gitlab;
+		if (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined')
+			data.projectId = gitlabConfig.projectId;
+
 		let self = this;
 		return new Promise((resolve, reject) => {
-			const data = {
-				experimentFullPath: self._psychoJS.config.experiment.fullpath
-			};
+			
 			$.post(this._psychoJS.config.psychoJsManager.URL + '?command=open_session', data, null, 'json')
 				.done((data, textStatus) => {
 					// check for error:
@@ -150,21 +155,28 @@ export class ServerManager extends PsychObject {
 	 * @name module:core.ServerManager#closeSession
 	 * @function
 	 * @public
+	 * @param {boolean} [isCompleted= false] - whether or not the experiment was completed
 	 * @returns {Promise<ServerManager.CloseSessionPromise>} the response
 	 */
-	closeSession() {
+	closeSession(isCompleted = false) {
 		let response = { origin: 'ServerManager.closeSession', context: 'when closing the session for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('closing the session for experiment: ' + this._psychoJS.config.experiment.name);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
+		let data = {
+			experimentFullPath: this._psychoJS.config.experiment.fullpath,
+			'token': this._psychoJS.config.experiment.token,
+			'isCompleted': isCompleted
+		};
+		const gitlabConfig = this._psychoJS.config.gitlab;
+		if (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined')
+			data.projectId = gitlabConfig.projectId;
+
+
 		let self = this;
-		return new Promise((resolve, reject) => {
-			const data = {
-				experimentFullPath: self._psychoJS.config.experiment.fullpath,
-				'token': self._psychoJS.config.experiment.token
-			};
+		return new Promise((resolve, reject) => {				
 			$.post(this._psychoJS.config.psychoJsManager.URL + '?command=close_session', data, null, 'json')
 				.done((data, textStatus) => {
 					// check for error:
@@ -282,9 +294,7 @@ export class ServerManager extends PsychObject {
 		download();
 	}
 
-
-
-
+	
 	/**
 	 * @typedef ServerManager.UploadDataPromise
 	 * @property {string} origin the calling method
@@ -297,8 +307,8 @@ export class ServerManager extends PsychObject {
 	 * @name module:core.ServerManager#uploadData
 	 * @function
 	 * @public
-	 * @param {string} key the data key
-	 * @param {*} value the data value
+	 * @param {string} key - the data key (e.g. the name of .csv file)
+	 * @param {string} value - the data value (e.g. a string containing the .csv header and records)
 	 * 
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
@@ -312,13 +322,13 @@ export class ServerManager extends PsychObject {
 			experimentFullPath: this._psychoJS.config.experiment.fullpath,
 			token: this._psychoJS.config.experiment.token,
 			key,
-			value
+			value,
+			saveFormat: Symbol.keyFor(this._psychoJS.config.experiment.saveFormat)
 		};
 		// add gitlab ID of experiment if there is one:
 		const gitlabConfig = this._psychoJS.config.gitlab;
 		if (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined')
 			data.projectId = gitlabConfig.projectId;
-
 
 		// (*) upload data:
 		const self = this;

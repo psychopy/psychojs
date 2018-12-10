@@ -1,5 +1,5 @@
 /**
- * @file Graphic User Interface
+ * Graphic User Interface
  *
  * @author Alain Pitiot
  * @version 3.0.0b11

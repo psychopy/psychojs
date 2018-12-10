@@ -1,5 +1,5 @@
 /**
- * @file Manager responsible for the interactions between the experiment's stimuli and the mouse.
+ * Manager responsible for the interactions between the experiment's stimuli and the mouse.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11

@@ -1,5 +1,5 @@
 /**
- * @file Tone Player.
+ * Tone Player.
  *
  * @author Alain Pitiot
  * @version 3.0.0b11

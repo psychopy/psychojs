@@ -1,5 +1,5 @@
 /**
- * @file Experiment Handler
+ * Experiment Handler
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -159,57 +159,84 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @param {Object} options
 	 * @param {PsychoJS} options.attributes - the attributes to be saved
-	 *
-	 * @todo deal with attributes
 	 */
 	async save({
 		attributes = []
 	} = {}) {
 		this._psychoJS.logger.info('[PsychoJS] Save experiment results.');
 
-		// key is based on extraInfo:
+		// (*) get attributes:
+		if (attributes.length == 0) {
+			attributes = this._trialsKeys.slice();
+			for (let l = 0; l < this._loops.length; l++) {
+				const loop = this._loops[l];
+
+				const loopAttributes = this.getLoopAttributes(loop);
+				for (let a in loopAttributes)
+					if (loopAttributes.hasOwnProperty(a))
+					attributes.push(a);
+			}
+			for (let a in this.extraInfo) {
+				if (this.extraInfo.hasOwnProperty(a))
+				attributes.push(a);
+			}
+		}
+
+
+		// (*) get various experiment info:
 		const info = this.extraInfo;
-		let key = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
-		key += "_" + ((typeof info.participant === 'string' && info.participant.length > 0) ? info.participant : 'PARTICIPANT');
-		key += "_" + ((typeof info.session === 'string' && info.session.length > 0) ? info.session : 'SESSION');
-		key += "_" + ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
+		const __experimentName = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
+		const __participant = ((typeof info.participant === 'string' && info.participant.length > 0) ? info.participant : 'PARTICIPANT');
+		const __session = ((typeof info.session === 'string' && info.session.length > 0) ? info.session : 'SESSION');
+		const __datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
+		const gitlabConfig = this._psychoJS.config.gitlab;
+		const __projectId = (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined')?gitlabConfig.projectId:undefined;
 
-		// data is in the csv format:
-		// build the csv header:
-		let csv = "";
-		let header = this._trialsKeys.slice();
-		for (let l = 0; l < this._loops.length; l++) {
-			const loop = this._loops[l];
 
-			const loopAttributes = this.getLoopAttributes(loop);
-			for (let a in loopAttributes)
-				if (loopAttributes.hasOwnProperty(a))
-					header.push(a);
-		}
-		for (let a in this.extraInfo) {
-			if (this.extraInfo.hasOwnProperty(a))
-				header.push(a);
-		}
+		// (*) save to a .csv file on the remote server:
+		if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.CSV) {
+			let csv = "";
 
-		for (let h = 0; h < header.length; h++) {
-			if (h > 0)
-				csv = csv + ', ';
-			csv = csv + header[h];
-		}
-		csv = csv + '\n';
-
-		// build the records:
-		for (let r = 0; r < this._trialsData.length; r++) {
-			for (let h = 0; h < header.length; h++) {
+			// build the csv header:
+			for (let h = 0; h < attributes.length; h++) {
 				if (h > 0)
 					csv = csv + ', ';
-				csv = csv + this._trialsData[r][header[h]];
+				csv = csv + attributes[h];
 			}
 			csv = csv + '\n';
+
+			// build the records:
+			for (let r = 0; r < this._trialsData.length; r++) {
+				for (let h = 0; h < attributes.length; h++) {
+					if (h > 0)
+						csv = csv + ', ';
+					csv = csv + this._trialsData[r][attributes[h]];
+				}
+				csv = csv + '\n';
+			}
+
+			// upload data to the remote PsychoJS manager:
+			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
+			return await this._psychoJS.serverManager.uploadData(key, csv);
 		}
 
-		// upload data to the remote PsychoJS manager:
-		return await this._psychoJS.serverManager.uploadData(key + '.csv', csv);
+
+		// (*) save in the database on the remote server:
+		else if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.DATABASE) {
+			let documents = [];
+
+			for (let r = 0; r < this._trialsData.length; r++) {
+				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
+				for (let h = 0; h < attributes.length; h++)
+					doc[attributes[h]] = this._trialsData[r][attributes[h]];
+
+				documents.push(doc);
+			}
+
+			// upload data to the remote PsychoJS manager:
+			const key = 'results'; // name of the mongoDB collection
+			return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+		}
 	}
 
 
@@ -273,4 +300,25 @@ export class ExperimentHandler extends PsychObject {
 		return attributes;
 	}
 
-}
+};
+
+
+/**
+ * Experiment result format
+ * 
+ * @name module:core.ServerManager#SaveFormat
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+ExperimentHandler.SaveFormat = {
+	/**
+	 * Results are saved to a .csv file
+	 */
+	CSV: Symbol.for('CSV'),
+
+	/**
+	 * Results are saved to a database
+	 */
+	DATABASE: Symbol.for('DATABASE')
+};

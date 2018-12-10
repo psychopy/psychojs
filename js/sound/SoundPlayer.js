@@ -1,5 +1,5 @@
 /**
- * @file Sound player interface
+ * Sound player interface
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
