@@ -1,4 +1,32 @@
-/** @module util */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/PsychObject.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/PsychObject.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module util */
 /**
  * Core Object.
  *
@@ -13,8 +41,8 @@ import { EventEmitter } from './EventEmitter';
 
 
 /**
- * <p>PsychoObject is the base class for all PsychoJS objects.
- * It is responsible for handling attributes.</p>
+ * &lt;p>PsychoObject is the base class for all PsychoJS objects.
+ * It is responsible for handling attributes.&lt;/p>
  * 
  * @class
  * @extends EventEmitter
@@ -74,11 +102,11 @@ export class PsychObject extends EventEmitter {
 		}
 
 		// (*) apply operation to old and new values:
-		if (typeof operation !== 'undefined' && this.hasOwnProperty('_' + attributeName)) {
+		if (typeof operation !== 'undefined' &amp;&amp; this.hasOwnProperty('_' + attributeName)) {
 			let oldValue = this['_' + attributeName];
 
 			// operations can only be applied to numbers and array of numbers (which can be empty):
-			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) && (attributeValue.length == 0 || typeof attributeValue[0] == 'number'))) {
+			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) &amp;&amp; (attributeValue.length == 0 || typeof attributeValue[0] == 'number'))) {
 
 				// value is an array:
 				if (Array.isArray(attributeValue)) {
@@ -210,7 +238,7 @@ export class PsychObject extends EventEmitter {
 
 
 		// (*) log if appropriate:
-		if (!stealth && (log || this._autoLog) && (typeof this.win !== 'undefined')) {
+		if (!stealth &amp;&amp; (log || this._autoLog) &amp;&amp; (typeof this.win !== 'undefined')) {
 			var message = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
 			//this.win.logOnFlip(message, psychoJS.logging.EXP, this);
 		}
@@ -227,13 +255,13 @@ export class PsychObject extends EventEmitter {
 	/**
 	 * Add attributes to this instance (e.g. define setters and getters) and affect values to them.
 	 * 
-	 * <p>Notes:
-	 * <ul>
-	 * <li> If the object already has a set<attributeName> method, we do not redefine it,
-	 * and the setter for this attribute calls that method instead of _setAttribute.</li>
-	 * <li> _addAttributes is typically called in the constructor of an object, after
-	 * the call to super (see module:visual.ImageStim for an illustration).</li>
-	 * </ul></p>
+	 * &lt;p>Notes:
+	 * &lt;ul>
+	 * &lt;li> If the object already has a set&lt;attributeName> method, we do not redefine it,
+	 * and the setter for this attribute calls that method instead of _setAttribute.&lt;/li>
+	 * &lt;li> _addAttributes is typically called in the constructor of an object, after
+	 * the call to super (see module:visual.ImageStim for an illustration).&lt;/li>
+	 * &lt;/ul>&lt;/p>
 	 *
  	 * @private
 	 * @param {Object} cls - the class object of the subclass of PsychoObject whose attributes we will set
@@ -251,10 +279,10 @@ export class PsychObject extends EventEmitter {
 
 		// (*) add (argument name, argument value) pairs to the attribute map:
 		let attributeMap = new Map();
-		for (var i = 1; i < callArgs.length; ++i)
+		for (var i = 1; i &lt; callArgs.length; ++i)
 			attributeMap.set(callArgs[i], args[i - 1]);
 
-		// (*) set the value, define the get/set<attributeName> properties and define the getter and setter:
+		// (*) set the value, define the get/set&lt;attributeName> properties and define the getter and setter:
 		for (let [name, value] of attributeMap.entries())
 			this._addAttribute(name, value);
 	}
@@ -288,4 +316,26 @@ export class PsychObject extends EventEmitter {
 		this[name] = value;
 	}
 
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

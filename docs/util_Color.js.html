@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/Color.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/Color.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Color management.
  * 
  * @author Alain Pitiot
@@ -9,23 +37,23 @@
 
 
 /**
- * <p>This class handles multiple color spaces, and offers various
- * static methods for converting colors from one space to another.</p>
+ * &lt;p>This class handles multiple color spaces, and offers various
+ * static methods for converting colors from one space to another.&lt;/p>
  * 
- * <p>The constructor accepts the following color representations:
- * <ul>
- * <li>a named color, e.g. 'aliceblue' (the colorspace must be RGB)</li>
- * <li>an hexadecimal string representation, e.g. '#FF0000' (the colorspace must be RGB)</li>
- * <li>an hexadecimal number representation, e.g. 0xFF0000 (the colorspace must be RGB)</li>
- * <li>a triplet of numbers, e.g. [-1, 0, 1], [0, 128, 255] (the numbers must be within the range determined by the colorspace)</li>
- * </ul>
- * </p>
+ * &lt;p>The constructor accepts the following color representations:
+ * &lt;ul>
+ * &lt;li>a named color, e.g. 'aliceblue' (the colorspace must be RGB)&lt;/li>
+ * &lt;li>an hexadecimal string representation, e.g. '#FF0000' (the colorspace must be RGB)&lt;/li>
+ * &lt;li>an hexadecimal number representation, e.g. 0xFF0000 (the colorspace must be RGB)&lt;/li>
+ * &lt;li>a triplet of numbers, e.g. [-1, 0, 1], [0, 128, 255] (the numbers must be within the range determined by the colorspace)&lt;/li>
+ * &lt;/ul>
+ * &lt;/p>
  * 
- * <p>Note: internally, colors are represented as a [r,g,b] triplet with r,g,b in [0,1].</p>
+ * &lt;p>Note: internally, colors are represented as a [r,g,b] triplet with r,g,b in [0,1].&lt;/p>
  * 
  * @name module:util.Color
  * @class
- * @param {string|number|Array.<number>|undefined} [obj= 'black'] - an object representing a color
+ * @param {string|number|Array.&lt;number>|undefined} [obj= 'black'] - an object representing a color
  * @param {module:util.Color#COLOR_SPACE|undefined} [colorspace=Color.COLOR_SPACE.RGB] - the colorspace of that color
  * 
  * @todo implement HSV, DKL, and LMS colorspaces
@@ -113,7 +141,7 @@ export class Color {
 	 * @name module:util.Color.rgb
 	 * @function
 	 * @public
-	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
+	 * @return {Array.&lt;number>} the [0,1] RGB triplet equivalent
 	 */
 	get rgb() { return this._rgb; }
 
@@ -124,7 +152,7 @@ export class Color {
 	 * @name module:util.Color.rgb255
 	 * @function
 	 * @public
-	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
+	 * @return {Array.&lt;number>} the [0,255] RGB triplet equivalent
 	 */
 	get rgb255() { return [Math.round(this._rgb[0] * 255.0), Math.round(this._rgb[1] * 255.0), Math.round(this._rgb[2] * 255.0)]; }
 
@@ -185,7 +213,7 @@ export class Color {
 	 * @static
 	 * @public
 	 * @param {string} hex - the hexadecimal color code
-	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
+	 * @return {Array.&lt;number>} the [0,255] RGB triplet equivalent
 	 */
 	static hexToRgb255(hex) {
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -204,7 +232,7 @@ export class Color {
 	 * @static
 	 * @public
 	 * @param {string} hex - the hexadecimal color code
-	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
+	 * @return {Array.&lt;number>} the [0,1] RGB triplet equivalent
 	 */
 	static hexToRgb(hex) {
 		const [r255, g255, b255] = Color.hexToRgb255(hex);
@@ -219,7 +247,7 @@ export class Color {
 	 * @function
 	 * @static
 	 * @public
-	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
+	 * @param {Array.&lt;number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
 	static rgb255ToHex(rgb255) {
@@ -242,7 +270,7 @@ export class Color {
 	 * @function
 	 * @static
 	 * @public
-	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
+	 * @param {Array.&lt;number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
 	static rgbToHex(rgb) {
@@ -265,7 +293,7 @@ export class Color {
 	 * @function
 	 * @static
 	 * @public
-	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
+	 * @param {Array.&lt;number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
 	static rgbToInt(rgb) {
@@ -288,7 +316,7 @@ export class Color {
 	 * @function
 	 * @static
 	 * @public
-	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
+	 * @param {Array.&lt;number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
 	static rgb255ToInt(rgb255) {
@@ -306,30 +334,30 @@ export class Color {
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 255] RGB triplet.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._rgb255ToHex
 	 * @function
 	 * @static
 	 * @private
-	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
+	 * @param {Array.&lt;number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
 	static _rgb255ToHex(rgb255) {
-		return "#" + ((1 << 24) + (rgb255[0] << 16) + (rgb255[1] << 8) + rgb255[2]).toString(16).slice(1);
+		return "#" + ((1 &lt;&lt; 24) + (rgb255[0] &lt;&lt; 16) + (rgb255[1] &lt;&lt; 8) + rgb255[2]).toString(16).slice(1);
 	}
 
 
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 1] RGB triplet.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._rgbToHex
 	 * @function
 	 * @static
 	 * @private
-	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
+	 * @param {Array.&lt;number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
 	static _rgbToHex(rgb) {
@@ -341,13 +369,13 @@ export class Color {
 	/**
 	 * Get the integer equivalent of the [0, 1] RGB triplet.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._rgbToInt
 	 * @function
 	 * @static
 	 * @private
-	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
+	 * @param {Array.&lt;number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
 	static _rgbToInt(rgb) {
@@ -359,13 +387,13 @@ export class Color {
 	/**
 	 * Get the integer equivalent of the [0, 255] RGB triplet.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._rgb255ToInt
 	 * @function
 	 * @static
 	 * @private
-	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
+	 * @param {Array.&lt;number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
 	static _rgb255ToInt(rgb255) {
@@ -376,19 +404,19 @@ export class Color {
 	/**
 	 * Get the [0, 255] based RGB triplet equivalent of the integer color code.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._intToRgb255
 	 * @function
 	 * @static
 	 * @private
 	 * @param {number} hex - the integer color code
-	 * @return {Array.<number>} the [0, 255] RGB equivalent
+	 * @return {Array.&lt;number>} the [0, 255] RGB equivalent
 	 */
 	static _intToRgb255(hex) {
 		let r255 = hex >>> 0x10;
-		let g255 = (hex & 0xFF00) / 0x100;
-		let b255 = hex & 0xFF;
+		let g255 = (hex &amp; 0xFF00) / 0x100;
+		let b255 = hex &amp; 0xFF;
 
 		return [r255, g255, b255];
 	}
@@ -397,14 +425,14 @@ export class Color {
 	/**
 	 * Get the [0, 1] based RGB triplet equivalent of the integer color code.
 	 * 
-	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
+	 * &lt;p>Note: this is the fast, unsafe version which does not check for argument sanity&lt;/p>
 	 * 
 	 * @name module:util.Color._intToRgb
 	 * @function
 	 * @static
 	 * @private
 	 * @param {number} hex - the integer color code
-	 * @return {Array.<number>} the [0, 1] RGB equivalent
+	 * @return {Array.&lt;number>} the [0, 1] RGB equivalent
 	 */
 	static _intToRgb(hex) {
 		let [r255, g255, b255] = Color._intToRgb255(hex);
@@ -420,7 +448,7 @@ export class Color {
 	 * @static
 	 * @private
 	 * @param {any} arg - the argument
-	 * @param {Array.<number>} [range] - the lower and higher bounds of the range
+	 * @param {Array.&lt;number>} [range] - the lower and higher bounds of the range
 	 * @return {boolean} whether the argument is an array of numbers of size 3, and, potentially, whether its elements fall within the range (if range is not undefined)
 	 */
 	static _checkTypeAndRange(arg, range = undefined) {
@@ -428,7 +456,7 @@ export class Color {
 			|| typeof arg[0] !== 'number' || typeof arg[1] !== 'number' || typeof arg[2] !== 'number')
 			throw 'the argument should be an array of numbers of length 3';
 
-		if (typeof range !== 'undefined' && (arg[0] < range[0] || arg[0] > range[1] || arg[1] < range[0] || arg[1] > range[1] || arg[2] < range[0] || arg[2] > range[1]))
+		if (typeof range !== 'undefined' &amp;&amp; (arg[0] &lt; range[0] || arg[0] > range[1] || arg[1] &lt; range[0] || arg[1] > range[1] || arg[2] &lt; range[0] || arg[2] > range[1]))
 			throw 'the color components should all belong to [' + range[0] + ', ' + range[1] + ']';
 	}
 }
@@ -611,3 +639,26 @@ Color.NAMED_COLORS = {
 	'yellow': '#FFFF00',
 	'yellowgreen': '#9ACD32'
 };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

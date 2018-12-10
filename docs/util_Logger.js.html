@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: sound/SoundPlayer.js</title>
+    <title>JSDoc: Source: util/Logger.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: sound/SoundPlayer.js</h1>
+    <h1 class="page-title">Source: util/Logger.js</h1>
 
     
 
@@ -27,7 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Sound player interface
+ * Logger
  * 
  * @author Alain Pitiot
  * @version 3.0.0b11
@@ -35,112 +35,98 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import { PsychObject } from '../util/PsychObject';
+
+import * as util from '../util/Util';
 
 
 /**
- * &lt;p>SoundPlayer is an interface for the sound players, who are responsible for actually playing the sounds, i.e. the tracks or the tones.&lt;/p>
- *
- * @name module:sound.SoundPlayer
- * @interface
- * @extends PsychObject
- * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+ * &lt;p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging), a remote one, etc.&lt;/p>
+ * 
+ * &lt;p>Note: we use log4javascript.&lt;/p>
+ * 
+ * @name module:util.Logger
+ * @class
+ * @param {*} threshold - the logging threshold, e.g. log4javascript.Level.ERROR
  */
-export class SoundPlayer extends PsychObject
-{
-	constructor(psychoJS)
-	{
-		super(psychoJS);
+export class Logger {
+
+	constructor(threshold) {
+		// browser console logger:
+		this.consoleLogger = log4javascript.getLogger('psychojs');
+
+		const appender = new log4javascript.BrowserConsoleAppender();
+		appender.setLayout(this._customConsoleLayout());
+		appender.setThreshold(threshold);
+
+		this.consoleLogger.addAppender(appender);
+		this.consoleLogger.setLevel(threshold);
+
+
+		/*
+		let appender = new log4javascript.AjaxAppender('https://pavlovia.org/server?command=log');
+		appender.setBatchSize(5);
+		appender.setSendAllOnUnload(true);
+		//appender.setFailCallback();
+	
+		let jsonLayout = new log4javascript.JsonLayout([false, true]);
+		appender.setLayout(jsonLayout);*/
 	}
 
 
 	/**
-	 * Determine whether this player can play the given sound.
-	 *
-	 * @name module:sound.SoundPlayer.accept
-	 * @function
-	 * @static
-	 * @public
-	 * @abstract
-	 * @param {module:sound.Sound} - the sound
-	 * @return {Object|undefined} an instance of the SoundPlayer that can play the sound, or undefined if none could be found
-	 */
-	static accept(sound)
-	{
-		throw {origin: 'SoundPlayer.accept', context: 'when evaluating whether this player can play a given sound', error: 'this method is abstract and should not be called.'};
-	}
-
-
-	/**
-	 * Start playing the sound.
-	 *
-	 * @name module:sound.SoundPlayer#play
-	 * @function
-	 * @public
-	 * @abstract
-	 * @param {boolean} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
-	 */
-	play(loops)
-	{
-		throw {origin: 'SoundPlayer.play', context: 'when starting the playback of a sound', error: 'this method is abstract and should not be called.'};
-	}
-
-
-	/**
-	 * Stop playing the sound immediately.
-	 *
-	 * @name module:sound.SoundPlayer#stop
-	 * @function
-	 * @public
-	 * @abstract
-	 */
-	stop()
-	{
-		throw {origin: 'SoundPlayer.stop', context: 'when stopping the playback of a sound', error: 'this method is abstract and should not be called.'};
-	}
-
-
-	/**
-	 * Get the duration of the sound, in seconds.
-	 *
-	 * @name module:sound.SoundPlayer#getDuration
-	 * @function
-	 * @public
-	 * @abstract
-	 */
-	getDuration()
-	{
-		throw {origin: 'SoundPlayer.getDuration', context: 'when getting the duration of the sound', error: 'this method is abstract and should not be called.'};
-	}
-
-
-	/**
-	 * Set the number of loops.
-	 *
-	 * @name module:sound.SoundPlayer#setLoops
-	 * @function
-	 * @public
-	 * @abstract
-	 * @param {number} loops - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
-	 */
-	setLoops(loops)
-	{
-		throw {origin: 'SoundPlayer.setLoops', context: 'when setting the number of loops', error: 'this method is abstract and should not be called.'};
-	}
-
-
-	/**
-	 * Set the volume of the tone.
+	 * Create a custom console layout.
 	 * 
-	 * @name module:sound.SoundPlayer#setVolume
-	 * @function
-	 * @public
-	 * @abstract
-	 * @param {Integer} volume - the volume of the tone
-	 * @param {booleam} [mute= false] - whether or not to mute the tone
+	 * @name module:util.Logger#_customConsoleLayout
+	 * @private
+	 * @return {*} the custom layout
 	 */
-	setVolume(volume, mute = false) {
-		throw {origin: 'SoundPlayer.setVolume', context: 'when setting the volume of the sound', error: 'this method is abstract and should not be called.'};
+	_customConsoleLayout() {
+		const customLayout = new log4javascript.PatternLayout("%p %f{1} | %m");
+
+		customLayout.setCustomField('location', function (layout, loggingReference) {
+			// we throw a fake exception to retrieve the stack trace
+			try { (0)() } catch (e) {
+				const stackEntries = e.stack.replace(/^.*?\n/, '').replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anon}(').split("\n");
+
+				let relevantEntry;
+				const browser = util.detectBrowser();
+				if (browser == 'Firefox') {
+					// look for entry immediately after those of log4javascript:
+					for (let entry of stackEntries)
+						if (entry.indexOf('log4javascript.min.js') &lt;= 0) {
+							relevantEntry = entry;
+							break;
+						}
+
+					const buf = relevantEntry.split(':');
+					const line = buf[buf.length - 2];
+					const file = buf[buf.length - 3].split('/').pop();
+					const method = relevantEntry.split('@')[0];
+
+					return method + ' ' + file + ' ' + line;
+				}
+				else if (browser == 'Safari') {
+					return 'unknown';
+				}
+				else if (browser == 'Chrome') {
+					relevantEntry = stackEntries.pop();
+
+					let buf = relevantEntry.split(' ');
+					let fileLine = buf.pop();
+					const method = buf.pop();
+					buf = fileLine.split(':'); buf.pop();
+					const line = buf.pop();
+					const file = buf.pop().split('/').pop();
+
+					return method + ' ' + file + ' ' + line;
+
+				}
+				else
+					return 'unknown';
+			}
+		});
+
+		return customLayout;
 	}
 
 }

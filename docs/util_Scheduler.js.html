@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/Scheduler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/Scheduler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Scheduler.
+ * 
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+/**
+ * &lt;p>A scheduler helps run the main loop by managing scheduled functions,
+ * called tasks, after each frame is displayed.&lt;/p>
+ * 
+ * &lt;p>
+ * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
+ * javascript functions returning one of the following codes:
+ * &lt;ul>
+ * &lt;li>Scheduler.Event.NEXT: &lt;/li>
+ * &lt;li>Scheduler.Event.FLIP_REPEAT: &lt;/li>
+ * &lt;li>Scheduler.Event.FLIP_NEXT: &lt;/li>
+ * &lt;li>Scheduler.Event.QUIT: &lt;/li>
+ * &lt;/ul>
+ * &lt;/p>
+ * 
+ * &lt;p> It is possible to create sub-schedulers, e.g. to handle loops.
+ * Sub-schedulers are added to a parent scheduler as a normal
+ * task would be by calling [scheduler.add(subScheduler)]{@link module:util.Scheduler#add}.&lt;/p>
+ * 
+ * &lt;p> Conditional branching is also available:
+ * [scheduler.addConditionalBranches]{@link module:util.Scheduler#addConditionalBranches}&lt;/p>
+ * 
+ * 
+ * @name module:util.Scheduler
+ * @class
+ * @param {PsychoJS} psychoJS - the PsychoJS instance
+ * 
+ */
+export class Scheduler {
+
+
+	constructor(psychoJS) {
+		this._psychoJS = psychoJS;
+
+		this._taskList = [];
+		this._currentTask = undefined;
+		this._argsList = [];
+		this._currentArgs = undefined;
+
+		this._stopAtNextUpdate = false;
+	}
+
+
+	/**
+	 * Schedule a task.
+	 * 
+	 * @name module:util.Scheduler#add
+	 * @public
+	 * @param task - the task to be scheduled
+	 * @param args - arguments for that task
+	 */
+	add(task, args) {
+		this._taskList.push(task);
+		this._argsList.push(args);
+	}
+
+
+	/**
+	 * Condition evaluated when the task is run.
+	 *  
+	 * @callback module:util.Scheduler~Condition
+	 * @return {boolean} 
+	 */
+	/**
+	 * Schedule a series of task or another, based on a condition.
+	 * 
+	 * &lt;p>Note: the tasks are [sub-schedulers]{@link module:util.Scheduler}.&lt;/p>
+	 * 
+	 * @name module:util.Scheduler#addConditional
+	 * @public
+	 * @param {module:util.Scheduler~Condition} condition - the condition
+	 * @param {module:util.Scheduler} thenScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is satisfied
+	 * @param {module:util.Scheduler} elseScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is not satisfied
+	 */
+	addConditional(condition, thenScheduler, elseScheduler) {
+		let self = this;
+		let task = function () {
+			if (condition())
+				self.add(thenScheduler);
+			else
+				self.add(elseScheduler)
+
+			return Scheduler.Event.NEXT;
+		};
+
+		this.add(task);
+	}
+
+
+
+	/**
+	 * Run the next scheduled tasks in sequence until one of them returns something other than Scheduler.Event.NEXT.
+	 * 
+	 * @name module:util.Scheduler#run
+	 * @public
+	 * @return {module:util.Schedule#Event} the state of the scheduler after the task ran
+	 */
+	run() {
+		let state = Scheduler.Event.NEXT;
+
+		while (state === Scheduler.Event.NEXT) {
+			if (typeof this._currentTask == 'undefined') {
+				if (this._taskList.length > 0) {
+					this._currentTask = this._taskList.shift();
+					this._currentArgs = this._argsList.shift();
+				}
+				else {
+					this._currentTask = undefined;
+					return Scheduler.Event.QUIT;
+				}
+			}
+			if (this._currentTask instanceof Function) {
+				state = this._currentTask(this._currentArgs);
+			}
+			// if currentTask is not a function, it can only be another scheduler:
+			else {
+				state = this._currentTask.run();
+				if (state === Scheduler.Event.QUIT) state = Scheduler.Event.NEXT;
+			}
+
+			if (state != Scheduler.Event.FLIP_REPEAT) {
+				this._currentTask = undefined;
+				this._currentArgs = undefined;
+			}
+		}
+
+		return state;
+	}
+
+
+	/**
+	 * Start this scheduler.
+	 *
+	 * &lt;p>Note: tasks are run after each animation frame.&lt;/p>
+	 *
+	 * @name module:util.Scheduler#start
+	 * @public
+	 */
+	start() {
+		let self = this;
+		let update = () => {
+			// stop the animation is need be:
+			if (self._stopAtNextUpdate) return;
+
+			// self._psychoJS.window._writeLogOnFlip();
+
+			// run the next task:
+			let state = self.run();
+			if (state === Scheduler.Event.QUIT)
+				return;
+
+			// render the scene in the window:
+			self._psychoJS.window.render();
+
+			// request a new frame:
+			requestAnimationFrame(update);
+		}
+
+		// start the animation:
+		requestAnimationFrame(update);
+	}
+
+
+	/**
+	 * Stop this scheduler at the next update.
+	 * 
+	 * @name module:util.Scheduler#stop
+	 * @public
+	 */
+	stop() {
+		this._stopAtNextUpdate = true;
+	}
+}
+
+
+/**
+ * Events.
+ * 
+ * @name module:util.Scheduler#Event
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+Scheduler.Event = {
+	NEXT: Symbol.for('NEXT'),
+	FLIP_REPEAT: Symbol.for('FLIP_REPEAT'),
+	FLIP_NEXT: Symbol.for('FLIP_NEXT'),
+	QUIT: Symbol.for('QUIT')
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

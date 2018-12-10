@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: visual</title>
+    <title>JSDoc: Source: util/ColorMixin.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,71 +17,89 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: visual</h1>
+    <h1 class="page-title">Source: util/ColorMixin.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        
-    
-</header>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Color Mixin.
+ *
+ * @author Alain Pitiot
+ * @version 3.0.0b11
+ * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @license Distributed under the terms of the MIT License
+ */
 
-<article>
-    <div class="container-overview">
-    
-        
 
-        
-    
-    </div>
+import { Color } from './Color';
 
-    
 
-    
+/**
+ * &lt;p>This mixin implement color and contrast changes for visual stimuli&lt;/p>
+ * 
+ * @name module:util.ColorMixin
+ * @mixin
+ */
+export let ColorMixin = (superclass) => class extends superclass {
+	constructor(args) {
+		super(args);
+	}
 
-    
-        <h3 class="subsection-title">Classes</h3>
 
-        <dl>
-            <dt><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-visual.ImageStim.html">ImageStim</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-visual.Rect.html">Rect</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-visual.TextStim.html">TextStim</a></dt>
-            <dd></dd>
-        </dl>
-    
+	/**
+	 * Setter for Color attribute.
+	 * 
+	 * @name module:core.ColorMixin#setColor
+	 * @function
+	 * @public
+	 * @param {string|number|Array.&lt;number>} color - the new color
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setColor(color, log) {
+		this._setAttribute('color', color, log);
 
-    
+		this._needUpdate = true;
+	};
 
-    
 
-    
+	/**
+	 * Setter for Contrast attribute.
+	 * 
+	 * @name module:core.ColorMixin#setContrast
+	 * @function
+	 * @public
+	 * @param {number} contrast - the new contrast (must be between 0 and 1)
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setContrast(contrast, log) {
+		this._setAttribute('contrast', contrast, log);
 
-    
+		this._needUpdate = true;
+	}
 
-    
 
-    
+	/**
+	 * Adjust the contrast of the color and convert it to [-1, 1] RGB
+	 * 
+	 * @name module:core.ColorMixin#getContrastedColor
+	 * @function
+	 * @public
+	 * @param {string|number|Array.&lt;number>} color - the color
+	 * @param {number} contrast - the contrast (must be between 0 and 1)
+	 */
+	getContrastedColor(color, contrast) {
+		let rgb = color.rgb.map(c => (c * 2.0 - 1.0) * contrast);
+		return new Color(rgb, Color.COLOR_SPACE.RGB);
+	}
 
-    
-</article>
-
-</section>
+}</code></pre>
+        </article>
+    </section>
 
 
 

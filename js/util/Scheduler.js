@@ -99,7 +99,7 @@ export class Scheduler {
 
 
 	/**
-	 * Run the next scheduled tasks in sequence until one of them returns something other than module:util.Scheduler#Event.NEXT.
+	 * Run the next scheduled tasks in sequence until one of them returns something other than Scheduler.Event.NEXT.
 	 * 
 	 * @name module:util.Scheduler#run
 	 * @public
@@ -140,10 +140,11 @@ export class Scheduler {
 
 	/**
 	 * Start this scheduler.
-	 * 
+	 *
+	 * <p>Note: tasks are run after each animation frame.</p>
+	 *
 	 * @name module:util.Scheduler#start
 	 * @public
-	 * <p>Note: tasks are run after each animation frame.</p>
 	 */
 	start() {
 		let self = this;
@@ -185,7 +186,7 @@ export class Scheduler {
 /**
  * Events.
  * 
- * @name module:util.Schedule#Event
+ * @name module:util.Scheduler#Event
  * @enum {Symbol}
  * @readonly
  * @public
