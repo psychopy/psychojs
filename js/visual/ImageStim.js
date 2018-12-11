@@ -8,41 +8,41 @@
  */
 
 
-import { BaseVisualStim } from './BaseVisualStim';
+import { VisualStim } from './VisualStim';
 import { Color } from '../util/Color';
 import { ColorMixin } from '../util/ColorMixin';
 import * as util from '../util/Util';
 
 
 /**
- * Image Simulus.
+ * Image Stimulus.
  * 
  * @name module:visual.ImageStim
  * @class
- * @extends BaseVisualStim
+ * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or HTMLImageElement corresponding to the image
+ * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
  * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask 
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} options.units - the units of the stimulus vertices, size and position
- * @param {number} options.ori - the orientation (in degrees)
- * @param {number} options.size - the size
+ * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+ * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+ * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
  * @param {Color} [options.color= Color('white')] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {number} [options.depth= 0] - the depth
  * @param {number} [options.texRes= 128] - the resolution of the text
  * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [flipVert= false] - whether or not to flip vertically
+ * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+ * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
+export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
 		name,
@@ -87,7 +87,7 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		let response = { origin: 'ImageStim.setImage', context: 'when setting the image of ImageStim: ' + this._name };
 
 		try {
-			// image is undefined: that's fine but we raise a warning in case this is a sympton of an actual problem
+			// image is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
 			if (typeof image === 'undefined') {
 				this.psychoJS.logger.warn('setting the image of ImageStim: ' + this._name + ' with argument: undefined.');
 				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: undefined');
@@ -270,9 +270,9 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
+        // set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
-		// the image is centered on pos:
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
 	}

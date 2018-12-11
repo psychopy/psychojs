@@ -36,9 +36,10 @@ A convenient way to make experiment available to participants is to host them on
 PsychoJs currently supports the following Components:
 
 ### Stimuli:
-* ImageStim
 * TextStim
-* BaseShapeStim (Polygon)
+* ImageStim
+* ShapeStim (Polygon)
+* MovieStim
 * Rect
 * Sound (tones and tracks)
 
