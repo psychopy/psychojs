@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TextStim</title>
+    <title>JSDoc: Class: ShapeStim</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: TextStim</h1>
+    <h1 class="page-title">Class: ShapeStim</h1>
 
     
 
@@ -29,7 +29,9 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>ShapeStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description"><p>This class provides the basic functionalities of shape stimuli.</p></div>
         
     
 </header>
@@ -40,9 +42,11 @@
         
 
     
+    <h2>Constructor</h2>
+    
 
     
-    <h4 class="name" id="TextStim"><span class="type-signature"></span>new TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="ShapeStim"><span class="type-signature"></span>new ShapeStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -70,11 +74,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -99,19 +99,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last">
@@ -214,13 +202,13 @@
 
         <tr>
             
-                <td class="name"><code>text</code></td>
+                <td class="name"><code>lineWidth</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">number</span>
 
 
             
@@ -228,8 +216,6 @@
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -241,97 +227,17 @@
             
                 <td class="default">
                 
-                    "Hello World"
-                
                 </td>
             
 
-            <td class="description last">the text to be rendered</td>
+            <td class="description last">the line width</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>font</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "Arial"
-                
-                </td>
-            
-
-            <td class="description last">the text font</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pos</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    [0, 0]
-                
-                </td>
-            
-
-            <td class="description last">the position of the center of the text</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>color</code></td>
+                <td class="name"><code>lineColor</code></td>
             
 
             <td class="type">
@@ -363,7 +269,42 @@
                 </td>
             
 
-            <td class="description last">the background color</td>
+            <td class="description last">the line color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fillColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Color</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the fill color</td>
         </tr>
 
     
@@ -409,6 +350,236 @@
 
         <tr>
             
+                <td class="name"><code>vertices</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Array.&lt;number>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [[-0.5, 0], [0, 0.5], [0.5, 0]]
+                
+                </td>
+            
+
+            <td class="description last">the shape vertices</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>closeShape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">whether or not the shape is closed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [0, 0]
+                
+                </td>
+            
+
+            <td class="description last">the position of the center of the shape</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+
+            <td class="description last">the size</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+
+            <td class="description last">the orientation (in degrees)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the units of the stimulus vertices, size and position</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>contrast</code></td>
             
 
@@ -448,81 +619,7 @@
 
         <tr>
             
-                <td class="name"><code>units</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "norm"
-                
-                </td>
-            
-
-            <td class="description last">the units of the text size and position</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ori</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the orientation (in degrees)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
+                <td class="name"><code>depth</code></td>
             
 
             <td class="type">
@@ -549,19 +646,19 @@
             
                 <td class="default">
                 
-                    0.1
+                    0
                 
                 </td>
             
 
-            <td class="description last">the height of the text</td>
+            <td class="description last">the depth</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>bold</code></td>
+                <td class="name"><code>interpolate</code></td>
             
 
             <td class="type">
@@ -588,256 +685,19 @@
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last">whether or not the text is bold</td>
+            <td class="description last">whether or not the shape is interpolated</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>italic</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not the text is italic</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>alignHoriz</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'center'
-                
-                </td>
-            
-
-            <td class="description last">horizontal alignment</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>alignVert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'center'
-                
-                </td>
-            
-
-            <td class="description last">vertical alignment</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wrapWidth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">whether or not to wrap the text horizontally</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>flipHoriz</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not to flip the text horizontally</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>flipVert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not to flip the text vertically</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.autoDraw</code></td>
+                <td class="name"><code>autoDraw</code></td>
             
 
             <td class="type">
@@ -876,7 +736,7 @@
 
         <tr>
             
-                <td class="name"><code>options.autoLog</code></td>
+                <td class="name"><code>autoLog</code></td>
             
 
             <td class="type">
@@ -909,6 +769,13 @@
             
 
             <td class="description last">whether or not to log</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -957,7 +824,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line17">line 17</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -965,13 +832,6 @@
 
     
 
-    
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>vertical alignment, and orientation are currently NOT implemented</li>
-        </ul>
-    </dd>
     
 </dl>
 
@@ -1019,12 +879,128 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id="_updateIfNeeded"><span class="type-signature">(private) </span>_updateIfNeeded<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="_getPolygon"><span class="type-signature">(private) </span>_getPolygon<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the PIXI polygon (in pixel units) corresponding to the vertices.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line205">line 205</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the PIXI polygon corresponding to this stimulus vertices.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_updateIfNeeded"><span class="type-signature">(private) </span>_updateIfNeeded<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
@@ -1038,6 +1014,12 @@
 
 
 
+
+
+
+
+
+
 <dl class="details">
 
     
@@ -1067,7 +1049,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line230">line 230</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line171">line 171</a>
     </li></ul></dd>
     
 
@@ -1076,15 +1058,200 @@
     
 
     
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>take size into account</li>
-        </ul>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="contains"><span class="type-signature"></span>contains<span class="signature">(object, units)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Determine whether this stimulus contains the given object.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>object</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the object</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the units</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line149">line 149</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    whether or not the stimulus contains the object
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
     </dd>
-    
 </dl>
 
+    
 
 
 
@@ -1092,15 +1259,131 @@
 
         
             
-<h4 class="name" id="contains"><span class="type-signature"></span>contains<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="setFillColor"><span class="type-signature"></span>setFillColor<span class="signature">(fillColor, log<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    Determine whether an object is inside the bounding box of the text.
+    Setter for the fill color attribute.
 </div>
 
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fillColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Color</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the fill color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>log</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether of not to log</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1136,7 +1419,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line207">line 207</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line111">line 111</a>
     </li></ul></dd>
     
 
@@ -1145,14 +1428,19 @@
     
 
     
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>this is currently NOT implemented</li>
-        </ul>
-    </dd>
-    
 </dl>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1161,15 +1449,131 @@
 
         
             
-<h4 class="name" id="setAlignHoriz"><span class="type-signature"></span>setAlignHoriz<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="setLineColor"><span class="type-signature"></span>setLineColor<span class="signature">(lineColor, log<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    Setter for the alignHoriz attribute.
+    Setter for the line color attribute.
 </div>
 
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lineColor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Color</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the line color</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>log</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether of not to log</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1205,7 +1609,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line95">line 95</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -1221,17 +1625,145 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         
             
-<h4 class="name" id="setBold"><span class="type-signature"></span>setBold<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="setLineWidth"><span class="type-signature"></span>setLineWidth<span class="signature">(lineWidth, log<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    Setter for the bold attribute.
+    Setter for the line width attribute.
 </div>
 
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lineWidth</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the line width</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>log</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether of not to log</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1267,7 +1799,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line159">line 159</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -1283,17 +1815,145 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         
             
-<h4 class="name" id="setFlipHoriz"><span class="type-signature"></span>setFlipHoriz<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="setVertices"><span class="type-signature"></span>setVertices<span class="signature">(vertices, log<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    Setter for the flipHoriz attribute.
+    Setter for the vertices attribute.
 </div>
 
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>vertices</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Array.&lt;number>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the vertices</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>log</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether of not to log</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -1329,7 +1989,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line191">line 191</a>
+        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line125">line 125</a>
     </li></ul></dd>
     
 
@@ -1345,62 +2005,12 @@
 
 
 
-        
-            
-<h4 class="name" id="setFlipVert"><span class="type-signature"></span>setFlipVert<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the flipVert attribute.
-</div>
 
 
 
 
 
 
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line175">line 175</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1408,256 +2018,6 @@
 
 
         
-            
-<h4 class="name" id="setHeight"><span class="type-signature"></span>setHeight<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the height attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line127">line 127</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setItalic"><span class="type-signature"></span>setItalic<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the italic attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line143">line 143</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setText"><span class="type-signature"></span>setText<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the text attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line79">line 79</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setWrapWidth"><span class="type-signature"></span>setWrapWidth<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the wrapWidth attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line111">line 111</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-    
-
     
 
     

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TextStim</title>
+    <title>JSDoc: Class: Slider</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: TextStim</h1>
+    <h1 class="page-title">Class: Slider</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>Slider<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,12 +42,16 @@
     
 
     
-    <h4 class="name" id="TextStim"><span class="type-signature"></span>new TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Slider"><span class="type-signature"></span>new Slider<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Slider stimulus.
+</div>
 
 
 
@@ -70,11 +74,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -99,19 +99,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last">
@@ -214,84 +202,6 @@
 
         <tr>
             
-                <td class="name"><code>text</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "Hello World"
-                
-                </td>
-            
-
-            <td class="description last">the text to be rendered</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>font</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "Arial"
-                
-                </td>
-            
-
-            <td class="description last">the text font</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>pos</code></td>
             
 
@@ -324,7 +234,120 @@
                 </td>
             
 
-            <td class="description last">the position of the center of the text</td>
+            <td class="description last">the position of the center of the slider</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the size of the slider, e.g. [1, 0.1] for an horizontal slider</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+
+            <td class="description last">the orientation (in degrees)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'norm'
+                
+                </td>
+            
+
+            <td class="description last">the units of the text size and position</td>
         </tr>
 
     
@@ -358,51 +381,12 @@
             
                 <td class="default">
                 
-                    Color('white')
+                    Color('LightGray')
                 
                 </td>
             
 
-            <td class="description last">the background color</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>opacity</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1.0
-                
-                </td>
-            
-
-            <td class="description last">the opacity</td>
+            <td class="description last">the color of the slider</td>
         </tr>
 
     
@@ -441,14 +425,53 @@
                 </td>
             
 
-            <td class="description last">the contrast</td>
+            <td class="description last">the contrast of the slider</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>units</code></td>
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+
+            <td class="description last">the opacity of the slider</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>style</code></td>
             
 
             <td class="type">
@@ -475,25 +498,25 @@
             
                 <td class="default">
                 
-                    "norm"
+                    [Slider.Style.RATING]
                 
                 </td>
             
 
-            <td class="description last">the units of the text size and position</td>
+            <td class="description last">the slider style</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>ori</code></td>
+                <td class="name"><code>ticks</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">Array.&lt;number></span>
 
 
             
@@ -501,6 +524,8 @@
 
             
                 <td class="attributes">
+                
+                    &lt;optional><br>
                 
 
                 
@@ -512,17 +537,58 @@
             
                 <td class="default">
                 
+                    [1,2,3,4,5]
+                
                 </td>
             
 
-            <td class="description last">the orientation (in degrees)</td>
+            <td class="description last">the array of ticks</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>height</code></td>
+                <td class="name"><code>labels</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+
+            <td class="description last">the array of labels</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>granularity</code></td>
             
 
             <td class="type">
@@ -549,12 +615,130 @@
             
                 <td class="default">
                 
-                    0.1
+                    0
                 
                 </td>
             
 
-            <td class="description last">the height of the text</td>
+            <td class="description last">the granularity</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to flip the position of the marker, ticks,
+and labels with respect to the central bar</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>readOnly</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not the slider is read only</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontFamily</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'Helvetica'
+                
+                </td>
+            
+
+            <td class="description last">the text font</td>
         </tr>
 
     
@@ -588,12 +772,12 @@
             
                 <td class="default">
                 
-                    false
+                    true
                 
                 </td>
             
 
-            <td class="description last">whether or not the text is bold</td>
+            <td class="description last">whether or not the font of the labels is bold</td>
         </tr>
 
     
@@ -632,27 +816,20 @@
                 </td>
             
 
-            <td class="description last">whether or not the text is italic</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">whether or not the font of the labels is italic</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>alignHoriz</code></td>
+                <td class="name"><code>fontSize</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">number</span>
 
 
             
@@ -673,93 +850,19 @@
             
                 <td class="default">
                 
-                    'center'
+                    14
                 
                 </td>
             
 
-            <td class="description last">horizontal alignment</td>
+            <td class="description last">the font size of the labels (in pixels)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>alignVert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'center'
-                
-                </td>
-            
-
-            <td class="description last">vertical alignment</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wrapWidth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">whether or not to wrap the text horizontally</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>flipHoriz</code></td>
+                <td class="name"><code>autoDraw</code></td>
             
 
             <td class="type">
@@ -791,92 +894,15 @@
                 </td>
             
 
-            <td class="description last">whether or not to flip the text horizontally</td>
+            <td class="description last">whether or not the stimulus should be automatically drawn on every
+  frame flip</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>flipVert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not to flip the text vertically</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.autoDraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not the stimulus should be automatically drawn on every frame flip</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options.autoLog</code></td>
+                <td class="name"><code>autoLog</code></td>
             
 
             <td class="type">
@@ -915,6 +941,13 @@
     </tbody>
 </table>
 
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
 
 
 
@@ -939,7 +972,7 @@
 
         <dd class="mixes"><ul>
         
-            <li>ColorMixin</li>
+            <li><a href="module-util.ColorMixin.html">module:util.ColorMixin</a></li>
         
         </ul></dd>
     
@@ -957,7 +990,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line17">line 17</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -969,7 +1002,13 @@
     <dt class="tag-todo">To Do:</dt>
     <dd class="tag-todo">
         <ul>
-            <li>vertical alignment, and orientation are currently NOT implemented</li>
+            <li>check that parameters are valid, e.g. ticks are an array of numbers, etc.</li>
+        
+            <li>readOnly</li>
+        
+            <li>style "slider"</li>
+        
+            <li>complete setters, for instance setTicks should change this._isCategorical</li>
         </ul>
     </dd>
     
@@ -1002,7 +1041,7 @@
 
 
     <ul>
-        <li>VisualStim</li>
+        <li><a href="module-visual.VisualStim.html">module:visual.VisualStim</a></li>
     </ul>
 
 
@@ -1020,6 +1059,380 @@
 
     
         <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="_applyStyle"><span class="type-signature">(private) </span>_applyStyle<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Apply a particular style to the slider.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line576">line 576</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_buildSlider"><span class="type-signature">(private) </span>_buildSlider<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line369">line 369</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_granularise"><span class="type-signature">(private) </span>_granularise<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Calculate the rating once granularity has been taken into account.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line718">line 718</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_isHorizontal"><span class="type-signature">(private) </span>_isHorizontal<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Determine whether the slider is horizontal.
+
+<p>The slider is horizontal is its x-axis size is larger than its y-axis size.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line704">line 704</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_posToRating"><span class="type-signature">(private) </span>_posToRating<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Convert a [x,y] position, in pixel units, relative to the slider, into a rating.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line683">line 683</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_ratingToPos"><span class="type-signature">(private) </span>_ratingToPos<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Convert an array of ratings into an array of [x,y] positions (in Slider units, with 0 at the center of the Slider)
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line664">line 664</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
 
         
             
@@ -1067,7 +1480,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line230">line 230</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line326">line 326</a>
     </li></ul></dd>
     
 
@@ -1076,12 +1489,67 @@
     
 
     
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>take size into account</li>
-        </ul>
-    </dd>
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_updateMarker"><span class="type-signature">(private) </span>_updateMarker<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Update the position of the marker if necessary.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line350">line 350</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
     
 </dl>
 
@@ -1098,7 +1566,7 @@
 
 
 <div class="description">
-    Determine whether an object is inside the bounding box of the text.
+    Determine whether an object is inside the bounding box of the slider.
 </div>
 
 
@@ -1136,7 +1604,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line207">line 207</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -1148,7 +1616,7 @@
     <dt class="tag-todo">To Do:</dt>
     <dd class="tag-todo">
         <ul>
-            <li>this is currently NOT implemented</li>
+            <li>this is currently not implemented and always returns false</li>
         </ul>
     </dd>
     
@@ -1161,13 +1629,13 @@
 
         
             
-<h4 class="name" id="setAlignHoriz"><span class="type-signature"></span>setAlignHoriz<span class="type-signature"></span></h4>
+<h4 class="name" id="getRating"><span class="type-signature"></span>getRating<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the alignHoriz attribute.
+    Get the current value of the rating.
 </div>
 
 
@@ -1205,7 +1673,195 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line95">line 95</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line157">line 157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="getRT"><span class="type-signature"></span>getRT<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Get the response time of the most recent change to the rating.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line173">line 173</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="recordRating"><span class="type-signature"></span>recordRating<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Set the current rating.
+
+<p>Setting the rating does also change the visible position of the marker.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line295">line 295</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="reset"><span class="type-signature"></span>reset<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Reset the slider.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -1267,193 +1923,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line159">line 159</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setFlipHoriz"><span class="type-signature"></span>setFlipHoriz<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the flipHoriz attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line191">line 191</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setFlipVert"><span class="type-signature"></span>setFlipVert<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the flipVert attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line175">line 175</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setHeight"><span class="type-signature"></span>setHeight<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the height attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line127">line 127</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -1515,7 +1985,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line143">line 143</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line208">line 208</a>
     </li></ul></dd>
     
 
@@ -1533,13 +2003,16 @@
 
         
             
-<h4 class="name" id="setText"><span class="type-signature"></span>setText<span class="type-signature"></span></h4>
+<h4 class="name" id="setMarkerPos"><span class="type-signature"></span>setMarkerPos<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the text attribute.
+    Setter for the markerPos attribute.
+
+<p>Setting markerPos changes the visible position of the marker to the specified rating
+but does not change the actual rating returned by the slider.</p>
 </div>
 
 
@@ -1577,7 +2050,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line79">line 79</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line251">line 251</a>
     </li></ul></dd>
     
 
@@ -1595,13 +2068,216 @@
 
         
             
-<h4 class="name" id="setWrapWidth"><span class="type-signature"></span>setWrapWidth<span class="type-signature"></span></h4>
+<h4 class="name" id="setOpacity"><span class="type-signature"></span>setOpacity<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the wrapWidth attribute.
+    Setter for the opacity attribute.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-visual.VisualStim.html#setOpacity">module:visual.VisualStim#setOpacity</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setOri"><span class="type-signature"></span>setOri<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the orientation attribute.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-visual.VisualStim.html#setOri">module:visual.VisualStim#setOri</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line84">line 84</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setPos"><span class="type-signature"></span>setPos<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the position attribute.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-visual.VisualStim.html#setPos">module:visual.VisualStim#setPos</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line105">line 105</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setRating"><span class="type-signature"></span>setRating<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the rating attribute.
+
+<p>Setting the rating does not change the visible position of the marker.</p>
 </div>
 
 
@@ -1639,7 +2315,282 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line111">line 111</a>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line275">line 275</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setReadOnly"><span class="type-signature"></span>setReadOnly<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the readOnly attribute.
+
+<p>Read-only sliders are half-opaque and do not provide responses.</p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line227">line 227</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the size attribute.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-visual.VisualStim.html#setSize">module:visual.VisualStim#setSize</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="Shape"><span class="type-signature">(readonly) </span>Shape<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+<div class="description">
+    Shape of the marker and of the ticks.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line740">line 740</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="Style"><span class="type-signature">(readonly) </span>Style<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+<div class="description">
+    Styles.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_Slider.js.html">visual/Slider.js</a>, <a href="visual_Slider.js.html#line756">line 756</a>
     </li></ul></dd>
     
 

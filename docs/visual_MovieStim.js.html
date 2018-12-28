@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: visual/ImageStim.js</title>
+    <title>JSDoc: Source: visual/MovieStim.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: visual/ImageStim.js</h1>
+    <h1 class="page-title">Source: visual/MovieStim.js</h1>
 
     
 
@@ -27,7 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Image Stimulus.
+ * Movie Stimulus.
  * 
  * @author Alain Pitiot
  * @version 3.0.0b13
@@ -40,20 +40,19 @@ import { VisualStim } from './VisualStim';
 import { Color } from '../util/Color';
 import { ColorMixin } from '../util/ColorMixin';
 import * as util from '../util/Util';
+import { PsychoJS } from "../core/PsychoJS";
 
 
 /**
- * Image Stimulus.
- * 
- * @name module:visual.ImageStim
+ * Movie Stimulus.
+ *
+ * @name module:visual.MovieStim
  * @class
  * @extends VisualStim
- * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
- * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask 
+ * @param {string | HTMLVideoElement} options.movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
@@ -62,21 +61,23 @@ import * as util from '../util/Util';
  * @param {Color} [options.color= Color('white')] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth
- * @param {number} [options.texRes= 128] - the resolution of the text
  * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
+ * @param {boolean} [options.loop= false] - whether or not to loop the movie
+ * @param {number} [options.volume= 1.0] - the volume of the audio track (must be between 0.0 and 1.0)
+ * @param {boolean} [options.noAudio= false] - whether or not to play the audio
+ * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
+ * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ *
+ * @todo autoPlay does not work for the moment.
  */
-export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
-{
+export class MovieStim extends VisualStim {
 	constructor({
 		name,
 		win,
-		image,
-		mask,
+		movie,
 		pos,
 		units,
 		ori,
@@ -84,19 +85,26 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		color = new Color('white'),
 		opacity = 1.0,
 		contrast = 1.0,
-		texRes = 128,
-		depth = 0,
 		interpolate = false,
 		flipHoriz = false,
 		flipVert = false,
+		loop = false,
+		volume = 1.0,
+		noAudio = false,
+		autoPlay = true,
 		autoDraw,
 		autoLog
 	} = {}) {
 		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
 
-		this.psychoJS.logger.debug('create a new ImageStim with name: ', name);
+		this.psychoJS.logger.debug('create a new MovieStim with name: ', name);
 
-		this._addAttributes(ImageStim, image, mask, color, contrast, texRes, interpolate, depth, flipHoriz, flipVert);
+		this._addAttributes(MovieStim, movie, color, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay);
+
+		// check whether the fastSeek method on HTMLVideoElement is implemented:
+		const videoElement = document.createElement('video');
+		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
+
 
 		/*if (autoLog)
 			logging.exp("Created %s = %s" % (self.name, str(self)));*/
@@ -104,36 +112,38 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Setter for the image attribute.
+	 * Setter for the movie attribute.
 	 * 
-	 * @name module:visual.ImageStim#setImage
+	 * @name module:visual.MovieStim#setMovie
 	 * @public
-	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image 
+	 * @param {string | HTMLVideoElement} movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setImage(image, log = false) {
-		let response = { origin: 'ImageStim.setImage', context: 'when setting the image of ImageStim: ' + this._name };
+	setMovie(movie, log = false) {
+		let response = { origin: 'MovieStim.setMovie', context: 'when setting the movie of MovieStim: ' + this._name };
 
 		try {
-			// image is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
-			if (typeof image === 'undefined') {
-				this.psychoJS.logger.warn('setting the image of ImageStim: ' + this._name + ' with argument: undefined.');
-				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: undefined');
+			// movie is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
+			if (typeof movie === 'undefined') {
+				this.psychoJS.logger.warn('setting the movie of MovieStim: ' + this._name + ' with argument: undefined.');
+				this.psychoJS.logger.debug('set the movie of MovieStim: ' + this._name + ' as: undefined');
 			}
 			else {
-				// image is a string: it should be the name of a resource, which we load
-				if (typeof image === 'string')
-					image = this.psychoJS.serverManager.getResource(image);
+				// movie is a string: it should be the name of a resource, which we load
+				if (typeof movie === 'string')
+					movie = this.psychoJS.serverManager.getResource(movie);
 
-				// image should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(image instanceof HTMLImageElement)) {
-					throw 'the argument: ' + image.toString() + ' is not an image" }';
-				}
+				// movie should now be an actual HTMLVideoElement: we raise an error if it is not
+				if (!(movie instanceof HTMLVideoElement))
+					throw 'the argument: ' + movie.toString() + ' is not a video" }';
 
-				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: src= ' + image.src + ', size= ' + image.width + 'x' + image.height);
+				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
 			}
 
-			this._setAttribute('image', image, log);
+			this._setAttribute('movie', movie, log);
+
+			// change status of stimulus when movie finish playing:
+			this._movie.onended = () => { this.status = PsychoJS.Status.FINISHED; };
 
 			this._needUpdate = true;
 		}
@@ -144,49 +154,33 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Setter for the mask attribute.
-	 * 
-	 * @name module:visual.ImageStim#setImage
-	 * @public
-	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask 
+	 * Setter for the volume attribute.
+	 *
+	 * @param {number} volume - the volume of the audio track (must be between 0.0 and 1.0)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setMask(mask, log = false) {
-		let response = { origin: 'ImageStim.setMask', context: 'when setting the mask of ImageStim: ' + this._name };
+	setVolume(volume, log = false) {
+		this._setAttribute('volume', volume, log);
 
-		try {
-			// mask is undefined: that's fine but we raise a warning in case this is a sympton of an actual problem
-			if (typeof mask === 'undefined') {
-				this.psychoJS.logger.warn('setting the mask of ImageStim: ' + this._name + ' with argument: undefined.');
-				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: undefined');
-			}
-			else {
-				// mask is a string: it should be the name of a resource, which we load
-				if (typeof mask === 'string')
-					mask = this.psychoJS.serverManager.getResource(mask);
-
-				// mask should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(mask instanceof HTMLImageElement)) {
-					throw 'the argument: ' + mask.toString() + ' is not an image" }';
-				}
-
-				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: src= ' + mask.src + ', size= ' + mask.width + 'x' + mask.height);
-			}
-
-			this._setAttribute('mask', mask, log);
-
-			this._needUpdate = true;
-		}
-		catch (error) {
-			throw { ...response, error };
-		}
+		this._needUpdate = true;
 	}
 
+	/**
+ * Setter for the noAudio attribute.
+ *
+	 * @param {boolean} noAudio - whether or not to mute the audio
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setNoAudio(noAudio, log = false) {
+		this._setAttribute('noAudio', noAudio, log);
+
+		this._needUpdate = true;
+	}
 
 	/**
 	 * Setter for the flipVert attribute.
 	 * 
-	 * @name module:visual.ImageStim#setFlipVert
+	 * @name module:visual.MovieStim#setFlipVert
 	 * @public
 	 * @param {boolean} flipVert - whether or not to flip vertically
 	 * @param {boolean} [log= false] - whether of not to log
@@ -201,7 +195,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the flipHoriz attribute.
 	 * 
-	 * @name module:visual.ImageStim#setFlipHoriz
+	 * @name module:visual.MovieStim#setFlipHoriz
 	 * @public
 	 * @param {boolean} flipHoriz - whether or not to flip horizontally
 	 * @param {boolean} [log= false] - whether of not to log
@@ -214,9 +208,78 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Determine whether the given object is inside this image.
+ * Reset the stimulus.
+ *
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	reset(log = false) {
+		this.status = PsychoJS.Status.NOT_STARTED;
+		this._movie.pause();
+		if (this._hasFastSeek) this._movie.fastSeek(0);
+	}
+
+
+	/**
+	 * Start playing the movie.
+ *
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	play(log = false) {
+		this.status = PsychoJS.Status.STARTED;
+		this._movie.play();
+	}
+
+
+	/**
+ * Pause the movie.
+ *
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	pause(log = false) {
+		this.status = PsychoJS.Status.STOPPED;
+		this._movie.pause();
+	}
+
+
+	/**
+	 * Stop the movie and reset to 0s.
+	 *
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	stop(log = false) {
+		this.status = PsychoJS.Status.STOPPED;
+		this._movie.pause();
+		if (this._hasFastSeek) this._movie.fastSeek(0);
+	}
+
+
+
+	/**
+	 * Jump to a specific timepoint
+	 *
+	 * &lt;p>Note: seek is experimental and does not work on all browsers at the moment.&lt;/p>
+	 *
+	 * @param {number} timePoint - the timepoint to which to jump (in second)
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	seek(timePoint, log = false) {
+		if (timePoint &lt; 0 || timePoint > this._movie.duration) {
+			throw {
+				origin: 'MovieStim.seek',
+				context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
+				error: `the timepoint does not belong to [0, ${this._movie.duration}`
+			};
+		}
+
+
+		if (this._hasFastSeek) this._movie.fastSeek(timePoint);
+	}
+
+
+	/**
+	 * Determine whether the given object is inside this movie.
 	 * 
-	 * @name module:visual.ImageStim#contains
+	 * @name module:visual.MovieStim#contains
 	 * @public
 	 * @param {Object} object - the object
 	 * @param {string} units - the units
@@ -225,11 +288,16 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	contains(object, units) {
 		// get position of object:
 		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-			throw { origin : 'ImageStim.contains', context : 'when determining whether ImageStim: ' + this._name + ' contains object: ' + util.toString(object), error : 'unable to determine the position of the object' };
+		if (typeof objectPos_px === 'undefined') {
+			throw {
+				origin: 'MovieStim.contains',
+				context: `when determining whether MovieStim: ${this._name} contains object: ${util.toString(object)}`,
+				error: 'unable to determine the position of the object'
+			};
+		}
 
 		// test for inclusion:
-		// note: since _pixi.anchor is [0.5, 0.5] the image is actually centered on pos
+		// note: since _pixi.anchor is [0.5, 0.5] the movie is actually centered on pos
 		let pos_px = util.to_px(this.pos, this.units, this._win);
 		let size_px = util.to_px(this.size, this.units, this._win);
 		const polygon_px = [
@@ -245,7 +313,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 * 
-	 * @name module:visual.ImageStim#_updateIfNeeded
+	 * @name module:visual.MovieStim#_updateIfNeeded
 	 * @private
 	 */
 	_updateIfNeeded() {
@@ -255,26 +323,14 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		this._pixi = undefined;
 
-		// no image to draw: return immediately
-		if (typeof this._image === 'undefined')
+		// no movie to draw: return immediately
+		if (typeof this._movie === 'undefined')
 			return;
 
-		// prepare the image:
-		this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image));
-		//this._texture = new PIXI.Texture(PIXI.BaseTexture.fromImage(this._image));
+		// create a PixiJS video sprite:
+		this._texture = PIXI.Texture.fromVideo(this._movie);
 		this._pixi = new PIXI.Sprite(this._texture);
-		this._pixi.zOrder = this.depth;
 
-		// add a mask if need be:
-		if (typeof this._mask !== 'undefined') {
-			this._maskTexture = new PIXI.Texture(new PIXI.BaseTexture(this._mask));
-			this._pixi.mask = new PIXI.Sprite(this._maskTexture); //PIXI.Sprite.fromImage(this._mask);
-
-			// the following is required for the mask to be aligned with the image
-			this._pixi.mask.anchor.x = 0.5;
-			this._pixi.mask.anchor.y = 0.5;
-			this._pixi.addChild(this._pixi.mask);
-		}
 
 		// since _texture.width may not be immedialy available but the rest of the code needs its value
 		// we arrange for repeated calls to _updateIfNeeded until we have a width:
@@ -283,10 +339,20 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			return;
 		}
 
+
+		// audio:
+		this._movie.muted = this._noAudio;
+		this._movie.volume = this._volume;
+
+		// autoplay and loop:
+		this._texture.baseTexture.autoPlay = this.autoPlay;
+		this._movie.loop = this._loop;
+
+		// opacity:
 		this._pixi.alpha = this.opacity;
 
 		// stimulus size:
-		// note: we use the size of the texture if ImageStim has no specified size:
+		// note: we use the size of the texture if MovieStim has no specified size:
 		let stimSize = this.size;
 		if (typeof stimSize === 'undefined') {
 			const textureSize = [this._texture.width, this._texture.height];
@@ -295,12 +361,12 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// set the scale:
 		const size_px = util.to_px(stimSize, this.units, this.win);
-		var scaleX = size_px[0] / this._texture.width;
-		var scaleY = size_px[1] / this._texture.height;
+		const scaleX = size_px[0] / this._texture.width;
+		const scaleY = size_px[1] / this._texture.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
-        // set the position, rotation, and anchor (image centered on pos):
+		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;

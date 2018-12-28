@@ -62,33 +62,33 @@ import {PsychoJS} from "../core/PsychoJS";
 export class Slider extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
-								name,
-								win,
-								pos,
-								size,
-								ori,
-								units = 'norm',
+		name,
+		win,
+		pos,
+		size,
+		ori,
+		units = 'norm',
 
-								color = new Color('LightGray'),
-								contrast = 1.0,
-								opacity,
+		color = new Color('LightGray'),
+		contrast = 1.0,
+		opacity,
 
-								style = ['rating'],
-								ticks = [1,2,3,4,5],
-								labels = [],
-								labelHeight,
-								granularity = 0,
-								flip = false,
-								readOnly = false,
+		style = [Slider.Style.RATING],
+		ticks = [1,2,3,4,5],
+		labels = [],
+		labelHeight,
+		granularity = 0,
+		flip = false,
+		readOnly = false,
 
-								fontFamily = 'Helvetica',
-								bold = true,
-								italic = false,
-								fontSize = 14,
+		fontFamily = 'Helvetica',
+		bold = true,
+		italic = false,
+		fontSize = 14,
 
-								autoDraw,
-								autoLog
-							} = {}) {
+		autoDraw,
+		autoLog
+	} = {}) {
 		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
 
 		this._needMarkerUpdate = false;
@@ -612,23 +612,24 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 
 		// rating:
-		if (this._style.indexOf('rating') > -1) {
+		if (this._style.indexOf(Slider.Style.RATING) > -1) {
 			// nothing to do
 		}
 
 		// triangleMarker:
-		if (this._style.indexOf('triangleMarker') > -1) {
+		if (this._style.indexOf(Slider.Style.TRIANGLE_MARKER) > -1) {
 			this._markerType = Slider.Shape.TRIANGLE;
 			this._markerSize = this._markerSize.map( s => s*2 );
 		}
 
 		// slider:
-		if (this._style.indexOf('slider') > -1) {
+		if (this._style.indexOf(Slider.Style.SLIDER) > -1) {
+			this.psychoJS.logger.warn('"slider" style not implemented!');
 			//TODO
 		}
 
 		// whiteOnBlack:
-		if (this._style.indexOf('whiteOnBlack') > -1) {
+		if (this._style.indexOf(Slider.Style.WHITE_ON_BLACK) > -1) {
 			this._barLineColor = new Color('black');
 			// this._barFillColor = new Color('black');
 			this._tickColor  = new Color('black');
@@ -637,7 +638,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		// labels45:
-		if (this._style.indexOf('labels45') > -1) {
+		if (this._style.indexOf(Slider.Style.LABELS45) > -1) {
 			if (this._flip) {
 				this._labelAnchor = new PIXI.Point(0, 0.5);
 				this._labelAlign = 'left';
@@ -649,7 +650,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		// radio:
-		if (this._style.indexOf('radio') > -1) {
+		if (this._style.indexOf(Slider.Style.RADIO) > -1) {
 			this._barLineWidth_px = 0;
 			this._tickType = Slider.Shape.DISC;
 

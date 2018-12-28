@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: visual/Rect.js</title>
+    <title>JSDoc: Source: visual/VisualStim.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: visual/Rect.js</h1>
+    <h1 class="page-title">Source: visual/VisualStim.js</h1>
 
     
 
@@ -27,8 +27,8 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Rectangular Stimulus.
- *
+ * Base class for all visual stimuli.
+ * 
  * @author Alain Pitiot
  * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
@@ -36,115 +36,155 @@
  */
 
 
-import { ShapeStim } from './ShapeStim';
-import { Color } from '../util/Color';
+import {MinimalStim} from '../core/MinimalStim';
+import {WindowMixin} from '../core/WindowMixin';
+import * as util from '../util/Util';
 
 
 /**
- * &lt;p>Rectangular visual stimulus.&lt;/p>
+ * Base class for all visual stimuli.
  * 
- * @name module:visual.Rect
+ * @name module:visual.VisualStim
  * @class
- * @extends ShapeStim
+ * @extends MinimalStim
+ * @mixes WindowMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
- * @param {number} [options.lineWidth= 1.5] - the line width
- * @param {Color} [options.lineColor= Color('white')] the line color 
- * @param {Color} options.fillColor - the fill color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.width= 0.5] - the width of the rectangle
- * @param {number} [options.height= 0.5] - the height of the rectangle
- * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position
- * @param {number} [options.size= 1.0] - the size
+ * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {string} options.units - the units of the stimulus vertices, size and position
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth
- * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
+ * @param {number} [options.opacity= 1.0] - the opacity
+ * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+ * @param {number} [options.size= 1.0] - the size
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class Rect extends ShapeStim {
+export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
+{
 	constructor({
-		name,
-		win,
-		lineWidth = 1.5,
-		lineColor = new Color('white'),
-		fillColor,
-		opacity = 1.0,
-		width = 0.5,
-		height = 0.5,
-		pos = [0, 0],
-		size = 1.0,
-		ori = 0.0,
-		units,
-		contrast = 1.0,
-		depth = 0,
-		interpolate = true,
-		autoDraw,
-		autoLog
+								name,
+								win,
+								units = 'norm',
+								ori = 0.0,
+								opacity = 1.0,
+								pos = [0, 0],
+								size,
+								autoDraw,
+								autoLog = false
 	} = {}) {
-		super({ name, win, lineWidth, lineColor, fillColor, opacity, pos, ori, size, units, contrast, depth, interpolate, autoDraw, autoLog });
+		super({win, name, autoDraw, autoLog});
 
-		this._psychoJS.logger.debug('create a new Rect with name: ', name);
+		// whether the vertices need to be updated:
+		this._needVertexUpdate = true;
+		// the vertices (in pixel units):
+		this._vertices_px = undefined;
 
-		this._addAttributes(Rect, width, height);
+		this._addAttributes(VisualStim, units, ori, opacity, pos, size);
 
-		this._updateVertices();
-
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+		this._needUpdate = true;
 	}
 
 
 	/**
-	 * Setter for the width attribute.
-	 *
-	 * @name module:visual.Rect#setWidth
-	 * @public 
-	 * @param {number} width - the rectange width
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setWidth(width, log = false) {
-		this._psychoJS.logger.debug('set the width of Rect: ', this.name, 'to: ', width);
-
-		this._setAttribute('width', width, log);
-		this._updateVertices();
-	}
-
-
-	/**
-	 * Setter for the height attribute.
-	 *
-	 * @name module:visual.Rect#setHeight
-	 * @public 
-	 * @param {number} height - the rectange height
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setHeight(height, log = false) {
-		this._psychoJS.logger.debug('set the height of Rect: ', this.name, 'to: ', height);
-
-		this._setAttribute('height', height, log);
-		this._updateVertices();
-	}
-
-
-	/**
-	 * Update the base shape vertices.
+	 * Setter for the size attribute.
 	 * 
-	 * @name module:visual.Rect#_updateVertices
-	 * @private 
+	 * @name module:visual.VisualStim#setSize
+	 * @public 
+	 * @param {number} size - the stimulus size
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	_updateVertices() {
-		this._psychoJS.logger.debug('update the vertices of Rect: ', this.name);
+	setSize(size, log = false)
+	{
+		// size is either undefined or a tuple of numbers:
+		if (typeof size !== 'undefined') {
+			size = util.toNumerical(size);
+			if (!Array.isArray(size))
+				size = [size, size];
+		}
 
-		this.setVertices([
-			[-this._width / 2.0, -this._height / 2.0],
-			[this._width / 2.0, -this._height / 2.0],
-			[this._width / 2.0, this._height / 2.0],
-			[-this._width / 2.0, this._height / 2.0]
-		]);
+		this._setAttribute('size', size, log);
+
+		this._needVertexUpdate = true;
+		this._needUpdate = true;
+	}
+
+
+	/**
+	 * Setter for the orientation attribute.
+	 * 
+	 * @name module:visual.VisualStim#setOri
+	 * @public
+	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise. 
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setOri(ori, log = false)
+	{
+		this._setAttribute('ori', ori, log);
+
+		let radians = ori * 0.017453292519943295;
+		this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)],
+			[Math.sin(radians), Math.cos(radians)]];
+
+		//this._needVertexUpdate = true ; // need to update update vertices
+		this._needUpdate = true;
+	}
+
+
+	/**
+	 * Setter for the position attribute.
+	 * 
+	 * @name module:visual.VisualStim#setPos
+	 * @public
+	 * @param {Array.&lt;number>} pos - position of the center of the stimulus, in stimulus units
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setPos(pos, log = false)
+	{
+		this._setAttribute('pos', util.toNumerical(pos), log);
+
+		this._needUpdate = true;
+	}
+
+	
+	/**
+	 * Setter for the opacity attribute.
+	 * 
+	 * @name module:visual.VisualStim#setOpacity
+	 * @public
+	 * @param {number} opacity - the opacity: 0 is completely transparent, 1 is fully opaque 
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setOpacity(opacity, log = false)
+	{
+		this._setAttribute('opacity', opacity, log);
+
+		this._needUpdate = true;
+	}
+
+
+	/*
+	 * Get the vertices in pixel units.
+	 * 
+	 * @name module:visual.VisualStim#_getVertices_px
+	 * @protected
+	 * @return {Array.&lt;[number, number]>} the vertices (in pixel units)
+	 */
+	_getVertices_px(/*force = false*/)
+	{
+		/*if (!force &amp;&amp; typeof this._vertices_px !== 'undefined')
+			return this._vertices_px;*/
+
+		// handle flipping:
+		let flip = [1.0, 1.0];
+		if ('_flipHoriz' in this &amp;&amp; this._flipHoriz)
+			flip[0] = -1.0;
+		if ('_flipVert' in this &amp;&amp; this._flipVert)
+			flip[1] = -1.0;
+
+			// handle size, flipping, and convert to pixel units:
+		this._vertices_px = this._vertices.map( v => util.to_px([v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]], this._units, this._win) );
+
+		return this._vertices_px;
 	}
 
 }

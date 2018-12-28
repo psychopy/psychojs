@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: MinimalStim</title>
+    <title>JSDoc: Class: VisualStim</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: MinimalStim</h1>
+    <h1 class="page-title">Class: VisualStim</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-core.html">core</a>.</span>MinimalStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,7 +42,7 @@
     
 
     
-    <h4 class="name" id="MinimalStim"><span class="type-signature"></span>new MinimalStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="VisualStim"><span class="type-signature"></span>new VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -50,7 +50,7 @@
 
 
 <div class="description">
-    <p>MinimalStim is the base class for all stimuli.</p>
+    Base class for all visual stimuli.
 </div>
 
 
@@ -202,6 +202,201 @@
 
         <tr>
             
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "norm"
+                
+                </td>
+            
+
+            <td class="description last">the units of the stimulus (e.g. for size, position, vertices)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+
+            <td class="description last">the orientation (in degrees)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+
+            <td class="description last">the opacity</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [0, 0]
+                
+                </td>
+            
+
+            <td class="description last">the position of the center of the stimulus</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+
+            <td class="description last">the size</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>autoDraw</code></td>
             
 
@@ -307,6 +502,14 @@
     
 
     
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li>WindowMixin</li>
+        
+        </ul></dd>
+    
 
     
 
@@ -321,7 +524,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_MinimalStim.js.html">core/MinimalStim.js</a>, <a href="core_MinimalStim.js.html#line14">line 14</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -359,7 +562,7 @@
 
 
     <ul>
-        <li>PsychObject</li>
+        <li>MinimalStim</li>
     </ul>
 
 
@@ -376,34 +579,18 @@
     
 
     
-
-    
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         
             
+<h4 class="name" id="setOpacity"><span class="type-signature"></span>setOpacity<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="_updateIfNeeded"><span class="type-signature">(abstract, private) </span>_updateIfNeeded<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    Update the stimulus, if necessary.
-
-Note: this is an abstract function, which should not be called.
+    Setter for the opacity attribute.
 </div>
-
-
-
-
-
-
 
 
 
@@ -440,7 +627,7 @@ Note: this is an abstract function, which should not be called.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_MinimalStim.js.html">core/MinimalStim.js</a>, <a href="core_MinimalStim.js.html#line136">line 136</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -456,198 +643,16 @@ Note: this is an abstract function, which should not be called.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         
             
+<h4 class="name" id="setOri"><span class="type-signature"></span>setOri<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="contains"><span class="type-signature">(abstract) </span>contains<span class="signature">(object, units)</span><span class="type-signature"></span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    Determine whether an object is inside this stimulus.
+    Setter for the orientation attribute.
 </div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>object</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>units</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the stimulus units</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_MinimalStim.js.html">core/MinimalStim.js</a>, <a href="core_MinimalStim.js.html#line121">line 121</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="draw"><span class="type-signature"></span>draw<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Draw this stimulus on the next frame draw.
-</div>
-
-
-
-
-
-
 
 
 
@@ -684,7 +689,7 @@ Note: this is an abstract function, which should not be called.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_MinimalStim.js.html">core/MinimalStim.js</a>, <a href="core_MinimalStim.js.html#line104">line 104</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -700,145 +705,17 @@ Note: this is an abstract function, which should not be called.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         
             
+<h4 class="name" id="setPos"><span class="type-signature"></span>setPos<span class="type-signature"></span></h4>
 
-    
-
-    
-    <h4 class="name" id="setAutoDraw"><span class="type-signature"></span>setAutoDraw<span class="signature">(autoDraw, log<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
 
 
 
 <div class="description">
-    Setter for the autoDraw attribute.
+    Setter for the position attribute.
 </div>
 
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>autoDraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the new value</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>log</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not to log</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -874,7 +751,7 @@ Note: this is an abstract function, which should not be called.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_MinimalStim.js.html">core/MinimalStim.js</a>, <a href="core_MinimalStim.js.html#line46">line 46</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line105">line 105</a>
     </li></ul></dd>
     
 
@@ -890,12 +767,62 @@ Note: this is an abstract function, which should not be called.
 
 
 
+        
+            
+<h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the size attribute.
+</div>
 
 
 
 
 
 
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -903,6 +830,8 @@ Note: this is an abstract function, which should not be called.
 
 
         
+    
+
     
 
     

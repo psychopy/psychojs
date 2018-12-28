@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: TextStim</title>
+    <title>JSDoc: Class: MovieStim</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: TextStim</h1>
+    <h1 class="page-title">Class: MovieStim</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>MovieStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,12 +42,16 @@
     
 
     
-    <h4 class="name" id="TextStim"><span class="type-signature"></span>new TextStim<span class="signature">(options, alignHoriz<span class="signature-attributes">opt</span>, alignVert<span class="signature-attributes">opt</span>, wrapWidth, flipHoriz<span class="signature-attributes">opt</span>, flipVert<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="MovieStim"><span class="type-signature"></span>new MovieStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Movie Stimulus.
+</div>
 
 
 
@@ -70,11 +74,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -99,19 +99,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last">
@@ -214,13 +202,16 @@
 
         <tr>
             
-                <td class="name"><code>text</code></td>
+                <td class="name"><code>movie</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">HTMLVideoElement</span>
 
 
             
@@ -228,8 +219,6 @@
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -241,19 +230,17 @@
             
                 <td class="default">
                 
-                    "Hello World"
-                
                 </td>
             
 
-            <td class="description last">the text to be rendered</td>
+            <td class="description last">the name of the movie resource or the HTMLVideoElement corresponding to the movie</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>font</code></td>
+                <td class="name"><code>units</code></td>
             
 
             <td class="type">
@@ -280,12 +267,12 @@
             
                 <td class="default">
                 
-                    "Arial"
+                    "norm"
                 
                 </td>
             
 
-            <td class="description last">the text font</td>
+            <td class="description last">the units of the stimulus (e.g. for size, position, vertices)</td>
         </tr>
 
     
@@ -324,7 +311,122 @@
                 </td>
             
 
-            <td class="description last">the position of the center of the text</td>
+            <td class="description last">the position of the center of the stimulus</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'norm'
+                
+                </td>
+            
+
+            <td class="description last">the units of the stimulus vertices, size and position</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+
+            <td class="description last">the orientation (in degrees)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the size of the rendered image (the size of the image will be used if size is not specified)</td>
         </tr>
 
     
@@ -448,120 +550,7 @@
 
         <tr>
             
-                <td class="name"><code>units</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    "norm"
-                
-                </td>
-            
-
-            <td class="description last">the units of the text size and position</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ori</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the orientation (in degrees)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>height</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0.1
-                
-                </td>
-            
-
-            <td class="description last">the height of the text</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bold</code></td>
+                <td class="name"><code>interpolate</code></td>
             
 
             <td class="type">
@@ -593,166 +582,7 @@
                 </td>
             
 
-            <td class="description last">whether or not the text is bold</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>italic</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not the text is italic</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>alignHoriz</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'center'
-                
-                </td>
-            
-
-            <td class="description last">horizontal alignment</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>alignVert</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    'center'
-                
-                </td>
-            
-
-            <td class="description last">vertical alignment</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>wrapWidth</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">whether or not to wrap the text horizontally</td>
+            <td class="description last">whether or not the image is interpolated</td>
         </tr>
 
     
@@ -791,7 +621,7 @@
                 </td>
             
 
-            <td class="description last">whether or not to flip the text horizontally</td>
+            <td class="description last">whether or not to flip horizontally</td>
         </tr>
 
     
@@ -830,14 +660,170 @@
                 </td>
             
 
-            <td class="description last">whether or not to flip the text vertically</td>
+            <td class="description last">whether or not to flip vertically</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>options.autoDraw</code></td>
+                <td class="name"><code>loop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to loop the movie</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>volume</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+
+            <td class="description last">the volume of the audio track (must be between 0.0 and 1.0)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noAudio</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to play the audio</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autoPlay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">whether or not to autoplay the video</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autoDraw</code></td>
             
 
             <td class="type">
@@ -876,7 +862,7 @@
 
         <tr>
             
-                <td class="name"><code>options.autoLog</code></td>
+                <td class="name"><code>autoLog</code></td>
             
 
             <td class="type">
@@ -915,6 +901,13 @@
     </tbody>
 </table>
 
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
 
 
 
@@ -935,14 +928,6 @@
     
 
     
-        <dt class="mixes">Mixes In:</dt>
-
-        <dd class="mixes"><ul>
-        
-            <li>ColorMixin</li>
-        
-        </ul></dd>
-    
 
     
 
@@ -957,7 +942,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line17">line 17</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -969,7 +954,7 @@
     <dt class="tag-todo">To Do:</dt>
     <dd class="tag-todo">
         <ul>
-            <li>vertical alignment, and orientation are currently NOT implemented</li>
+            <li>autoPlay does not work for the moment.</li>
         </ul>
     </dd>
     
@@ -1067,7 +1052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line230">line 230</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line285">line 285</a>
     </li></ul></dd>
     
 
@@ -1075,13 +1060,6 @@
 
     
 
-    
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>take size into account</li>
-        </ul>
-    </dd>
     
 </dl>
 
@@ -1098,7 +1076,7 @@
 
 
 <div class="description">
-    Determine whether an object is inside the bounding box of the text.
+    Determine whether the given object is inside this movie.
 </div>
 
 
@@ -1136,138 +1114,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line207">line 207</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>this is currently NOT implemented</li>
-        </ul>
-    </dd>
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setAlignHoriz"><span class="type-signature"></span>setAlignHoriz<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the alignHoriz attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line95">line 95</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setBold"><span class="type-signature"></span>setBold<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the bold attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line159">line 159</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line251">line 251</a>
     </li></ul></dd>
     
 
@@ -1329,7 +1176,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line191">line 191</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line167">line 167</a>
     </li></ul></dd>
     
 
@@ -1391,7 +1238,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line175">line 175</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -1409,13 +1256,13 @@
 
         
             
-<h4 class="name" id="setHeight"><span class="type-signature"></span>setHeight<span class="type-signature"></span></h4>
+<h4 class="name" id="setMovie"><span class="type-signature"></span>setMovie<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the height attribute.
+    Setter for the movie attribute.
 </div>
 
 
@@ -1453,193 +1300,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line127">line 127</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setItalic"><span class="type-signature"></span>setItalic<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the italic attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line143">line 143</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setText"><span class="type-signature"></span>setText<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the text attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line79">line 79</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setWrapWidth"><span class="type-signature"></span>setWrapWidth<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the wrapWidth attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_TextStim.js.html">visual/TextStim.js</a>, <a href="visual_TextStim.js.html#line111">line 111</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
