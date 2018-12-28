@@ -2,7 +2,7 @@
  * Color Mixin.
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -26,10 +26,10 @@ export let ColorMixin = (superclass) => class extends superclass {
 	/**
 	 * Setter for Color attribute.
 	 * 
-	 * @name module:core.ColorMixin#setColor
+	 * @name module:util.ColorMixin#setColor
 	 * @function
 	 * @public
-	 * @param {string|number|Array.<number>} color - the new color
+	 * @param {Color} color - the new color
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setColor(color, log) {
@@ -42,7 +42,7 @@ export let ColorMixin = (superclass) => class extends superclass {
 	/**
 	 * Setter for Contrast attribute.
 	 * 
-	 * @name module:core.ColorMixin#setContrast
+	 * @name module:util.ColorMixin#setContrast
 	 * @function
 	 * @public
 	 * @param {number} contrast - the new contrast (must be between 0 and 1)
@@ -58,7 +58,7 @@ export let ColorMixin = (superclass) => class extends superclass {
 	/**
 	 * Adjust the contrast of the color and convert it to [-1, 1] RGB
 	 * 
-	 * @name module:core.ColorMixin#getContrastedColor
+	 * @name module:util.ColorMixin#getContrastedColor
 	 * @function
 	 * @public
 	 * @param {string|number|Array.<number>} color - the color

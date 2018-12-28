@@ -2,7 +2,7 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -94,7 +94,7 @@ export class GUI
 					const cleanedDictKey = key.trim().toLowerCase();
 					for (const [urlKey, urlValue] of infoFromUrl) {
 						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey == cleanedDictKey) {
+						if (cleanedUrlKey === cleanedDictKey) {
 							inUrl = true;
 							break;
 						}
@@ -202,7 +202,9 @@ export class GUI
 		// all the resources have been downloaded: show the ok button 
 		else if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED) {
 			this._OkButtonDisabled = false;
-			$("#buttonOk").button({ disabled: this._OkButtonDisabled });
+			$("#buttonOk").button("option", "disabled", false);
+			// strangely, the above sometimes fails to re-enable the button, so we need to hide it and show it again:
+			$("#buttonOk").hide(0, () => { $("#buttonOk").show(); });
 			$("#progressMsg").text('all resources downloaded.');
 		}
 		

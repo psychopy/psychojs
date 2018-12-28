@@ -3,7 +3,7 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -63,6 +63,8 @@ export class PsychObject extends EventEmitter {
  	 * @param {boolean} [log= false] - whether of not to log
  	 * @param {string} [operation] - the binary operation such that the new value of the attribute is the result of the application of the operation to the current value of the attribute and attributeValue
  	 * @param {boolean} [stealth= false] - whether or not to call the potential attribute setters when setting the value of this attribute
+	 * @return {boolean} whether or not the value of that attribute has changed (false if the attribute
+	 * was not previously set)
 	 */
 	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false) {
 		let response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
@@ -84,7 +86,7 @@ export class PsychObject extends EventEmitter {
 				if (Array.isArray(attributeValue)) {
 					// old value is also an array
 					if (Array.isArray(oldValue)) {
-						if (attributeValue.length != oldValue.length)
+						if (attributeValue.length !== oldValue.length)
 							throw { ...response, error: 'old and new value should have the same size when they are both arrays' };
 
 						switch (operation) {
@@ -211,16 +213,16 @@ export class PsychObject extends EventEmitter {
 
 		// (*) log if appropriate:
 		if (!stealth && (log || this._autoLog) && (typeof this.win !== 'undefined')) {
-			var message = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
+			const message = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
 			//this.win.logOnFlip(message, psychoJS.logging.EXP, this);
 		}
 
 
-		// (*) set the value of the attribute:
-		if (stealth)
-			this['_' + attributeName] = attributeValue;
-		else
-			this[attributeName] = attributeValue;
+		// (*) set the value of the attribute and return whether it has changed:
+		const previousAttributeValue = this['_' + attributeName];
+		this['_' + attributeName] = attributeValue;
+
+		return (attributeValue !== previousAttributeValue);
 	}
 
 
@@ -235,7 +237,7 @@ export class PsychObject extends EventEmitter {
 	 * the call to super (see module:visual.ImageStim for an illustration).</li>
 	 * </ul></p>
 	 *
- 	 * @private
+ 	 * @protected
 	 * @param {Object} cls - the class object of the subclass of PsychoObject whose attributes we will set
 	 * @param {...*} [args] - the values for the attributes (this also determines which attributes will be set)
 	 *
@@ -263,7 +265,7 @@ export class PsychObject extends EventEmitter {
 	/**
 	 * Add an attribute to this instance (e.g. define setters and getters) and affect a value to it.
 	 * 
- 	 * @private
+ 	 * @protected
 	 * @param {string} name - the name of the attribute
 	 * @param {object} value - the value of the attribute
 	 */
@@ -284,8 +286,10 @@ export class PsychObject extends EventEmitter {
 			set(value) { this[setPropertyName](value); }
 		});
 
-		//this['_' + name] = value;
+		// note: we use this[name] instead of this['_' + name] since a this.set<Name> method may available
+		// in the object, in which case we need to call it
 		this[name] = value;
+		//this['_' + name] = value;
 	}
 
 }

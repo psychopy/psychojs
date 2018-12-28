@@ -36,41 +36,41 @@
  */
 
 
-import { BaseVisualStim } from './BaseVisualStim';
+import { VisualStim } from './VisualStim';
 import { Color } from '../util/Color';
 import { ColorMixin } from '../util/ColorMixin';
 import * as util from '../util/Util';
 
 
 /**
- * Image Simulus.
+ * Image Stimulus.
  * 
  * @name module:visual.ImageStim
  * @class
- * @extends BaseVisualStim
+ * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or HTMLImageElement corresponding to the image
+ * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
  * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask 
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} options.units - the units of the stimulus vertices, size and position
- * @param {number} options.ori - the orientation (in degrees)
- * @param {number} options.size - the size
+ * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+ * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+ * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
  * @param {Color} [options.color= Color('white')] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {number} [options.depth= 0] - the depth
  * @param {number} [options.texRes= 128] - the resolution of the text
  * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [flipVert= false] - whether or not to flip vertically
+ * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+ * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
+export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
 		name,
@@ -115,7 +115,7 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		let response = { origin: 'ImageStim.setImage', context: 'when setting the image of ImageStim: ' + this._name };
 
 		try {
-			// image is undefined: that's fine but we raise a warning in case this is a sympton of an actual problem
+			// image is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
 			if (typeof image === 'undefined') {
 				this.psychoJS.logger.warn('setting the image of ImageStim: ' + this._name + ' with argument: undefined.');
 				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: undefined');
@@ -126,8 +126,9 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 					image = this.psychoJS.serverManager.getResource(image);
 
 				// image should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(image instanceof HTMLImageElement))
+				if (!(image instanceof HTMLImageElement)) {
 					throw 'the argument: ' + image.toString() + ' is not an image" }';
+				}
 
 				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: src= ' + image.src + ', size= ' + image.width + 'x' + image.height);
 			}
@@ -165,8 +166,9 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 					mask = this.psychoJS.serverManager.getResource(mask);
 
 				// mask should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(mask instanceof HTMLImageElement))
+				if (!(mask instanceof HTMLImageElement)) {
 					throw 'the argument: ' + mask.toString() + ' is not an image" }';
+				}
 
 				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: src= ' + mask.src + ', size= ' + mask.width + 'x' + mask.height);
 			}
@@ -276,7 +278,7 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 
 		// since _texture.width may not be immedialy available but the rest of the code needs its value
 		// we arrange for repeated calls to _updateIfNeeded until we have a width:
-		if (this._texture.width == 0) {
+		if (this._texture.width === 0) {
 			this._needUpdate = true;
 			return;
 		}
@@ -298,9 +300,9 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
+        // set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
-		// the image is centered on pos:
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
 	}
@@ -317,13 +319,13 @@ export class ImageStim extends util.mix(BaseVisualStim).with(ColorMixin)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addInfoFromUrl">addInfoFromUrl</a></li><li><a href="global.html#detectBrowser">detectBrowser</a></li><li><a href="global.html#flattenArray">flattenArray</a></li><li><a href="global.html#getDateStr">getDateStr</a></li><li><a href="global.html#getErrorStack">getErrorStack</a></li><li><a href="global.html#getPositionFromObject">getPositionFromObject</a></li><li><a href="global.html#getUrlParameters">getUrlParameters</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#isInt">isInt</a></li><li><a href="global.html#IsPointInsidePolygon">IsPointInsidePolygon</a></li><li><a href="global.html#makeUuid">makeUuid</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#promiseToTupple">promiseToTupple</a></li><li><a href="global.html#selectFromArray">selectFromArray</a></li><li><a href="global.html#shuffle">shuffle</a></li><li><a href="global.html#sliceArray">sliceArray</a></li><li><a href="global.html#to_pixiPoint">to_pixiPoint</a></li><li><a href="global.html#to_px">to_px</a></li><li><a href="global.html#toNumerical">toNumerical</a></li><li><a href="global.html#toString">toString</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 28 2018 12:51:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,53 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: visual/BaseShapeStim.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: visual/BaseShapeStim.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/** @module visual */
+/** @module visual */
 /**
  * Basic Shape Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { BaseVisualStim } from './BaseVisualStim';
+import { VisualStim } from './VisualStim';
 import { Color } from '../util/Color';
 import { ColorMixin } from '../util/ColorMixin';
 import * as util from '../util/Util';
 
 
 /**
- * &lt;p>This class provides the basic functionalities of shape stimuli.&lt;/p>
+ * <p>This class provides the basic functionalities of shape stimuli.</p>
  * 
  * @class
- * @extends BaseVisualStim
+ * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
@@ -56,9 +28,9 @@ import * as util from '../util/Util';
  * @param {Color} [options.lineColor= Color('white')] the line color 
  * @param {Color} options.fillColor - the fill color
  * @param {number} [options.opacity= 1.0] - the opacity
- * @param {Array.&lt;Array.&lt;number>>} [options.vertices= [[-0.5, 0], [0, 0.5], [0.5, 0]]] - the shape vertices
+ * @param {Array.<Array.<number>>} [options.vertices= [[-0.5, 0], [0, 0.5], [0.5, 0]]] - the shape vertices
  * @param {boolean} [options.closeShape= true] - whether or not the shape is closed
- * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the shape
+ * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the shape
  * @param {number} [options.size= 1.0] - the size
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {string} options.units - the units of the stimulus vertices, size and position
@@ -68,12 +40,8 @@ import * as util from '../util/Util';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
+export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	/**
-	 * @constructor
-	 * @public
-	 */
 	constructor({
 		name,
 		win,
@@ -98,7 +66,7 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
 
-		this._addAttributes(BaseShapeStim, lineWidth, lineColor, fillColor, vertices, closeShape, contrast, depth, interpolate);
+		this._addAttributes(ShapeStim, lineWidth, lineColor, fillColor, vertices, closeShape, contrast, depth, interpolate);
 
 		/*if (autoLog)
 			logging.exp("Created %s = %s" % (self.name, str(self)));*/
@@ -151,17 +119,17 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 	 * Setter for the vertices attribute.
 	 *
 	 * @public 
-	 * @param {Array.&lt;Array.&lt;number>>} vertices - the vertices
+	 * @param {Array.<Array.<number>>} vertices - the vertices
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setVertices(vertices, log = false) {
-		this._psychoJS.logger.debug('set the vertices of BaseShapeStim:', this.name);
+		this._psychoJS.logger.debug('set the vertices of ShapeStim:', this.name);
 
 		this._setAttribute('vertices', vertices, log);
 		/*this._setAttribute({
 			name: 'vertices',
 			value: vertices,
-			assert: v => (v != null) &amp;&amp; (typeof v !== 'undefined') &amp;&amp; Array.isArray(v) )
+			assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
 			log);
 		*/
 
@@ -184,7 +152,7 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		// get position of object:
 		const objectPos_px = util.getPositionFromObject(object, units);
 		if (typeof objectPos_px === 'undefined')
-			throw { origin : 'BaseShapeStim.contains', context : 'when determining whether BaseShameStim: ' + this._name + ' contains object: ' + util.toString(object), error : 'unable to determine the position of the object' };
+			throw { origin : 'ShapeStim.contains', context : 'when determining whether BaseShameStim: ' + this._name + ' contains object: ' + util.toString(object), error : 'unable to determine the position of the object' };
 
 		// test for inclusion
 		// note: the vertices are centered around (0, 0) so we need to add to them the stimulus' position
@@ -239,7 +207,7 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 			return;
 		this._needVertexUpdate = false;
 
-		//if (!force &amp;&amp; typeof this._pixiPolygon_px !== 'undefined')
+		//if (!force && typeof this._pixiPolygon_px !== 'undefined')
 		//	return this._pixiPolygon_px;
 
 		// make sure the vertices in pixel units are available, and flatten the array of arrays:
@@ -249,10 +217,10 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 			coords_px.push.apply(coords_px, vertex_px);
 
 		// close the polygon if need be:
-		if (coords_px.length >= 6 &amp;&amp; this._closeShape) {
+		if (coords_px.length >= 6 && this._closeShape) {
 			// note: we first check whether the vertices already define a closed polygon:
 			const n = coords_px.length;
-			if (coords_px[0] != coords_px[n - 2] || coords_px[1] != coords_px[n - 1]) {
+			if (coords_px[0] !== coords_px[n - 2] || coords_px[1] !== coords_px[n - 1]) {
 				coords_px.push(coords_px[0]);
 				coords_px.push(coords_px[1]);
 			}
@@ -265,26 +233,3 @@ export class BaseShapeStim extends util.mix(BaseVisualStim).with(ColorMixin)
 
 
 }
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

@@ -2,7 +2,7 @@
  * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -61,7 +61,7 @@ export class EventManager {
 	 * @function
 	 * @public
 	 * @param {Object} options
-	 * @param {Array.string} [options.keyList= null] - keyList allows the user to specify a set of keys to check for. Only keypresses from this set of keys will be removed from the keyboard buffer. If no keyList is given, all keys will be checked and the key buffer will be cleared completely.
+	 * @param {string[]} [options.keyList= null] - keyList allows the user to specify a set of keys to check for. Only keypresses from this set of keys will be removed from the keyboard buffer. If no keyList is given, all keys will be checked and the key buffer will be cleared completely.
 	 * @param {boolean} [options.timeStamped= false] - If true will return a list of tuples instead of a list of keynames. Each tuple has (keyname, time).
 	 * @return {Array.string} the list of keys that were pressed.
 	 */
@@ -368,8 +368,6 @@ EventManager._keycodeMap = {
 	105: "Numpad9",
 	107: "NumpadAdd",
 	194: "NumpadComma",
-	194: "NumpadComma",
-	110: "NumpadDecimal",
 	110: "NumpadDecimal",
 	111: "NumpadDivide",
 	13: "NumpadEnter",

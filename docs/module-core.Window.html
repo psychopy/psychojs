@@ -402,7 +402,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line15">line 15</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -572,7 +572,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line279">line 279</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line286">line 286</a>
     </li></ul></dd>
     
 
@@ -658,7 +658,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line220">line 220</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line227">line 227</a>
     </li></ul></dd>
     
 
@@ -746,7 +746,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line240">line 240</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line247">line 247</a>
     </li></ul></dd>
     
 
@@ -832,7 +832,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line204">line 204</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line211">line 211</a>
     </li></ul></dd>
     
 
@@ -918,7 +918,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line310">line 310</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line317">line 317</a>
     </li></ul></dd>
     
 
@@ -1004,7 +1004,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line111">line 111</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line109">line 109</a>
     </li></ul></dd>
     
 
@@ -1038,7 +1038,7 @@ the DOM window), we need to pass it a Window.</p>
     
 
     
-    <h4 class="name" id="callOnFlip"><span class="type-signature"></span>callOnFlip<span class="signature">(flipFunction, flipArgs)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="callOnFlip"><span class="type-signature"></span>callOnFlip<span class="signature">(flipCallback, &hellip;flipCallbackArgs)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1046,7 +1046,8 @@ the DOM window), we need to pass it a Window.</p>
 
 
 <div class="description">
-    Specify the callback function ran after each screen flip, i.e. immedicately after each rendering of the Window.
+    Add a callback function that will run after the next screen flip, i.e. immediately after the next rendering of the
+Window.
 
 <p>This is typically used to reset a timer or clock.</p>
 </div>
@@ -1072,6 +1073,8 @@ the DOM window), we need to pass it a Window.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1084,7 +1087,38 @@ the DOM window), we need to pass it a Window.</p>
 
         <tr>
             
-                <td class="name"><code>flipFunction</code></td>
+                <td class="name"><code>flipCallback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-core.Window.html#~OnFlipCallback">module:core.Window~OnFlipCallback</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">callback function.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flipCallbackArgs</code></td>
             
 
             <td class="type">
@@ -1097,28 +1131,15 @@ the DOM window), we need to pass it a Window.</p>
             </td>
 
             
-
-            
-
-            <td class="description last">callback function.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>flipArgs</code></td>
-            
-
-            <td class="type">
-            
+                <td class="attributes">
                 
-<span class="param-type">Object</span>
 
+                
 
-            
-            </td>
-
+                
+                    &lt;repeatable><br>
+                
+                </td>
             
 
             
@@ -1164,7 +1185,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line160">line 160</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line164">line 164</a>
     </li></ul></dd>
     
 
@@ -1252,7 +1273,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line77">line 77</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -1682,7 +1703,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line95">line 95</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -1971,7 +1992,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line139">line 139</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -2057,7 +2078,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line32">line 32</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line31">line 31</a>
     </li></ul></dd>
     
 
@@ -2143,7 +2164,7 @@ the DOM window), we need to pass it a Window.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line177">line 177</a>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line181">line 181</a>
     </li></ul></dd>
     
 
@@ -2175,6 +2196,157 @@ the DOM window), we need to pass it a Window.</p>
     
 
     
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    
+    <h4 class="name" id="~OnFlipCallback"><span class="type-signature"></span>OnFlipCallback<span class="signature">(args<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Callback function for callOnFlip.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">optional arguments</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_Window.js.html">core/Window.js</a>, <a href="core_Window.js.html#line158">line 158</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
 
     
 </article>
@@ -2187,13 +2359,13 @@ the DOM window), we need to pass it a Window.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addInfoFromUrl">addInfoFromUrl</a></li><li><a href="global.html#detectBrowser">detectBrowser</a></li><li><a href="global.html#flattenArray">flattenArray</a></li><li><a href="global.html#getDateStr">getDateStr</a></li><li><a href="global.html#getErrorStack">getErrorStack</a></li><li><a href="global.html#getPositionFromObject">getPositionFromObject</a></li><li><a href="global.html#getUrlParameters">getUrlParameters</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#isInt">isInt</a></li><li><a href="global.html#IsPointInsidePolygon">IsPointInsidePolygon</a></li><li><a href="global.html#makeUuid">makeUuid</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#promiseToTupple">promiseToTupple</a></li><li><a href="global.html#selectFromArray">selectFromArray</a></li><li><a href="global.html#shuffle">shuffle</a></li><li><a href="global.html#sliceArray">sliceArray</a></li><li><a href="global.html#to_pixiPoint">to_pixiPoint</a></li><li><a href="global.html#to_px">to_px</a></li><li><a href="global.html#toNumerical">toNumerical</a></li><li><a href="global.html#toString">toString</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 28 2018 12:51:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
  * Base class for all visual stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -16,7 +16,7 @@ import * as util from '../util/Util';
 /**
  * Base class for all visual stimuli.
  * 
- * @name module:visual.BaseVisualStim
+ * @name module:visual.VisualStim
  * @class
  * @extends MinimalStim
  * @mixes WindowMixin
@@ -31,20 +31,19 @@ import * as util from '../util/Util';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
+export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
 	constructor({
-		name,
-		win,
-		units = 'norm',
-		ori = 0.0,
-		opacity = 1.0,
-		pos = [0, 0],
-		size,
-		autoDraw,
-		autoLog = false
-	} = {})
-	{
+								name,
+								win,
+								units = 'norm',
+								ori = 0.0,
+								opacity = 1.0,
+								pos = [0, 0],
+								size,
+								autoDraw,
+								autoLog = false
+	} = {}) {
 		super({win, name, autoDraw, autoLog});
 
 		// whether the vertices need to be updated:
@@ -52,7 +51,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		// the vertices (in pixel units):
 		this._vertices_px = undefined;
 
-		this._addAttributes(BaseVisualStim, units, ori, opacity, pos, size);
+		this._addAttributes(VisualStim, units, ori, opacity, pos, size);
 
 		this._needUpdate = true;
 	}
@@ -61,7 +60,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the size attribute.
 	 * 
-	 * @name module:visual.BaseVisualStim#setSize
+	 * @name module:visual.VisualStim#setSize
 	 * @public 
 	 * @param {number} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
@@ -85,7 +84,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the orientation attribute.
 	 * 
-	 * @name module:visual.BaseVisualStim#setOri
+	 * @name module:visual.VisualStim#setOri
 	 * @public
 	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise. 
 	 * @param {boolean} [log= false] - whether of not to log
@@ -96,7 +95,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		let radians = ori * 0.017453292519943295;
 		this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)],
-								[Math.sin(radians), Math.cos(radians)]];
+			[Math.sin(radians), Math.cos(radians)]];
 
 		//this._needVertexUpdate = true ; // need to update update vertices
 		this._needUpdate = true;
@@ -106,7 +105,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the position attribute.
 	 * 
-	 * @name module:visual.BaseVisualStim#setPos
+	 * @name module:visual.VisualStim#setPos
 	 * @public
 	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
 	 * @param {boolean} [log= false] - whether of not to log
@@ -122,7 +121,7 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the opacity attribute.
 	 * 
-	 * @name module:visual.BaseVisualStim#setOpacity
+	 * @name module:visual.VisualStim#setOpacity
 	 * @public
 	 * @param {number} opacity - the opacity: 0 is completely transparent, 1 is fully opaque 
 	 * @param {boolean} [log= false] - whether of not to log
@@ -138,9 +137,9 @@ export class BaseVisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/*
 	 * Get the vertices in pixel units.
 	 * 
-	 * @name module:visual.BaseVisualStim#_getVertices_px
-	 * @private
-	 * @return {Array.<[number, number]>} the vertices
+	 * @name module:visual.VisualStim#_getVertices_px
+	 * @protected
+	 * @return {Array.<[number, number]>} the vertices (in pixel units)
 	 */
 	_getVertices_px(/*force = false*/)
 	{

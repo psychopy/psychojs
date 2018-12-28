@@ -2,7 +2,7 @@
  * Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -207,7 +207,7 @@ export class ServerManager extends PsychObject {
 	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
 	 */
 	getResource(resourceName) {
-		let response = { origin: 'ServerManager.getResource', context: 'when getting the value of  resource: ' + resourceName };
+		let response = { origin: 'ServerManager.getResource', context: 'when getting the value of resource: ' + resourceName };
 
 		const resourceValue = this._resourcesMap.get(resourceName);
 		if (typeof resourceValue === 'undefined')
@@ -313,7 +313,7 @@ export class ServerManager extends PsychObject {
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
 	uploadData(key, value) {
-		let response = { origin: 'ServerManager.uploadData', context: 'when uploading participant\' results for experiment: ' + this._psychoJS.config.experiment.name };
+		let response = { origin: 'ServerManager.uploadData', context: 'when uploading participant\'s results for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('uploading data for experiment: ' + this._psychoJS.config.experiment.name);
 		this.setStatus(ServerManager.Status.BUSY);
@@ -434,7 +434,7 @@ export class ServerManager extends PsychObject {
 		// loading completed:
 		this._resourceQueue.addEventListener("complete", event => {
 			self._resourceQueue.close();
-			if (self._nbLoadedResources == self._nbResources) {
+			if (self._nbLoadedResources === self._nbResources) {
 				self.setStatus(ServerManager.Status.READY);
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 			}
@@ -459,7 +459,7 @@ export class ServerManager extends PsychObject {
 				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.BINARY });
 
 			// sound files are loaded through howler.js:
-			else if (['mp3', 'mpeg', 'opus', 'ogg', 'oga', 'wav', 'aac', 'caf', 'm4a', 'mp4', 'weba', 'webm', 'dolby', 'flac'].indexOf(resourceExtension) > -1)
+			else if (['mp3', 'mpeg', 'opus', 'ogg', 'oga', 'wav', 'aac', 'caf', 'm4a', 'weba', 'dolby', 'flac'].indexOf(resourceExtension) > -1)
 				soundFilenames.push(resourceName);
 
 			// preload.js for the other extensions (download type decided by preload.js):
@@ -472,7 +472,7 @@ export class ServerManager extends PsychObject {
 		if (manifest.length > 0)
 			this._resourceQueue.loadManifest(manifest);
 		else {
-			if (this._nbLoadedResources == this._nbResources) {
+			if (this._nbLoadedResources === this._nbResources) {
 				this.setStatus(ServerManager.Status.READY);
 				this.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 			}
@@ -496,7 +496,7 @@ export class ServerManager extends PsychObject {
 				self._resourcesMap.set(soundFilename, howl);
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCE_DOWNLOADED, resource: soundFilename });
 
-				if (self._nbLoadedResources == self._nbResources) {
+				if (self._nbLoadedResources === self._nbResources) {
 					self.setStatus(ServerManager.Status.READY);
 					self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 				}

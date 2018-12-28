@@ -2,7 +2,7 @@
  * Movie Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -17,7 +17,7 @@ import { PsychoJS } from "../core/PsychoJS";
 
 /**
  * Movie Stimulus.
- * 
+ *
  * @name module:visual.MovieStim
  * @class
  * @extends VisualStim
@@ -72,6 +72,11 @@ export class MovieStim extends VisualStim {
 		this.psychoJS.logger.debug('create a new MovieStim with name: ', name);
 
 		this._addAttributes(MovieStim, movie, color, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay);
+
+		// check whether the fastSeek method on HTMLVideoElement is implemented:
+		const videoElement = document.createElement('video');
+		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
+
 
 		/*if (autoLog)
 			logging.exp("Created %s = %s" % (self.name, str(self)));*/
@@ -182,7 +187,7 @@ export class MovieStim extends VisualStim {
 	reset(log = false) {
 		this.status = PsychoJS.Status.NOT_STARTED;
 		this._movie.pause();
-		this._movie.fastSeek(0);
+		if (this._hasFastSeek) this._movie.fastSeek(0);
 	}
 
 
@@ -216,14 +221,16 @@ export class MovieStim extends VisualStim {
 	stop(log = false) {
 		this.status = PsychoJS.Status.STOPPED;
 		this._movie.pause();
-		this._movie.fastSeek(0);
+		if (this._hasFastSeek) this._movie.fastSeek(0);
 	}
 
 
 
 	/**
- * Jump to a specific timepoint.
- *
+	 * Jump to a specific timepoint
+	 *
+	 * <p>Note: seek is experimental and does not work on all browsers at the moment.</p>
+	 *
 	 * @param {number} timePoint - the timepoint to which to jump (in second)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -236,7 +243,8 @@ export class MovieStim extends VisualStim {
 			};
 		}
 
-		this._movie.fastSeek(timePoint);
+
+		if (this._hasFastSeek) this._movie.fastSeek(timePoint);
 	}
 
 

@@ -2,13 +2,13 @@
  * Rectangular Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { BaseShapeStim } from './BaseShapeStim';
+import { ShapeStim } from './ShapeStim';
 import { Color } from '../util/Color';
 
 
@@ -17,7 +17,7 @@ import { Color } from '../util/Color';
  * 
  * @name module:visual.Rect
  * @class
- * @extends BaseShapeStim
+ * @extends ShapeStim
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
@@ -37,7 +37,7 @@ import { Color } from '../util/Color';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class Rect extends BaseShapeStim {
+export class Rect extends ShapeStim {
 	constructor({
 		name,
 		win,

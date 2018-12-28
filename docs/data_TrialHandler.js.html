@@ -48,7 +48,7 @@ import * as util from '../util/Util';
  * @extends PsychObject
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {Array.&lt;Object> | String} options.trialList - if it is a string, we treat it as the name of a condition resource
+ * @param {Array.&lt;Object> | String} [options.trialList= [undefined] ] - if it is a string, we treat it as the name of a condition resource
  * @param {number} options.nReps - number of repetitions
  * @param {module:data.TrialHandler.Method} options.method - the trial method
  * @param {Object} options.extraInfo - additional information to be stored alongside the trial data, e.g. session ID, participant ID, etc.
@@ -316,8 +316,8 @@ export class TrialHandler extends PsychObject {
 				let workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
 
 				// we consider only the first worksheet:
-				if (workbook.SheetNames.length == 0)
-					throw '"workbook should contain at least one worksheet"';
+				if (workbook.SheetNames.length === 0)
+					throw 'workbook should contain at least one worksheet';
 				let sheetName = workbook.SheetNames[0];
 				let worksheet = workbook.Sheets[sheetName];
 
@@ -328,7 +328,7 @@ export class TrialHandler extends PsychObject {
 				// (*) select conditions:
 				let selectedRows = sheet;
 				if (selection != null)
-					selectedRows = selectFromArray(sheet, selection);
+					selectedRows = util.selectFromArray(sheet, selection);
 
 
 				// (*) return the selected conditions as an array of 'object as map':
@@ -338,10 +338,10 @@ export class TrialHandler extends PsychObject {
 				//		...
 				// ]
 				let trialList = new Array(selectedRows.length - 1);
-				for (var r = 0; r &lt; selectedRows.length; ++r) {
+				for (let r = 0; r &lt; selectedRows.length; ++r) {
 					let row = selectedRows[r];
 					let trial = {};
-					for (var l = 0; l &lt; fields.length; ++l)
+					for (let l = 0; l &lt; fields.length; ++l)
 						trial[fields[l]] = row[l];
 					trialList[r] = trial;
 				}
@@ -353,8 +353,8 @@ export class TrialHandler extends PsychObject {
 				throw 'extension: ' + resourceExtension + ' currently not supported.';
 			}
 		}
-		catch (exception) {
-			throw '{ "origin" : "data.importConditions", "context" : "when importing condition: ' + resourceName + '", "error" : ' + exception + ', "stack" : ' + util.getErrorStack() + ' }';
+		catch (error) {
+			throw { origin: 'TrialHandler.importConditions', context: `when importing condition: ${resourceName}`, error};
 		}
 	}
 
@@ -363,28 +363,28 @@ export class TrialHandler extends PsychObject {
 	 * Prepare the trial list.
 	 *
 	 * @protected
-	 * @param {Array.&lt;Object> | String} trialList - if it is a string, we treat it as the name of a condition resource
+	 * @param {Array.&lt;Object> | String} trialList - a list of trials, or the name of a condition resource
 	 */
 	_prepareTrialList(trialList) {
 		let response = { origin : 'TrialHandler._prepareTrialList', context : 'when preparing the trial list' };
 
-		// we treat undefined or empty trialList's as a list with a single empty entry:
+		// we treat undefined trialList as a list with a single empty entry:
 		if (typeof trialList === 'undefined')
 			this.trialList = [undefined];
+
+		// if trialList is an array, we make sure it is not empty:
+		else if (Array.isArray(trialList)) {
+			if (trialList.length === 0)
+				this.trialList = [undefined];
+		}
 
 		// if trialList is a string, we treat it as the name of the condition resource:
 		else if (typeof trialList === 'string')
 			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
 
-		// if trialList is an array, we make sure it is not empty:
-		else if (Array.isArray(trialList)) {
-			if (trialList.length == 0)
-				this.trialList = [undefined];
-		}
-
 		// unknown type:
 		else
-			throw { ...response, error: 'unable to prepare trial list: unknown type.' };
+			throw { ...response, error: 'unable to prepare trial list: unknown type: ' + (typeof trialList) };
 	}
 
 
@@ -495,13 +495,13 @@ TrialHandler.Method = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.BaseShapeStim.html">BaseShapeStim</a></li><li><a href="module-visual.BaseVisualStim.html">BaseVisualStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addInfoFromUrl">addInfoFromUrl</a></li><li><a href="global.html#detectBrowser">detectBrowser</a></li><li><a href="global.html#flattenArray">flattenArray</a></li><li><a href="global.html#getDateStr">getDateStr</a></li><li><a href="global.html#getErrorStack">getErrorStack</a></li><li><a href="global.html#getPositionFromObject">getPositionFromObject</a></li><li><a href="global.html#getUrlParameters">getUrlParameters</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#isInt">isInt</a></li><li><a href="global.html#IsPointInsidePolygon">IsPointInsidePolygon</a></li><li><a href="global.html#makeUuid">makeUuid</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#promiseToTupple">promiseToTupple</a></li><li><a href="global.html#selectFromArray">selectFromArray</a></li><li><a href="global.html#shuffle">shuffle</a></li><li><a href="global.html#sliceArray">sliceArray</a></li><li><a href="global.html#to_pixiPoint">to_pixiPoint</a></li><li><a href="global.html#to_px">to_px</a></li><li><a href="global.html#toNumerical">toNumerical</a></li><li><a href="global.html#toString">toString</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Dec 10 2018 07:53:49 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Dec 28 2018 12:51:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

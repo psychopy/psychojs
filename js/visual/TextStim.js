@@ -2,13 +2,13 @@
  * Text Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { BaseVisualStim } from './BaseVisualStim';
+import { VisualStim } from './VisualStim';
 import { Color } from '../util/Color';
 import { ColorMixin } from '../util/ColorMixin';
 import * as util from '../util/Util';
@@ -17,10 +17,11 @@ import * as util from '../util/Util';
 /**
  * @name module:visual.TextStim
  * @class
- * @extends BaseVisualStim
+ * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
+ * @param {Window} options.win - the associated Window
  * @param {string} [options.text="Hello World"] - the text to be rendered 
  * @param {string} [options.font= "Arial"] - the text font
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
@@ -29,12 +30,12 @@ import * as util from '../util/Util';
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {string} [options.units= "norm"] - the units of the text size and position
  * @param {number} options.ori - the orientation (in degrees)
- * @param {number} [options.height] - the height of the text
+ * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
  * @param {string} [alignHoriz = 'center'] - horizontal alignment
  * @param {string} [alignVert = 'center'] - vertical alignment
- * @param {boolean} wrapWidth - whether or not to wrapthe text horizontally
+ * @param {boolean} wrapWidth - whether or not to wrap the text horizontally
  * @param {boolean} [flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [flipVert= false] - whether or not to flip the text vertically
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
@@ -42,7 +43,7 @@ import * as util from '../util/Util';
  * 
  * @todo vertical alignment, and orientation are currently NOT implemented
  */
-export class TextStim extends util.mix(BaseVisualStim).with(ColorMixin)
+export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
 		name,
@@ -55,7 +56,7 @@ export class TextStim extends util.mix(BaseVisualStim).with(ColorMixin)
 		contrast = 1.0,
 		units = 'norm',
 		ori,
-		height,
+		height = 0.1,
 		bold = false,
 		italic = false,
 		alignHoriz = 'center',
@@ -235,41 +236,41 @@ export class TextStim extends util.mix(BaseVisualStim).with(ColorMixin)
 	 * @todo take size into account
 	 */
 	_updateIfNeeded() {
-		if (this._needUpdate) {
-			let height = this._height || 0.1;
-			this._heightPix = this._getLengthPix(height);
+		if (!this._needUpdate)
+			return;
+		this._needUpdate = false;
 
-			var fontSize = Math.round(this._heightPix);
-			let color = this.getContrastedColor(this._color, this._contrast);
-			var font =
-				(this._bold ? 'bold ' : '') +
-				(this._italic ? 'italic ' : '') +
-				fontSize + 'px ' + this._font;
-			this._pixi = new PIXI.Text(this._text, {
-				font: font,
-				fill: color.hex,
-				align: this._alignHoriz,
-				wordWrap: this._wrapWidth != undefined,
-				wordWrapWidth: this._wrapWidth ? this._getHorLengthPix(this._wrapWidth) : 0
-			});
+		this._heightPix = this._getLengthPix(this._height);
 
-			this._pixi.anchor.x = 0.5;
-			this._pixi.anchor.y = 0.5;
+		const fontSize = Math.round(this._heightPix);
+		let color = this.getContrastedColor(this._color, this._contrast);
+		const font =
+			(this._bold ? 'bold ' : '') +
+			(this._italic ? 'italic ' : '') +
+			fontSize + 'px ' + this._font;
+		this._pixi = new PIXI.Text(this._text, {
+			font: font,
+			fill: color.hex,
+			align: this._alignHoriz,
+			wordWrap: (typeof this._wrapWidth !== 'undefined'),
+			wordWrapWidth: this._wrapWidth ? this._getHorLengthPix(this._wrapWidth) : 0
+		});
 
-			this._pixi.scale.x = this._flipHoriz ? -1 : 1;
-			this._pixi.scale.y = this._flipVert ? 1 : -1;
+		this._pixi.anchor.x = 0.5;
+		this._pixi.anchor.y = 0.5;
 
-			this._pixi.rotation = this._ori * Math.PI / 180;
-			this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
+		this._pixi.scale.y = this._flipVert ? 1 : -1;
 
-			this._pixi.alpha = this._opacity;
+		this._pixi.rotation = this._ori * Math.PI / 180;
+		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 
-			this._size = [
-				this._getLengthUnits(Math.abs(this._pixi.width)),
-				this._getLengthUnits(Math.abs(this._pixi.height))];
+		this._pixi.alpha = this._opacity;
 
-			this._needUpdate = false;
-		}
+		this._size = [
+			this._getLengthUnits(Math.abs(this._pixi.width)),
+			this._getLengthUnits(Math.abs(this._pixi.height))
+		];
 	}
 
 

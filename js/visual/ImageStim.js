@@ -2,7 +2,7 @@
  * Image Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -98,8 +98,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 					image = this.psychoJS.serverManager.getResource(image);
 
 				// image should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(image instanceof HTMLImageElement))
+				if (!(image instanceof HTMLImageElement)) {
 					throw 'the argument: ' + image.toString() + ' is not an image" }';
+				}
 
 				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: src= ' + image.src + ', size= ' + image.width + 'x' + image.height);
 			}
@@ -137,8 +138,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 					mask = this.psychoJS.serverManager.getResource(mask);
 
 				// mask should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(mask instanceof HTMLImageElement))
+				if (!(mask instanceof HTMLImageElement)) {
 					throw 'the argument: ' + mask.toString() + ' is not an image" }';
+				}
 
 				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: src= ' + mask.src + ', size= ' + mask.width + 'x' + mask.height);
 			}
@@ -248,7 +250,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// since _texture.width may not be immedialy available but the rest of the code needs its value
 		// we arrange for repeated calls to _updateIfNeeded until we have a width:
-		if (this._texture.width == 0) {
+		if (this._texture.width === 0) {
 			this._needUpdate = true;
 			return;
 		}

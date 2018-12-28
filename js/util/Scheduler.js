@@ -2,7 +2,7 @@
  * Scheduler.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -51,15 +51,21 @@ export class Scheduler {
 	}
 
 
+  /**
+   * Task to be run by the scheduler.
+   *
+   * @callback module:util.Scheduler~Task
+	 * @param {*} [args] optional arguments
+   */
 	/**
-	 * Schedule a task.
+	 * Schedule a new task.
 	 * 
 	 * @name module:util.Scheduler#add
 	 * @public
-	 * @param task - the task to be scheduled
-	 * @param args - arguments for that task
+	 * @param {module:util.Scheduler~Task | module:util.Scheduler} task - the task to be scheduled
+	 * @param {...*} args - arguments for that task
 	 */
-	add(task, args) {
+	add(task, ...args) {
 		this._taskList.push(task);
 		this._argsList.push(args);
 	}
@@ -120,15 +126,16 @@ export class Scheduler {
 				}
 			}
 			if (this._currentTask instanceof Function) {
-				state = this._currentTask(this._currentArgs);
+				state = this._currentTask(...this._currentArgs);
 			}
 			// if currentTask is not a function, it can only be another scheduler:
 			else {
 				state = this._currentTask.run();
-				if (state === Scheduler.Event.QUIT) state = Scheduler.Event.NEXT;
+				if (state === Scheduler.Event.QUIT)
+					state = Scheduler.Event.NEXT;
 			}
 
-			if (state != Scheduler.Event.FLIP_REPEAT) {
+			if (state !== Scheduler.Event.FLIP_REPEAT) {
 				this._currentTask = undefined;
 				this._currentArgs = undefined;
 			}

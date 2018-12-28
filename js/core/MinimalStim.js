@@ -2,7 +2,7 @@
  * Base class for all stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -129,7 +129,7 @@ export class MinimalStim extends PsychObject {
 	 * @param {String} units - the stimulus units
 	 */
 	contains(object, units) {
-		throw {origin: 'MinimalStim.contains', context: 'when determining whether stimulus: ' + this._name + 'contains object: ' + util.toString(object), error: 'this method is abstract and should not be called.'};
+		throw {origin: 'MinimalStim.contains', context: `when determining whether stimulus: ${this._name} contains object: ${util.toString(object)}`, error: 'this method is abstract and should not be called.'};
 	}
 
 

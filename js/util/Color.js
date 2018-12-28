@@ -2,7 +2,7 @@
  * Color management.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -38,19 +38,19 @@ export class Color {
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
 		// note: we expect the color space to be RGB
 		if (typeof obj == 'string') {
-			if (colorspace != Color.COLOR_SPACE.RGB)
+			if (colorspace !== Color.COLOR_SPACE.RGB)
 				throw { ...response, error: 'the colorspace must be RGB for a named color' };
 
 			// hexademical representation:
-			if (obj[0] == '#') {
+			if (obj[0] === '#') {
 				this._hex = obj;
 			}
 			// named color:
 			else {
-				if (!(obj in Color.NAMED_COLORS))
+				if (!(obj.toLowerCase() in Color.NAMED_COLORS))
 					throw { ...response, error: 'unknown named color: ' + obj };
 
-				this._hex = Color.NAMED_COLORS[obj];
+				this._hex = Color.NAMED_COLORS[obj.toLowerCase()];
 			}
 
 			this._rgb = Color.hexToRgb(this._hex);
@@ -59,7 +59,7 @@ export class Color {
 		// hexadecimal number representation (e.g. 0xFF0000)
 		// note: we expect the color space to be RGB
 		else if (typeof obj == 'number') {
-			if (colorspace != Color.COLOR_SPACE.RGB)
+			if (colorspace !== Color.COLOR_SPACE.RGB)
 				throw { ...response, error: 'the colorspace must be RGB for a named color' };
 
 			this._rgb = Color._intToRgb(obj);
@@ -71,7 +71,7 @@ export class Color {
 			let [a, b, c] = obj;
 
 			// check range and convert to [0,1]:
-			if (colorspace != Color.COLOR_SPACE.RGB255) {
+			if (colorspace !== Color.COLOR_SPACE.RGB255) {
 				Color._checkTypeAndRange(obj, [-1, 1]);
 
 				a = (a + 1.0) / 2.0;
@@ -424,7 +424,7 @@ export class Color {
 	 * @return {boolean} whether the argument is an array of numbers of size 3, and, potentially, whether its elements fall within the range (if range is not undefined)
 	 */
 	static _checkTypeAndRange(arg, range = undefined) {
-		if (!Array.isArray(arg) || arg.length != 3
+		if (!Array.isArray(arg) || arg.length !== 3
 			|| typeof arg[0] !== 'number' || typeof arg[1] !== 'number' || typeof arg[2] !== 'number')
 			throw 'the argument should be an array of numbers of length 3';
 

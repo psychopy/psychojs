@@ -2,7 +2,7 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -53,7 +53,7 @@ export class ExperimentHandler extends PsychObject {
 	} = {}) {
 		super(psychoJS, name);
 
-		this._addAttributes(ExperimentHandler, name, extraInfo);
+		this._addAttributes(ExperimentHandler, extraInfo);
 
 		// loop handlers:
 		this._loops = [];
@@ -70,7 +70,8 @@ export class ExperimentHandler extends PsychObject {
 
 	/**
 	 * Add a loop.
-	 * <p> The loop might be a {@link TrialHandler} or a {@link StairHandler}, for instance.</p>
+	 *
+	 * <p> The loop might be a {@link TrialHandler}, for instance.</p>
 	 * <p> Data from this loop will be included in the resulting data files.</p>
 	 *
 	 * @name module:data.ExperimentHandler#addLoop
@@ -116,7 +117,7 @@ export class ExperimentHandler extends PsychObject {
 	addData(key, value) {
 		if (this._trialsKeys.indexOf(key) === -1) {
 			this._trialsKeys.push(key);
-		};
+		}
 
 		this._currentTrialData[key] = value;
 	}
@@ -133,7 +134,7 @@ export class ExperimentHandler extends PsychObject {
 	nextEntry() {
 		// fetch data from each (potentially-nested) loop:
 		for (let loop of this._unfinishedLoops) {
-			var attributes = this.getLoopAttributes(loop);
+			const attributes = ExperimentHandler._getLoopAttributes(loop);
 			for (let a in attributes)
 				if (attributes.hasOwnProperty(a))
 					this._currentTrialData[a] = attributes[a];
@@ -152,13 +153,14 @@ export class ExperimentHandler extends PsychObject {
 
 	/**
 	 * Save the results of the experiment.
-	 * <p> Results are uploaded to the remote PsychoJS manager running on the remote https://pavlovia.org server</p>
+	 *
+	 * <p> Results are uploaded to the remote https://pavlovia.org server</p>
 	 *
 	 * @name module:data.ExperimentHandler#save
 	 * @function
 	 * @public
 	 * @param {Object} options
-	 * @param {PsychoJS} options.attributes - the attributes to be saved
+	 * @param {Array.<Object>} [options.attributes] - the attributes to be saved
 	 */
 	async save({
 		attributes = []
@@ -166,12 +168,12 @@ export class ExperimentHandler extends PsychObject {
 		this._psychoJS.logger.info('[PsychoJS] Save experiment results.');
 
 		// (*) get attributes:
-		if (attributes.length == 0) {
+		if (attributes.length === 0) {
 			attributes = this._trialsKeys.slice();
 			for (let l = 0; l < this._loops.length; l++) {
 				const loop = this._loops[l];
 
-				const loopAttributes = this.getLoopAttributes(loop);
+				const loopAttributes = ExperimentHandler._getLoopAttributes(loop);
 				for (let a in loopAttributes)
 					if (loopAttributes.hasOwnProperty(a))
 					attributes.push(a);
@@ -194,7 +196,9 @@ export class ExperimentHandler extends PsychObject {
 
 
 		// (*) save to a .csv file on the remote server:
-		if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.CSV) {
+		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV) {
+			/*
+			// a. manual approach
 			let csv = "";
 
 			// build the csv header:
@@ -214,6 +218,11 @@ export class ExperimentHandler extends PsychObject {
 				}
 				csv = csv + '\n';
 			}
+			*/
+
+			// b. XLSX approach (automatically deal with header, takes care of quotes, newlines, etc.)
+			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
+			const csv = XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the remote PsychoJS manager:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
@@ -222,7 +231,7 @@ export class ExperimentHandler extends PsychObject {
 
 
 		// (*) save in the database on the remote server:
-		else if (this._psychoJS.config.experiment.saveFormat == ExperimentHandler.SaveFormat.DATABASE) {
+		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE) {
 			let documents = [];
 
 			for (let r = 0; r < this._trialsData.length; r++) {
@@ -244,12 +253,13 @@ export class ExperimentHandler extends PsychObject {
 	 * Get the attribute names and values for the current trial of a given loop.
 	 * <p> Only only info relating to the trial execution are returned.</p>
 	 * 
-	 * @name module:data.ExperimentHandler#getLoopAttributes
+	 * @name module:data.ExperimentHandler#_getLoopAttributes
 	 * @function
-	 * @public
+	 * @static
+	 * @protected
 	 * @param {Object} loop - the loop
 	 */
-	getLoopAttributes(loop) {
+	static _getLoopAttributes(loop) {
 		const loopName = loop['name'];
 
 		// standard attributes:
@@ -300,7 +310,7 @@ export class ExperimentHandler extends PsychObject {
 		return attributes;
 	}
 
-};
+}
 
 
 /**

@@ -3,7 +3,7 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -20,7 +20,7 @@ import * as util from '../util/Util';
  * @extends PsychObject
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {Array.<Object> | String} options.trialList - if it is a string, we treat it as the name of a condition resource
+ * @param {Array.<Object> | String} [options.trialList= [undefined] ] - if it is a string, we treat it as the name of a condition resource
  * @param {number} options.nReps - number of repetitions
  * @param {module:data.TrialHandler.Method} options.method - the trial method
  * @param {Object} options.extraInfo - additional information to be stored alongside the trial data, e.g. session ID, participant ID, etc.
@@ -288,8 +288,8 @@ export class TrialHandler extends PsychObject {
 				let workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
 
 				// we consider only the first worksheet:
-				if (workbook.SheetNames.length == 0)
-					throw '"workbook should contain at least one worksheet"';
+				if (workbook.SheetNames.length === 0)
+					throw 'workbook should contain at least one worksheet';
 				let sheetName = workbook.SheetNames[0];
 				let worksheet = workbook.Sheets[sheetName];
 
@@ -300,7 +300,7 @@ export class TrialHandler extends PsychObject {
 				// (*) select conditions:
 				let selectedRows = sheet;
 				if (selection != null)
-					selectedRows = selectFromArray(sheet, selection);
+					selectedRows = util.selectFromArray(sheet, selection);
 
 
 				// (*) return the selected conditions as an array of 'object as map':
@@ -310,10 +310,10 @@ export class TrialHandler extends PsychObject {
 				//		...
 				// ]
 				let trialList = new Array(selectedRows.length - 1);
-				for (var r = 0; r < selectedRows.length; ++r) {
+				for (let r = 0; r < selectedRows.length; ++r) {
 					let row = selectedRows[r];
 					let trial = {};
-					for (var l = 0; l < fields.length; ++l)
+					for (let l = 0; l < fields.length; ++l)
 						trial[fields[l]] = row[l];
 					trialList[r] = trial;
 				}
@@ -325,8 +325,8 @@ export class TrialHandler extends PsychObject {
 				throw 'extension: ' + resourceExtension + ' currently not supported.';
 			}
 		}
-		catch (exception) {
-			throw '{ "origin" : "data.importConditions", "context" : "when importing condition: ' + resourceName + '", "error" : ' + exception + ', "stack" : ' + util.getErrorStack() + ' }';
+		catch (error) {
+			throw { origin: 'TrialHandler.importConditions', context: `when importing condition: ${resourceName}`, error};
 		}
 	}
 
@@ -335,28 +335,28 @@ export class TrialHandler extends PsychObject {
 	 * Prepare the trial list.
 	 *
 	 * @protected
-	 * @param {Array.<Object> | String} trialList - if it is a string, we treat it as the name of a condition resource
+	 * @param {Array.<Object> | String} trialList - a list of trials, or the name of a condition resource
 	 */
 	_prepareTrialList(trialList) {
 		let response = { origin : 'TrialHandler._prepareTrialList', context : 'when preparing the trial list' };
 
-		// we treat undefined or empty trialList's as a list with a single empty entry:
+		// we treat undefined trialList as a list with a single empty entry:
 		if (typeof trialList === 'undefined')
 			this.trialList = [undefined];
+
+		// if trialList is an array, we make sure it is not empty:
+		else if (Array.isArray(trialList)) {
+			if (trialList.length === 0)
+				this.trialList = [undefined];
+		}
 
 		// if trialList is a string, we treat it as the name of the condition resource:
 		else if (typeof trialList === 'string')
 			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
 
-		// if trialList is an array, we make sure it is not empty:
-		else if (Array.isArray(trialList)) {
-			if (trialList.length == 0)
-				this.trialList = [undefined];
-		}
-
 		// unknown type:
 		else
-			throw { ...response, error: 'unable to prepare trial list: unknown type.' };
+			throw { ...response, error: 'unable to prepare trial list: unknown type: ' + (typeof trialList) };
 	}
 
 

@@ -2,7 +2,7 @@
  * Sound player interface
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -50,7 +50,7 @@ export class SoundPlayer extends PsychObject
 	 * @function
 	 * @public
 	 * @abstract
-	 * @param {boolean} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 * @param {number} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 */
 	play(loops)
 	{

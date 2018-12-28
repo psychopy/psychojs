@@ -2,7 +2,7 @@
  * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -10,7 +10,6 @@
 import { Color } from '../util/Color';
 import { PsychObject } from '../util/PsychObject';
 import { MonotonicClock } from '../util/Clock';
-import * as util from '../util/Util';
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -54,7 +53,7 @@ export class Window extends PsychObject {
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttributes(Window, name, fullscr, color, units, autoLog);
+		this._addAttributes(Window, fullscr, color, units, autoLog);
 		this._addAttribute('size', []);
 
 
@@ -66,8 +65,7 @@ export class Window extends PsychObject {
 
 		this._frameCount = 0;
 
-		this._flipCallback = undefined;
-		this._flipCallbackArgs = undefined;
+		this._flipCallbacks = [];
 
 		/*if (autoLog)
 			logging.exp("Created %s = %s" % (self.name, str(self)));*/
@@ -158,19 +156,25 @@ export class Window extends PsychObject {
 
 
 	/**
-	 * Specify the callback function ran after each screen flip, i.e. immedicately after each rendering of the Window.
+	 * Callback function for callOnFlip.
+	 *
+	 * @callback module:core.Window~OnFlipCallback
+	 * @param {*} [args] optional arguments
+	 */
+	/**
+	 * Add a callback function that will run after the next screen flip, i.e. immediately after the next rendering of the
+	 * Window.
 	 * 
 	 * <p>This is typically used to reset a timer or clock.</p>
 	 * 
 	 * @name module:core.Window#callOnFlip
 	 * @function
 	 * @public
-	 * @param {*} flipFunction - callback function.
-	 * @param {Object} flipArgs - arguments for the callback function.
+	 * @param {module:core.Window~OnFlipCallback} flipCallback - callback function.
+	 * @param {...*} flipCallbackArgs - arguments for the callback function.
 	 */
 	callOnFlip(flipCallback, ...flipCallbackArgs) {
-		this._flipCallback = flipCallback;
-		this._flipCallbackArgs = flipCallbackArgs;
+		this._flipCallbacks.push({function: flipCallback, arguments: flipCallbackArgs});
 	}
 
 
@@ -191,10 +195,13 @@ export class Window extends PsychObject {
 		// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
 		this._renderer.gl.readPixels(0, 0, 1, 1, this._renderer.gl.RGBA, this._renderer.gl.UNSIGNED_BYTE, new Uint8Array(4));
 
-		// log and call on flip:
+		// log:
 		this._writeLogOnFlip();
-		if (typeof this._flipCallback !== 'undefined')
-			this._flipCallback(...this._flipCallbackArgs);
+
+		// call the callOnFlip functions and remove them:
+		for (let callback of this._flipCallbacks)
+			callback['function'](...callback['arguments']);
+		this._flipCallbacks = [];
 
 		// prepare the scene for the next animation frame:
 		this._refresh();

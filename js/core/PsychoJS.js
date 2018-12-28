@@ -3,7 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.0.0b11
+ * @version 3.0.0b13
  * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -58,7 +58,7 @@ export class PsychoJS {
 	} = {}) {
 		// logging:
 		this._logger = new Logger((debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
-		this._captureErrors();
+		// this._captureErrors();
 
 		// core clock:
 		this._monotonicClock = new MonotonicClock();
@@ -309,7 +309,7 @@ export class PsychoJS {
 		}
 		catch (error) {
 			console.error(error);
-			this._gui.dialog({ "error": error });
+			this._gui.dialog({ error });
 		}
 	}
 
@@ -419,6 +419,10 @@ export class PsychoJS {
  * @enum {Symbol}
  * @readonly
  * @public
+ *
+ * @note PsychoPy is currently moving away from STOPPED and replacing STOPPED by FINISHED.
+ * For backward compatibility reasons, we are keeping
+ * STOPPED in PsychoJS, but the Symbol is the same as that of FINISHED.
  */
 PsychoJS.Status = {
 	NOT_CONFIGURED: Symbol.for('NOT_CONFIGURED'),
@@ -426,7 +430,8 @@ PsychoJS.Status = {
 	CONFIGURED: Symbol.for('CONFIGURED'),
 	NOT_STARTED: Symbol.for('NOT_STARTED'),
 	STARTED: Symbol.for('STARTED'),
-	STOPPED: Symbol.for('STOPPED'),
-	FINISHED: Symbol.for('FINISHED')
+	FINISHED: Symbol.for('FINISHED'),
+
+	STOPPED: Symbol.for('FINISHED') //Symbol.for('STOPPED')
 };
 
