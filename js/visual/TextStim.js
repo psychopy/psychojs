@@ -2,8 +2,8 @@
  * Text Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -54,7 +54,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		color = new Color('white'),
 		opacity,
 		contrast = 1.0,
-		units = 'norm',
+		units,
 		ori,
 		height = 0.1,
 		bold = false,
@@ -117,6 +117,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setWrapWidth(wrapWidth, log) {
+		if (typeof wrapWidth === 'undefined') {
+			if (!TextStim._defaultWrapWidthMap.has(this._units))
+				throw { origin : 'TextStim.setWrapWidth', context : 'when setting the wrap width of TextStim: ' + this._name, error : 'no default wrap width for unit: ' + this._units};
+
+			wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
+		}
+
 		this._setAttribute('wrapWidth', wrapWidth, log);
 
 		this._needUpdate = true;
@@ -133,6 +140,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setHeight(height, log) {
+		if (typeof height === 'undefined') {
+			if (!TextStim._defaultLetterHeightMap.has(this._units))
+				throw { origin : 'TextStim.setHeight', context : 'when setting the height of TextStim: ' + this._name, error : 'no default letter height for unit: ' + this._units};
+
+			height = TextStim._defaultLetterHeightMap.get(this._units);
+		}
+
 		this._setAttribute('height', height, log);
 
 		this._needUpdate = true;
@@ -219,7 +233,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// get position of object:
 		let objectPos_px = util.getPositionFromObject(object, units);
 		if (typeof objectPos_px === 'undefined')
-			throw { origin : 'TextStim.contains', context : 'when determining whether ImageStim: ' + this._name + ' contains object: ' + util.toString(object), error : 'unable to determine the position of the object' };
+			throw { origin : 'TextStim.contains', context : 'when determining whether TextStim: ' + this._name + ' contains object: ' + util.toString(object), error : 'unable to determine the position of the object' };
 
 		// test for inclusion:
 		// TODO
@@ -275,3 +289,43 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 }
+
+
+/**
+ * <p>This map associates units to default letter height.</p>
+ *
+ * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @readonly
+ * @private
+ */
+TextStim._defaultLetterHeightMap = new Map([
+	['cm', 1.0],
+	['deg', 1.0],
+	['degs', 1.0],
+	['degFlatPos', 1.0],
+	['degFlat', 1.0],
+	['norm', 0.1],
+	['height', 0.2],
+	['pix', 20],
+	['pixels', 20]
+]);
+
+
+/**
+ * <p>This map associates units to default wrap width.</p>
+ *
+ * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @readonly
+ * @private
+ */
+TextStim._defaultWrapWidthMap = new Map([
+	['cm', 15.0],
+	['deg', 15.0],
+	['degs', 15.0],
+	['degFlatPos', 15.0],
+	['degFlat', 15.0],
+	['norm', 1],
+	['height', 1],
+	['pix', 500],
+	['pixels', 500]
+]);

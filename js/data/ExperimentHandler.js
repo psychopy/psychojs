@@ -2,8 +2,8 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -96,9 +96,8 @@ export class ExperimentHandler extends PsychObject {
 	 */
 	removeLoop(loop) {
 		const index = this._unfinishedLoops.indexOf(loop);
-		if (index !== -1) {
+		if (index !== -1)
 			this._unfinishedLoops.splice(index, 1);
-		}
 	}
 
 
@@ -118,6 +117,10 @@ export class ExperimentHandler extends PsychObject {
 		if (this._trialsKeys.indexOf(key) === -1) {
 			this._trialsKeys.push(key);
 		}
+
+		// turn arrays into their json equivalent:
+		if (Array.isArray(value))
+			value = JSON.stringify(value);
 
 		this._currentTrialData[key] = value;
 	}

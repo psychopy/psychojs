@@ -2,8 +2,8 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -19,8 +19,6 @@ import {PsychoJS} from "../core/PsychoJS";
 /**
  * Slider stimulus.
  *
- * @note Consider using a proper UI delegate architecture (a la Java Swing, for instance).
- *
  * @name module:visual.Slider
  * @class
  * @extends module:visual.VisualStim
@@ -31,7 +29,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
  * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
  * @param {number} [options.ori = 0.0] - the orientation (in degrees)
- * @param {string} [options.units= 'norm'] - the units of the text size and position
+ * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
  *
  * @param {Color} [options.color= Color('LightGray')] the color of the slider
  * @param {number} [options.contrast= 1.0] - the contrast of the slider
@@ -48,7 +46,8 @@ import {PsychoJS} from "../core/PsychoJS";
  * @param {string} [options.fontFamily= 'Helvetica'] - the text font
  * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
  * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
- * @param {number} [options.fontSize= 14] - the font size of the labels (in pixels)
+ * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
+ * Slider's units: 14 for 'pix', 0.03 otherwise
  *
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
  *   frame flip
@@ -58,6 +57,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * @todo readOnly
  * @todo style "slider"
  * @todo complete setters, for instance setTicks should change this._isCategorical
+ * @todo consider using a proper UI delegate architecture (a la Java Swing, for instance).
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin)
 {
@@ -67,7 +67,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		pos,
 		size,
 		ori,
-		units = 'norm',
+		units = 'height',
 
 		color = new Color('LightGray'),
 		contrast = 1.0,
@@ -84,7 +84,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		fontFamily = 'Helvetica',
 		bold = true,
 		italic = false,
-		fontSize = 14,
+		fontSize,
 
 		autoDraw,
 		autoLog
@@ -146,11 +146,20 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 */
 	reset() {
+		this.psychoJS.logger.debug('reset Slider: ', this._name);
+
 		this._markerPos = undefined;
 		this._history = [];
 		this._rating = undefined;
 		this._responseClock.reset();
 		this.status = PsychoJS.Status.NOT_STARTED;
+
+		this._needMarkerUpdate = true;
+		this._needUpdate = true;
+
+		// the marker should be invisible when markerPos is undefined:
+		if (typeof this._marker !== 'undefined')
+			this._marker.alpha = 0;
 	}
 
 
@@ -185,6 +194,29 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			return undefined;
 	}
 
+
+	/**
+	 * Setter for the font size.
+	 *
+	 * <p>The font size depends on the Slider's units: 14 for 'pix' and 0.03 otherwise.</p>
+	 *
+	 * @name module:visual.Slider#setFontSize
+	 * @public
+	 * @param {number} [fontSize] - the font size
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setFontSize(fontSize, log = false) {
+		if (typeof fontSize === 'undefined') {
+			fontSize = (this._units === 'pix') ? 14 : 0.03;
+		}
+
+		const hasChanged = this._setAttribute('fontSize', fontSize, log);
+
+		if (hasChanged) {
+			this._needUpdate = true;
+			this._needVertexUpdate = true;
+		}
+	}
 
 	/**
 	 * Setter for the bold attribute.
@@ -297,13 +329,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * <p>Setting the rating does also change the visible position of the marker.</p>
 	 *
-	 * @name module:visual.Slider#recordRating
-	 * @public
+	 * @name module:visual.Slider#_recordRating
+	 * @private
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	recordRating(rating, responseTime = undefined, log = false) {
+	_recordRating(rating, responseTime = undefined, log = false) {
 		// get response time:
 		if (typeof responseTime === 'undefined')
 			responseTime = this._responseClock.getTime();
@@ -315,7 +347,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		// add rating and response time to history:
 		this._history.push({rating: this._rating, responseTime});
-		this.psychoJS.logger.debug('record a new rating: ', this._rating, 'with response time: ', responseTime);
+		this.psychoJS.logger.debug('record a new rating: ', this._rating, 'with response time: ', responseTime, 'for Slider: ', this._name);
 
 		// update slider:
 		this._needMarkerUpdate = true;
@@ -359,8 +391,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		this._needMarkerUpdate = false;
 
 		if (typeof this._marker !== 'undefined') {
-			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
-			this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win);
+			if (typeof this._markerPos !== 'undefined') {
+				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
+				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win);
+				this._marker.alpha = 1;
+			} else
+				this._marker.alpha = 0;
 		}
 	}
 
@@ -437,12 +473,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const labelPositions_px = [...Array(this._labels.length)].map(
 			(_, i) => tickPositions_px[Math.round(i / (this._labels.length-1) * (this._ticks.length-1))]);
 
+		const fontSize_px = util.to_px([this._fontSize, this._fontSize], this._units, this._win);
 		for (let l = 0; l < labelPositions_px.length; ++l) {
 			const labelText = new PIXI.Text(this._labels[l], {
 				fontFamily : this._fontFamily,
 				fontWeight: this._fontWeight,
 				fontStyle: this._fontStyle,
-				fontSize: this._fontSize,
+				fontSize: Math.round(fontSize_px[0]),
 				fill: this._labelColor.hex,
 				align: this._labelAlign});
 
@@ -476,6 +513,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// (*) marker:
 		const markerSize_px = Math.max(...util.to_px(this._markerSize, this._units, this._win));
 		this._marker = new PIXI.Graphics();
+		this._marker.alpha = 0; // invisible until markerPos is defined
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
@@ -528,7 +566,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
+				self._recordRating(rating);
 
 				event.stopPropagation();
 			}
@@ -539,7 +577,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			if (self._markerDragging) {
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
+				self._recordRating(rating);
 
 				self._markerDragging = false;
 
@@ -565,7 +603,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// this._body.pointerup = this._body.mouseup = this._body.touchend = event => { console.log(event);
 			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
 			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-			self.recordRating(rating);
+			self._recordRating(rating);
 
 			event.stopPropagation();
 		};

@@ -2,8 +2,8 @@
  * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -203,19 +203,11 @@ export class EventManager {
 	 * @param {PIXI.Renderer} renderer - The Pixi renderer
 	 */
 	addMouseListeners(renderer) {
-		let self = this;
+		const self = this;
 
-		const view = renderer.view;
+		renderer.view.addEventListener("pointerdown", (event) => {
+			event.preventDefault();
 
-		/*
-		// TEMPORARY DEBUG FOR IPAD/IPHONE:
-		for (let eventName of ['click', 'mousedown', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mouseupoutside', 'pointercancel', 'pointerdown', 'pointermove', 'pointerout', 'pointerover', 'pointertap', 'pointerup', 'pointerupoutside', 'rightclick', 'rightdown', 'rightup', ' rightupoutside', 'tap', 'touchcancel', 'touchend', 'touchendoutside', 'touchmove', 'touchstart'])
-			view.addEventListener(eventName, event => {
-				console.log('event: ' + eventName + ' -> ', event);
-			});
-		*/
-		
-		view.addEventListener("pointerdown", event => {
 			self._mouseInfo.buttons.pressed[event.button] = 1;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 
@@ -224,7 +216,24 @@ export class EventManager {
 			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
 		}, false);
 
-		view.addEventListener("pointerup", event => {
+
+		renderer.view.addEventListener("touchstart", (event) => {
+			event.preventDefault();
+
+			self._mouseInfo.buttons.pressed[0] = 1;
+			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+
+			// we use the first touch, discarding all others:
+			const touches = event.changedTouches;
+			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+
+			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
+		}, false);
+
+
+		renderer.view.addEventListener("pointerup", (event) => {
+			event.preventDefault();
+
 			self._mouseInfo.buttons.pressed[event.button] = 0;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
@@ -232,12 +241,42 @@ export class EventManager {
 			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
 		}, false);
 
-		view.addEventListener("pointermove", event => {
-			self._mouseInfo.pos = [event.offsetX, event.offsetY];
-			self._mouseInfo.moveClock.reset();
+
+		renderer.view.addEventListener("touchend", (event) => {
+			event.preventDefault();
+
+			self._mouseInfo.buttons.pressed[0] = 0;
+			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+
+			// we use the first touch, discarding all others:
+			const touches = event.changedTouches;
+			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+
+			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
 		}, false);
 
-		view.addEventListener("wheel", event => {
+
+		renderer.view.addEventListener("pointermove", (event) => {
+			event.preventDefault();
+
+			self._mouseInfo.moveClock.reset();
+			self._mouseInfo.pos = [event.offsetX, event.offsetY];
+		}, false);
+
+
+		renderer.view.addEventListener("touchmove", (event) => {
+			event.preventDefault();
+
+			self._mouseInfo.moveClock.reset();
+			
+			// we use the first touch, discarding all others:
+			const touches = event.changedTouches;
+			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+		}, false);
+
+
+		// (*) wheel
+		renderer.view.addEventListener("wheel", event => {
 			self._mouseInfo.wheelRel[0] += event.deltaX;
 			self._mouseInfo.wheelRel[1] += event.deltaY;
 			

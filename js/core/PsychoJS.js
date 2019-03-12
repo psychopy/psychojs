@@ -3,8 +3,8 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -33,8 +33,8 @@ export class PsychoJS {
 	 * Properties
 	 */
 	get status() { return this._status; }
-	set status(sts) {
-		this._status = sts;
+	set status(status) {
+		this._status = status;
 	}
 	get config() { return this._config; }
 	get window() { return this._window; }
@@ -58,7 +58,7 @@ export class PsychoJS {
 	} = {}) {
 		// logging:
 		this._logger = new Logger((debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
-		// this._captureErrors();
+		this._captureErrors();
 
 		// core clock:
 		this._monotonicClock = new MonotonicClock();
@@ -271,7 +271,13 @@ export class PsychoJS {
 	async quit({ message, isCompleted = false } = {}) {
 		this.logger.info('[PsychoJS] Quit.');
 
+		this._experiment.experimentEnded = true;
+		this._status = PsychoJS.Status.FINISHED;
+
 		try {
+			// stop the main scheduler:
+			this._scheduler.stop();
+
 			// save the results and the logs of the experiment:
 			this.gui.dialog({ warning: 'Saving the experiment results and closing the session. Please wait a few moments.', showOK: false });
 			await this._experiment.save();
@@ -279,10 +285,7 @@ export class PsychoJS {
 			// close the session:
 			await this._serverManager.closeSession(isCompleted);
 
-			// stop the main scheduler:
-			this._scheduler.stop();
-
-			// thank participant for waiting and quit or redirect:
+			// thank participant for waiting and either quit or redirect:
 			let text = 'Thank you for your patience. The data have been saved.<br/><br/>';
 			text += (typeof message !== 'undefined') ? message : 'Goodbye!';
 			const self = this;
@@ -297,6 +300,9 @@ export class PsychoJS {
 					// remove everything from the browser window:
 					while (document.body.hasChildNodes())
 						document.body.removeChild(document.body.lastChild);
+
+					// return from fullscreen if we were there:
+					this._window.closeFullScreen();
 
 					// redirect if redirection URLs have been provided:
 					if (isCompleted && typeof self._completionUrl !== 'undefined')

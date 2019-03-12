@@ -2,8 +2,8 @@
  * Color Mixin.
  *
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -65,8 +65,8 @@ export let ColorMixin = (superclass) => class extends superclass {
 	 * @param {number} contrast - the contrast (must be between 0 and 1)
 	 */
 	getContrastedColor(color, contrast) {
-		let rgb = color.rgb.map(c => (c * 2.0 - 1.0) * contrast);
+		const rgb = color.rgb.map(c => (c * 2.0 - 1.0) * contrast);
 		return new Color(rgb, Color.COLOR_SPACE.RGB);
 	}
 
-}
+};

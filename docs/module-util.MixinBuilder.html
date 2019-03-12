@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: BuilderKeyResponse</title>
+    <title>JSDoc: Class: MixinBuilder</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: BuilderKeyResponse</h1>
+    <h1 class="page-title">Class: MixinBuilder</h1>
 
     
 
@@ -29,9 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-core.html">core</a>.</span>BuilderKeyResponse<span class="signature">(options)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">Utility class used by the experiment scripts to keep track of a clock and of the current status (whether or not we are currently checking the keyboard)</div>
+            <span class="ancestors"><a href="module-util.html">util</a>.</span>MixinBuilder<span class="signature">(superclass)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,16 +40,20 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
     
-    <h4 class="name" id="BuilderKeyResponse"><span class="type-signature"></span>new BuilderKeyResponse<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="MixinBuilder"><span class="type-signature"></span>new MixinBuilder<span class="signature">(superclass)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Syntactic sugar for Mixins
+
+<p>This is heavily adapted from: http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/</p>
+</div>
 
 
 
@@ -86,7 +88,7 @@
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>superclass</code></td>
             
 
             <td class="type">
@@ -102,56 +104,7 @@
 
             
 
-            <td class="description last">
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>psychoJS</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="PsychoJS.html">PsychoJS</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the PsychoJS instance</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -192,7 +145,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_EventManager.js.html">core/EventManager.js</a>, <a href="core_EventManager.js.html#line538">line 538</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -217,6 +170,14 @@
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>class BaseClass { ... }
+let Mixin1 = (superclass) => class extends superclass { ... }
+let Mixin2 = (superclass) => class extends superclass { ... }
+class NewClass extends mix(BaseClass).with(Mixin1, Mixin2) { ... }</code></pre>
 
 
 

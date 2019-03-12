@@ -2,8 +2,8 @@
  * Base class for all visual stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -36,7 +36,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	constructor({
 								name,
 								win,
-								units = 'norm',
+								units,
 								ori = 0.0,
 								opacity = 1.0,
 								pos = [0, 0],
@@ -54,6 +54,18 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		this._addAttributes(VisualStim, units, ori, opacity, pos, size);
 
 		this._needUpdate = true;
+	}
+
+
+	/**
+	 * Force a refresh of the stimulus.
+	 *
+	 * @name module:visual.VisualStim#refresh
+	 * @public
+	 */
+	refresh() {
+		this._needUpdate = true;
+		this._needVertexUpdate = true;
 	}
 
 

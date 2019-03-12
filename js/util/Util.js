@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: util/Util.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
-
-<body>
-
-<div id="main">
-
-    <h1 class="page-title">Source: util/Util.js</h1>
-
-    
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
+/**
  * Various utilities.
  * 
  * @author Alain Pitiot
@@ -39,7 +11,7 @@
 /**
  * Syntactic sugar for Mixins
  *
- * &lt;p>This is heavily adapted from: http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/&lt;/p>
+ * <p>This is heavily adapted from: http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/</p>
  *
  * @name module:util.MixinBuilder
  * @class
@@ -87,7 +59,7 @@ export function promiseToTupple(promise) {
 
 /**
  * Get a Universally Unique Identifier (RFC4122 version 4)
- * &lt;p> See details here: https://www.ietf.org/rfc/rfc4122.txt&lt;/p>
+ * <p> See details here: https://www.ietf.org/rfc/rfc4122.txt</p>
  *
  * @name module:util.makeUuid
  * @function
@@ -97,7 +69,7 @@ export function promiseToTupple(promise) {
 export function makeUuid()
 {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-		const r = Math.random() * 16 | 0, v = (c === 'x') ? r : (r &amp; 0x3 | 0x8);
+		const r = Math.random() * 16 | 0, v = (c === 'x') ? r : (r & 0x3 | 0x8);
 		return v.toString(16);
 	});
 }
@@ -139,7 +111,7 @@ export function isEmpty(x)
 	if (typeof x === 'undefined') return true;
 	if (!Array.isArray(x)) return false;
 	if (x.length === 0) return true;
-	if (x.length === 1 &amp;&amp; typeof x[0] === 'undefined') return true;
+	if (x.length === 1 && typeof x[0] === 'undefined') return true;
 
 	return false;
 }
@@ -148,8 +120,8 @@ export function isEmpty(x)
 /**
  * Detect the user's browser.
  *
- * &lt;p> Note: since user agent is easily spoofed, we use a more sophisticated approach, as described here:
- * https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser &lt;/p>
+ * <p> Note: since user agent is easily spoofed, we use a more sophisticated approach, as described here:
+ * https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser </p>
  *
  * @name module:util.detectBrowser
  * @function
@@ -160,7 +132,7 @@ export function isEmpty(x)
 export function detectBrowser()
 {
 	// Opera 8.0+
-	const isOpera = (!!window.opr &amp;&amp; !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 	if (isOpera) return 'Opera';
 
 	// Firefox 1.0+
@@ -168,7 +140,7 @@ export function detectBrowser()
 	if (isFirefox) return 'Firefox';
 
 	// Safari 3.0+ "[object HTMLElementConstructor]" 
-	const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' &amp;&amp; safari.pushNotification));
+	const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 	if (isSafari) return 'Safari';
 
 	// Internet Explorer 6-11
@@ -176,15 +148,15 @@ export function detectBrowser()
 	if (isIE) return 'IE';
 
 	// Edge 20+
-	const isEdge = !isIE &amp;&amp; !!window.StyleMedia;
+	const isEdge = !isIE && !!window.StyleMedia;
 	if (isEdge) return 'Edge';
 
 	// Chrome 1+
-	const isChrome = !!window.chrome &amp;&amp; !!window.chrome.webstore;
+	const isChrome = !!window.chrome && !!window.chrome.webstore;
 	if (isChrome) return 'Chrome';
 
 	// Blink engine detection
-	const isBlink = (isChrome || isOpera) &amp;&amp; !!window.CSS;
+	const isBlink = (isChrome || isOpera) && !!window.CSS;
 	if (isBlink) return 'Blink';
 
 	return 'unknown';
@@ -194,12 +166,12 @@ export function detectBrowser()
 /**
  * Convert obj to its numerical form.
  *
- * &lt;ul>
- *   &lt;li>number -> number, e.g. 2 -> 2&lt;/li>
- *   &lt;li>[number] -> [number], e.g. [1,2,3] -> [1,2,3]&lt;/li>
- *   &lt;li>numeral string -> number, e.g. "8" -> 8&lt;/li>
- *   &lt;li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]&lt;/li>
- * &lt;/ul>
+ * <ul>
+ *   <li>number -> number, e.g. 2 -> 2</li>
+ *   <li>[number] -> [number], e.g. [1,2,3] -> [1,2,3]</li>
+ *   <li>numeral string -> number, e.g. "8" -> 8</li>
+ *   <li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]</li>
+ * </ul>
  *
  * @name module:util.toNumerical
  * @function
@@ -231,7 +203,7 @@ export function toNumerical(obj)
 
 /**
  * Check whether a point lies within a polygon
- * &lt;p>We are using the algorithm described here: https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html&lt;/p>
+ * <p>We are using the algorithm described here: https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html</p>
  *
  * @name module:util.IsPointInsidePolygon
  * @function
@@ -246,11 +218,11 @@ export function IsPointInsidePolygon(point, vertices)
 	const y = point[1];
     
 	let isInside = false;
-	for (let i = 0, j = vertices.length - 1; i &lt; vertices.length; j = i++)
+	for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++)
 	{
   	const xi = vertices[i][0], yi = vertices[i][1];
     const xj = vertices[j][0], yj = vertices[j][1];
-    const intersect = ((yi > y) !== (yj > y)) &amp;&amp; (x &lt; (xj - xi) * (y - yi) / (yj - yi) + xi);
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
     if (intersect) isInside = !isInside;
   }
     
@@ -260,7 +232,7 @@ export function IsPointInsidePolygon(point, vertices)
 
 /**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
- * &lt;p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm&lt;/p>
+ * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
  * @name module:util.shuffle
  * @function
@@ -483,7 +455,7 @@ export function to_pixiPoint(pos, posUnit, win)
 /**
  * Convert an object to its string representation.
  *
- * &lt;p>Note: if the object is not already a string, we JSON stringify it and detect circularity.&lt;/p>
+ * <p>Note: if the object is not already a string, we JSON stringify it and detect circularity.</p>
  *
  * @name module:util.toString
  * @function
@@ -517,7 +489,7 @@ if (!String.prototype.format) {
 		})
 		.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name) {
 			//console.log("n=" + name + " args[0][name]=" + args[0][name]);
-			return args.length > 0 &amp;&amp;  args[0][name] !== undefined
+			return args.length > 0 &&  args[0][name] !== undefined
 			? args[0][name]
 			: match
 			;
@@ -528,7 +500,7 @@ if (!String.prototype.format) {
 
 /**
  * Test whether an object is either an integer or the string representation of an integer.
- * &lt;p>This is adapted from: https://stackoverflow.com/a/14794066&lt;/p>
+ * <p>This is adapted from: https://stackoverflow.com/a/14794066</p>
  *
  * @name module:util.isInt
  * @function
@@ -593,22 +565,22 @@ export function addInfoFromUrl(info)
 /**
  * Select values from an array.
  *
- * &lt;p> 'selection' can be a single integer, an array of indices, or a string to be parsed, e.g.:
- * &lt;ul>
- *   &lt;li>5&lt;/li>
- *   &lt;li>[1,2,3,10]&lt;/li>
- *   &lt;li>'1,5,10'&lt;/li>
- *   &lt;li>'1:2:5'&lt;/li>
- *   &lt;li>'5:'&lt;/li>
- *   &lt;li>'-5:-2, 9, 11:5:22'&lt;/li>
- * &lt;/ul>&lt;/p>
+ * <p> 'selection' can be a single integer, an array of indices, or a string to be parsed, e.g.:
+ * <ul>
+ *   <li>5</li>
+ *   <li>[1,2,3,10]</li>
+ *   <li>'1,5,10'</li>
+ *   <li>'1:2:5'</li>
+ *   <li>'5:'</li>
+ *   <li>'-5:-2, 9, 11:5:22'</li>
+ * </ul></p>
  *
  * @name module:util.selectFromArray
  * @function
  * @public
- * @param {Array.&lt;Object>} array - the input array
- * @param {number | Array.&lt;number> | string} selection -  the selection
- * @returns {Array.&lt;Object>} the array of selected items
+ * @param {Array.<Object>} array - the input array
+ * @param {number | Array.<number> | string} selection -  the selection
+ * @returns {Array.<Object>} the array of selected items
  */
 export function selectFromArray(array, selection) {
 
@@ -646,8 +618,8 @@ export function selectFromArray(array, selection) {
  * @name module:util.flattenArray
  * @function
  * @public
- * @param {Array.&lt;Object>} array - the input array of arrays
- * @returns {Array.&lt;Object>} the flatten array
+ * @param {Array.<Object>} array - the input array of arrays
+ * @returns {Array.<Object>} the flatten array
  */
 function flattenArray(array) {
 	return array.reduce( (flat, next) => flat.concat(Array.isArray(next) ? flattenArray(next) : next), [] );
@@ -660,11 +632,11 @@ function flattenArray(array) {
  * @name module:util.sliceArray
  * @function
  * @public
- * @param {Array.&lt;Object>} array - the input array
+ * @param {Array.<Object>} array - the input array
  * @param {number} [from= NaN] - the start of the slice
  * @param {number} [to= NaN] - the end of the slice
  * @param {number} [step= NaN] - the step of the slice
- * @returns {Array.&lt;Object>} the array slice
+ * @returns {Array.<Object>} the array slice
  */
 function sliceArray(array, from = NaN, to = NaN, step = NaN)
 {
@@ -676,7 +648,7 @@ function sliceArray(array, from = NaN, to = NaN, step = NaN)
 	if (isNaN(step))
 		return arraySlice;
 
-	if (step &lt; 0)
+	if (step < 0)
 		arraySlice.reverse();
 
 	step = Math.abs(step);
@@ -685,26 +657,3 @@ function sliceArray(array, from = NaN, to = NaN, step = NaN)
 	else
 		return arraySlice.filter( (e,i) => (i % step == 0) );
 }
-</code></pre>
-        </article>
-    </section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Mar 12 2019 08:55:12 GMT+0100 (CET)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
-</html>

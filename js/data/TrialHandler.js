@@ -3,8 +3,8 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -313,8 +313,18 @@ export class TrialHandler extends PsychObject {
 				for (let r = 0; r < selectedRows.length; ++r) {
 					let row = selectedRows[r];
 					let trial = {};
-					for (let l = 0; l < fields.length; ++l)
-						trial[fields[l]] = row[l];
+					for (let l = 0; l < fields.length; ++l) {
+						let value = row[l];
+
+						// if value is a numerical string, convert it to a number:
+						if (typeof value === 'string') {
+							const numericalValue = Number.parseFloat(value);
+							if (!Number.isNaN(numericalValue))
+								value = numericalValue;
+						}
+
+						trial[fields[l]] = value;
+					}
 					trialList[r] = trial;
 				}
 

@@ -2,8 +2,8 @@
  * Image Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -248,7 +248,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			this._pixi.addChild(this._pixi.mask);
 		}
 
-		// since _texture.width may not be immedialy available but the rest of the code needs its value
+		// since _texture.width may not be immediately available but the rest of the code needs its value
 		// we arrange for repeated calls to _updateIfNeeded until we have a width:
 		if (this._texture.width === 0) {
 			this._needUpdate = true;
@@ -256,6 +256,18 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		this._pixi.alpha = this.opacity;
+
+
+		// const colorFilter = new PIXI.filters.ColorMatrixFilter();
+		// colorFilter.matrix[0] = 2;
+		// colorFilter.matrix[6] = 1;
+		// colorFilter.matrix[12] = 1;
+		// // colorFilter.alpha = 1;
+		// colorFilter.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+		// console.log(colorFilter.matrix);
+		// this._pixi.filters = [colorFilter];
+
+
 
 		// stimulus size:
 		// note: we use the size of the texture if ImageStim has no specified size:

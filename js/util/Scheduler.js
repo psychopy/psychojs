@@ -2,8 +2,8 @@
  * Scheduler.
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -14,12 +14,12 @@
  * 
  * <p>
  * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
- * javascript functions returning one of the following codes:
+ * JavaScript functions returning one of the following codes:
  * <ul>
- * <li>Scheduler.Event.NEXT: </li>
- * <li>Scheduler.Event.FLIP_REPEAT: </li>
- * <li>Scheduler.Event.FLIP_NEXT: </li>
- * <li>Scheduler.Event.QUIT: </li>
+ * <li>Scheduler.Event.NEXT: Move onto the next task *without* rendering the scene first.</li>
+ * <li>Scheduler.Event.FLIP_REPEAT: Render the scene and repeat the task.</li>
+ * <li>Scheduler.Event.FLIP_NEXT: Render the scene and move onto the next task.</li>
+ * <li>Scheduler.Event.QUIT: Quit the scheduler.</li>
  * </ul>
  * </p>
  * 
@@ -28,7 +28,7 @@
  * task would be by calling [scheduler.add(subScheduler)]{@link module:util.Scheduler#add}.</p>
  * 
  * <p> Conditional branching is also available:
- * [scheduler.addConditionalBranches]{@link module:util.Scheduler#addConditionalBranches}</p>
+ * [scheduler.addConditionalBranches]{@link module:util.Scheduler#addConditional}</p>
  * 
  * 
  * @name module:util.Scheduler
@@ -48,7 +48,20 @@ export class Scheduler {
 		this._currentArgs = undefined;
 
 		this._stopAtNextUpdate = false;
+		this._stopAtNextTask = false;
+
+		this._status = Scheduler.Status.STOPPED;
 	}
+
+
+	/**
+	 * Get the status of the scheduler.
+	 *
+	 * @name module:util.Scheduler#status
+	 * @public
+	 * @returns {module:util.Scheduler#Status} the status of the scheduler
+	 */
+	get status() { return this._status; }
 
 
   /**
@@ -89,59 +102,17 @@ export class Scheduler {
 	 * @param {module:util.Scheduler} elseScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is not satisfied
 	 */
 	addConditional(condition, thenScheduler, elseScheduler) {
-		let self = this;
+		const self = this;
 		let task = function () {
 			if (condition())
 				self.add(thenScheduler);
 			else
-				self.add(elseScheduler)
+				self.add(elseScheduler);
 
 			return Scheduler.Event.NEXT;
 		};
 
 		this.add(task);
-	}
-
-
-
-	/**
-	 * Run the next scheduled tasks in sequence until one of them returns something other than Scheduler.Event.NEXT.
-	 * 
-	 * @name module:util.Scheduler#run
-	 * @public
-	 * @return {module:util.Schedule#Event} the state of the scheduler after the task ran
-	 */
-	run() {
-		let state = Scheduler.Event.NEXT;
-
-		while (state === Scheduler.Event.NEXT) {
-			if (typeof this._currentTask == 'undefined') {
-				if (this._taskList.length > 0) {
-					this._currentTask = this._taskList.shift();
-					this._currentArgs = this._argsList.shift();
-				}
-				else {
-					this._currentTask = undefined;
-					return Scheduler.Event.QUIT;
-				}
-			}
-			if (this._currentTask instanceof Function) {
-				state = this._currentTask(...this._currentArgs);
-			}
-			// if currentTask is not a function, it can only be another scheduler:
-			else {
-				state = this._currentTask.run();
-				if (state === Scheduler.Event.QUIT)
-					state = Scheduler.Event.NEXT;
-			}
-
-			if (state !== Scheduler.Event.FLIP_REPEAT) {
-				this._currentTask = undefined;
-				this._currentArgs = undefined;
-			}
-		}
-
-		return state;
 	}
 
 
@@ -154,24 +125,29 @@ export class Scheduler {
 	 * @public
 	 */
 	start() {
-		let self = this;
+		const self = this;
 		let update = () => {
-			// stop the animation is need be:
-			if (self._stopAtNextUpdate) return;
+			// stop the animation if need be:
+			if (self._stopAtNextUpdate) {
+				self._status = Scheduler.Status.STOPPED;
+				return;
+			}
 
 			// self._psychoJS.window._writeLogOnFlip();
 
-			// run the next task:
-			let state = self.run();
-			if (state === Scheduler.Event.QUIT)
+			// run the next scheduled tasks until a scene render is requested:
+			const state = self._runNextTasks();
+			if (state === Scheduler.Event.QUIT) {
+				self._status = Scheduler.Status.STOPPED;
 				return;
+			}
 
 			// render the scene in the window:
 			self._psychoJS.window.render();
 
 			// request a new frame:
 			requestAnimationFrame(update);
-		}
+		};
 
 		// start the animation:
 		requestAnimationFrame(update);
@@ -179,14 +155,86 @@ export class Scheduler {
 
 
 	/**
-	 * Stop this scheduler at the next update.
+	 * Stop this scheduler.
 	 * 
 	 * @name module:util.Scheduler#stop
 	 * @public
 	 */
 	stop() {
+		this._status = Scheduler.Status.STOPPED;
+		this._stopAtNextTask = true;
 		this._stopAtNextUpdate = true;
 	}
+
+
+	/**
+	 * Run the next scheduled tasks, in sequence, until a rendering of the scene is requested.
+	 *
+	 * @name module:util.Scheduler#_runNextTasks
+	 * @private
+	 * @return {module:util.Scheduler#Event} the state of the scheduler after the last task ran
+	 */
+	_runNextTasks() {
+		this._status = Scheduler.Status.RUNNING;
+
+		let state = Scheduler.Event.NEXT;
+		while (state === Scheduler.Event.NEXT) {
+			// check if we need to quit:
+			if (this._stopAtNextTask)
+				return Scheduler.Event.QUIT;
+
+			// if there is no current task, we look for the next one in the list or quit if there is none:
+			if (typeof this._currentTask == 'undefined') {
+
+				// a task is available in the taskList:
+				if (this._taskList.length > 0) {
+					this._currentTask = this._taskList.shift();
+					this._currentArgs = this._argsList.shift();
+				}
+				// the taskList is empty: we quit
+				else {
+					this._currentTask = undefined;
+					this._currentArgs = undefined;
+					return Scheduler.Event.QUIT;
+				}
+			} else {
+				// we are repeating a task
+			}
+
+			// if the current task is a scheduler, we run its tasks until a rendering of the scene is required:
+			if (this._currentTask instanceof Scheduler) {
+				state = this._currentTask._runNextTasks();
+				if (state === Scheduler.Event.QUIT) {
+					// if the experiment has not ended, we move onto the next task:
+					if (!this._psychoJS.experiment.experimentEnded)
+						state = Scheduler.Event.NEXT;
+				}
+			}
+
+			// if the current task is a function, we run it:
+			else if (this._currentTask instanceof Function) {
+				state = this._currentTask(...this._currentArgs);
+			}
+
+			// we should not be here...
+			else { console.log(this._currentTask);
+				throw { origin: 'Scheduler._runNextTasks', context: 'when running the scheduler\'s tasks', error: 'the next' +
+						' task has unknown type (neither a Scheduler nor a Function)' };
+			}
+
+
+			// if the current task's return status is FLIP_REPEAT, we will re-run it, otherwise
+			// we move onto the next task:
+			if (state !== Scheduler.Event.FLIP_REPEAT) {
+				this._currentTask = undefined;
+				this._currentArgs = undefined;
+			}
+
+		}
+
+		return state;
+	}
+
 }
 
 
@@ -199,8 +247,44 @@ export class Scheduler {
  * @public
  */
 Scheduler.Event = {
+	/**
+	 * Move onto the next task *without* rendering the scene first.
+	 */
 	NEXT: Symbol.for('NEXT'),
+
+	/**
+	 * Render the scene and repeat the task.
+ 	 */
 	FLIP_REPEAT: Symbol.for('FLIP_REPEAT'),
+
+	/**
+	 * Render the scene and move onto the next task.
+	 */
 	FLIP_NEXT: Symbol.for('FLIP_NEXT'),
+
+	/**
+	 * Quit the scheduler.
+	 */
 	QUIT: Symbol.for('QUIT')
+};
+
+
+/**
+ * Status.
+ *
+ * @name module:util.Scheduler#Status
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+Scheduler.Status = {
+	/**
+	 * The Scheduler is running.
+	 */
+	RUNNING: Symbol.for('RUNNING'),
+
+	/**
+	 * The Scheduler is stopped.
+	 */
+	STOPPED: Symbol.for('STOPPED')
 };

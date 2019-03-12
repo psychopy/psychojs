@@ -2,8 +2,8 @@
  * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
- * @version 3.0.0b13
- * @copyright (c) 2018 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.6 
+ * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -114,7 +114,11 @@ export class Window extends PsychObject {
 	 * @public
 	 */
 	adjustScreenSize() {
-		if (this.fullscr) {
+		this._windowAlreadyInFullScreen = (!window.screenTop && !window.screenY);
+
+		if (this.fullscr && !this._windowAlreadyInFullScreen) {
+			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'to full screen.');
+
 			if (typeof document.documentElement.requestFullscreen === 'function')
 				document.documentElement.requestFullscreen();
 			else if (typeof document.documentElement.mozRequestFullScreen === 'function')
@@ -126,11 +130,42 @@ export class Window extends PsychObject {
 			else
 				this.psychoJS.logger.warn('Unable to go fullscreen.');
 
-			// the Window and all of the stimuli need updating:
+			// the Window and all of the stimuli need to be updated:
 			this._needUpdate = true;
-			for (const stim of this._drawList)
-				stim._needUpdate = true;
+			for (const stimulus of this._drawList)
+				stimulus._needUpdate = true;
 		}
+	}
+
+
+	/**
+	 * Take the browser back from full screen if needed.
+	 *
+	 * @name module:core.Window#closeFullScreen
+	 * @function
+	 * @public
+	 */
+	closeFullScreen() {
+		// if the window was already full screen before we started the study, we don't close
+		// full screen:
+		if (this._windowAlreadyInFullScreen)
+			return;
+
+		// if the window is already back from full screen, we do nothing
+		const windowInFullScreen = (!window.screenTop && !window.screenY);
+		if (this.fullscr && windowInFullScreen) {
+			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'back from full screen.');
+
+			if (typeof document.exitFullscreen === 'function')
+				document.exitFullscreen();
+			else if (typeof document.mozCancelFullScreen === 'function')
+				document.mozCancelFullScreen();
+			else if (typeof document.webkitExitFullscreen === 'function')
+				document.webkitExitFullscreen();
+			else if (typeof document.msExitFullscreen === 'function')
+				document.msExitFullscreen();
+		}
+
 	}
 
 
@@ -218,6 +253,8 @@ export class Window extends PsychObject {
 	_updateIfNeeded() {
 		if (this._needUpdate) {
 			this._renderer.backgroundColor = this._color.int;
+			// we also change the background color of the body since the dialog popup may be longer than the window's height:
+			document.body.style.backgroundColor = this._color.hex;
 
 			this._needUpdate = false;
 		}
@@ -225,7 +262,7 @@ export class Window extends PsychObject {
 
 
 	/**
-	 * Recompute the window's _drawList and _container children for the next animation frame.
+	 * Recompute this window's draw list and _container children for the next animation frame.
 	 * 
 	 * @name module:core.Window#_refresh
 	 * @function
@@ -235,12 +272,29 @@ export class Window extends PsychObject {
 		this._updateIfNeeded();
 
 		// if a stimuli needs to be updated, we remove it from the window container, update it, then put it back
-		for (const stim of this._drawList)
-			if (stim._needUpdate) {
-				this._rootContainer.removeChild(stim._pixi);
-				stim._updateIfNeeded();
-				this._rootContainer.addChild(stim._pixi);
+		for (const stimulus of this._drawList)
+			if (stimulus._needUpdate) {
+				this._rootContainer.removeChild(stimulus._pixi);
+				stimulus._updateIfNeeded();
+				this._rootContainer.addChild(stimulus._pixi);
 			}
+	}
+
+
+	/**
+	 * Force an update of all stimuli in this window's drawlist.
+	 *
+	 * @name module:core.Window#_fullRefresh
+	 * @function
+	 * @private
+	 */
+	_fullRefresh() {
+		this._needUpdate = true;
+
+		for (const stimulus of this._drawList)
+			stimulus.refresh();
+
+		this._refresh();
 	}
 
 
@@ -266,51 +320,58 @@ export class Window extends PsychObject {
 		this._renderer.view.style.position = "absolute";
 		document.body.appendChild(this._renderer.view);
 
-		// top-level container:
+		// we also change the background color of the body since the dialog popup may be longer than the window's height:
+		document.body.style.backgroundColor = this._color.hex;
+
+		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
 		this._rootContainer.interactive = true;
 
-		// set size of renderer and position of root container:
-		this._onResize(this);
+		// set the initial size of the PIXI renderer and the position of the root container:
+		Window._resizePixiRenderer(this);
 
-		// touch/mouse events should be treated by PsychoJS' event manager:
+		// touch/mouse events are treated by PsychoJS' event manager:
 		this.psychoJS.eventManager.addMouseListeners(this._renderer);
 
-		// update the renderer size when the browser's size or orientation changes:
-		this._resizeCallback = e => this._onResize(this);
+		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
+		this._resizeCallback = (e) => {
+			Window._resizePixiRenderer(this, e);
+			this._fullRefresh();
+		};
 		window.addEventListener('resize', this._resizeCallback);
 		window.addEventListener('orientationchange', this._resizeCallback);
 	}
 
 
 	/**
-	 * Treat a window resize event.
-	 * 
-	 * <p>We adjust the size of the renderer and the position of the root container.</p>
-	 * <p>Note: since this method will be called by the DOM window (i.e. 'this' is
-	 * the DOM window), we need to pass it a {@link Window}.</p>
-	 * 
-	 * @name module:core.Window#_onResize
+	 * Adjust the size of the renderer and the position of the root container
+	 * in response to a change in the browser's size.
+	 *
+	 * @name module:core.Window#_resizePixiRenderer
 	 * @function
 	 * @private
-	 * @param {Window} win - The PsychoJS window
+	 * @param {module:core.Window} pjsWindow - the PsychoJS Window
+	 * @param event
 	 */
-	_onResize(win) {
-		// update the size of the PsychoJS Window:
-		win._size[0] = window.innerWidth;
-		win._size[1] = window.innerHeight;
+	static _resizePixiRenderer(pjsWindow, event) {
+		pjsWindow._psychoJS.logger.debug('resizing Window: ', pjsWindow._name, 'event:', JSON.stringify(event));
 
-		win._renderer.view.style.width = win._size[0] + 'px';
-		win._renderer.view.style.height = win._size[1] + 'px';
-		win._renderer.view.style.left = '0px';
-		win._renderer.view.style.top = '0px';
-		win._renderer.resize(win._size[0], win._size[1]);
+		// update the size of the PsychoJS Window:
+		pjsWindow._size[0] = window.innerWidth;
+		pjsWindow._size[1] = window.innerHeight;
+
+		// update the PIXI renderer:
+		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + 'px';
+		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + 'px';
+		pjsWindow._renderer.view.style.left = '0px';
+		pjsWindow._renderer.view.style.top = '0px';
+		pjsWindow._renderer.resize(pjsWindow._size[0], pjsWindow._size[1]);
 
 		// setup the container such that (0,0) is at the centre of the window
 		// with positive coordinates to the right and top:
-		win._rootContainer.position.x = win._size[0] / 2.0;
-		win._rootContainer.position.y = win._size[1] / 2.0;
-		win._rootContainer.scale.y = -1;
+		pjsWindow._rootContainer.position.x = pjsWindow._size[0] / 2.0;
+		pjsWindow._rootContainer.position.y = pjsWindow._size[1] / 2.0;
+		pjsWindow._rootContainer.scale.y = -1;
 	}
 
 
