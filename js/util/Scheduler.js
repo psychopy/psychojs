@@ -14,7 +14,7 @@
  * 
  * <p>
  * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
- * JavaScript functions returning one of the following codes:
+ * JavaScript function returning one of the following codes:
  * <ul>
  * <li>Scheduler.Event.NEXT: Move onto the next task *without* rendering the scene first.</li>
  * <li>Scheduler.Event.FLIP_REPEAT: Render the scene and repeat the task.</li>
