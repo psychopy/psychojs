@@ -274,6 +274,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			// halve the opacity:
 			if (readOnly)
 				this._opacity /= 2.0;
+			else
+				this._opacity *= 2.0;
 
 			this._needUpdate = true;
 		}
