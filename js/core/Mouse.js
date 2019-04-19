@@ -2,8 +2,8 @@
  * Manager responsible for the interactions between the experiment's stimuli and the mouse.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 

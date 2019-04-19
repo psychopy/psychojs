@@ -2,8 +2,8 @@
  * Clock component.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -150,7 +150,7 @@ export class CountdownTimer extends Clock {
 		this._timeAtLastReset = MonotonicClock.getReferenceTime();
 		this._countdown_duration = startTime;
 		if (startTime) {
-			this.add(startTime)
+			this.add(startTime);
 		}
 	}
 

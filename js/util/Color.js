@@ -2,8 +2,8 @@
  * Color management.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -33,7 +33,7 @@
 export class Color {
 
 	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB) {
-		let response = { origin: 'Color', context: 'when defining a color' };
+		const response = { origin: 'Color', context: 'when defining a color' };
 
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
 		// note: we expect the color space to be RGB
@@ -386,9 +386,9 @@ export class Color {
 	 * @return {Array.<number>} the [0, 255] RGB equivalent
 	 */
 	static _intToRgb255(hex) {
-		let r255 = hex >>> 0x10;
-		let g255 = (hex & 0xFF00) / 0x100;
-		let b255 = hex & 0xFF;
+		const r255 = hex >>> 0x10;
+		const g255 = (hex & 0xFF00) / 0x100;
+		const b255 = hex & 0xFF;
 
 		return [r255, g255, b255];
 	}
@@ -407,7 +407,7 @@ export class Color {
 	 * @return {Array.<number>} the [0, 1] RGB equivalent
 	 */
 	static _intToRgb(hex) {
-		let [r255, g255, b255] = Color._intToRgb255(hex);
+		const [r255, g255, b255] = Color._intToRgb255(hex);
 
 		return [r255 / 255.0, g255 / 255.0, b255 / 255.0];
 	}

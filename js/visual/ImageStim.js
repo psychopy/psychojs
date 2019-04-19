@@ -2,8 +2,8 @@
  * Image Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -84,7 +84,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setImage(image, log = false) {
-		let response = { origin: 'ImageStim.setImage', context: 'when setting the image of ImageStim: ' + this._name };
+		const response = { origin: 'ImageStim.setImage', context: 'when setting the image of ImageStim: ' + this._name };
 
 		try {
 			// image is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
@@ -124,7 +124,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setMask(mask, log = false) {
-		let response = { origin: 'ImageStim.setMask', context: 'when setting the mask of ImageStim: ' + this._name };
+		const response = { origin: 'ImageStim.setMask', context: 'when setting the mask of ImageStim: ' + this._name };
 
 		try {
 			// mask is undefined: that's fine but we raise a warning in case this is a sympton of an actual problem

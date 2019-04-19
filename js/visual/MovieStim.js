@@ -2,8 +2,8 @@
  * Movie Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -92,7 +92,7 @@ export class MovieStim extends VisualStim {
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setMovie(movie, log = false) {
-		let response = { origin: 'MovieStim.setMovie', context: 'when setting the movie of MovieStim: ' + this._name };
+		const response = { origin: 'MovieStim.setMovie', context: 'when setting the movie of MovieStim: ' + this._name };
 
 		try {
 			// movie is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem

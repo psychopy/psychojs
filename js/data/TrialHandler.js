@@ -3,8 +3,8 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -146,7 +146,7 @@ export class TrialHandler extends PsychObject {
 				return { value: this.thisTrial, done: false };
 			}
 		};
-	};
+	}
 
 
 	/**
@@ -284,24 +284,22 @@ export class TrialHandler extends PsychObject {
 			let resourceExtension = resourceName.split('.').pop();
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1) {
 				// (*) read conditions from resource:
-				let resourceValue = serverManager.getResource(resourceName);
-				let workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
+				const resourceValue = serverManager.getResource(resourceName);
+				const workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
+				// const workbook = XLSX.read(resourceValue, { type: "buffer" }); // would work for ascii .csv
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
 					throw 'workbook should contain at least one worksheet';
-				let sheetName = workbook.SheetNames[0];
-				let worksheet = workbook.Sheets[sheetName];
+				const sheetName = workbook.SheetNames[0];
+				const worksheet = workbook.Sheets[sheetName];
 
 				// worksheet to array of arrays (the first array contains the fields):
-				let sheet = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-				let fields = sheet.shift();
+				const sheet = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false });
+				const fields = sheet.shift();
 
 				// (*) select conditions:
-				let selectedRows = sheet;
-				if (selection != null)
-					selectedRows = util.selectFromArray(sheet, selection);
-
+				const selectedRows = (selection === null) ? sheet : util.selectFromArray(sheet, selection);
 
 				// (*) return the selected conditions as an array of 'object as map':
 				// [
@@ -348,7 +346,7 @@ export class TrialHandler extends PsychObject {
 	 * @param {Array.<Object> | String} trialList - a list of trials, or the name of a condition resource
 	 */
 	_prepareTrialList(trialList) {
-		let response = { origin : 'TrialHandler._prepareTrialList', context : 'when preparing the trial list' };
+		const response = { origin : 'TrialHandler._prepareTrialList', context : 'when preparing the trial list' };
 
 		// we treat undefined trialList as a list with a single empty entry:
 		if (typeof trialList === 'undefined')
@@ -397,7 +395,7 @@ export class TrialHandler extends PsychObject {
 	 * @protected
 	 */
 	_prepareSequence() {
-		let response = { origin : 'TrialHandler._prepareSequence', context : 'when preparing a sequence of trials' };
+		const response = { origin : 'TrialHandler._prepareSequence', context : 'when preparing a sequence of trials' };
 
 		// get an array of the indices of the elements of trialList :
 		const indices = Array.from(this.trialList.keys());

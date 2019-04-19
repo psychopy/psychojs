@@ -2,8 +2,8 @@
  * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -182,10 +182,7 @@ export class Window extends PsychObject {
 	 * @param {integer} level the log level
 	 * @param {Object} [obj] the object associated with the message
 	 */
-	logOnFlip({
-		msg,
-		level,
-		obj = undefined } = {}) {
+	logOnFlip({ msg, level, obj} = {}) {
 		this._msgToBeLogged.push({ msg, level, obj });
 	}
 
@@ -316,8 +313,8 @@ export class Window extends PsychObject {
 		this._renderer = PIXI.autoDetectRenderer(this._size[0], this._size[1], {
 			backgroundColor: this.color.int
 		});
-		this._renderer.view.style["transform"] = "translatez(0)";
-		this._renderer.view.style.position = "absolute";
+		this._renderer.view.style.transform = 'translatez(0)';
+		this._renderer.view.style.position = 'absolute';
 		document.body.appendChild(this._renderer.view);
 
 		// we also change the background color of the body since the dialog popup may be longer than the window's height:

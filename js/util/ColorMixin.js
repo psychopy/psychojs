@@ -2,8 +2,8 @@
  * Color Mixin.
  *
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -36,7 +36,7 @@ export let ColorMixin = (superclass) => class extends superclass {
 		this._setAttribute('color', color, log);
 
 		this._needUpdate = true;
-	};
+	}
 
 
 	/**

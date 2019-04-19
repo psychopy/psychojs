@@ -2,8 +2,8 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -274,6 +274,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			// halve the opacity:
 			if (readOnly)
 				this._opacity /= 2.0;
+			else
+				this._opacity *= 2.0;
 
 			this._needUpdate = true;
 		}

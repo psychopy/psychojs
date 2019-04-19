@@ -3,8 +3,8 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -67,7 +67,7 @@ export class PsychObject extends EventEmitter {
 	 * was not previously set)
 	 */
 	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false) {
-		let response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
+		const response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
 
 		if (typeof attributeName == 'undefined')
 			throw { ...response, error: 'the attribute name cannot be undefined' };

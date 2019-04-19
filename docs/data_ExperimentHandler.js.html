@@ -30,14 +30,16 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.1
+ * @version 3.0.8
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { PsychObject } from '../util/PsychObject'
-import { MonotonicClock } from '../util/Clock'
+import { PsychObject } from '../util/PsychObject';
+import { MonotonicClock } from '../util/Clock';
+import { PsychoJS } from '../core/PsychoJS';
+import * as util from '../util/Util';
 
 
 /**
@@ -185,7 +187,11 @@ export class ExperimentHandler extends PsychObject {
 	/**
 	 * Save the results of the experiment.
 	 *
-	 * &lt;p> Results are uploaded to the remote https://pavlovia.org server&lt;/p>
+	 * &lt;ul>
+	 *   &lt;li>For an experiment running locally, the results are offered for immediate download.&lt;/li>
+	 *   &lt;li>For an experiment running on the server, the results are uploaded to the server.&lt;/li>
+	 * &lt;/ul>
+	 * &lt;p>
 	 *
 	 * @name module:data.ExperimentHandler#save
 	 * @function
@@ -207,11 +213,11 @@ export class ExperimentHandler extends PsychObject {
 				const loopAttributes = ExperimentHandler._getLoopAttributes(loop);
 				for (let a in loopAttributes)
 					if (loopAttributes.hasOwnProperty(a))
-					attributes.push(a);
+						attributes.push(a);
 			}
 			for (let a in this.extraInfo) {
 				if (this.extraInfo.hasOwnProperty(a))
-				attributes.push(a);
+					attributes.push(a);
 			}
 		}
 
@@ -223,7 +229,7 @@ export class ExperimentHandler extends PsychObject {
 		const __session = ((typeof info.session === 'string' &amp;&amp; info.session.length > 0) ? info.session : 'SESSION');
 		const __datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
 		const gitlabConfig = this._psychoJS.config.gitlab;
-		const __projectId = (typeof gitlabConfig !== 'undefined' &amp;&amp; typeof gitlabConfig.projectId !== 'undefined')?gitlabConfig.projectId:undefined;
+		const __projectId = (typeof gitlabConfig !== 'undefined' &amp;&amp; typeof gitlabConfig.projectId !== 'undefined') ? gitlabConfig.projectId : undefined;
 
 
 		// (*) save to a .csv file on the remote server:
@@ -255,9 +261,12 @@ export class ExperimentHandler extends PsychObject {
 			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
 			const csv = XLSX.utils.sheet_to_csv(worksheet);
 
-			// upload data to the remote PsychoJS manager:
+			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			return await this._psychoJS.serverManager.uploadData(key, csv);
+			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER)
+				return await this._psychoJS.serverManager.uploadData(key, csv);
+			else
+				util.offerDataForDownload(key, csv, 'text/csv');
 		}
 
 
@@ -266,16 +275,20 @@ export class ExperimentHandler extends PsychObject {
 			let documents = [];
 
 			for (let r = 0; r &lt; this._trialsData.length; r++) {
-				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
+				let doc = {__projectId, __experimentName, __participant, __session, __datetime};
 				for (let h = 0; h &lt; attributes.length; h++)
 					doc[attributes[h]] = this._trialsData[r][attributes[h]];
 
 				documents.push(doc);
 			}
 
-			// upload data to the remote PsychoJS manager:
-			const key = 'results'; // name of the mongoDB collection
-			return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+			// upload data to the pavlovia server or offer them for download:
+			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER) {
+				const key = 'results'; // name of the mongoDB collection
+				return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+			} else
+				util.offerDataForDownload('results.json', JSON.stringify(documents), 'application/json');
+
 		}
 	}
 
@@ -291,7 +304,7 @@ export class ExperimentHandler extends PsychObject {
 	 * @param {Object} loop - the loop
 	 */
 	static _getLoopAttributes(loop) {
-		const loopName = loop['name'];
+		const loopName = loop.name;
 
 		// standard attributes:
 		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
@@ -299,11 +312,7 @@ export class ExperimentHandler extends PsychObject {
 		for (const property of properties)
 			for (const loopProperty in loop)
 				if (loopProperty === property) {
-					if (property === 'stepSizeCurrent')
-						var key = loopName + '.stepSize';
-					else
-						key = loopName + '.' + property;
-
+					const key = (property === 'stepSizeCurrent')? loopName + '.stepSize' : loopName + '.' + property;
 					attributes[key] = loop[property];
 				}
 
@@ -373,13 +382,13 @@ ExperimentHandler.SaveFormat = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Mar 12 2019 08:55:12 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 19 2019 09:44:48 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

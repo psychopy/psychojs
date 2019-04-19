@@ -3,8 +3,8 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -46,6 +46,8 @@ export class PsychoJS {
 	get eventManager() { return this._eventManager; }
 	get gui() { return this._gui; }
 	get IP() { return this._IP; }
+	// this._serverMsg is a bi-directional message board for communications with the pavlovia.org server:
+	get serverMsg() { return this._serverMsg; }
 
 
 	/**
@@ -92,6 +94,17 @@ export class PsychoJS {
 		this.logger.info('[PsychoJS] Initialised.');
 	}
 
+
+	/**
+	 * Get the experiment's environment.
+	 *
+	 * @returns {PsychoJS.Environment | undefined} the environment of the experiment, or undefined
+	 */
+	getEnvironment() {
+		if (typeof this._config === 'undefined')
+			return undefined;
+		return this._config.environment;
+	}
 
 	/**
 	 * Open a PsychoJS Window.
@@ -180,33 +193,32 @@ export class PsychoJS {
 	 * 
 	 * @param {Object} options
 	 * @param {string} [options.configURL=config.json] - the URL of the configuration file
+	 * @param {string} [options.expName=UNKNOWN] - the name of the experiment
 	 * @param {Object.<string, *>} [options.expInfo] - additional information about the experiment
 	 * @async
 	 * @public
 	 */
-	async start({ configURL = 'config.json', expInfo } = {}) {
+	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo } = {}) {
 		this.logger.debug();
 
-		let response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
+		const response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
 
 		try {
 			// configure the experiment:
-			await this._configure(configURL);
+			await this._configure(configURL, expName);
 
 			// get the participant IP:
 			if (this._collectIP) {
-				// get IP info of participant
-				// note: since we make a GET call to http://ipinfo.io to get the IP info,
-				// it will not be immediately available.
 				this._getParticipantIPInfo();
 			} else {
-				this._IP = {};
-				this._IP['IP'] = 'X';
-				this._IP['hostname'] = 'X';
-				this._IP['city'] = 'X';
-				this._IP['region'] = 'X';
-				this._IP['country'] = 'X';
-				this._IP['location'] = 'X';
+				this._IP = {
+					IP: 'X',
+					hostname : 'X',
+					city : 'X',
+					region : 'X',
+					country : 'X',
+					location : 'X'
+				};
 			}
 
 			// setup the experiment handler:
@@ -215,19 +227,49 @@ export class PsychoJS {
 				extraInfo: expInfo
 			});
 
+			// get potential information from the server:
+			this._serverMsg = util.getUrlParameters().get('__msg');
+
 			// setup the logger:
 			//my.logger.console.setLevel(psychoJS.logging.WARNING);
 			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
-			// open a new session:
-			await this._serverManager.openSession();
+			// if the experiment is running on the server, we open a session and download the resources:
+			if (this.getEnvironment() === PsychoJS.Environment.SERVER) {
+				// open a new session:
+				await this._serverManager.openSession();
 
-			// start the asynchronous download of resources:
-			this._serverManager.downloadResources();
+				// start the asynchronous download of resources:
+				this._serverManager.downloadResources();
+			}
 
 			// start the experiment:
 			this.logger.info('[PsychoJS] Start Experiment.');
 			this._scheduler.start();
+		}
+		catch (error) {
+			this._gui.dialog({ error: { ...response, error } });
+		}
+	}
+
+
+	/**
+	 * Synchronously download resources for the experiment.
+	 *
+	 * <ul>
+	 *   <li>For an experiment running locally: the root directory for the specified resources is that of index.html
+	 *   unless they are prepended with a protocol, such as http:// or https://.</li>
+	 *   <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
+	 *   of the experiment are downloaded, otherwise we only download the specified resources.</li>
+	 * </ul>
+	 *
+	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
+	 * @async
+	 * @public
+	 */
+	async downloadResources(resources = []) {
+		try {
+			await this.serverManager.downloadResources(resources);
 		}
 		catch (error) {
 			this._gui.dialog({ error: { ...response, error } });
@@ -283,7 +325,9 @@ export class PsychoJS {
 			await this._experiment.save();
 
 			// close the session:
-			await this._serverManager.closeSession(isCompleted);
+			if (this.getEnvironment() === PsychoJS.Environment.SERVER) {
+				await this._serverManager.closeSession(isCompleted);
+			}
 
 			// thank participant for waiting and either quit or redirect:
 			let text = 'Thank you for your patience. The data have been saved.<br/><br/>';
@@ -326,37 +370,51 @@ export class PsychoJS {
 	 * @async
 	 * @protected
 	 * @param {string} configURL - the URL of the configuration file
+	 * @param {string} name - the name of the experiment
 	 */
-	async _configure(configURL) {
-		let response = { origin: 'PsychoJS.configure', context: 'when configuring PsychoJS for the experiment' };
+	async _configure(configURL, name) {
+		const response = { origin: 'PsychoJS.configure', context: 'when configuring PsychoJS for the experiment' };
 
 		try {
 			this.status = PsychoJS.Status.CONFIGURING;
-			const response = await this._serverManager.getConfiguration(configURL);
+
+			// if the experiment is running from the pavlovia.org server, we read the configuration file:
+			const experimentUrl = window.location.href;
+			if (experimentUrl.indexOf('https://run.pavlovia.org/') === 0 || experimentUrl.indexOf('https://pavlovia.org/run/') === 0) {
+				const serverResponse = await this._serverManager.getConfiguration(configURL);
+				this._config = serverResponse.config;
+
+				// tests for the presence of essential blocks in the configuration:
+				if (!('experiment' in this._config))
+					throw 'missing experiment block in configuration';
+				if (!('name' in this._config.experiment))
+					throw 'missing name in experiment block in configuration';
+				if (!('fullpath' in this._config.experiment))
+					throw 'missing fullpath in experiment block in configuration';
+				if (!('psychoJsManager' in this._config))
+					throw 'missing psychoJsManager block in configuration';
+				if (!('URL' in this._config.psychoJsManager))
+					throw 'missing URL in psychoJsManager block in configuration';
+
+				// 'CSV' is the default format for the experiment results:
+				if ('saveFormat' in this._config.experiment)
+					this._config.experiment.saveFormat = Symbol.for(this._config.experiment.saveFormat);
+				else
+					this._config.experiment.saveFormat = ExperimentHandler.SaveFormat.CSV;
+
+				this._config.environment = PsychoJS.Environment.SERVER;
+
+			} else
+			// otherwise we create an ad-hoc configuration:
+			{
+				this._config = {
+					environment: PsychoJS.Environment.LOCAL,
+					experiment: { name, saveFormat: ExperimentHandler.SaveFormat.CSV }
+				};
+			}
+
 			this.status = PsychoJS.Status.CONFIGURED;
-			this._config = response.config;
-
-			this.logger.debug('configuration:', util.toString(response.config));
-
-			// tests for the presence of essential blocks in the configuration:
-			if (!('experiment' in this._config))
-				throw 'missing experiment block in configuration';
-			if (!('name' in this._config.experiment))
-				throw 'missing name in experiment block in configuration';
-			if (!('fullpath' in this._config.experiment))
-				throw 'missing fullpath in experiment block in configuration';
-			if (!('psychoJsManager' in this._config))
-				throw 'missing psychoJsManager block in configuration';
-			if (!('URL' in this._config.psychoJsManager))
-				throw 'missing URL in psychoJsManager block in configuration';
-
-			// 'CSV' is the default format for the experiment results:
-			if ('saveFormat' in this._config.experiment)
-				this._config.experiment.saveFormat = Symbol.for(this._config.experiment.saveFormat);
-			else
-				this._config.experiment.saveFormat = ExperimentHandler.SaveFormat.CSV;
-
-			return response;
+			this.logger.debug('configuration:', util.toString(this._config));
 		}
 		catch (error) {
 			throw { ...response, error };
@@ -371,21 +429,21 @@ export class PsychoJS {
 	 * @protected
 	 */
 	async _getParticipantIPInfo() {
-		let response = { origin: 'PsychoJS._getParticipantIPInfo', context: 'when get the IP information of the participant' };
+		const response = { origin: 'PsychoJS._getParticipantIPInfo', context: 'when getting the IP information of the participant' };
 
 		this.logger.debug('getting the IP information of the participant');
 
 		this._IP = {};
-
-		let self = this;
 		try {
 			const geoResponse = await $.get('http://www.geoplugin.net/json.gp');
 			const geoData = JSON.parse(geoResponse);
-			self._IP['IP'] = geoData.geoplugin_request;
-			self._IP['country'] = geoData.geoplugin_countryName;
-			self._IP['latitude'] = geoData.geoplugin_latitude;
-			self._IP['longitude'] = geoData.geoplugin_longitude;
-			self.logger.debug('IP information of the participant: ' + util.toString(self._IP));
+			this._IP = {
+				IP: geoData.geoplugin_request,
+				country: geoData.geoplugin_countryName,
+				latitude: geoData.geoplugin_latitude,
+				longitude: geoData.geoplugin_longitude
+			};
+			this.logger.debug('IP information of the participant: ' + util.toString(this._IP));
 		}
 		catch (error) {
 			throw { ...response, error };
@@ -406,7 +464,7 @@ export class PsychoJS {
 			console.error(error);
 			self._gui.dialog({ "error": error });
 			return true;
-		}
+		};
 
 		/* NOT UNIVERSALLY SUPPORTED YET
 		window.addEventListener('unhandledrejection', event => {
@@ -419,8 +477,9 @@ export class PsychoJS {
 
 }
 
+
 /**
- * PsychoJS status
+ * PsychoJS status.
  * 
  * @enum {Symbol}
  * @readonly
@@ -439,5 +498,18 @@ PsychoJS.Status = {
 	FINISHED: Symbol.for('FINISHED'),
 
 	STOPPED: Symbol.for('FINISHED') //Symbol.for('STOPPED')
+};
+
+
+/**
+ * Experiment environment.
+ *
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+PsychoJS.Environment = {
+	SERVER: Symbol.for('SERVER'),
+	LOCAL: Symbol.for('LOCAL')
 };
 

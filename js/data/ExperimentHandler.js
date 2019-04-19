@@ -2,14 +2,16 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { PsychObject } from '../util/PsychObject'
-import { MonotonicClock } from '../util/Clock'
+import { PsychObject } from '../util/PsychObject';
+import { MonotonicClock } from '../util/Clock';
+import { PsychoJS } from '../core/PsychoJS';
+import * as util from '../util/Util';
 
 
 /**
@@ -157,7 +159,11 @@ export class ExperimentHandler extends PsychObject {
 	/**
 	 * Save the results of the experiment.
 	 *
-	 * <p> Results are uploaded to the remote https://pavlovia.org server</p>
+	 * <ul>
+	 *   <li>For an experiment running locally, the results are offered for immediate download.</li>
+	 *   <li>For an experiment running on the server, the results are uploaded to the server.</li>
+	 * </ul>
+	 * <p>
 	 *
 	 * @name module:data.ExperimentHandler#save
 	 * @function
@@ -179,11 +185,11 @@ export class ExperimentHandler extends PsychObject {
 				const loopAttributes = ExperimentHandler._getLoopAttributes(loop);
 				for (let a in loopAttributes)
 					if (loopAttributes.hasOwnProperty(a))
-					attributes.push(a);
+						attributes.push(a);
 			}
 			for (let a in this.extraInfo) {
 				if (this.extraInfo.hasOwnProperty(a))
-				attributes.push(a);
+					attributes.push(a);
 			}
 		}
 
@@ -195,7 +201,7 @@ export class ExperimentHandler extends PsychObject {
 		const __session = ((typeof info.session === 'string' && info.session.length > 0) ? info.session : 'SESSION');
 		const __datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
 		const gitlabConfig = this._psychoJS.config.gitlab;
-		const __projectId = (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined')?gitlabConfig.projectId:undefined;
+		const __projectId = (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined') ? gitlabConfig.projectId : undefined;
 
 
 		// (*) save to a .csv file on the remote server:
@@ -227,9 +233,12 @@ export class ExperimentHandler extends PsychObject {
 			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
 			const csv = XLSX.utils.sheet_to_csv(worksheet);
 
-			// upload data to the remote PsychoJS manager:
+			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			return await this._psychoJS.serverManager.uploadData(key, csv);
+			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER)
+				return await this._psychoJS.serverManager.uploadData(key, csv);
+			else
+				util.offerDataForDownload(key, csv, 'text/csv');
 		}
 
 
@@ -238,16 +247,20 @@ export class ExperimentHandler extends PsychObject {
 			let documents = [];
 
 			for (let r = 0; r < this._trialsData.length; r++) {
-				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
+				let doc = {__projectId, __experimentName, __participant, __session, __datetime};
 				for (let h = 0; h < attributes.length; h++)
 					doc[attributes[h]] = this._trialsData[r][attributes[h]];
 
 				documents.push(doc);
 			}
 
-			// upload data to the remote PsychoJS manager:
-			const key = 'results'; // name of the mongoDB collection
-			return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+			// upload data to the pavlovia server or offer them for download:
+			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER) {
+				const key = 'results'; // name of the mongoDB collection
+				return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
+			} else
+				util.offerDataForDownload('results.json', JSON.stringify(documents), 'application/json');
+
 		}
 	}
 
@@ -263,7 +276,7 @@ export class ExperimentHandler extends PsychObject {
 	 * @param {Object} loop - the loop
 	 */
 	static _getLoopAttributes(loop) {
-		const loopName = loop['name'];
+		const loopName = loop.name;
 
 		// standard attributes:
 		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
@@ -271,11 +284,7 @@ export class ExperimentHandler extends PsychObject {
 		for (const property of properties)
 			for (const loopProperty in loop)
 				if (loopProperty === property) {
-					if (property === 'stepSizeCurrent')
-						var key = loopName + '.stepSize';
-					else
-						key = loopName + '.' + property;
-
+					const key = (property === 'stepSizeCurrent')? loopName + '.stepSize' : loopName + '.' + property;
 					attributes[key] = loop[property];
 				}
 

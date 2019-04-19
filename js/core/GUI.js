@@ -2,8 +2,8 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -145,9 +145,11 @@ export class GUI
 				htmlCode += '</form>';
 
 
-				// add a progress bar:
-				htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
-				htmlCode += '<div id="progressbar"></div></div>';
+				// add a progress bar if the experiment is running on the server:
+				if (this._psychoJS.config.environment === PsychoJS.Environment.SERVER) {
+					htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
+					htmlCode += '<div id="progressbar"></div></div>';
+				}
 
 
 				// replace root by the html code:
@@ -295,7 +297,7 @@ export class GUI
 			}
 			htmlCode += '</ul>';
 
-			htmlCode += '<p>Try to run the experiment again. If the error persists, contact the experimenter.</p>';
+			htmlCode += '<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>';
 			titleColour = 'red';
 		}
 
@@ -385,7 +387,7 @@ export class GUI
 			self._contentDelta = [
 				parent.css('width').slice(0, -2) - $(dialogId).css('width').slice(0, -2),
 				parent.css('height').slice(0, -2) - $(dialogId).css('height').slice(0, -2)];
-		}
+		};
 	}
 
 
@@ -480,13 +482,14 @@ export class GUI
 		{
 			if (typeof this._progressBarCurrentIncrement === 'undefined')
 				this._progressBarCurrentIncrement = 0;
-
-			if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE)
-				$("#progressMsg").text(signal.resource + ': downloading...');
-			else
-				$("#progressMsg").text(signal.resource + ': downloaded.');
-
 			++ this._progressBarCurrentIncrement;
+
+			if (signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
+				$("#progressMsg").text('downloaded ' + this._progressBarCurrentIncrement/2 + ' / ' + this._progressBarMax/2);
+			// $("#progressMsg").text(signal.resource + ': downloaded.');
+			// else
+				// $("#progressMsg").text(signal.resource + ': downloading...');
+
 			$("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
 		}
 
@@ -504,7 +507,7 @@ export class GUI
 	 * @private
 	 */
 	_updateOkButtonStatus() {
-		if (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) {
+		if (this._psychoJS.config.environment === PsychoJS.Environment.LOCAL || (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) ) {
 			$("#buttonOk").button("option", "disabled", false);
 		} else
 			$("#buttonOk").button("option", "disabled", true);
@@ -551,7 +554,7 @@ export class GUI
 	 *
 	 * @name module:core.GUI#_getDialogSize
 	 * @private
-	 * @returns {*[]}
+	 * @returns {number[]} the size of the popup dialog window
 	 */
 	_getDialogSize() {
 		const windowSize = [$(window).width(), $(window).height()];

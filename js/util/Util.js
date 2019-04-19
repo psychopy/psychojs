@@ -2,7 +2,7 @@
  * Various utilities.
  * 
  * @author Alain Pitiot
- * @version 3.0.6
+ * @version 3.0.8
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -263,7 +263,7 @@ export function shuffle(array)
  */
 export function	getPositionFromObject(object, units)
 {
-	let response = { origin: 'util.getPositionFromObject', context: 'when getting the position of an object' };
+	const response = { origin: 'util.getPositionFromObject', context: 'when getting the position of an object' };
 
 	try {
 		if (typeof object === 'undefined')
@@ -453,7 +453,7 @@ export function to_pixiPoint(pos, posUnit, win)
 
 
 /**
- * Convert an object to its string representation.
+ * Convert an object to its string representation, taking care of symbols.
  *
  * <p>Note: if the object is not already a string, we JSON stringify it and detect circularity.</p>
  *
@@ -469,7 +469,12 @@ export function toString(object)
 		return object;
 	
 	try {
-		return JSON.stringify(object);
+		const symbolReplacer = (key, value) => {
+			if (typeof value === 'symbol')
+				value = Symbol.keyFor(value);
+			return value;
+		};
+		return JSON.stringify(object, symbolReplacer);
 	} catch (e)
 	{
 		return 'Object (circular)';
@@ -482,10 +487,7 @@ if (!String.prototype.format) {
     var args = arguments;
     return this
 		.replace(/{(\d+)}/g, function(match, number) { 
-			return typeof args[number] != 'undefined'
-			? args[number]
-			: match
-			;
+			return typeof args[number] != 'undefined' ? args[number] : match;
 		})
 		.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name) {
 			//console.log("n=" + name + " args[0][name]=" + args[0][name]);
@@ -555,8 +557,12 @@ export function getUrlParameters()
 export function addInfoFromUrl(info)
 {
 	const infoFromUrl = getUrlParameters();
+
+	// note: since __msg is a key reserved for communications between the pavlovia.org server
+	// and the experiment running in the participant's browser, we do not add it to info.
 	for (const [key, value] of infoFromUrl)
-		info[key] = value;
+		if (key !== '__msg')
+			info[key] = value;
 
 	return info;
 }
@@ -621,7 +627,7 @@ export function selectFromArray(array, selection) {
  * @param {Array.<Object>} array - the input array of arrays
  * @returns {Array.<Object>} the flatten array
  */
-function flattenArray(array) {
+export function flattenArray(array) {
 	return array.reduce( (flat, next) => flat.concat(Array.isArray(next) ? flattenArray(next) : next), [] );
 }
 
@@ -638,7 +644,7 @@ function flattenArray(array) {
  * @param {number} [step= NaN] - the step of the slice
  * @returns {Array.<Object>} the array slice
  */
-function sliceArray(array, from = NaN, to = NaN, step = NaN)
+export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 {
 	if (isNaN(from)) from = 0;
 	if (isNaN(to)) to = array.length;
@@ -656,4 +662,26 @@ function sliceArray(array, from = NaN, to = NaN, step = NaN)
 		return arraySlice;
 	else
 		return arraySlice.filter( (e,i) => (i % step == 0) );
+}
+
+
+/**
+ * Offer data as download in the browser.
+ *
+ * @param {string} filename - the name of the file to be downloaded
+ * @param {*} data - the data
+ * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'
+ */
+export function offerDataForDownload(filename, data, type) {
+	var blob = new Blob([data], { type });
+	if (window.navigator.msSaveOrOpenBlob)
+		window.navigator.msSaveBlob(blob, filename);
+	else {
+		let elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob);
+		elem.download = filename;
+		document.body.appendChild(elem);
+		elem.click();
+		document.body.removeChild(elem);
+	}
 }

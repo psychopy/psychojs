@@ -2,8 +2,8 @@
  * Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -38,13 +38,9 @@ export class ServerManager extends PsychObject {
 		// session:
 		this._session = {};
 
-		// resources:
-		this._resourceDirectory = undefined;
-		this._resourcesMap = new Map();
+		// resources is a map of {name: string, path: string} -> data: any
+		this._resources = new Map();
 		this._nbResources = -1;
-
-		// howler.js' howls:
-		this._howls = undefined;
 
 		this._addAttributes(ServerManager, autoLog);
 		this._addAttribute('status', ServerManager.Status.READY);
@@ -69,7 +65,7 @@ export class ServerManager extends PsychObject {
 	 * @returns {Promise<ServerManager.GetConfigurationPromise>} the response
 	 */
 	getConfiguration(configURL) {
-		let response = { origin: 'ServerManager.getConfiguration', context: 'when reading the configuration file: ' + configURL };
+		const response = { origin: 'ServerManager.getConfiguration', context: 'when reading the configuration file: ' + configURL };
 
 		this._psychoJS.logger.debug('reading the configuration file: ' + configURL);
 		return new Promise((resolve, reject) => {
@@ -100,7 +96,7 @@ export class ServerManager extends PsychObject {
 	 * @returns {Promise<ServerManager.OpenSessionPromise>} the response
 	 */
 	openSession() {
-		let response = { origin: 'ServerManager.openSession', context: 'when opening a session for experiment: ' + this._psychoJS.config.experiment.name };
+		const response = { origin: 'ServerManager.openSession', context: 'when opening a session for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('opening a session for experiment: ' + this._psychoJS.config.experiment.name);
 
@@ -159,7 +155,7 @@ export class ServerManager extends PsychObject {
 	 * @returns {Promise<ServerManager.CloseSessionPromise>} the response
 	 */
 	closeSession(isCompleted = false) {
-		let response = { origin: 'ServerManager.closeSession', context: 'when closing the session for experiment: ' + this._psychoJS.config.experiment.name };
+		const response = { origin: 'ServerManager.closeSession', context: 'when closing the session for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('closing the session for experiment: ' + this._psychoJS.config.experiment.name);
 
@@ -206,14 +202,14 @@ export class ServerManager extends PsychObject {
 	 * @return {Object} value of the resource
 	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
 	 */
-	getResource(resourceName) {
-		let response = { origin: 'ServerManager.getResource', context: 'when getting the value of resource: ' + resourceName };
+	getResource(name) {
+		const response = { origin: 'ServerManager.getResource', context: 'when getting the value of resource: ' + name };
 
-		const resourceValue = this._resourcesMap.get(resourceName);
-		if (typeof resourceValue === 'undefined')
+		const path_data = this._resources.get(name);
+		if (typeof path_data === 'undefined')
 			throw { ...response, error: 'unknown resource' };
 
-		return resourceValue;
+		return path_data.data;
 	}
 
 
@@ -225,7 +221,7 @@ export class ServerManager extends PsychObject {
 	 * @public
 	 */
 	setStatus(status) {
-		let response = { origin: 'ServerManager.setStatus', context: 'when changing the status of the server manager to: ' + util.toString(status) };
+		const response = { origin: 'ServerManager.setStatus', context: 'when changing the status of the server manager to: ' + util.toString(status) };
 
 		// check status:
 		const statusKey = (typeof status === 'symbol') ? Symbol.keyFor(status) : null;
@@ -257,29 +253,48 @@ export class ServerManager extends PsychObject {
 
 
 	/**
-	 * Asynchronously download the resources of the experiment from the remote PsychoJS manager and register them with the server manager.
-	 * 
+	 * Asynchronously download resources for the experiment and register them with the server manager.
+	 *
+	 * <ul>
+	 *   <li>For an experiment running locally: the root directory for the specified resources is that of index.html
+	 *   unless they are prepended with a protocol, such as http:// or https://.</li>
+	 *   <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
+	 *   of the experiment are downloaded, otherwise we only download the specified resources.</li>
+	 * </ul>
+	 *
 	 * @name module:core.ServerManager#downloadResources
+	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
 	 * @function
 	 * @public
 	 */
-	downloadResources() {
-		let response = { origin: 'ServerManager.downloadResources', context: 'when downloading the resources for experiment: ' + this._psychoJS.config.experiment.name };
+	downloadResources(resources = []) {
+		const response = { origin: 'ServerManager.downloadResources', context: 'when downloading the resources for experiment: ' + this._psychoJS.config.experiment.name };
 
-		this._psychoJS.logger.debug('downloading the resources for experiment: ' + this._psychoJS.config.experiment.name);
+		this._psychoJS.logger.debug('downloading resources for experiment: ' + this._psychoJS.config.experiment.name);
 
-		// we use an anonymous async function since downloadResource is non-blocking
-		// but we want to run the asynchronous _listResources and _downloadResources
-		// in sequence
-		let self = this;
+		// we use an anonymous async function here since downloadResources is non-blocking (asynchronous)
+		// but we want to run the asynchronous _listResources and _downloadResources in sequence
+		const self = this;
 		let download = async () => {
 			try {
-				// list the resources and register them:
-				const { resources, resourceDirectory } = await self._listResources();
-				self._psychoJS.config.experiment.resourceDirectory = resourceDirectory;
-				for (const resource of resources)
-					self._resourcesMap.set(resource, 'undefined');
-				self._nbResources = resources.length;
+				if (self._psychoJS.config.environment === PsychoJS.Environment.SERVER) {
+					// list the resources from the resources directory of the experiment on the server:
+					const serverResponse = await self._listResources();
+
+					if (resources.length === 0)
+						for (const name of serverResponse.resources)
+							self._resources.set(name, {path: serverResponse.resourceDirectory + '/' + name});
+					else
+						for (const {name, path} of resources)
+							self._resources.set(name, {path: serverResponse.resourceDirectory + '/' + path });
+				} else {
+					for (const {name, path} of resources)
+						self._resources.set(name, { path });
+				}
+				self._nbResources = self._resources.size;
+				for (const name of self._resources.keys())
+					this._psychoJS.logger.debug('resource:', name, self._resources.get(name).path);
+
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCES_REGISTERED, count: self._nbResources });
 
 				// download the registered resources:
@@ -313,7 +328,7 @@ export class ServerManager extends PsychObject {
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
 	uploadData(key, value) {
-		let response = { origin: 'ServerManager.uploadData', context: 'when uploading participant\'s results for experiment: ' + this._psychoJS.config.experiment.name };
+		const response = { origin: 'ServerManager.uploadData', context: 'when uploading participant\'s results for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('uploading data for experiment: ' + this._psychoJS.config.experiment.name);
 		this.setStatus(ServerManager.Status.BUSY);
@@ -361,7 +376,7 @@ export class ServerManager extends PsychObject {
 	 * @private
 	 */
 	_listResources() {
-		let response = { origin: 'ServerManager._listResourcesSession', context: 'when listing the resources for experiment: ' + this._psychoJS.config.experiment.name };
+		const response = { origin: 'ServerManager._listResourcesSession', context: 'when listing the resources for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('listing the resources for experiment: ' + this._psychoJS.config.experiment.name);
 
@@ -409,7 +424,7 @@ export class ServerManager extends PsychObject {
 	 * @private
 	 */
 	_downloadRegisteredResources() {
-		let response = { origin: 'ServerManager._downloadResources', context: 'when downloading the resources for experiment: ' + this._psychoJS.config.experiment.name };
+		const response = { origin: 'ServerManager._downloadResources', context: 'when downloading the resources for experiment: ' + this._psychoJS.config.experiment.name };
 
 		this._psychoJS.logger.debug('downloading the registered resources for experiment: ' + this._psychoJS.config.experiment.name);
 
@@ -418,7 +433,7 @@ export class ServerManager extends PsychObject {
 
 
 		// (*) set-up preload.js:
-		this._resourceQueue = new createjs.LoadQueue(true, this._psychoJS.config.experiment.resourceDirectory);
+		this._resourceQueue = new createjs.LoadQueue(true); //, this._psychoJS.config.experiment.resourceDirectory);
 
 		const self = this;
 		this._resourceQueue.addEventListener("filestart", event => {
@@ -427,7 +442,8 @@ export class ServerManager extends PsychObject {
 
 		this._resourceQueue.addEventListener("fileload", event => {
 			++self._nbLoadedResources;
-			self._resourcesMap.set(event.item.id, event.result);
+			let path_data = self._resources.get(event.item.id);
+			path_data.data = event.result;
 			self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCE_DOWNLOADED, resource: event.item.id });
 		});
 
@@ -450,21 +466,27 @@ export class ServerManager extends PsychObject {
 
 		// (*) dispatch resources to preload.js or howler.js based on extension:
 		let manifest = [];
-		let soundFilenames = [];
-		for (const resourceName of this._resourcesMap.keys()) {
-			const resourceExtension = resourceName.split('.').pop();
+		let soundResources = [];
+		for (const [name, path_data] of this._resources) {
+			const extension = name.split('.').pop();
 
 			// preload.js with forced binary for xls and xlsx:
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1)
-				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.BINARY });
+			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
+				manifest.push({ id: name, src: path_data.path, type: createjs.Types.BINARY });
+
+			/* ascii .csv are adequately handled in binary format
+			// forced text for .csv:
+			else if (['csv'].indexOf(resourceExtension) > -1)
+				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
+			*/
 
 			// sound files are loaded through howler.js:
-			else if (['mp3', 'mpeg', 'opus', 'ogg', 'oga', 'wav', 'aac', 'caf', 'm4a', 'weba', 'dolby', 'flac'].indexOf(resourceExtension) > -1)
-				soundFilenames.push(resourceName);
+			else if (['mp3', 'mpeg', 'opus', 'ogg', 'oga', 'wav', 'aac', 'caf', 'm4a', 'weba', 'dolby', 'flac'].indexOf(extension) > -1)
+				soundResources.push(name);
 
 			// preload.js for the other extensions (download type decided by preload.js):
 			else
-				manifest.push({ id: resourceName, src: resourceName });
+				manifest.push({ id: name, src: path_data.path });
 		}
 
 
@@ -480,21 +502,20 @@ export class ServerManager extends PsychObject {
 
 
 		// (*) prepare and start loading sound resources:
-		for (let soundFilename of soundFilenames) {
-			const resourcePath = this._psychoJS.config.experiment.resourceDirectory + soundFilename;
-
-			self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOADING_RESOURCE, resource: soundFilename });
-
+		for (const name of soundResources) {
+			self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOADING_RESOURCE, resource: name });
+			const path_data = self._resources.get(name);
 			const howl = new Howl({
-				src: resourcePath,
+				src: path_data.path,
 				preload: false,
 				autoplay: false
 			});
 
 			howl.on('load', (event) => {
 				++self._nbLoadedResources;
-				self._resourcesMap.set(soundFilename, howl);
-				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCE_DOWNLOADED, resource: soundFilename });
+				path_data.data = howl;
+				// self._resources.set(resource.name, howl);
+				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCE_DOWNLOADED, resource: resource.name });
 
 				if (self._nbLoadedResources === self._nbResources) {
 					self.setStatus(ServerManager.Status.READY);
@@ -502,7 +523,7 @@ export class ServerManager extends PsychObject {
 				}
 			});
 			howl.on('loaderror', (id, error) => {
-				throw { ...response, error: 'unable to download resource: ' + soundFilename + ' (' + util.toString(error) + ')' };
+				throw { ...response, error: 'unable to download resource: ' + name + ' (' + util.toString(error) + ')' };
 			});
 
 			howl.load();

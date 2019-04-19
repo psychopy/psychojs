@@ -2,8 +2,8 @@
  * Logger
  * 
  * @author Alain Pitiot
- * @version 3.0.6 
- * @copyright (c) 2019  Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 3.0.8
+ * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -57,12 +57,12 @@ export class Logger {
 
 		customLayout.setCustomField('location', function (layout, loggingReference) {
 			// we throw a fake exception to retrieve the stack trace
-			try { (0)() } catch (e) {
+			try { (0)(); } catch (e) {
 				const stackEntries = e.stack.replace(/^.*?\n/, '').replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anon}(').split("\n");
 
 				let relevantEntry;
 				const browser = util.detectBrowser();
-				if (browser == 'Firefox') {
+				if (browser === 'Firefox') {
 					// look for entry immediately after those of log4javascript:
 					for (let entry of stackEntries)
 						if (entry.indexOf('log4javascript.min.js') <= 0) {
@@ -77,10 +77,10 @@ export class Logger {
 
 					return method + ' ' + file + ' ' + line;
 				}
-				else if (browser == 'Safari') {
+				else if (browser === 'Safari') {
 					return 'unknown';
 				}
-				else if (browser == 'Chrome') {
+				else if (browser === 'Chrome') {
 					relevantEntry = stackEntries.pop();
 
 					let buf = relevantEntry.split(' ');
