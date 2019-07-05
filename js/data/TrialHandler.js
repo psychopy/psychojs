@@ -315,7 +315,7 @@ export class TrialHandler extends PsychObject {
 						let value = row[l];
 
 						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string') {
+						if (typeof value === 'string' && !/[a-zA-Z]/.test(value)) {
 							const numericalValue = Number.parseFloat(value);
 							if (!Number.isNaN(numericalValue))
 								value = numericalValue;
