@@ -370,10 +370,8 @@ export class TrialHandler extends PsychObject {
 						let value = row[l];
 
 						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string') {
-							const numericalValue = Number.parseFloat(value);
-							if (!Number.isNaN(numericalValue))
-								value = numericalValue;
+						if (typeof value === 'string' && !isNaN(value)) {
+							value = Number.parseFloat(value);
 						}
 
 						trial[fields[l]] = value;
