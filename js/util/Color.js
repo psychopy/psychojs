@@ -2,7 +2,7 @@
  * Color management.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -39,7 +39,9 @@ export class Color {
 		// note: we expect the color space to be RGB
 		if (typeof obj == 'string') {
 			if (colorspace !== Color.COLOR_SPACE.RGB)
-				throw { ...response, error: 'the colorspace must be RGB for a named color' };
+				throw Object.assign(response, { error: 'the colorspace must be RGB for' +
+						' a' +
+			' named color' });
 
 			// hexademical representation:
 			if (obj[0] === '#') {
@@ -48,7 +50,7 @@ export class Color {
 			// named color:
 			else {
 				if (!(obj.toLowerCase() in Color.NAMED_COLORS))
-					throw { ...response, error: 'unknown named color: ' + obj };
+					throw Object.assign(response, { error: 'unknown named color: ' + obj });
 
 				this._hex = Color.NAMED_COLORS[obj.toLowerCase()];
 			}
@@ -60,7 +62,9 @@ export class Color {
 		// note: we expect the color space to be RGB
 		else if (typeof obj == 'number') {
 			if (colorspace !== Color.COLOR_SPACE.RGB)
-				throw { ...response, error: 'the colorspace must be RGB for a named color' };
+				throw Object.assign(response, { error: 'the colorspace must be RGB for' +
+						' a' +
+			' named color' });
 
 			this._rgb = Color._intToRgb(obj);
 		}
@@ -100,7 +104,7 @@ export class Color {
 					break;
 
 				default:
-					throw { ...response, error: 'unknown colorspace: ' + colorspace };
+					throw Object.assign(response, { error: 'unknown colorspace: ' + colorspace });
 			}
 
 		}
@@ -230,7 +234,7 @@ export class Color {
 			return Color._rgb255ToHex(rgb255);
 		}
 		catch (error) {
-			throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -253,7 +257,7 @@ export class Color {
 			return Color._rgbToHex(rgb);
 		}
 		catch (error) {
-			throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -276,7 +280,7 @@ export class Color {
 			return Color._rgbToInt(rgb);
 		}
 		catch (error) {
-			throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -298,7 +302,7 @@ export class Color {
 			return Color._rgb255ToInt(rgb255);
 		}
 		catch (error) {
-			throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 

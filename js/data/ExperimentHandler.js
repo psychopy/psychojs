@@ -2,7 +2,7 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -48,6 +48,13 @@ export class ExperimentHandler extends PsychObject {
 	set experimentEnded(ended) { this._experimentEnded = ended; }
 
 
+	/**
+	 * Legacy experiment getters.
+	 */
+	get _thisEntry() { return this._currentTrialData; }
+	get _entries() { return this._trialsData; }
+
+
 	constructor({
 		psychoJS,
 		name,
@@ -67,6 +74,20 @@ export class ExperimentHandler extends PsychObject {
 		this._currentTrialData = {};
 
 		this._experimentEnded = false;
+	}
+
+
+	/**
+	 * Whether or not the current entry (i.e. trial data) is empty.
+	 * <p>Note: this is mostly useful at the end of an experiment, in order to ensure that the last entry is saved.</p>
+	 *
+	 * @name module:data.ExperimentHandler#isEntryEmtpy
+	 * @function
+	 * @public
+	 * @returns {boolean} whether or not the current entry is empty
+	 */
+	isEntryEmtpy() {
+		return (Object.keys(this._currentTrialData).length > 0);
 	}
 
 
@@ -136,13 +157,20 @@ export class ExperimentHandler extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	nextEntry() {
-		// fetch data from each (potentially-nested) loop:
-		for (let loop of this._unfinishedLoops) {
+	nextEntry(loop) {
+		if (typeof loop !== 'undefined') {
 			const attributes = ExperimentHandler._getLoopAttributes(loop);
 			for (let a in attributes)
 				if (attributes.hasOwnProperty(a))
 					this._currentTrialData[a] = attributes[a];
+		} else {
+			// fetch data from each (potentially-nested) loop:
+			for (let loop of this._unfinishedLoops) {
+				const attributes = ExperimentHandler._getLoopAttributes(loop);
+				for (let a in attributes)
+					if (attributes.hasOwnProperty(a))
+						this._currentTrialData[a] = attributes[a];
+			}
 		}
 
 		// add the extraInfo dict to the data:
@@ -204,7 +232,7 @@ export class ExperimentHandler extends PsychObject {
 		const __projectId = (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined') ? gitlabConfig.projectId : undefined;
 
 
-		// (*) save to a .csv file on the remote server:
+		// (*) save to a .csv file:
 		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV) {
 			/*
 			// a. manual approach
@@ -235,8 +263,8 @@ export class ExperimentHandler extends PsychObject {
 
 			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER)
-				return await this._psychoJS.serverManager.uploadData(key, csv);
+			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER && this._psychoJS.config.experiment.status === 'RUNNING')
+				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv);
 			else
 				util.offerDataForDownload(key, csv, 'text/csv');
 		}

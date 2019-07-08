@@ -2,7 +2,7 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -145,11 +145,9 @@ export class GUI
 				htmlCode += '</form>';
 
 
-				// add a progress bar if the experiment is running on the server:
-				if (this._psychoJS.config.environment === PsychoJS.Environment.SERVER) {
-					htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
-					htmlCode += '<div id="progressbar"></div></div>';
-				}
+				// add a progress bar:
+				htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
+				htmlCode += '<div id="progressbar"></div></div>';
 
 
 				// replace root by the html code:
@@ -176,6 +174,7 @@ export class GUI
 					autoOpen: true,
 					modal: true,
 					closeOnEscape: false,
+					resizable: false,
 
 					buttons: [
 						{
@@ -282,7 +281,7 @@ export class GUI
 			this._psychoJS.logger.fatal(util.toString(error));
 
 			htmlCode = '<div id="msgDialog" title="Error">';
-			htmlCode += '<p class="validateTips">Unfortunately we encountered an error:</p>';
+			htmlCode += '<p class="validateTips">Unfortunately we encountered the following error:</p>';
 			
 			// go through the error stack:
 			htmlCode += '<ul>';

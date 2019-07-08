@@ -2,7 +2,7 @@
  * Base class for all stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -53,7 +53,7 @@ export class MinimalStim extends PsychObject {
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setAutoDraw(autoDraw, log = false) {
-		let errorPrefix = { origin : 'MinimalStim.setAutoDraw', context: 'when setting the autoDraw attribute of stimulus: ' + this._name };
+		let response = { origin : 'MinimalStim.setAutoDraw', context: 'when setting the autoDraw attribute of stimulus: ' + this._name };
 
 		this._setAttribute('autoDraw', autoDraw, log);
 
@@ -67,7 +67,8 @@ export class MinimalStim extends PsychObject {
 					// update the stimulus if need be before we add its PIXI representation to the window container:
 					this._updateIfNeeded();
 					if (typeof this._pixi === 'undefined')
-						throw {...errorPrefix, error: 'the PIXI representation of the stimulus is unavailable'};
+						// throw {...errorPrefix, error: 'the PIXI representation of the stimulus is unavailable'};
+						throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
 
 					this.win._rootContainer.addChild(this._pixi);
 					this.win._drawList.push(this);

@@ -3,7 +3,7 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -148,6 +148,47 @@ export class TrialHandler extends PsychObject {
 		};
 	}
 
+	
+	/**
+	 * @typedef {Object} Snapshot
+	 * @property {string} name - the trialHandler name
+	 * @property {number} nStim - the number of stimuli
+	 * @property {number} nTotal - the total number of trials that will be run
+	 * @property {number} nRemaining - the total number of trial remaining
+	 * @property {number} thisRepN - the current repeat
+	 * @property {number} thisTrialN - the current trial number within the current repeat
+	 * @property {number} thisN - the total number of trials completed so far
+	 * @property {number} thisIndex - the index of the current trial in the conditions list
+	 * @property {number} ran - whether or not the trial ran
+	 */
+
+	/**
+	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
+	 * number of trial remaining).
+	 *
+	 * <p>This is typically used in the LoopBegin function, in order to capture the current state of a TrialHandler</p>
+	 *
+	 * @public
+	 * @return {Snapshot} - the snapshot of the current internal state.
+	 */
+	getSnapshot() {
+		const currentIndex = this.thisIndex;
+
+		return {
+			name: this.name,
+			nStim: this.nStim,
+			nTotal: this.nTotal,
+			nRemaining: this.nRemaining,
+			thisRepN: this.thisRepN,
+			thisTrialN: this.thisTrialN,
+			thisN: this.thisN,
+			thisIndex: this.thisIndex,
+			ran: this.ran,
+
+			getCurrentTrial: () => this.getTrial(currentIndex)
+		};
+	}
+
 
 	/**
 	 * Get the trial index.
@@ -180,7 +221,7 @@ export class TrialHandler extends PsychObject {
 	 * @return {Array.string} the attributes
 	 */
 	getAttributes() {
-		if (!Array.isArray(this.trialList) || this.nStim == 0)
+		if (!Array.isArray(this.trialList) || this.nStim === 0)
 			return [];
 
 		const firstTrial = this.trialList[0];
@@ -199,6 +240,20 @@ export class TrialHandler extends PsychObject {
 	 */
 	getCurrentTrial() {
 		return this.trialList[this.thisIndex];
+	}
+
+
+	/**
+	 * Get the nth trial.
+	 *
+	 * @param {number} index - the trial index
+	 * @return {Object|undefined} the requested trial or undefined if attempting to go beyond the last trial.
+	 */
+	getTrial(index = 0) {
+		if (index < 0 || index > this.nTotal)
+			return undefined;
+
+		return this.trialList[index];
 	}
 
 
@@ -364,7 +419,8 @@ export class TrialHandler extends PsychObject {
 
 		// unknown type:
 		else
-			throw { ...response, error: 'unable to prepare trial list: unknown type: ' + (typeof trialList) };
+			throw Object.assign(response, { error: 'unable to prepare trial list:' +
+		' unknown type: ' + (typeof trialList) });
 	}
 
 
@@ -433,7 +489,7 @@ export class TrialHandler extends PsychObject {
 				this._trialSequence.push(flatSequence.slice(i * this.nStim, (i + 1) * this.nStim));
 		}
 		else {
-			throw { ...response, error: 'unknown method' };
+			throw Object.assign(response, { error: 'unknown method' });
 		}
 
 		return this._trialSequence;

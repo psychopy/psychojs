@@ -2,7 +2,7 @@
  * Rectangular Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -76,7 +76,7 @@ export class Rect extends ShapeStim {
 	 * @name module:visual.Rect#setWidth
 	 * @public 
 	 * @param {number} width - the rectange width
-	 * @param {boolean} [log= false] - whether or not to log
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setWidth(width, log = false) {
 		this._psychoJS.logger.debug('set the width of Rect: ', this.name, 'to: ', width);
@@ -92,7 +92,7 @@ export class Rect extends ShapeStim {
 	 * @name module:visual.Rect#setHeight
 	 * @public 
 	 * @param {number} height - the rectange height
-	 * @param {boolean} [log= false] - whether or not to log
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setHeight(height, log = false) {
 		this._psychoJS.logger.debug('set the height of Rect: ', this.name, 'to: ', height);
@@ -101,23 +101,7 @@ export class Rect extends ShapeStim {
 		this._updateVertices();
 	}
 
-	
-	/**
-	 * Setter for the size attribute.
-	 *
-	 * @name module:visual.Rect#setSize
-	 * @public 
-	 * @param {number[]} size - the [x, y] size of the rectangle
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setSize(size, log = false) {
-		this._psychoJS.logger.debug('set the size of Rect: ', this.name, 'to: ', size);
 
-		this._setAttribute('width', size[0], log);
-		this._setAttribute('height', size[1], log);
-	}
-
-	
 	/**
 	 * Update the base shape vertices.
 	 * 

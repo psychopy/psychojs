@@ -2,7 +2,7 @@
  * Track Player.
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -100,7 +100,7 @@ export class TrackPlayer extends SoundPlayer {
 	 * @function
 	 * @public
 	 * @param {Integer} volume - the volume of the track (must be between 0 and 1.0)
-	 * @param {booleam} [mute= false] - whether or not to mute the track
+	 * @param {boolean} [mute= false] - whether or not to mute the track
 	 */
 	setVolume(volume, mute = false) {
 		this._volume = volume;
@@ -123,7 +123,7 @@ export class TrackPlayer extends SoundPlayer {
 		this._loops = loops;
 		this._currentLoopIndex = -1;
 
-		if (loops == 0)
+		if (loops === 0)
 			this._howl.loop(false);
 		else
 			this._howl.loop(true);

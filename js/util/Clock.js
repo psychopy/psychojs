@@ -2,13 +2,10 @@
  * Clock component.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
-
-import * as util from '../util/Util';
-
 
 
 /**
@@ -43,7 +40,7 @@ export class MonotonicClock {
 	 * @name module:util.MonotonicClock#getLastResetTime
 	 * @function
 	 * @public
-	 * @return {number} the offset (in ms)
+	 * @return {number} the offset (in seconds)
 	 */
 	getLastResetTime() {
 		return this._timeAtLastReset;
@@ -56,10 +53,10 @@ export class MonotonicClock {
 	 * @name module:util.MonotonicClock#getReferenceTime
 	 * @function
 	 * @public
-	 * @return {number} the time elapsed since the reference point (in ms)
+	 * @return {number} the time elapsed since the reference point (in seconds)
 	 */
 	static getReferenceTime() {
-		return (new Date().getTime() - MonotonicClock._referenceTime) / 1000;
+		return (new Date().getTime()) / 1000.0 - MonotonicClock._referenceTime;
 	}
 
 
@@ -82,14 +79,14 @@ export class MonotonicClock {
 
 
 /**
- * The clock's referenceTime is the time when the module was loaded.
+ * The clock's referenceTime is the time when the module was loaded (in seconds).
  * 
  * @name module:util.MonotonicClock._referenceTime
  * @readonly
  * @private
  * @type {number}
  */
-MonotonicClock._referenceTime = new Date().getTime();
+MonotonicClock._referenceTime = new Date().getTime() / 1000.0;
 
 
 /**

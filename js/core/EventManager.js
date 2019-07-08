@@ -2,14 +2,13 @@
  * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 import { MonotonicClock, Clock } from '../util/Clock';
 import { PsychoJS } from './PsychoJS';
-import * as util from '../util/Util';
 
 
 /**
@@ -27,7 +26,7 @@ export class EventManager {
 		this._psychoJS = psychoJS;
 
 		// populate the reverse pyglet map:
-		for (var keyName in EventManager._pygletMap)
+		for (const keyName in EventManager._pygletMap)
 			EventManager._reversePygletMap[EventManager._pygletMap[keyName]] = keyName;
 
 		// add key listeners:
@@ -63,14 +62,14 @@ export class EventManager {
 	 * @param {Object} options
 	 * @param {string[]} [options.keyList= null] - keyList allows the user to specify a set of keys to check for. Only keypresses from this set of keys will be removed from the keyboard buffer. If no keyList is given, all keys will be checked and the key buffer will be cleared completely.
 	 * @param {boolean} [options.timeStamped= false] - If true will return a list of tuples instead of a list of keynames. Each tuple has (keyname, time).
-	 * @return {Array.string} the list of keys that were pressed.
+	 * @return {string[]} the list of keys that were pressed.
 	 */
 	getKeys({
 		keyList = null,
 		timeStamped = false
 	} = {}) {
 		if (keyList != null)
-			keyList = this._pyglet2w3c(keyList);
+			keyList = EventManager.pyglet2w3c(keyList);
 
 		let newBuffer = [];
 		let keys = [];
@@ -297,18 +296,20 @@ export class EventManager {
 	 * @private
 	 */
 	_addKeyListeners() {
-		let self = this;
+		const self = this;
 
 		// add a keydown listener:
 		document.addEventListener("keydown", (e) => {
+			const timestamp = MonotonicClock.getReferenceTime();
 			self._keyBuffer.push({
 				code: e.code,
 				key: e.key,
 				keyCode: e.keyCode,
-				timestamp: MonotonicClock.getReferenceTime() / 1000
+				timestamp
 			});
-			self._psychoJS.logger.trace('keys pressed : ', util.toString(self._keyBuffer));
+			self._psychoJS.logger.trace('keydown: ', e.key);
 		});
+
 	}
 
 
@@ -317,13 +318,13 @@ export class EventManager {
 	 * Convert a keylist that uses pyglet key names to one that uses W3C KeyboardEvent.code values.
 	 * <p>This allows key lists that work in the builder environment to work in psychoJS web experiments.</p>
 	 * 
-	 * @name module:core.EventManager#_pyglet2w3c
+	 * @name module:core.EventManager#pyglet2w3c
 	 * @function
-	 * @private
-	 * @param {Array.string} keyList - the array of pyglet key names
+	 * @public
+	 * @param {Array.string} pygletKeyList - the array of pyglet key names
 	 * @return {Array.string} the w3c keyList
 	 */
-	_pyglet2w3c(pygletKeyList) {
+	static pyglet2w3c(pygletKeyList) {
 		let w3cKeyList = [];
 		for (let i = 0; i < pygletKeyList.length; i++) {
 			if (typeof EventManager._pygletMap[pygletKeyList[i]] === 'undefined')
@@ -333,6 +334,23 @@ export class EventManager {
 		}
 
 		return w3cKeyList;
+	}
+
+
+	/**
+	 * Convert a W3C Key Code into a pyglet key.
+	 *
+	 * @name module:core.EventManager#w3c2pyglet
+	 * @function
+	 * @public
+	 * @param {string} code - W3C Key Code
+	 * @returns {string} corresponding pyglet key
+	 */
+	static w3c2pyglet(code) {
+		if (code in EventManager._reversePygletMap)
+			return EventManager._reversePygletMap[code];
+		else
+			return 'N/A';
 	}
 }
 
@@ -423,7 +441,8 @@ EventManager._keycodeMap = {
 
 
 /**
- * <p>This map associates pyglet key names to the corresponding W3C KeyboardEvent.codes.
+ * This map associates pyglet key names to the corresponding W3C KeyboardEvent codes values.
+ * <p>More information can be found [here]{@link https://www.w3.org/TR/uievents-code}</p>
  * 
  * @name module:core.EventManager#_pygletMap
  * @readonly
@@ -431,7 +450,7 @@ EventManager._keycodeMap = {
  * @type {Object.<String,String>}
  */
 EventManager._pygletMap = {
-	// writing system keys
+	// alphanumeric:
 	"grave": "Backquote",
 	"backslash": "Backslash",
 	"backspace": "Backspace",
@@ -536,7 +555,6 @@ EventManager._reversePygletMap = {};
 
 
 /**
- * @class
  * Utility class used by the experiment scripts to keep track of a clock and of the current status (whether or not we are currently checking the keyboard)
  * 
  * @name module:core.BuilderKeyResponse

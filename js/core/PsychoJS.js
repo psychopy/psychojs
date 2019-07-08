@@ -3,7 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -144,6 +144,7 @@ export class PsychoJS {
 		});
 	}
 
+
 	/**
 	 * Set the completion and cancellation URL to which the participant will be redirect at the end of the experiment.
 	 * 
@@ -154,6 +155,7 @@ export class PsychoJS {
 		this._completionUrl = completionUrl;
 		this._cancellationUrl = cancellationUrl;
 	}
+
 
 	/**
 	 * Schedule a task.
@@ -195,10 +197,13 @@ export class PsychoJS {
 	 * @param {string} [options.configURL=config.json] - the URL of the configuration file
 	 * @param {string} [options.expName=UNKNOWN] - the name of the experiment
 	 * @param {Object.<string, *>} [options.expInfo] - additional information about the experiment
+	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
 	 * @async
 	 * @public
+	 *
+	 * @todo: close session on window or tab close
 	 */
-	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo } = {}) {
+	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {}) {
 		this.logger.debug();
 
 		const response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
@@ -208,9 +213,9 @@ export class PsychoJS {
 			await this._configure(configURL, expName);
 
 			// get the participant IP:
-			if (this._collectIP) {
+			if (this._collectIP)
 				this._getParticipantIPInfo();
-			} else {
+			else {
 				this._IP = {
 					IP: 'X',
 					hostname : 'X',
@@ -227,28 +232,34 @@ export class PsychoJS {
 				extraInfo: expInfo
 			});
 
-			// get potential information from the server:
-			this._serverMsg = util.getUrlParameters().get('__msg');
-
 			// setup the logger:
 			//my.logger.console.setLevel(psychoJS.logging.WARNING);
 			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
-			// if the experiment is running on the server, we open a session and download the resources:
-			if (this.getEnvironment() === PsychoJS.Environment.SERVER) {
-				// open a new session:
+			// if the experiment is running on the server, we open a session:
+			if (this.getEnvironment() === PsychoJS.Environment.SERVER)
 				await this._serverManager.openSession();
 
-				// start the asynchronous download of resources:
-				this._serverManager.downloadResources();
-			}
+
+			// attempt to close the session on onunload:
+			const self = this;
+			window.addEventListener("unload",() => {
+				// we need to use either the Beacon API (https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon)
+				// or synchronous requests
+				// TODO
+			});
+
+
+			// start the asynchronous download of resources:
+			this._serverManager.downloadResources(resources);
 
 			// start the experiment:
 			this.logger.info('[PsychoJS] Start Experiment.');
 			this._scheduler.start();
 		}
 		catch (error) {
-			this._gui.dialog({ error: { ...response, error } });
+			// this._gui.dialog({ error: { ...response, error } });
+			this._gui.dialog({ error: Object.assign(response, { error }) });
 		}
 	}
 
@@ -260,8 +271,8 @@ export class PsychoJS {
 	 *   <li>For an experiment running locally: the root directory for the specified resources is that of index.html
 	 *   unless they are prepended with a protocol, such as http:// or https://.</li>
 	 *   <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
-	 *   of the experiment are downloaded, otherwise we only download the specified resources.</li>
-	 * </ul>
+	 *   of the experiment are downloaded, otherwise we only download the specified resources. All resources are assumed
+	 *   local to index.html unless they are prepended with a protocol.</li>
 	 *
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
 	 * @async
@@ -272,7 +283,8 @@ export class PsychoJS {
 			await this.serverManager.downloadResources(resources);
 		}
 		catch (error) {
-			this._gui.dialog({ error: { ...response, error } });
+			// this._gui.dialog({ error: { ...response, error } });
+			this._gui.dialog({ error: Object.assign(response, { error }) });
 		}
 	}
 
@@ -384,6 +396,15 @@ export class PsychoJS {
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
 				this._config = serverResponse.config;
 
+				// legacy experiments had a psychoJsManager block instead of a pavlovia block, and the URL
+				// pointed to https://pavlovia.org/server
+				if ('psychoJsManager' in this._config) {
+					delete this._config.psychoJsManager;
+					this._config.pavlovia = {
+						URL: 'https://pavlovia.org'
+					};
+				}
+
 				// tests for the presence of essential blocks in the configuration:
 				if (!('experiment' in this._config))
 					throw 'missing experiment block in configuration';
@@ -391,16 +412,10 @@ export class PsychoJS {
 					throw 'missing name in experiment block in configuration';
 				if (!('fullpath' in this._config.experiment))
 					throw 'missing fullpath in experiment block in configuration';
-				if (!('psychoJsManager' in this._config))
-					throw 'missing psychoJsManager block in configuration';
-				if (!('URL' in this._config.psychoJsManager))
-					throw 'missing URL in psychoJsManager block in configuration';
-
-				// 'CSV' is the default format for the experiment results:
-				if ('saveFormat' in this._config.experiment)
-					this._config.experiment.saveFormat = Symbol.for(this._config.experiment.saveFormat);
-				else
-					this._config.experiment.saveFormat = ExperimentHandler.SaveFormat.CSV;
+				if (!('pavlovia' in this._config))
+					throw 'missing pavlovia block in configuration';
+				if (!('URL' in this._config.pavlovia))
+					throw 'missing URL in pavlovia block in configuration';
 
 				this._config.environment = PsychoJS.Environment.SERVER;
 
@@ -413,11 +428,20 @@ export class PsychoJS {
 				};
 			}
 
+			// get the server parameters (those starting with a double underscore):
+			this._serverMsg = new Map();
+			util.getUrlParameters().forEach((value, key) => {
+				if (key.indexOf('__') === 0)
+					this._serverMsg.set(key, value);
+			});
+
+
 			this.status = PsychoJS.Status.CONFIGURED;
 			this.logger.debug('configuration:', util.toString(this._config));
 		}
 		catch (error) {
-			throw { ...response, error };
+			// throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -446,7 +470,8 @@ export class PsychoJS {
 			this.logger.debug('IP information of the participant: ' + util.toString(this._IP));
 		}
 		catch (error) {
-			throw { ...response, error };
+			// throw { ...response, error };
+			throw Object.assign(response, { error });
 		}
 	}
 

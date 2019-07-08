@@ -2,7 +2,7 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -151,7 +151,7 @@ export class TonePlayer extends SoundPlayer {
 	 * @function
 	 * @public
 	 * @param {Integer} volume - the volume of the tone
-	 * @param {booleam} [mute= false] - whether or not to mute the tone
+	 * @param {boolean} [mute= false] - whether or not to mute the tone
 	 */
 	setVolume(volume, mute = false) {
 		this._volume = volume;
@@ -178,9 +178,9 @@ export class TonePlayer extends SoundPlayer {
 		const self = this;
 		const callback = time => { self._synth.triggerAttackRelease(self._note, self.duration_s, Tone.now()); };
 
-		if (this.loops == 0)
+		if (this.loops === 0)
 			this._toneId = Tone.Transport.scheduleOnce(callback, Tone.now());
-		else if (this.loops == -1)
+		else if (this.loops === -1)
 			this._toneId = Tone.Transport.scheduleRepeat(
 				callback,
 				this.duration_s,

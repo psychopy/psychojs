@@ -2,7 +2,7 @@
  * Mixin implementing various unit-handling measurement methods.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -49,7 +49,7 @@ export let WindowMixin = (superclass) => class extends superclass {
 	 * @return {number} - the length in pixel units
 	 */
 	_getLengthPix(length) {
-		let errorPrefix = { origin: 'WindowMixin._getLengthPix', context: 'when converting a length from stimulus unit to pixel units' };
+		let response = { origin: 'WindowMixin._getLengthPix', context: 'when converting a length from stimulus unit to pixel units' };
 
 		if (this._units === 'pix') {
 			return length;
@@ -63,7 +63,8 @@ export let WindowMixin = (superclass) => class extends superclass {
 			return length * minSize;
 		}
 		else {
-			throw { ...errorPrefix, error: 'unable to deal with unit: ' + this._units };
+			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
+			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
 		}
 	}
 
@@ -78,7 +79,7 @@ export let WindowMixin = (superclass) => class extends superclass {
 	 * @return {number} - the length in stimulus units
 	 */
 	_getLengthUnits(length_px) {
-		let errorPrefix = { origin: 'WindowMixin._getLengthUnits', context: 'when converting a length from pixel unit to stimulus units' };
+		let response = { origin: 'WindowMixin._getLengthUnits', context: 'when converting a length from pixel unit to stimulus units' };
 
 		if (this._units === 'pix') {
 			return length_px;
@@ -92,7 +93,8 @@ export let WindowMixin = (superclass) => class extends superclass {
 			return length_px / minSize;
 		}
 		else {
-			throw { ...errorPrefix, error: 'unable to deal with unit: ' + this._units };
+			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
+			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
 		}
 	}
 
@@ -107,7 +109,7 @@ export let WindowMixin = (superclass) => class extends superclass {
 	 * @return {number} - the length in stimulus units
 	 */
 	_getHorLengthPix(length) {
-		let errorPrefix = { origin: 'WindowMixin._getHorLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+		let response = { origin: 'WindowMixin._getHorLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
 
 		if (this._units === 'pix') {
 			return length;
@@ -121,7 +123,8 @@ export let WindowMixin = (superclass) => class extends superclass {
 			return length * minSize;
 		}
 		else {
-			throw { ...errorPrefix, error: 'unable to deal with unit: ' + this._units };
+			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
+			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
 		}
 	}
 
@@ -135,7 +138,7 @@ export let WindowMixin = (superclass) => class extends superclass {
 	 * @return {number} - the length in stimulus units
 	 */
 	_getVerLengthPix(length) {
-		let errorPrefix = { origin: 'WindowMixin._getVerLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+		let response = { origin: 'WindowMixin._getVerLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
 
 		if (this._units === 'pix') {
 			return length;
@@ -149,7 +152,8 @@ export let WindowMixin = (superclass) => class extends superclass {
 			return length * minSize;
 		}
 		else {
-			throw { ...errorPrefix, error: 'unable to deal with unit: ' + this._units };
+			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
+			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
 		}
 	}
 

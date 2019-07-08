@@ -3,7 +3,7 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -70,7 +70,8 @@ export class PsychObject extends EventEmitter {
 		const response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
 
 		if (typeof attributeName == 'undefined')
-			throw { ...response, error: 'the attribute name cannot be undefined' };
+			throw Object.assign(response, { error: 'the attribute name cannot be' +
+		' undefined' });
 		if (typeof attributeValue == 'undefined') {
 			this._psychoJS.logger.warn('setting the value of attribute: ' + attributeName + ' in PsychObject: ' + this._name + ' as: undefined');
 		}
@@ -80,14 +81,16 @@ export class PsychObject extends EventEmitter {
 			let oldValue = this['_' + attributeName];
 
 			// operations can only be applied to numbers and array of numbers (which can be empty):
-			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) && (attributeValue.length == 0 || typeof attributeValue[0] == 'number'))) {
+			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) && (attributeValue.length === 0 || typeof attributeValue[0] == 'number'))) {
 
 				// value is an array:
 				if (Array.isArray(attributeValue)) {
 					// old value is also an array
 					if (Array.isArray(oldValue)) {
 						if (attributeValue.length !== oldValue.length)
-							throw { ...response, error: 'old and new value should have the same size when they are both arrays' };
+							throw Object.assign(response, { error: 'old and new' +
+									' value should have' +
+									' the same size when they are both arrays' });
 
 						switch (operation) {
 							case '':
@@ -112,7 +115,8 @@ export class PsychObject extends EventEmitter {
 								attributeValue = attributeValue.map((v, i) => oldValue[i] % v);
 								break;
 							default:
-								throw { ...response, error: 'unsupported operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name };
+								throw Object.assign(response, { error: 'unsupported' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
 						}
 
 					} else
@@ -141,7 +145,9 @@ export class PsychObject extends EventEmitter {
 								attributeValue = attributeValue.map(v => oldValue % v);
 								break;
 							default:
-								throw { ...response, error: 'unsupported value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name };
+								throw Object.assign(response, { error: 'unsupported' +
+							' value: ' + JSON.stringify(attributeValue) + ' for' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
 						}
 					}
 				} else
@@ -172,7 +178,8 @@ export class PsychObject extends EventEmitter {
 								attributeValue = oldValue.map(v => v % attributeValue);
 								break;
 							default:
-								throw { ...response, error: 'unsupported operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name };
+								throw Object.assign(response, { error: 'unsupported' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
 						}
 
 					} else
@@ -201,13 +208,14 @@ export class PsychObject extends EventEmitter {
 								attributeValue = oldValue % attributeValue;
 								break;
 							default:
-								throw { ...response, error: 'unsupported value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name };
+								throw Object.assign(response, { error: 'unsupported' +
+										' value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
 						}
 					}
 				}
 
 			} else
-				throw { ...response, error: 'operation: ' + operation + ' is invalid for old value: ' + JSON.stringify(oldValue) + ' and new value: ' + JSON.stringify(attributeValue) };
+				throw Object.assign(response, { error: 'operation: ' + operation + ' is invalid for old value: ' + JSON.stringify(oldValue) + ' and new value: ' + JSON.stringify(attributeValue) });
 		}
 
 

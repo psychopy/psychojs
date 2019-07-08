@@ -2,7 +2,7 @@
  * Various utilities.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -193,7 +193,8 @@ export function toNumerical(obj)
 		return obj.map( e => {
 			let n = Number.parseFloat(e);
 			if (Number.isNaN(n))
-				throw { ...response, error: 'unable to convert: ' + e + ' to a number.'};
+				Object.assign(response, { error: 'unable to convert: ' + e + ' to a' +
+						' number.'});
 			return n;
 		});
 	}
@@ -282,7 +283,7 @@ export function	getPositionFromObject(object, units)
 		return to_px(object, units, objectWin);
 	}
 	catch (error) {
-		throw {...response, error };
+		throw Object.assign(response, { error });
 	}
 }
 
@@ -311,7 +312,7 @@ export function to_px(pos, posUnit, win)
 		return [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
-		throw { ...response, error: `unknown position units: ${posUnit}` };
+		throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -339,7 +340,7 @@ export function to_norm(pos, posUnit, win)
 		return [pos[0] * minSize / (win.size[0]/2.0), pos[1] * minSize / (win.size[1]/2.0)];
 	}
 
-	throw { ...response, error: `unknown position units: ${posUnit}` };
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -369,7 +370,7 @@ export function to_height(pos, posUnit, win)
 		return [pos[0] * win.size[0]/2.0 / minSize, pos[1] * win.size[1]/2.0 / minSize];
 	}
 
-	throw { ...response, error: `unknown position units: ${posUnit}` };
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -398,7 +399,7 @@ export function to_win(pos, posUnit, win)
 
 		throw `unknown window units: ${win._units}`;
 	} catch (error) {
-		throw { ...response, error };
+		throw Object.assign(response, { response, error });
 	}
 }
 
@@ -429,7 +430,7 @@ export function to_unit(pos, posUnit, win, targetUnit)
 
 		throw `unknown target units: ${targetUnit}`;
 	} catch (error) {
-		throw { ...response, error };
+		throw Object.assign(response, { error });
 	}
 }
 
@@ -549,6 +550,9 @@ export function getUrlParameters()
 /**
  * Add info extracted from the URL to the given dictionary.
  *
+ * <p>We exclude all URL parameters starting with a double underscore
+ * since those are reserved for client/server communication</p>
+ *
  * @name module:util.addInfoFromUrl
  * @function
  * @public
@@ -558,10 +562,10 @@ export function addInfoFromUrl(info)
 {
 	const infoFromUrl = getUrlParameters();
 
-	// note: since __msg is a key reserved for communications between the pavlovia.org server
-	// and the experiment running in the participant's browser, we do not add it to info.
+	// note: parameters starting with a double underscore are reserved for client/server communication,
+	// we do not add them to info
 	for (const [key, value] of infoFromUrl)
-		if (key !== '__msg')
+		if (key.indexOf('__') !== 0)
 			info[key] = value;
 
 	return info;
@@ -586,14 +590,14 @@ export function addInfoFromUrl(info)
  * @public
  * @param {Array.<Object>} array - the input array
  * @param {number | Array.<number> | string} selection -  the selection
- * @returns {Array.<Object>} the array of selected items
+ * @returns {Object | Array.<Object>} the array of selected items
  */
 export function selectFromArray(array, selection) {
 
 	// if selection is an integer, or a string representing an integer, we treat it as an index in the array
 	// and return that entry:
 	if (isInt(selection))
-		return [array[parseInt(selection)]];
+		return array[parseInt(selection)];
 
 	// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
@@ -603,7 +607,8 @@ export function selectFromArray(array, selection) {
 	// if selection is a string, we decode it:
 	else if (typeof selection === 'string') {
 		if (selection.indexOf(',') > -1)
-			return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
+			return selection.split(',').map(a => selectFromArray(array, a));
+			// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
 		else if (selection.indexOf(':') > -1) {
 			let sliceParams = selection.split(':').map(a => parseInt(a));
 			if (sliceParams.length === 3)
@@ -628,7 +633,13 @@ export function selectFromArray(array, selection) {
  * @returns {Array.<Object>} the flatten array
  */
 export function flattenArray(array) {
-	return array.reduce( (flat, next) => flat.concat(Array.isArray(next) ? flattenArray(next) : next), [] );
+	return array.reduce(
+		(flat, next) => {
+			flat.push( (Array.isArray(next) && Array.isArray(next[0])) ? flattenArray(next) : next );
+			return flat;
+		},
+		[]
+	);
 }
 
 
@@ -673,7 +684,7 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
  * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'
  */
 export function offerDataForDownload(filename, data, type) {
-	var blob = new Blob([data], { type });
+	const blob = new Blob([data], { type });
 	if (window.navigator.msSaveOrOpenBlob)
 		window.navigator.msSaveBlob(blob, filename);
 	else {

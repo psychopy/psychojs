@@ -2,7 +2,7 @@
  * Sound player interface
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -109,7 +109,7 @@ export class SoundPlayer extends PsychObject
 	 * @public
 	 * @abstract
 	 * @param {Integer} volume - the volume of the tone
-	 * @param {booleam} [mute= false] - whether or not to mute the tone
+	 * @param {boolean} [mute= false] - whether or not to mute the tone
 	 */
 	setVolume(volume, mute = false) {
 		throw {origin: 'SoundPlayer.setVolume', context: 'when setting the volume of the sound', error: 'this method is abstract and should not be called.'};

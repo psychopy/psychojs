@@ -2,7 +2,7 @@
  * Scheduler.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -14,7 +14,7 @@
  * 
  * <p>
  * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
- * JavaScript function returning one of the following codes:
+ * JavaScript functions returning one of the following codes:
  * <ul>
  * <li>Scheduler.Event.NEXT: Move onto the next task *without* rendering the scene first.</li>
  * <li>Scheduler.Event.FLIP_REPEAT: Render the scene and repeat the task.</li>
@@ -201,8 +201,14 @@ export class Scheduler {
 				// we are repeating a task
 			}
 
-			// if the current task is a scheduler, we run its tasks until a rendering of the scene is required:
-			if (this._currentTask instanceof Scheduler) {
+			// if the current task is a function, we run it:
+			if (this._currentTask instanceof Function) {
+				state = this._currentTask(...this._currentArgs);
+			}
+			// otherwise, we assume that the current task is a scheduler and we run its tasks until a rendering
+			// of the scene is required.
+			// note: "if (this._currentTask instanceof Scheduler)" does not work because of CORS...
+			else {
 				state = this._currentTask._runNextTasks();
 				if (state === Scheduler.Event.QUIT) {
 					// if the experiment has not ended, we move onto the next task:
@@ -210,18 +216,6 @@ export class Scheduler {
 						state = Scheduler.Event.NEXT;
 				}
 			}
-
-			// if the current task is a function, we run it:
-			else if (this._currentTask instanceof Function) {
-				state = this._currentTask(...this._currentArgs);
-			}
-
-			// we should not be here...
-			else { console.log(this._currentTask);
-				throw { origin: 'Scheduler._runNextTasks', context: 'when running the scheduler\'s tasks', error: 'the next' +
-						' task has unknown type (neither a Scheduler nor a Function)' };
-			}
-
 
 			// if the current task's return status is FLIP_REPEAT, we will re-run it, otherwise
 			// we move onto the next task:
