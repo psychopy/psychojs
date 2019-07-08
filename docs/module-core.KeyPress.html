@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: util/Logger.js</title>
+    <title>JSDoc: Class: KeyPress</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,122 +17,230 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: util/Logger.js</h1>
+    <h1 class="page-title">Class: KeyPress</h1>
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Logger
- * 
- * @author Alain Pitiot
- * @version 3.1.4
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
- * @license Distributed under the terms of the MIT License
- */
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="module-core.html">core</a>.</span>KeyPress<span class="signature">(code, tDown, name)</span><span class="type-signature"></span></h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+
+    
+    <h4 class="name" id="KeyPress"><span class="type-signature"></span>new KeyPress<span class="signature">(code, tDown, name)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
-import * as util from '../util/Util';
 
 
-/**
- * &lt;p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging), a remote one, etc.&lt;/p>
- * 
- * &lt;p>Note: we use log4javascript.&lt;/p>
- * 
- * @name module:util.Logger
- * @class
- * @param {*} threshold - the logging threshold, e.g. log4javascript.Level.ERROR
- */
-export class Logger {
-
-	constructor(threshold) {
-		// browser console logger:
-		this.consoleLogger = log4javascript.getLogger('psychojs');
-
-		const appender = new log4javascript.BrowserConsoleAppender();
-		appender.setLayout(this._customConsoleLayout());
-		appender.setThreshold(threshold);
-
-		this.consoleLogger.addAppender(appender);
-		this.consoleLogger.setLevel(threshold);
 
 
-		/*
-		let appender = new log4javascript.AjaxAppender('https://pavlovia.org/server?command=log');
-		appender.setBatchSize(5);
-		appender.setSendAllOnUnload(true);
-		//appender.setFailCallback();
-	
-		let jsonLayout = new log4javascript.JsonLayout([false, true]);
-		appender.setLayout(jsonLayout);*/
-	}
 
 
-	/**
-	 * Create a custom console layout.
-	 * 
-	 * @name module:util.Logger#_customConsoleLayout
-	 * @private
-	 * @return {*} the custom layout
-	 */
-	_customConsoleLayout() {
-		const customLayout = new log4javascript.PatternLayout("%p %f{1} | %m");
 
-		customLayout.setCustomField('location', function (layout, loggingReference) {
-			// we throw a fake exception to retrieve the stack trace
-			try { (0)(); } catch (e) {
-				const stackEntries = e.stack.replace(/^.*?\n/, '').replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anon}(').split("\n");
 
-				let relevantEntry;
-				const browser = util.detectBrowser();
-				if (browser === 'Firefox') {
-					// look for entry immediately after those of log4javascript:
-					for (let entry of stackEntries)
-						if (entry.indexOf('log4javascript.min.js') &lt;= 0) {
-							relevantEntry = entry;
-							break;
-						}
 
-					const buf = relevantEntry.split(':');
-					const line = buf[buf.length - 2];
-					const file = buf[buf.length - 3].split('/').pop();
-					const method = relevantEntry.split('@')[0];
+    <h5>Parameters:</h5>
+    
 
-					return method + ' ' + file + ' ' + line;
-				}
-				else if (browser === 'Safari') {
-					return 'unknown';
-				}
-				else if (browser === 'Chrome') {
-					relevantEntry = stackEntries.pop();
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-					let buf = relevantEntry.split(' ');
-					let fileLine = buf.pop();
-					const method = buf.pop();
-					buf = fileLine.split(':'); buf.pop();
-					const line = buf.pop();
-					const file = buf.pop().split('/').pop();
+        <th>Type</th>
 
-					return method + ' ' + file + ' ' + line;
+        
 
-				}
-				else
-					return 'unknown';
-			}
-		});
+        
 
-		return customLayout;
-	}
+        <th class="last">Description</th>
+    </tr>
+    </thead>
 
-}
-</code></pre>
-        </article>
-    </section>
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>code</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">W3C Key Code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tDown</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">time of key press (keydown event) relative to the global Monotonic Clock</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">pyglet key name</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_Keyboard.js.html">core/Keyboard.js</a>, <a href="core_Keyboard.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

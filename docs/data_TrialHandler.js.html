@@ -31,7 +31,7 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -176,6 +176,47 @@ export class TrialHandler extends PsychObject {
 		};
 	}
 
+	
+	/**
+	 * @typedef {Object} Snapshot
+	 * @property {string} name - the trialHandler name
+	 * @property {number} nStim - the number of stimuli
+	 * @property {number} nTotal - the total number of trials that will be run
+	 * @property {number} nRemaining - the total number of trial remaining
+	 * @property {number} thisRepN - the current repeat
+	 * @property {number} thisTrialN - the current trial number within the current repeat
+	 * @property {number} thisN - the total number of trials completed so far
+	 * @property {number} thisIndex - the index of the current trial in the conditions list
+	 * @property {number} ran - whether or not the trial ran
+	 */
+
+	/**
+	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
+	 * number of trial remaining).
+	 *
+	 * &lt;p>This is typically used in the LoopBegin function, in order to capture the current state of a TrialHandler&lt;/p>
+	 *
+	 * @public
+	 * @return {Snapshot} - the snapshot of the current internal state.
+	 */
+	getSnapshot() {
+		const currentIndex = this.thisIndex;
+
+		return {
+			name: this.name,
+			nStim: this.nStim,
+			nTotal: this.nTotal,
+			nRemaining: this.nRemaining,
+			thisRepN: this.thisRepN,
+			thisTrialN: this.thisTrialN,
+			thisN: this.thisN,
+			thisIndex: this.thisIndex,
+			ran: this.ran,
+
+			getCurrentTrial: () => this.getTrial(currentIndex)
+		};
+	}
+
 
 	/**
 	 * Get the trial index.
@@ -208,7 +249,7 @@ export class TrialHandler extends PsychObject {
 	 * @return {Array.string} the attributes
 	 */
 	getAttributes() {
-		if (!Array.isArray(this.trialList) || this.nStim == 0)
+		if (!Array.isArray(this.trialList) || this.nStim === 0)
 			return [];
 
 		const firstTrial = this.trialList[0];
@@ -227,6 +268,20 @@ export class TrialHandler extends PsychObject {
 	 */
 	getCurrentTrial() {
 		return this.trialList[this.thisIndex];
+	}
+
+
+	/**
+	 * Get the nth trial.
+	 *
+	 * @param {number} index - the trial index
+	 * @return {Object|undefined} the requested trial or undefined if attempting to go beyond the last trial.
+	 */
+	getTrial(index = 0) {
+		if (index &lt; 0 || index > this.nTotal)
+			return undefined;
+
+		return this.trialList[index];
 	}
 
 
@@ -392,7 +447,8 @@ export class TrialHandler extends PsychObject {
 
 		// unknown type:
 		else
-			throw { ...response, error: 'unable to prepare trial list: unknown type: ' + (typeof trialList) };
+			throw Object.assign(response, { error: 'unable to prepare trial list:' +
+		' unknown type: ' + (typeof trialList) });
 	}
 
 
@@ -461,7 +517,7 @@ export class TrialHandler extends PsychObject {
 				this._trialSequence.push(flatSequence.slice(i * this.nStim, (i + 1) * this.nStim));
 		}
 		else {
-			throw { ...response, error: 'unknown method' };
+			throw Object.assign(response, { error: 'unknown method' });
 		}
 
 		return this._trialSequence;
@@ -503,13 +559,13 @@ TrialHandler.Method = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 19 2019 09:44:48 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 08 2019 09:06:18 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

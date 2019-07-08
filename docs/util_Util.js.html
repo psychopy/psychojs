@@ -30,7 +30,7 @@
  * Various utilities.
  * 
  * @author Alain Pitiot
- * @version 3.0.8
+ * @version 3.1.4
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -221,7 +221,8 @@ export function toNumerical(obj)
 		return obj.map( e => {
 			let n = Number.parseFloat(e);
 			if (Number.isNaN(n))
-				throw { ...response, error: 'unable to convert: ' + e + ' to a number.'};
+				Object.assign(response, { error: 'unable to convert: ' + e + ' to a' +
+						' number.'});
 			return n;
 		});
 	}
@@ -310,7 +311,7 @@ export function	getPositionFromObject(object, units)
 		return to_px(object, units, objectWin);
 	}
 	catch (error) {
-		throw {...response, error };
+		throw Object.assign(response, { error });
 	}
 }
 
@@ -339,7 +340,7 @@ export function to_px(pos, posUnit, win)
 		return [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
-		throw { ...response, error: `unknown position units: ${posUnit}` };
+		throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -367,7 +368,7 @@ export function to_norm(pos, posUnit, win)
 		return [pos[0] * minSize / (win.size[0]/2.0), pos[1] * minSize / (win.size[1]/2.0)];
 	}
 
-	throw { ...response, error: `unknown position units: ${posUnit}` };
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -397,7 +398,7 @@ export function to_height(pos, posUnit, win)
 		return [pos[0] * win.size[0]/2.0 / minSize, pos[1] * win.size[1]/2.0 / minSize];
 	}
 
-	throw { ...response, error: `unknown position units: ${posUnit}` };
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
 
 
@@ -426,7 +427,7 @@ export function to_win(pos, posUnit, win)
 
 		throw `unknown window units: ${win._units}`;
 	} catch (error) {
-		throw { ...response, error };
+		throw Object.assign(response, { response, error });
 	}
 }
 
@@ -457,7 +458,7 @@ export function to_unit(pos, posUnit, win, targetUnit)
 
 		throw `unknown target units: ${targetUnit}`;
 	} catch (error) {
-		throw { ...response, error };
+		throw Object.assign(response, { error });
 	}
 }
 
@@ -577,6 +578,9 @@ export function getUrlParameters()
 /**
  * Add info extracted from the URL to the given dictionary.
  *
+ * &lt;p>We exclude all URL parameters starting with a double underscore
+ * since those are reserved for client/server communication&lt;/p>
+ *
  * @name module:util.addInfoFromUrl
  * @function
  * @public
@@ -586,10 +590,10 @@ export function addInfoFromUrl(info)
 {
 	const infoFromUrl = getUrlParameters();
 
-	// note: since __msg is a key reserved for communications between the pavlovia.org server
-	// and the experiment running in the participant's browser, we do not add it to info.
+	// note: parameters starting with a double underscore are reserved for client/server communication,
+	// we do not add them to info
 	for (const [key, value] of infoFromUrl)
-		if (key !== '__msg')
+		if (key.indexOf('__') !== 0)
 			info[key] = value;
 
 	return info;
@@ -614,14 +618,14 @@ export function addInfoFromUrl(info)
  * @public
  * @param {Array.&lt;Object>} array - the input array
  * @param {number | Array.&lt;number> | string} selection -  the selection
- * @returns {Array.&lt;Object>} the array of selected items
+ * @returns {Object | Array.&lt;Object>} the array of selected items
  */
 export function selectFromArray(array, selection) {
 
 	// if selection is an integer, or a string representing an integer, we treat it as an index in the array
 	// and return that entry:
 	if (isInt(selection))
-		return [array[parseInt(selection)]];
+		return array[parseInt(selection)];
 
 	// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
@@ -631,7 +635,8 @@ export function selectFromArray(array, selection) {
 	// if selection is a string, we decode it:
 	else if (typeof selection === 'string') {
 		if (selection.indexOf(',') > -1)
-			return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
+			return selection.split(',').map(a => selectFromArray(array, a));
+			// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
 		else if (selection.indexOf(':') > -1) {
 			let sliceParams = selection.split(':').map(a => parseInt(a));
 			if (sliceParams.length === 3)
@@ -656,7 +661,13 @@ export function selectFromArray(array, selection) {
  * @returns {Array.&lt;Object>} the flatten array
  */
 export function flattenArray(array) {
-	return array.reduce( (flat, next) => flat.concat(Array.isArray(next) ? flattenArray(next) : next), [] );
+	return array.reduce(
+		(flat, next) => {
+			flat.push( (Array.isArray(next) &amp;&amp; Array.isArray(next[0])) ? flattenArray(next) : next );
+			return flat;
+		},
+		[]
+	);
 }
 
 
@@ -701,7 +712,7 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
  * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'
  */
 export function offerDataForDownload(filename, data, type) {
-	var blob = new Blob([data], { type });
+	const blob = new Blob([data], { type });
 	if (window.navigator.msSaveOrOpenBlob)
 		window.navigator.msSaveBlob(blob, filename);
 	else {
@@ -722,13 +733,13 @@ export function offerDataForDownload(filename, data, type) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Apr 19 2019 09:44:48 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 08 2019 09:06:18 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
