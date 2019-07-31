@@ -2,7 +2,7 @@
  * Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */

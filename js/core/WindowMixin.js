@@ -2,7 +2,7 @@
  * Mixin implementing various unit-handling measurement methods.
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */

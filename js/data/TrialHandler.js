@@ -3,7 +3,7 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -173,8 +173,7 @@ export class TrialHandler extends PsychObject {
 	 */
 	getSnapshot() {
 		const currentIndex = this.thisIndex;
-
-		return {
+		const snapshot = {
 			name: this.name,
 			nStim: this.nStim,
 			nTotal: this.nTotal,
@@ -187,6 +186,8 @@ export class TrialHandler extends PsychObject {
 
 			getCurrentTrial: () => this.getTrial(currentIndex)
 		};
+
+		return snapshot;
 	}
 
 

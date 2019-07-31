@@ -2,7 +2,7 @@
  * Image Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -195,6 +195,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @return {boolean} whether or not the image contains the object
 	 */
 	contains(object, units) {
+		if (typeof this._image === 'undefined')
+			return false;
+
 		// get position of object:
 		let objectPos_px = util.getPositionFromObject(object, units);
 		if (typeof objectPos_px === 'undefined')

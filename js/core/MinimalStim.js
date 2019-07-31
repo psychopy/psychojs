@@ -2,7 +2,7 @@
  * Base class for all stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -67,16 +67,17 @@ export class MinimalStim extends PsychObject {
 					// update the stimulus if need be before we add its PIXI representation to the window container:
 					this._updateIfNeeded();
 					if (typeof this._pixi === 'undefined')
-						// throw {...errorPrefix, error: 'the PIXI representation of the stimulus is unavailable'};
-						throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
-
-					this.win._rootContainer.addChild(this._pixi);
-					this.win._drawList.push(this);
+						this.psychoJS.logger.warn('the Pixi.js representation of this stimulus is undefined.');
+						// throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
+					else {
+						this.win._rootContainer.addChild(this._pixi);
+						this.win._drawList.push(this);
+					}
 				} else
 				{
 					// the stimulus is already in the list, if it needs to be updated, we remove it
 					// from the window container, update it, then put it back:
-					if (this._needUpdate) {
+					if (this._needUpdate && typeof this._pixi !== 'undefined') {
 						this.win._rootContainer.removeChild(this._pixi);
 						this._updateIfNeeded();
 						this.win._rootContainer.addChild(this._pixi);
@@ -112,7 +113,7 @@ export class MinimalStim extends PsychObject {
 	draw() {
 		this._updateIfNeeded();
 
-		if (this.win && this.win._drawList.indexOf(this) < 0) {
+		if (this.win && this.win._drawList.indexOf(this) < 0 && typeof this._pixi !== 'undefined') {
 			this.win._container.addChild(this._pixi);
 			this.win._drawList.push(this);
 		}

@@ -2,7 +2,7 @@
  * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -343,6 +343,7 @@ export class EventManager {
 	 * @name module:core.EventManager#w3c2pyglet
 	 * @function
 	 * @public
+	 * @static
 	 * @param {string} code - W3C Key Code
 	 * @returns {string} corresponding pyglet key
 	 */
@@ -352,6 +353,22 @@ export class EventManager {
 		else
 			return 'N/A';
 	}
+
+
+	/**
+	 * Convert a keycode to a W3C UI Event code.
+	 * <p>This is for legacy browsers.</p>
+	 *
+	 * @name module:core.EventManager#keycode2w3c
+	 * @function
+	 * @public
+	 * @static
+	 * @param {number} keycode - the keycode
+	 * @returns {string} corresponding W3C UI Event code
+	 */
+	static keycode2w3c(keycode) {
+		return EventManager._keycodeMap[keycode];
+	}
 }
 
 
@@ -359,6 +376,9 @@ export class EventManager {
  * <p>This map provides support for browsers that have not yet
  * adopted the W3C KeyboardEvent.code standard for detecting key presses.
  * It maps the deprecated KeyboardEvent.keycode values to the W3C UI event codes.</p>
+ *
+ * <p>Unfortunately, it is not very fine-grained: for instance, there is no difference between Alt Left and Alt
+ * Right, or between Enter and Numpad Enter. Use at your own risk (or upgrade your browser...).</p>
  * 
  * @name module:core.EventManager#_keycodeMap
  * @readonly
@@ -427,10 +447,15 @@ EventManager._keycodeMap = {
 	194: "NumpadComma",
 	110: "NumpadDecimal",
 	111: "NumpadDivide",
-	13: "NumpadEnter",
 	12: "NumpadEqual",
 	106: "NumpadMultiply",
 	109: "NumpadSubtract",
+
+	13: "Enter", // 13 is also Numpad Enter, alas
+	16: "ShiftLeft", // 16 is also Shift Right, alas
+	17: "ControlLeft", // 17 is also Control Right, alas
+	18: "AltLeft", // 18 is also Alt Right, alas
+
 	37: "ArrowLeft",
 	38: "ArrowUp",
 	39: "ArrowRight",

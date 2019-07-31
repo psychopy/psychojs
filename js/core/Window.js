@@ -2,7 +2,7 @@
  * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.2.0
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -24,6 +24,8 @@ import { MonotonicClock } from '../util/Clock';
  * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
  * @param {Color} [options.color= Color('black')] the background color of the window
  * @param {string} [options.units= 'pix'] the units of the window
+ * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
+ * before flipping
  * @param {boolean} [options.autoLog= true] whether or not to log
  */
 export class Window extends PsychObject {
@@ -43,6 +45,7 @@ export class Window extends PsychObject {
 		fullscr = false,
 		color = new Color('black'),
 		units = 'pix',
+		waitBlanking = false,
 		autoLog = true
 	} = {}) {
 		super(psychoJS, name);
@@ -53,7 +56,7 @@ export class Window extends PsychObject {
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttributes(Window, fullscr, color, units, autoLog);
+		this._addAttributes(Window, fullscr, color, units, waitBlanking, autoLog);
 		this._addAttribute('size', []);
 
 
@@ -114,7 +117,10 @@ export class Window extends PsychObject {
 	 * @public
 	 */
 	adjustScreenSize() {
-		this._windowAlreadyInFullScreen = (!window.screenTop && !window.screenY);
+		// the following does not seem to work any longer (08.2019) on Google Chrome, there does not seem to be
+		// reliable ways to test whether the window is already fullscreen.
+		// this._windowAlreadyInFullScreen = (!window.screenTop && !window.screenY);
+		this._windowAlreadyInFullScreen = false;
 
 		if (this.fullscr && !this._windowAlreadyInFullScreen) {
 			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'to full screen.');
@@ -227,6 +233,10 @@ export class Window extends PsychObject {
 		// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
 		this._renderer.gl.readPixels(0, 0, 1, 1, this._renderer.gl.RGBA, this._renderer.gl.UNSIGNED_BYTE, new Uint8Array(4));
 
+		// blocks execution until the rendering is fully done:
+		if (this._waitBlanking)
+			this._renderer.gl.finish();
+
 		// log:
 		this._writeLogOnFlip();
 
@@ -270,7 +280,7 @@ export class Window extends PsychObject {
 
 		// if a stimuli needs to be updated, we remove it from the window container, update it, then put it back
 		for (const stimulus of this._drawList)
-			if (stimulus._needUpdate) {
+			if (stimulus._needUpdate && typeof stimulus._pixi !== 'undefined') {
 				this._rootContainer.removeChild(stimulus._pixi);
 				stimulus._updateIfNeeded();
 				this._rootContainer.addChild(stimulus._pixi);
