@@ -2,7 +2,7 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.1.5
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -156,21 +156,22 @@ export class ExperimentHandler extends PsychObject {
 	 * @name module:data.ExperimentHandler#nextEntry
 	 * @function
 	 * @public
+	 * @param {Object[]} snapshots - array of loop snapshots
 	 */
-	nextEntry(loop) {
-		if (typeof loop !== 'undefined') {
-			const attributes = ExperimentHandler._getLoopAttributes(loop);
-			for (let a in attributes)
-				if (attributes.hasOwnProperty(a))
-					this._currentTrialData[a] = attributes[a];
-		} else {
-			// fetch data from each (potentially-nested) loop:
-			for (let loop of this._unfinishedLoops) {
-				const attributes = ExperimentHandler._getLoopAttributes(loop);
+	nextEntry(snapshots) {
+		if (typeof snapshots !== 'undefined') {
+
+			// turn single snapshot into a one-element array:
+			if (!Array.isArray(snapshots))
+				snapshots = [snapshots];
+
+			for (const snapshot of snapshots) {
+				const attributes = ExperimentHandler._getLoopAttributes(snapshot);
 				for (let a in attributes)
 					if (attributes.hasOwnProperty(a))
 						this._currentTrialData[a] = attributes[a];
 			}
+
 		}
 
 		// add the extraInfo dict to the data:
@@ -304,19 +305,17 @@ export class ExperimentHandler extends PsychObject {
 	 * @param {Object} loop - the loop
 	 */
 	static _getLoopAttributes(loop) {
-		const loopName = loop.name;
-
-		// standard attributes:
+		// standard trial attributes:
 		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
 		let attributes = {};
-		for (const property of properties)
-			for (const loopProperty in loop)
-				if (loopProperty === property) {
-					const key = (property === 'stepSizeCurrent')? loopName + '.stepSize' : loopName + '.' + property;
-					attributes[key] = loop[property];
-				}
+		const loopName = loop.name;
+		for (const loopProperty in loop)
+			if (properties.includes(loopProperty)) {
+				const key = (loopProperty === 'stepSizeCurrent')? loopName + '.stepSize' : loopName + '.' + loopProperty;
+				attributes[key] = loop[loopProperty];
+			}
 
-		// trial's attributes:
+		// specific trial attributes:
 		if (typeof loop.getCurrentTrial === 'function') {
 			const currentTrial = loop.getCurrentTrial();
 			for (const trialProperty in currentTrial)

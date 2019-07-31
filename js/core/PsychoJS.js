@@ -3,7 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.1.5
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -55,8 +55,9 @@ export class PsychoJS {
 	 * @public
 	 */
 	constructor({
-		debug = true,
-		collectIP = false
+								debug = true,
+								collectIP = false,
+								topLevelStatus = true
 	} = {}) {
 		// logging:
 		this._logger = new Logger((debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
@@ -91,6 +92,11 @@ export class PsychoJS {
 		// status:
 		this._status = PsychoJS.Status.NOT_CONFIGURED;
 
+		// make the PsychoJS.Status accessible from the top level of the generated experiment script
+		// in order to accommodate PsychoPy's Code Components
+		if (topLevelStatus)
+			this._makeStatusTopLevel();
+
 		this.logger.info('[PsychoJS] Initialised.');
 	}
 
@@ -117,7 +123,9 @@ export class PsychoJS {
 	 * @param {boolean} [options.fullscr] whether or not to go fullscreen
 	 * @param {Color} [options.color] the background color of the window
 	 * @param {string} [options.units] the units of the window
-	 * @param {boolean} [options.autoLog] whether of not to log
+	 * @param {boolean} [options.autoLog] whether or not to log
+	 * @param {boolean} [options.waitBlanking] whether or not to wait for all rendering operations to be done
+	 * before flipping
 	 * @throws {Object.<string, *>} exception if a window has already been opened
 	 * 
 	 * @public
@@ -127,6 +135,7 @@ export class PsychoJS {
 		fullscr,
 		color,
 		units,
+		waitBlanking,
 		autoLog
 	} = {}) {
 		this.logger.info('[PsychoJS] Open Window.');
@@ -140,6 +149,7 @@ export class PsychoJS {
 			fullscr,
 			color,
 			units,
+			waitBlanking,
 			autoLog
 		});
 	}
@@ -498,6 +508,17 @@ export class PsychoJS {
 			return true;
 		});*/
 
+	}
+
+
+	/**
+	 * Make the various Status top level, in order to accommodate PsychoPy's Code Components.
+	 * @private
+	 */
+	_makeStatusTopLevel() {
+		for (const status in PsychoJS.Status) {
+			window[status] = PsychoJS.Status[status];
+		}
 	}
 
 }

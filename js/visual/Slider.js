@@ -2,7 +2,7 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.1.4
+ * @version 3.1.5
  * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -531,19 +531,19 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			this._marker.moveTo(0, 0);
 			if (this._isHorizontal()) {
 				if (this._flip) {
-					this._marker.lineTo(markerSize_px, markerSize_px);
-					this._marker.lineTo(-markerSize_px, markerSize_px);
+					this._marker.lineTo(markerSize_px/2, markerSize_px/2);
+					this._marker.lineTo(-markerSize_px/2, markerSize_px/2);
 				} else {
-					this._marker.lineTo(markerSize_px, -markerSize_px);
-					this._marker.lineTo(-markerSize_px, -markerSize_px);
+					this._marker.lineTo(markerSize_px/2, -markerSize_px/2);
+					this._marker.lineTo(-markerSize_px/2, -markerSize_px/2);
 				}
 			} else {
 				if (this._flip) {
-					this._marker.lineTo(-markerSize_px, markerSize_px);
-					this._marker.lineTo(-markerSize_px, -markerSize_px);
+					this._marker.lineTo(-markerSize_px/2, markerSize_px/2);
+					this._marker.lineTo(-markerSize_px/2, -markerSize_px/2);
 				} else {
-					this._marker.lineTo(markerSize_px, markerSize_px);
-					this._marker.lineTo(markerSize_px, -markerSize_px);
+					this._marker.lineTo(markerSize_px/2, markerSize_px/2);
+					this._marker.lineTo(markerSize_px/2, -markerSize_px/2);
 				}
 			}
 			this._marker.endFill();
