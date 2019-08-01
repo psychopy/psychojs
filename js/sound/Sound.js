@@ -164,7 +164,7 @@ export class Sound extends PsychObject {
 		for (const acceptFn of acceptFns) {
 			this._player = acceptFn(this);
 			if (typeof this._player !== 'undefined')
-				return;
+				return this._player;
 		}
 
 		throw { origin: 'SoundPlayer._getPlayer', context: 'when finding a player for the sound', error: 'could not find an appropriate player.' };

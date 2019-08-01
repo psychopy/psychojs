@@ -18,7 +18,7 @@ import { SoundPlayer } from './SoundPlayer';
  * @extends SoundPlayer
  * @param {Object} options
  * @param {PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {number} [options.duration_s= 0.5] - duration of the tone (in seconds)
+ * @param {number} [options.duration_s= 0.5] - duration of the tone (in seconds). If duration_s == -1, the sound will play indefinitely.
  * @param {string|number} [options.note= 'C4'] - note (if string) or frequency (if number)
  * @param {number} [options.volume= 1.0] - volume of the tone (must be between 0 and 1.0)
  * @param {number} [options.loops= 0] - how many times to repeat the tone after it has played once. If loops == -1, the tone will repeat indefinitely until stopped.
@@ -65,25 +65,36 @@ export class TonePlayer extends SoundPlayer {
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
+	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
+	 * we throw an exception.</p>
+	 *
 	 * @name module:sound.TonePlayer.accept
 	 * @function
 	 * @static
 	 * @public
-	 * @param {module:sound.Sound} - the sound
+	 * @param {module:sound.Sound} sound - the sound
 	 * @return {Object|undefined} an instance of TonePlayer that can play the given sound or undefined otherwise
 	 */
 	static accept(sound) {
+		const response = { origin: 'TonePlayer.accept', context: 'when determining whether a given sound can be played using Tone.js' };
+
+		// start the Tone Transport, if Tone.js is available (it does not load on IE11):
+		if (typeof Tone !== 'undefined' && Tone.Transport.state !== 'started')
+			Tone.Transport.start(Tone.now());
+
+
 		// if the sound's value is an integer, we interpret it as a frequency:
 		if ($.isNumeric(sound.value)) {
-			// build the player:
-			const player = new TonePlayer({
+			if (typeof Tone === 'undefined')
+				throw { ...response, error: "unable to play the tone since Tone.js is not available" };
+
+			return new TonePlayer({
 				psychoJS: sound.psychoJS,
 				note: sound.value,
 				duration_s: sound.secs,
 				volume: sound.volume,
 				loops: sound.loops
 			});
-			return player;
 		}
 
 		// if the sound's value is a string, we check whether it is a note:
@@ -99,15 +110,16 @@ export class TonePlayer extends SoundPlayer {
 			// check whether the sound's value is a recognised note:
 			const note = psychopyToToneMap.get(sound.value);
 			if (typeof note !== 'undefined') {
-				// build the player:
-				const player = new TonePlayer({
+				if (typeof Tone === 'undefined')
+					throw {...response, error: "unable to play the tone since Tone.js is not available"};
+
+				return new TonePlayer({
 					psychoJS: sound.psychoJS,
 					note: note + sound.octave,
 					duration_s: sound.secs,
 					volume: sound.volume,
 					loops: sound.loops
 				});
-				return player;
 			}
 		}
 
@@ -175,8 +187,10 @@ export class TonePlayer extends SoundPlayer {
 		if (typeof loops !== 'undefined')
 			this._loops = loops;
 
+		// if duration_s == -1, the sound should play indefinitely, therefore we use an arbitrarily long playing time
+		const actualDuration_s = (this._duration_s === -1)?10000000: this._duration_s;
 		const self = this;
-		const callback = time => { self._synth.triggerAttackRelease(self._note, self.duration_s, Tone.now()); };
+		const callback = () => { self._synth.triggerAttackRelease(self._note, actualDuration_s, Tone.now()); };
 
 		if (this.loops === 0)
 			this._toneId = Tone.Transport.scheduleOnce(callback, Tone.now());
@@ -209,6 +223,3 @@ export class TonePlayer extends SoundPlayer {
 			Tone.Transport.clear(this._toneId);
 	}
 }
-
-// Start the Tone Transport
-Tone.Transport.start(Tone.now());
