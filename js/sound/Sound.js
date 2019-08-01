@@ -39,7 +39,7 @@ import { TrackPlayer } from './TrackPlayer';
  * @param {Window} options.win - the associated Window
  * @param {number|string} [options.value= 'C'] - the sound value (see above for a full description)
  * @param {number} [options.octave= 4] - the octave corresponding to the tone (if applicable)
- * @param {number} [options.secs= 0.5] - duration of the tone (in seconds)
+ * @param {number} [options.secs= 0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
  * @param {number} [options.startTime= 0] - start of playback for tracks (in seconds)
  * @param {number} [options.stopTime= -1] - end of playback for tracks (in seconds)
  * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
@@ -124,7 +124,7 @@ export class Sound extends PsychObject {
 	 *
 	 * @public 
 	 * @param {number} volume - the volume (values should be between 0 and 1)
-	 * @param {booleam} [mute= false] - whether or not to mute the sound
+	 * @param {boolean} [mute= false] - whether or not to mute the sound
 	 * @param {boolean} [log= true] - whether of not to log
 	 */
 	setVolume(volume, mute = false, log = true) {

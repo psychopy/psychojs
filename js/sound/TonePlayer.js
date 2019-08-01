@@ -188,9 +188,9 @@ export class TonePlayer extends SoundPlayer {
 			this._loops = loops;
 
 		// if duration_s == -1, the sound should play indefinitely, therefore we use an arbitrarily long playing time
-		const actualDuration_s = (this._duration_s === -1)?10000000: this._duration_s;
+		const actualDuration_s = (this._duration_s === -1) ? 1000000 : this._duration_s;
 		const self = this;
-		const callback = () => { self._synth.triggerAttackRelease(self._note, actualDuration_s, Tone.now()); };
+		const callback = () => { self._synth.triggerAttackRelease(self._note, actualDuration_s); };
 
 		if (this.loops === 0)
 			this._toneId = Tone.Transport.scheduleOnce(callback, Tone.now());
