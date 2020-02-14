@@ -2,8 +2,8 @@
  * Text Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -33,7 +33,7 @@ import * as util from '../util/Util';
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [alignHoriz = 'center'] - horizontal alignment
+ * @param {string} [alignHoriz = 'left'] - horizontal alignment
  * @param {string} [alignVert = 'center'] - vertical alignment
  * @param {boolean} wrapWidth - whether or not to wrap the text horizontally
  * @param {boolean} [flipHoriz= false] - whether or not to flip the text horizontally
@@ -59,20 +59,21 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		height = 0.1,
 		bold = false,
 		italic = false,
-		alignHoriz = 'center',
+		alignHoriz = 'left',
 		alignVert = 'center',
 		wrapWidth,
 		flipHoriz = false,
 		flipVert = false,
 		autoDraw,
 		autoLog
-	} = {}) {
+	} = {})
+	{
 		super({ name, win, units, ori, opacity, pos, autoDraw, autoLog });
 
 		this._addAttributes(TextStim, text, font, color, contrast, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert);
 
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+		if (this._autoLog)
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 	}
 
 
@@ -84,7 +85,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {string} text - the text
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setText(text, log) {
+	setText(text, log)
+	{
 		this._setAttribute('text', text, log);
 
 		this._needUpdate = true;
@@ -249,7 +251,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * 
 	 * @todo take size into account
 	 */
-	_updateIfNeeded() {
+	_updateIfNeeded()
+	{
 		if (!this._needUpdate)
 			return;
 		this._needUpdate = false;

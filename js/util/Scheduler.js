@@ -2,8 +2,8 @@
  * Scheduler.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -33,13 +33,13 @@
  * 
  * @name module:util.Scheduler
  * @class
- * @param {PsychoJS} psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
  * 
  */
-export class Scheduler {
-
-
-	constructor(psychoJS) {
+export class Scheduler
+{
+	constructor(psychoJS)
+	{
 		this._psychoJS = psychoJS;
 
 		this._taskList = [];

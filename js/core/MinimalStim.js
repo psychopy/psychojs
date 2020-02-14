@@ -2,8 +2,8 @@
  * Base class for all stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -21,16 +21,17 @@ import { PsychoJS } from './PsychoJS';
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.autoLog= win.autoLog] - whether or not to log
  */
-export class MinimalStim extends PsychObject {
-
+export class MinimalStim extends PsychObject
+{
 	constructor({
 		name,
 		win,
 		autoDraw = false,
-		autoLog = false
-	} = {}) {
+		autoLog = win.autoLog
+	} = {})
+	{
 		super(win._psychoJS, name);
 
 		// the PIXI representation of the stimulus:
@@ -52,7 +53,8 @@ export class MinimalStim extends PsychObject {
 	 * @param {boolean} autoDraw - the new value
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setAutoDraw(autoDraw, log = false) {
+	setAutoDraw(autoDraw, log = false)
+	{
 		let response = { origin : 'MinimalStim.setAutoDraw', context: 'when setting the autoDraw attribute of stimulus: ' + this._name };
 
 		this._setAttribute('autoDraw', autoDraw, log);
@@ -94,7 +96,8 @@ export class MinimalStim extends PsychObject {
 				// if the stimulus is in the draw list, remove it from the list and from the window container:
 				if (index >= 0) {
 					this.win._drawList.splice(index, 1);
-					this.win._rootContainer.removeChild(this._pixi);
+					if (typeof this._pixi !== 'undefined')
+						this.win._rootContainer.removeChild(this._pixi);
 				}
 			}
 
@@ -110,10 +113,12 @@ export class MinimalStim extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	draw() {
+	draw()
+	{
 		this._updateIfNeeded();
 
-		if (this.win && this.win._drawList.indexOf(this) < 0 && typeof this._pixi !== 'undefined') {
+		if (this.win && this.win._drawList.indexOf(this) < 0 && typeof this._pixi !== 'undefined')
+		{
 			this.win._container.addChild(this._pixi);
 			this.win._drawList.push(this);
 		}
@@ -130,7 +135,8 @@ export class MinimalStim extends PsychObject {
 	 * @param {Object} object - the object
 	 * @param {String} units - the stimulus units
 	 */
-	contains(object, units) {
+	contains(object, units)
+	{
 		throw {origin: 'MinimalStim.contains', context: `when determining whether stimulus: ${this._name} contains object: ${util.toString(object)}`, error: 'this method is abstract and should not be called.'};
 	}
 
@@ -145,7 +151,8 @@ export class MinimalStim extends PsychObject {
 	 * @abstract
 	 * @private
 	 */
-	_updateIfNeeded() {
+	_updateIfNeeded()
+	{
 		throw {origin: 'MinimalStim._updateIfNeeded', context: 'when updating stimulus: ' + this._name, error: 'this method is abstract and should not be called.'};
 	}
 }

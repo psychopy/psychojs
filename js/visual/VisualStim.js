@@ -2,8 +2,8 @@
  * Base class for all visual stimuli.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -42,14 +42,10 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 								pos = [0, 0],
 								size,
 								autoDraw,
-								autoLog = false
-	} = {}) {
+								autoLog
+	} = {})
+	{
 		super({win, name, autoDraw, autoLog});
-
-		// whether the vertices need to be updated:
-		this._needVertexUpdate = true;
-		// the vertices (in pixel units):
-		this._vertices_px = undefined;
 
 		this._addAttributes(VisualStim, units, ori, opacity, pos, size);
 
@@ -63,9 +59,9 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @name module:visual.VisualStim#refresh
 	 * @public
 	 */
-	refresh() {
+	refresh()
+	{
 		this._needUpdate = true;
-		this._needVertexUpdate = true;
 	}
 
 
@@ -74,7 +70,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * 
 	 * @name module:visual.VisualStim#setSize
 	 * @public 
-	 * @param {number} size - the stimulus size
+	 * @param {number | number[]} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setSize(size, log = false)
@@ -88,7 +84,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		this._setAttribute('size', size, log);
 
-		this._needVertexUpdate = true;
 		this._needUpdate = true;
 	}
 
@@ -143,32 +138,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		this._setAttribute('opacity', opacity, log);
 
 		this._needUpdate = true;
-	}
-
-
-	/*
-	 * Get the vertices in pixel units.
-	 * 
-	 * @name module:visual.VisualStim#_getVertices_px
-	 * @protected
-	 * @return {Array.<[number, number]>} the vertices (in pixel units)
-	 */
-	_getVertices_px(/*force = false*/)
-	{
-		/*if (!force && typeof this._vertices_px !== 'undefined')
-			return this._vertices_px;*/
-
-		// handle flipping:
-		let flip = [1.0, 1.0];
-		if ('_flipHoriz' in this && this._flipHoriz)
-			flip[0] = -1.0;
-		if ('_flipVert' in this && this._flipVert)
-			flip[1] = -1.0;
-
-			// handle size, flipping, and convert to pixel units:
-		this._vertices_px = this._vertices.map( v => util.to_px([v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]], this._units, this._win) );
-
-		return this._vertices_px;
 	}
 
 }

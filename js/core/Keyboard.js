@@ -2,8 +2,8 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -42,7 +42,7 @@ export class KeyPress {
  * @name module:core.Keyboard
  * @class
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {number} [options.bufferSize= 10000] - the maximum size of the circular keyboard event buffer
  * @param {boolean} [options.waitForStart= false] - whether or not to wait for a call to module:core.Keyboard#start
  * before recording keyboard events
@@ -279,7 +279,15 @@ export class Keyboard extends PsychObject {
 	}
 
 
-	clearEvents() {
+	
+	/**
+	 * Clear all events and resets the circular buffers.
+	 *
+	 * @name module:core.Keyboard#clearEvents
+	 * @function
+	 */
+	clearEvents()
+	{
 		// circular buffer of key events (keydown and keyup):
 		this._circularBuffer = new Array(this._bufferSize);
 		this._bufferLength = 0;
@@ -291,6 +299,30 @@ export class Keyboard extends PsychObject {
 	}
 
 
+
+	/**
+	 * Test whether a list of KeyPress's contains one with a particular name.
+	 *
+	 * @name module:core.Keyboard#includes
+	 * @function
+	 * @static
+	 * @param {module:core.KeyPress[]} keypressList - list of KeyPress's
+	 * @param {string } keyName - pyglet key name, e.g. 'escape', 'left'
+	 * @return {boolean} whether or not a KeyPress with the given pyglet key name is present in the list
+	 */
+	static includes(keypressList, keyName)
+	{
+		if (!Array.isArray(keypressList))
+		{
+			return false;
+		}
+
+		const value = keypressList.find( (keypress) => keypress.name === keyName );
+		return (typeof value !== 'undefined');
+	}
+
+
+
 	/**
 	 * Add key listeners to the document.
 	 *
@@ -298,26 +330,37 @@ export class Keyboard extends PsychObject {
 	 * @function
 	 * @private
 	 */
-	_addKeyListeners() {
+	_addKeyListeners()
+	{
 		this._previousKeydownKey = undefined;
 		const self = this;
 
 
 		// add a keydown listener:
-		document.addEventListener("keydown", (event) => {
+		window.addEventListener("keydown", (event) =>
+		// document.addEventListener("keydown", (event) =>
+		{
+			// only consider non-repeat events, i.e. only the first keydown event associated with a participant
+			// holding a key down:
+			if (event.repeat)
+				return;
+
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
 			if (this._status !== PsychoJS.Status.STARTED)
 				return;
 
+			/**
+			 * DEPRECATED: we now use event.repeat
 			// since keydown events will repeat as long as the key is pressed, we need to track the last pressed key:
 			if (event.key === self._previousKeydownKey)
 				return;
+			 */
 			self._previousKeydownKey = event.key;
 
 			let code = event.code;
 
-			// take care of legacy Microsoft Edge:
+			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === 'undefined')
 				code = EventManager.keycode2w3c(event.keyCode);
 
@@ -337,12 +380,15 @@ export class Keyboard extends PsychObject {
 			self._unmatchedKeydownMap.set(event.code, self._bufferIndex);
 
 			self._psychoJS.logger.trace('keydown: ', event.key);
-console.log(self._circularBuffer[self._bufferIndex]);
+
+			event.stopPropagation();
 		});
 
 
 		// add a keyup listener:
-		document.addEventListener("keyup", (event) => {
+		window.addEventListener("keyup", (event) =>
+		// document.addEventListener("keyup", (event) =>
+		{
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
 			if (this._status !== PsychoJS.Status.STARTED)
@@ -378,7 +424,8 @@ console.log(self._circularBuffer[self._bufferIndex]);
 			}
 
 			self._psychoJS.logger.trace('keyup: ', event.key);
-console.log(self._circularBuffer[self._bufferIndex]);
+
+			event.stopPropagation();
 		});
 
 	}

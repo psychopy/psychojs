@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: ShapeStim</title>
+    <title>JSDoc: Class: Polygon</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: ShapeStim</h1>
+    <h1 class="page-title">Class: Polygon</h1>
 
     
 
@@ -29,9 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>ShapeStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description"><p>This class provides the basic functionalities of shape stimuli.</p></div>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>Polygon<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,16 +40,18 @@
         
 
     
-    <h2>Constructor</h2>
-    
 
     
-    <h4 class="name" id="ShapeStim"><span class="type-signature"></span>new ShapeStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Polygon"><span class="type-signature"></span>new Polygon<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    <p>Polygonal visual stimulus.</p>
+</div>
 
 
 
@@ -217,6 +217,8 @@
             
                 <td class="attributes">
                 
+                    &lt;optional><br>
+                
 
                 
 
@@ -226,6 +228,8 @@
 
             
                 <td class="default">
+                
+                    1.5
                 
                 </td>
             
@@ -350,13 +354,13 @@
 
         <tr>
             
-                <td class="name"><code>vertices</code></td>
+                <td class="name"><code>edges</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
+<span class="param-type">number</span>
 
 
             
@@ -377,25 +381,25 @@
             
                 <td class="default">
                 
-                    [[-0.5, 0], [0, 0.5], [0.5, 0]]
+                    3
                 
                 </td>
             
 
-            <td class="description last">the shape vertices</td>
+            <td class="description last">the number of edges of the polygon</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>closeShape</code></td>
+                <td class="name"><code>radius</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">number</span>
 
 
             
@@ -416,12 +420,12 @@
             
                 <td class="default">
                 
-                    true
+                    0.5
                 
                 </td>
             
 
-            <td class="description last">whether or not the shape is closed</td>
+            <td class="description last">the radius of the polygon</td>
         </tr>
 
     
@@ -460,7 +464,7 @@
                 </td>
             
 
-            <td class="description last">the position of the center of the shape</td>
+            <td class="description last">the position</td>
         </tr>
 
     
@@ -802,14 +806,6 @@
     
 
     
-        <dt class="mixes">Mixes In:</dt>
-
-        <dd class="mixes"><ul>
-        
-            <li>ColorMixin</li>
-        
-        </ul></dd>
-    
 
     
 
@@ -824,7 +820,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line45">line 45</a>
+        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line15">line 15</a>
     </li></ul></dd>
     
 
@@ -864,7 +860,7 @@
 
 
     <ul>
-        <li>VisualStim</li>
+        <li>ShapeStim</li>
     </ul>
 
 
@@ -885,13 +881,13 @@
 
         
             
-<h4 class="name" id=".KnownShapes"><span class="type-signature">(static, readonly) </span>KnownShapes<span class="type-signature"></span></h4>
+<h4 class="name" id="_updateVertices"><span class="type-signature">(private) </span>_updateVertices<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Known shapes.
+    Update the vertices.
 </div>
 
 
@@ -929,7 +925,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line341">line 341</a>
+        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line111">line 111</a>
     </li></ul></dd>
     
 
@@ -947,13 +943,13 @@
 
         
             
-<h4 class="name" id="_getPolygon"><span class="type-signature">(private) </span>_getPolygon<span class="type-signature"></span></h4>
+<h4 class="name" id="setEdges"><span class="type-signature"></span>setEdges<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Get the PIXI polygon (in pixel units) corresponding to the vertices.
+    Setter for the edges attribute.
 </div>
 
 
@@ -991,7 +987,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line266">line 266</a>
+        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -1009,13 +1005,13 @@
 
         
             
-<h4 class="name" id="_getVertices_px"><span class="type-signature">(protected) </span>_getVertices_px<span class="type-signature"></span></h4>
+<h4 class="name" id="setRadius"><span class="type-signature"></span>setRadius<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Get the vertices in pixel units.
+    Setter for the radius attribute.
 </div>
 
 
@@ -1053,503 +1049,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line307">line 307</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="_updateIfNeeded"><span class="type-signature">(private) </span>_updateIfNeeded<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Update the stimulus, if necessary.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line231">line 231</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="contains"><span class="type-signature"></span>contains<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Determine whether this stimulus contains the given object.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line205">line 205</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="refresh"><span class="type-signature"></span>refresh<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Force a refresh of the stimulus.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line80">line 80</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setFillColor"><span class="type-signature"></span>setFillColor<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the fill color attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line144">line 144</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setLineColor"><span class="type-signature"></span>setLineColor<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the line color attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line128">line 128</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setLineWidth"><span class="type-signature"></span>setLineWidth<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the line width attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line112">line 112</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the size attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line95">line 95</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="setVertices"><span class="type-signature"></span>setVertices<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Setter for the vertices attribute.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_ShapeStim.js.html">visual/ShapeStim.js</a>, <a href="visual_ShapeStim.js.html#line160">line 160</a>
+        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line76">line 76</a>
     </li></ul></dd>
     
 

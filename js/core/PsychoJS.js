@@ -3,8 +3,8 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -16,8 +16,9 @@ import { EventManager } from './EventManager';
 import { Window } from './Window';
 import { GUI } from './GUI';
 import { MonotonicClock } from '../util/Clock';
-import { Logger } from '../util/Logger';
+import { Logger } from './Logger';
 import * as util from '../util/Util';
+
 
 
 /**
@@ -28,7 +29,8 @@ import * as util from '../util/Util';
  * @param {boolean} [options.debug= true] whether or not to log debug information in the browser console
  * @param {boolean} [options.collectIP= false] whether or not to collect the IP information of the participant
  */
-export class PsychoJS {
+export class PsychoJS
+{
 	/**
 	 * Properties
 	 */
@@ -43,11 +45,14 @@ export class PsychoJS {
 	get scheduler() { return this._scheduler; }
 	get monotonicClock() { return this._monotonicClock; }
 	get logger() { return this._logger.consoleLogger; }
+	get experimentLogger() { return this._logger; }
 	get eventManager() { return this._eventManager; }
 	get gui() { return this._gui; }
 	get IP() { return this._IP; }
 	// this._serverMsg is a bi-directional message board for communications with the pavlovia.org server:
 	get serverMsg() { return this._serverMsg; }
+	get browser() { return this._browser; }
+
 
 
 	/**
@@ -58,10 +63,15 @@ export class PsychoJS {
 								debug = true,
 								collectIP = false,
 								topLevelStatus = true
-	} = {}) {
+	} = {})
+	{
 		// logging:
-		this._logger = new Logger((debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
+		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
 		this._captureErrors();
+
+		// detect the browser:
+		this._browser = util.detectBrowser();
+		this.logger.info('[PsychoJS] Detected browser:', this._browser);
 
 		// core clock:
 		this._monotonicClock = new MonotonicClock();
@@ -88,7 +98,6 @@ export class PsychoJS {
 		this._cancellationUrl = undefined;
 		this._completionUrl = undefined;
 
-
 		// status:
 		this._status = PsychoJS.Status.NOT_CONFIGURED;
 
@@ -101,12 +110,14 @@ export class PsychoJS {
 	}
 
 
+
 	/**
 	 * Get the experiment's environment.
 	 *
-	 * @returns {PsychoJS.Environment | undefined} the environment of the experiment, or undefined
+	 * @returns {ExperimentHandler.Environment | undefined} the environment of the experiment, or undefined
 	 */
-	getEnvironment() {
+	getEnvironment()
+	{
 		if (typeof this._config === 'undefined')
 			return undefined;
 		return this._config.environment;
@@ -213,7 +224,8 @@ export class PsychoJS {
 	 *
 	 * @todo: close session on window or tab close
 	 */
-	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {}) {
+	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {})
+	{
 		this.logger.debug();
 
 		const response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
@@ -246,18 +258,28 @@ export class PsychoJS {
 			//my.logger.console.setLevel(psychoJS.logging.WARNING);
 			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
-			// if the experiment is running on the server, we open a session:
-			if (this.getEnvironment() === PsychoJS.Environment.SERVER)
+			// if the experiment is running on the server:
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			{
+				// open a session:
 				await this._serverManager.openSession();
 
+				// attempt to close the session on beforeunload/unload (we use a synchronous request since
+				// the Beacon API only allows POST and we need DELETE ) and release the WebGL context:
+				const self = this;
+				window.onbeforeunload = () => {
+					self._serverManager.closeSession(false, true);
 
-			// attempt to close the session on onunload:
-			const self = this;
-			window.addEventListener("unload",() => {
-				// we need to use either the Beacon API (https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon)
-				// or synchronous requests
-				// TODO
-			});
+					if (typeof self._window !== 'undefined')
+						self._window.close();
+				};
+				window.addEventListener('unload', function(event) {
+					self._serverManager.closeSession(false, true);
+
+					if (typeof self._window !== 'undefined')
+						self._window.close();
+				});
+			}
 
 
 			// start the asynchronous download of resources:
@@ -343,20 +365,25 @@ export class PsychoJS {
 			this._scheduler.stop();
 
 			// save the results and the logs of the experiment:
-			this.gui.dialog({ warning: 'Saving the experiment results and closing the session. Please wait a few moments.', showOK: false });
+			this.gui.dialog({
+				warning: 'Closing the session. Please wait a few moments.',
+				showOK: false
+			});
 			await this._experiment.save();
+			await this._logger.flush();
 
 			// close the session:
-			if (this.getEnvironment() === PsychoJS.Environment.SERVER) {
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER) {
 				await this._serverManager.closeSession(isCompleted);
 			}
 
 			// thank participant for waiting and either quit or redirect:
-			let text = 'Thank you for your patience. The data have been saved.<br/><br/>';
+			let text = 'Thank you for your patience.<br/><br/>';
 			text += (typeof message !== 'undefined') ? message : 'Goodbye!';
 			const self = this;
 			this._gui.dialog({
-				message: text, onOK: () => {
+				message: text,
+				onOK: () => {
 					// close the window:
 					self._window.close();
 
@@ -427,13 +454,13 @@ export class PsychoJS {
 				if (!('URL' in this._config.pavlovia))
 					throw 'missing URL in pavlovia block in configuration';
 
-				this._config.environment = PsychoJS.Environment.SERVER;
+				this._config.environment = ExperimentHandler.Environment.SERVER;
 
 			} else
 			// otherwise we create an ad-hoc configuration:
 			{
 				this._config = {
-					environment: PsychoJS.Environment.LOCAL,
+					environment: ExperimentHandler.Environment.LOCAL,
 					experiment: { name, saveFormat: ExperimentHandler.SaveFormat.CSV }
 				};
 			}
@@ -544,18 +571,5 @@ PsychoJS.Status = {
 	FINISHED: Symbol.for('FINISHED'),
 
 	STOPPED: Symbol.for('FINISHED') //Symbol.for('STOPPED')
-};
-
-
-/**
- * Experiment environment.
- *
- * @enum {Symbol}
- * @readonly
- * @public
- */
-PsychoJS.Environment = {
-	SERVER: Symbol.for('SERVER'),
-	LOCAL: Symbol.for('LOCAL')
 };
 

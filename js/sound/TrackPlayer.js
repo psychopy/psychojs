@@ -2,8 +2,8 @@
  * Track Player.
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -17,7 +17,7 @@ import { SoundPlayer } from './SoundPlayer';
  * @class
  * @extends SoundPlayer
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {Object} options.howl - the sound object (see {@link https://howlerjs.com/})
  * @param {number} [options.startTime= 0] - start of playback (in seconds)
  * @param {number} [options.stopTime= -1] - end of playback (in seconds)

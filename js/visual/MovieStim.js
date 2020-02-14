@@ -2,8 +2,8 @@
  * Movie Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -77,9 +77,8 @@ export class MovieStim extends VisualStim {
 		const videoElement = document.createElement('video');
 		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
 
-
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+		if (this._autoLog)
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 	}
 
 

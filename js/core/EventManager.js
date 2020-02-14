@@ -2,8 +2,8 @@
  * Manager handling the keyboard and mouse/touch events.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -18,7 +18,7 @@ import { PsychoJS } from './PsychoJS';
  * @name module:core.EventManager
  * @class
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  */
 export class EventManager {
 
@@ -212,7 +212,7 @@ export class EventManager {
 
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 
-			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 
@@ -226,7 +226,7 @@ export class EventManager {
 			const touches = event.changedTouches;
 			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
 
-			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 
@@ -237,7 +237,7 @@ export class EventManager {
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 
-			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 
@@ -251,7 +251,7 @@ export class EventManager {
 			const touches = event.changedTouches;
 			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
 
-			//psychoJS.logging.data("Mouse: " + label + " button down, pos=(" + x + "," + y + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 
@@ -279,10 +279,7 @@ export class EventManager {
 			self._mouseInfo.wheelRel[0] += event.deltaX;
 			self._mouseInfo.wheelRel[1] += event.deltaY;
 			
-			//var x = ev.offsetX;
-			//var y = ev.offsetY;
-			//var msg = "Mouse: wheel shift=(" + ev.deltaX + "," + ev.deltaY + "), pos=(" + x + "," + y + ")";
-			//psychoJS.logging.data(msg);
+			this._psychoJS.experimentLogger.data("Mouse: wheel shift=(" + event.deltaX + "," + event.deltaY + "), pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 		
 	}
@@ -295,19 +292,33 @@ export class EventManager {
 	 * @function
 	 * @private
 	 */
-	_addKeyListeners() {
+	_addKeyListeners()
+	{
 		const self = this;
 
-		// add a keydown listener:
-		document.addEventListener("keydown", (e) => {
+		// add a keydown listener
+		// note: IE11 is not happy with document.addEventListener
+		window.addEventListener("keydown", (event) =>
+//		document.addEventListener("keydown", (event) =>
+		{
 			const timestamp = MonotonicClock.getReferenceTime();
+
+			let code = event.code;
+
+			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
+			if (typeof code === 'undefined')
+				code = EventManager.keycode2w3c(event.keyCode);
+
 			self._keyBuffer.push({
-				code: e.code,
-				key: e.key,
-				keyCode: e.keyCode,
+				code,
+				key: event.key,
+				keyCode: event.keyCode,
 				timestamp
 			});
-			self._psychoJS.logger.trace('keydown: ', e.key);
+			self._psychoJS.logger.trace('keydown: ', event.key);
+			self._psychoJS.experimentLogger.data('Keydown: ' + event.key);
+
+			event.stopPropagation();
 		});
 
 	}
@@ -585,7 +596,7 @@ EventManager._reversePygletMap = {};
  * @name module:core.BuilderKeyResponse
  * @class
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  */
 export class BuilderKeyResponse {
 	constructor(psychoJS) {

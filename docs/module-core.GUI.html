@@ -92,7 +92,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="PsychoJS.html">PsychoJS</a></span>
+<span class="param-type"><a href="module-core.PsychoJS.html">module:core.PsychoJS</a></span>
 
 
             
@@ -143,7 +143,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line18">line 18</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -153,6 +153,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -235,7 +237,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line551">line 551</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line627">line 627</a>
     </li></ul></dd>
     
 
@@ -307,7 +309,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line604">line 604</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line777">line 777</a>
     </li></ul></dd>
     
 
@@ -379,7 +381,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line593">line 593</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line766">line 766</a>
     </li></ul></dd>
     
 
@@ -400,163 +402,6 @@
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="_dialogOpen"><span class="type-signature">(private) </span>_dialogOpen<span class="signature">(dialogId)</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the jQuery UI callback for opening the given dialog in the middle of the screen.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>dialogId</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the dialog ID</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line362">line 362</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    jquery ui open function
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">function</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
 
         
             
@@ -665,7 +510,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line393">line 393</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line467">line 467</a>
     </li></ul></dd>
     
 
@@ -675,6 +520,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -751,7 +598,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line520">line 520</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line596">line 596</a>
     </li></ul></dd>
     
 
@@ -761,6 +608,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -790,6 +639,165 @@
     <dd>
         
 <span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_onDialogOpen"><span class="type-signature">(private) </span>_onDialogOpen<span class="signature">(dialogId)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Callback triggered when the jQuery UI dialog box is open.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dialogId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the dialog ID</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line434">line 434</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    function setting the dimension and position of the dialog box
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
 
 
     </dd>
@@ -931,7 +939,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line568">line 568</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line644">line 644</a>
     </li></ul></dd>
     
 
@@ -941,6 +949,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -1066,7 +1076,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line451">line 451</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line525">line 525</a>
     </li></ul></dd>
     
 
@@ -1076,6 +1086,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -1152,7 +1164,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line501">line 501</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line575">line 575</a>
     </li></ul></dd>
     
 
@@ -1162,6 +1174,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -1238,7 +1252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line433">line 433</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line507">line 507</a>
     </li></ul></dd>
     
 
@@ -1248,6 +1262,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -1586,7 +1602,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line251">line 251</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line294">line 294</a>
     </li></ul></dd>
     
 
@@ -1596,6 +1612,8 @@
 
     
 </dl>
+
+
 
 
 
@@ -1630,7 +1648,7 @@
 <div class="description">
     <p>Create a dialog box that (a) enables the participant to set some
 experimental values (e.g. the session name), (b) shows progress of resource
-download, and (c) enables the partipant to cancel the experiment.</p>
+download, and (c) enables the participant to cancel the experiment.</p>
 
 <b>Setting experiment values</b>
 <p>DlgFromDict displays an input field for all values in the dictionary.
@@ -1705,6 +1723,8 @@ the dictionary remains unchanged.</p>
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -1713,6 +1733,72 @@ the dictionary remains unchanged.</p>
     </thead>
 
     <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>logoUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Url of the experiment logo</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">information text</td>
+        </tr>
+
     
 
         <tr>
@@ -1729,6 +1815,14 @@ the dictionary remains unchanged.</p>
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1752,6 +1846,14 @@ the dictionary remains unchanged.</p>
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
             
 
             
@@ -1804,7 +1906,7 @@ the dictionary remains unchanged.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line42">line 42</a>
+        <a href="core_GUI.js.html">core/GUI.js</a>, <a href="core_GUI.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -1814,6 +1916,8 @@ the dictionary remains unchanged.</p>
 
     
 </dl>
+
+
 
 
 
@@ -1848,13 +1952,13 @@ the dictionary remains unchanged.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 08 2019 09:06:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

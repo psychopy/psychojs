@@ -61,9 +61,6 @@
             <dt><a href="module-util.EventEmitter.html">EventEmitter</a></dt>
             <dd></dd>
         
-            <dt><a href="module-util.Logger.html">Logger</a></dt>
-            <dd></dd>
-        
             <dt><a href="module-util.MixinBuilder.html">MixinBuilder</a></dt>
             <dd></dd>
         
@@ -206,7 +203,7 @@ since those are reserved for client/server communication</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line550">line 550</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line592">line 592</a>
     </li></ul></dd>
     
 
@@ -216,6 +213,8 @@ since those are reserved for client/server communication</p>
 
     
 </dl>
+
+
 
 
 
@@ -251,7 +250,7 @@ since those are reserved for client/server communication</p>
     Detect the user's browser.
 
 <p> Note: since user agent is easily spoofed, we use a more sophisticated approach, as described here:
-https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser </p>
+https://stackoverflow.com/a/9851769</p>
 </div>
 
 
@@ -318,12 +317,14 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 
 
 
+
+
 <h5>Returns:</h5>
 
         
 <div class="param-desc">
     the detected browser, one of 'Opera', 'Firefox', 'Safari',
-'IE', 'Edge', 'Chrome', 'Blink", 'unknown'
+'IE', 'Edge', 'EdgeChromium', 'Chrome', 'unknown'
 </div>
 
 
@@ -453,7 +454,7 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line626">line 626</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line671">line 671</a>
     </li></ul></dd>
     
 
@@ -463,6 +464,8 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 
     
 </dl>
+
+
 
 
 
@@ -571,6 +574,8 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 
     
 </dl>
+
+
 
 
 
@@ -741,7 +746,7 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line255">line 255</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line258">line 258</a>
     </li></ul></dd>
     
 
@@ -751,6 +756,8 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 
     
 </dl>
+
+
 
 
 
@@ -786,6 +793,174 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getRequestError"><span class="type-signature">(static) </span>getRequestError<span class="signature">(jqXHR, textStatus, errorThrown)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the most informative error from the server response from a jquery server request.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>jqXHR</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>textStatus</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errorThrown</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line518">line 518</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -849,7 +1024,7 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line523">line 523</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line565">line 565</a>
     </li></ul></dd>
     
 
@@ -859,6 +1034,8 @@ https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firef
 
     
 </dl>
+
+
 
 
 
@@ -1036,6 +1213,8 @@ for (const [key, value] of urlParameters)
 
 
 
+
+
 <h5>Returns:</h5>
 
         
@@ -1171,7 +1350,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line504">line 504</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line546">line 546</a>
     </li></ul></dd>
     
 
@@ -1181,6 +1360,8 @@ for (const [key, value] of urlParameters)
 
     
 </dl>
+
+
 
 
 
@@ -1352,7 +1533,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line205">line 205</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line208">line 208</a>
     </li></ul></dd>
     
 
@@ -1362,6 +1543,8 @@ for (const [key, value] of urlParameters)
 
     
 </dl>
+
+
 
 
 
@@ -1484,6 +1667,8 @@ for (const [key, value] of urlParameters)
 
 
 
+
+
 <h5>Returns:</h5>
 
         
@@ -1506,6 +1691,189 @@ for (const [key, value] of urlParameters)
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".offerDataForDownload"><span class="type-signature">(static) </span>offerDataForDownload<span class="signature">(filename, data, type)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Offer data as download in the browser.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the name of the file to be downloaded</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the data</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the MIME type of the data, e.g. 'text/csv' or 'application/json'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line724">line 724</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1628,6 +1996,8 @@ for (const [key, value] of urlParameters)
 
     
 </dl>
+
+
 
 
 
@@ -1815,7 +2185,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line575">line 575</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line620">line 620</a>
     </li></ul></dd>
     
 
@@ -1825,6 +2195,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -1976,7 +2348,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line234">line 234</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line237">line 237</a>
     </li></ul></dd>
     
 
@@ -1986,6 +2358,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -2266,7 +2640,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line646">line 646</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line691">line 691</a>
     </li></ul></dd>
     
 
@@ -2276,6 +2650,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -2469,7 +2845,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line347">line 347</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line350">line 350</a>
     </li></ul></dd>
     
 
@@ -2479,6 +2855,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -2672,7 +3050,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line319">line 319</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line322">line 322</a>
     </li></ul></dd>
     
 
@@ -2682,6 +3060,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -2875,7 +3255,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line438">line 438</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line441">line 441</a>
     </li></ul></dd>
     
 
@@ -2885,6 +3265,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3078,7 +3460,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line291">line 291</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line294">line 294</a>
     </li></ul></dd>
     
 
@@ -3088,6 +3470,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3304,7 +3688,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line407">line 407</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line410">line 410</a>
     </li></ul></dd>
     
 
@@ -3314,6 +3698,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3507,7 +3893,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line377">line 377</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line380">line 380</a>
     </li></ul></dd>
     
 
@@ -3517,6 +3903,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3671,7 +4059,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line166">line 166</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
@@ -3681,6 +4069,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3833,7 +4223,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line456">line 456</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line459">line 459</a>
     </li></ul></dd>
     
 
@@ -3843,6 +4233,8 @@ where error is null if there was no error
 
     
 </dl>
+
+
 
 
 
@@ -3899,13 +4291,13 @@ where error is null if there was no error
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 08 2019 09:06:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

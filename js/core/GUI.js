@@ -2,8 +2,8 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -12,6 +12,7 @@ import {PsychoJS} from './PsychoJS';
 import {ServerManager} from './ServerManager';
 import {Scheduler} from '../util/Scheduler';
 import {Clock} from '../util/Clock';
+import { ExperimentHandler } from '../data/ExperimentHandler';
 import * as util from '../util/Util';
 
 
@@ -21,7 +22,7 @@ import * as util from '../util/Util';
  * 
  * @name module:core.GUI
  * @class
- * @param {PsychoJS} psychoJS the PsychoJS instance
+ * @param {module:core.PsychoJS} psychoJS the PsychoJS instance
  */
 export class GUI
 {
@@ -33,7 +34,9 @@ export class GUI
 		this._psychoJS = psychoJS;
 
 		// gui listens to RESOURCE events from the server manager:
-		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) => { this._onResourceEvents(signal); });
+		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) => {
+			this._onResourceEvents(signal);
+		});
 
 		this._dialogScalingFactor = 0;
 	}
@@ -42,7 +45,7 @@ export class GUI
 	/**
 	 * <p>Create a dialog box that (a) enables the participant to set some
 	 * experimental values (e.g. the session name), (b) shows progress of resource
-	 * download, and (c) enables the partipant to cancel the experiment.</p>
+	 * download, and (c) enables the participant to cancel the experiment.</p>
 	 * 
 	 * <b>Setting experiment values</b>
 	 * <p>DlgFromDict displays an input field for all values in the dictionary.
@@ -57,10 +60,14 @@ export class GUI
 	 * @function
 	 * @public
 	 * @param {Object} options
+	 * @param {String} [options.logoUrl] - Url of the experiment logo
+	 * @param {String} [options.text] - information text
 	 * @param {Object} options.dictionary - associative array of values for the participant to set
 	 * @param {String} options.title - name of the project
 	 */
 	DlgFromDict({
+		logoUrl,
+		text,
 		dictionary,
 		title
 	})
@@ -81,22 +88,45 @@ export class GUI
 		const dialogClock = new Clock();
 		const self = this;
 
-		return () => {
+		return () =>
+		{
 			const t = dialogClock.getTime();
 
-			if (t >= 0.0 && self._dialogComponent.status === PsychoJS.Status.NOT_STARTED) {
+			if (t >= 0.0 && self._dialogComponent.status === PsychoJS.Status.NOT_STARTED)
+			{
 				self._dialogComponent.tStart = t;
 				self._dialogComponent.status = PsychoJS.Status.STARTED;
 
+				// if the experiment is licensed, and running on the license rather than on credit,
+				// we use the license logo:
+				if (self._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
+					typeof self._psychoJS.config.experiment.license !== 'undefined' &&
+					self._psychoJS.config.experiment.runMode === 'LICENSE' &&
+					typeof self._psychoJS.config.experiment.license.institutionLogo !== 'undefined')
+				{
+					logoUrl = self._psychoJS.config.experiment.license.institutionLogo;
+				}
+
 				// prepare jquery UI dialog box:
-				let htmlCode =
-					'<div id="expDialog" title="' + title + '">' +
+				let htmlCode = '<div id="expDialog" title="' + title + '">';
 
-					// '<p style="font-size: 0.8em; padding: 0.5em; margin-bottom: 0.5em; color: #FFAA00; border: 1px solid #FFAA00;">&#9888; This experiment uses a deprecated version of the PsychoJS library. Consider updating to a newer version (e.g. by updating PsychoPy and re-exporting the experiment).</p>'+
+				// uncomment for older version of the library:
+				// htmlCode += '<p style="font-size: 0.8em; padding: 0.5em; margin-bottom: 0.5em; color: #FFAA00; border: 1px solid #FFAA00;">&#9888; This experiment uses a deprecated version of the PsychoJS library. Consider updating to a newer version (e.g. by updating PsychoPy and re-exporting the experiment).</p>'+
 
-					'<p class="validateTips">Fields marked with an asterisk (*) are required.</p>';
+				// logo:
+				if (typeof logoUrl === 'string')
+				{
+					htmlCode += '<img id="dialog-logo" class="logo" src="' + logoUrl + '">';
+				}
 
-				// add a comboboxes or text areas for each entry in the dictionary:
+				// information text:
+				if (typeof text === 'string' && text.length > 0)
+				{
+					htmlCode += '<p>' + text + '</p>';
+				}
+
+
+				// add a combobox or text areas for each entry in the dictionary:
 				htmlCode += '<form>';
 				for (const key in dictionary) {
 					const value = dictionary[key];
@@ -105,15 +135,17 @@ export class GUI
 					// only create an input if the key is not in the URL:
 					let inUrl = false;
 					const cleanedDictKey = key.trim().toLowerCase();
-					for (const [urlKey, urlValue] of infoFromUrl) {
+					infoFromUrl.forEach( (urlKey, urlValue) =>
+					{
 						const cleanedUrlKey = urlKey.trim().toLowerCase();
 						if (cleanedUrlKey === cleanedDictKey) {
 							inUrl = true;
-							break;
+							// break;
 						}
-					}
+					});
 
-					if (!inUrl) {
+					if (!inUrl)
+					{
 						htmlCode += '<label for="' + key + '">' + key + '</label>';
 
 						// if the field is required:
@@ -153,6 +185,17 @@ export class GUI
 				// replace root by the html code:
 				const dialogElement = document.getElementById('root');
 				dialogElement.innerHTML = htmlCode;
+
+
+				// when the logo is loaded, we call _onDialogOpen again to reset the dimensions and position of
+				// the dialog box:
+				if (typeof logoUrl === 'string')
+				{
+					$("#dialog-logo").on('load', () =>
+					{
+						self._onDialogOpen('#expDialog')();
+					});
+				}
 
 
 				// setup change event handlers for all required keys:
@@ -207,7 +250,7 @@ export class GUI
 					],
 
 					// open the dialog in the middle of the screen:
-					open: self._dialogOpen('#expDialog'),
+					open: self._onDialogOpen('#expDialog'),
 
 					// close is called by both buttons and when the user clicks on the cross:
 					close: function () {
@@ -277,44 +320,73 @@ export class GUI
 		let titleColour;
 
 		// we are displaying an error:
-		if (typeof error !== 'undefined') {
+		if (typeof error !== 'undefined')
+		{
 			this._psychoJS.logger.fatal(util.toString(error));
 
-			htmlCode = '<div id="msgDialog" title="Error">';
-			htmlCode += '<p class="validateTips">Unfortunately we encountered the following error:</p>';
-			
-			// go through the error stack:
-			htmlCode += '<ul>';
+			// deal with null error:
+			if (!error)
+				error = 'Unspecified JavaScript error';
+
+			let errorCode = null;
+
+			// go through the error stack and look for errorCode if there is one:
+			let stackCode = '<ul>';
 			while (true) {
-				if (typeof error === 'object' && 'context' in error) {
-					htmlCode += '<li>' + error.context + '</li>';
-					error = error.error;
-				} else {
-					htmlCode += '<li><b>' + error  + '</b></li>';
+
+				if (typeof error === 'object' && 'errorCode' in error)
+				{
+					errorCode = error.errorCode;
+				}
+
+				if (typeof error === 'object' && 'context' in error)
+				{
+						stackCode += '<li>' + error.context + '</li>';
+						error = error.error;
+				}
+				else
+				{
+					stackCode += '<li><b>' + error  + '</b></li>';
 					break;
 				}		
 			}
-			htmlCode += '</ul>';
+			stackCode += '</ul>';
 
-			htmlCode += '<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>';
-			titleColour = 'red';
+			// if we found an errorCode, we replace the stack-based message by a more user-friendly one:
+			if (errorCode)
+			{
+				const error = this._userFriendlyError(errorCode);
+				htmlCode = error.htmlCode;
+				titleColour = error.titleColour;
+			}
+			else
+			{
+				htmlCode = '<div id="msgDialog" title="Error">';
+				htmlCode += '<p class="validateTips">Unfortunately we encountered the following error:</p>';
+				htmlCode += stackCode;
+				htmlCode += '<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>';
+				htmlCode += '</div>';
+
+				titleColour = 'red';
+			}
 		}
 
 		// we are displaying a message:
 		else if (typeof message !== 'undefined') {
-			htmlCode = '<div id="msgDialog" title="Message">'
-				+ '<p class="validateTips">' + message + '</p>';
+			htmlCode = '<div id="msgDialog" title="Message">' +
+				'<p class="validateTips">' + message + '</p>' +
+				'</div>';
 			titleColour = 'green';
 		}
 
 		// we are displaying a warning:
 		else if (typeof warning !== 'undefined') {
-			htmlCode = '<div id="msgDialog" title="Warning">'
-				+ '<p class="validateTips">' + warning + '</p>';
+			htmlCode = '<div id="msgDialog" title="Warning">' +
+				'<p class="validateTips">' + warning + '</p>' +
+				'</div>';
 			titleColour = 'orange';
 		}
 
-		htmlCode += '</div>';
 
 		// replace root by the html code:
 		const dialogElement = document.getElementById('root');
@@ -347,7 +419,7 @@ export class GUI
 			}],
 
 			// open the dialog in the middle of the screen:
-			open: self._dialogOpen('#msgDialog'),
+			open: self._onDialogOpen('#msgDialog'),
 
 		})
 		// change colour of title bar
@@ -360,18 +432,20 @@ export class GUI
 
 
 	/**
-	 * Get the jQuery UI callback for opening the given dialog in the middle of the screen.
+	 * Callback triggered when the jQuery UI dialog box is open.
 	 *
-	 * @name module:core.GUI#_dialogOpen
+	 * @name module:core.GUI#_onDialogOpen
 	 * @function
 	 * @param {String} dialogId - the dialog ID
-	 * @returns {Function} jquery ui open function
+	 * @returns {Function} function setting the dimension and position of the dialog box
 	 * @private
 	 */
-	_dialogOpen(dialogId) {
+	_onDialogOpen(dialogId)
+	{
 		const self = this;
 
-		return () => {
+		return () =>
+		{
 			const windowSize = [$(window).width(), $(window).height()];
 
 			// note: $(dialogId) is the dialog-content, $(dialogId).parent() is the actual widget
@@ -505,8 +579,10 @@ export class GUI
 	 * @function
 	 * @private
 	 */
-	_updateOkButtonStatus() {
-		if (this._psychoJS.config.environment === PsychoJS.Environment.LOCAL || (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) ) {
+	_updateOkButtonStatus()
+	{
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) )
+		{
 			$("#buttonOk").button("option", "disabled", false);
 		} else
 			$("#buttonOk").button("option", "disabled", true);
@@ -585,6 +661,103 @@ export class GUI
 			gui._nbSetRequiredKeys--;
 
 		gui._updateOkButtonStatus();
+	}
+
+
+	/**
+	 * Get a more user-friendly html message.
+	 *
+	 * @param {number} errorCode - the pavlovia.org server error code
+	 * @private
+	 * @return {{htmlCode: string, titleColour: string}} a user-friendly error message
+	 */
+	_userFriendlyError(errorCode)
+	{
+		switch (errorCode)
+		{
+			// INTERNAL_ERROR
+			case 1:
+				return {
+					htmlCode: '<div id="msgDialog" title="Error"><p>Oops we encountered an internal server error.</p><p>Try to run the experiment again. If the error persists, contact the experiment designer.</p></div>',
+					titleColour: 'red'
+				};
+
+			// MONGODB_ERROR
+			case 2:
+				return {
+					htmlCode: '<div id="msgDialog" title="Error"><p>Oops we encountered a database error.</p><p>Try to run the experiment again. If the error persists, contact the experiment designer.</p></div>',
+					titleColour: 'red'
+				};
+
+			// STATUS_NONE
+			case 20:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> does not have any status and cannot be run.</p><p>If you are the experiment designer, go to your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a> and change the experiment status to either PILOTING or RUNNING.</p><p>Otherwise please contact the experiment designer to let him or her know that the status must be changed to RUNNING for participants to be able to run it.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// STATUS_INACTIVE
+			case 21:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> is currently inactive and cannot be run.</p><p>If you are the experiment designer, go to your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a> and change the experiment status to either PILOTING or RUNNING.</p><p>Otherwise please contact the experiment designer to let him or her know that the status must be changed to RUNNING for participants to be able to run it.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// STATUS_DELETED
+			case 22:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> has been deleted and cannot be run.</p><p>If you are the experiment designer, either go to your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a> and change the experiment status to either PILOTING or RUNNING, or generate a new experiment.</p><p>Otherwise please contact the experiment designer to let him or her know that the experiment has been deleted and cannot be run any longer.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// STATUS_ARCHIVED
+			case 23:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> has been archived and cannot be run.</p><p>If you are the experiment designer, go to your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a> and change the experiment status to either PILOTING or RUNNING.</p><p>Otherwise please contact the experiment designer to let him or her know that the experiment has been archived and cannot be run at the moment.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// PILOTING_NO_TOKEN
+			case 30:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> is currently in PILOTING mode but the pilot token is missing from the URL.</p><p>If you are the experiment designer, you can pilot it by pressing the pilot button on your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a>.</p><p>Otherwise please contact the experiment designer to let him or her know that the experiment status must be changed to RUNNING for participants to be able to run it.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// PILOTING_INVALID_TOKEN
+			case 31:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> cannot be run because the pilot token in the URL is invalid, possibly because it has expired.</p><p>If you are the experiment designer, you can generate a new token by pressing the pilot button on your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a>.</p><p>Otherwise please contact the experiment designer to let him or her know that the experiment status must be changed to RUNNING for participants to be able to run it.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// LICENSE_EXPIRED
+			case 50:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> is covered by a license that has expired. </p><p>If you are the experiment designer, you can either contact the license manager to inquire about the expiration, or you can run your experiments using credits. You will find all relevant details about the license on your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a>, where you will also be able to change its running mode to CREDIT.</p><p>Otherwise please contact the experiment designer to let him or her know that there is an issue with the experiment's license having expired.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// LICENSE_APPROVAL_NEEDED
+			case 51:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> is covered by a license that requires one or more documents to be approved before the experiment can be run. </p><p>If you are the experiment designer, please contact the license manager and ask him or her which documents must be approved. You will find all relevant details about the license on your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a>.</p><p>Otherwise please contact the experiment designer to let him or her know that there is an issue with the experiment's license requiring documents to be approved.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			// CREDIT_NOT_ENOUGH
+			case 60:
+				return {
+					htmlCode: `<div id="msgDialog" title="Warning"><p><strong>${this._psychoJS.config.experiment.fullpath}</strong> does not have any assigned credit left and cannot be run.</p><p>If you are the experiment designer, you can assign more credits to it on your <a href="https://pavlovia.org/${this._psychoJS.config.experiment.fullpath}">experiment page</a>.</p><p>Otherwise please contact the experiment designer to let him or her know that the experiment requires more assigned credits to run.</p></div>`,
+					titleColour: 'orange'
+				};
+
+			default:
+				return {
+					htmlCode: `<div id="msgDialog" title="Error"><p>Unfortunately we encountered an unspecified error (error code: ${errorCode}.</p><p>Try to run the experiment again. If the error persists, contact the experiment designer.</p></div>`,
+					titleColour: 'red'
+				};
+		}
 	}
 
 }

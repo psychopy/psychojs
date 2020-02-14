@@ -2,8 +2,8 @@
  * Image Stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -70,8 +70,8 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		this._addAttributes(ImageStim, image, mask, color, contrast, texRes, interpolate, depth, flipHoriz, flipVert);
 
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+		if (this._autoLog)
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 	}
 
 
@@ -194,7 +194,8 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {string} units - the units
 	 * @return {boolean} whether or not the image contains the object
 	 */
-	contains(object, units) {
+	contains(object, units)
+	{
 		if (typeof this._image === 'undefined')
 			return false;
 
@@ -206,7 +207,8 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		// test for inclusion:
 		// note: since _pixi.anchor is [0.5, 0.5] the image is actually centered on pos
 		let pos_px = util.to_px(this.pos, this.units, this._win);
-		let size_px = util.to_px(this.size, this.units, this._win);
+		const displaySize = this._getDisplaySize();
+		const size_px = util.to_px(displaySize, this.units, this._win);
 		const polygon_px = [
 			[pos_px[0] - size_px[0] / 2, pos_px[1] - size_px[1] / 2],
 			[pos_px[0] + size_px[0] / 2, pos_px[1] - size_px[1] / 2],
@@ -271,27 +273,44 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		// this._pixi.filters = [colorFilter];
 
 
-
 		// stimulus size:
 		// note: we use the size of the texture if ImageStim has no specified size:
-		let stimSize = this.size;
-		if (typeof stimSize === 'undefined') {
-			const textureSize = [this._texture.width, this._texture.height];
-			stimSize = util.to_unit(textureSize, 'pix', this.win, this.units);
-		}
+		const displaySize = this._getDisplaySize();
 
 		// set the scale:
-		const size_px = util.to_px(stimSize, this.units, this.win);
+		const size_px = util.to_px(displaySize, this.units, this.win);
 		var scaleX = size_px[0] / this._texture.width;
 		var scaleY = size_px[1] / this._texture.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
-        // set the position, rotation, and anchor (image centered on pos):
+    // set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
+	}
+
+
+	/**
+	 * Get the size of the display image, which is either that of the ImageStim or that of the image
+	 * it contains.
+	 *
+	 * @name module:visual.ImageStim#_getDisplaySize
+	 * @private
+	 * @return {number[]} the size of the displayed image
+	 */
+	_getDisplaySize()
+	{
+		let displaySize = this.size;
+
+		if (typeof displaySize === 'undefined')
+		{
+			const textureSize = [this._texture.width, this._texture.height];
+			displaySize = util.to_unit(textureSize, 'pix', this.win, this.units);
+		}
+
+		return displaySize;
 	}
 
 

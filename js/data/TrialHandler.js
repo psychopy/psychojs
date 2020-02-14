@@ -3,8 +3,8 @@
  * Trial Handler
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -114,15 +114,22 @@ export class TrialHandler extends PsychObject {
 	 * let handler = new TrialHandler({nReps: 5});
 	 * for (const thisTrial of handler) { console.log(thisTrial); }
 	 */
-	[Symbol.iterator]() {
+	[Symbol.iterator]()
+	{
 		return {
 			next: () => {
 				this.thisTrialN++;
 				this.thisN++;
 				this.nRemaining--;
 
+				// check for the last trial:
+				if (this.nRemaining === 0) {
+					this.finished = true;
+				}
+
 				// start a new repetition:
-				if (this.thisTrialN === this.nStim) {
+				if (this.thisTrialN === this.nStim)
+				{
 					this.thisTrialN = 0;
 					this.thisRepN++;
 				}
@@ -148,6 +155,26 @@ export class TrialHandler extends PsychObject {
 		};
 	}
 
+
+	/**
+	 * Execute the callback for each trial in the sequence.
+	 * 
+	 * @param callback
+	 */
+	forEach(callback)
+	{
+		const trialIterator = this[Symbol.iterator]();
+
+		while(true)
+		{
+			const result = trialIterator.next();
+			if (result.done)
+				break;
+
+			callback(result.value);
+		}
+	}
+
 	
 	/**
 	 * @typedef {Object} Snapshot
@@ -160,6 +187,7 @@ export class TrialHandler extends PsychObject {
 	 * @property {number} thisN - the total number of trials completed so far
 	 * @property {number} thisIndex - the index of the current trial in the conditions list
 	 * @property {number} ran - whether or not the trial ran
+	 * @property {number} finished - whether or not the trials finished
 	 */
 
 	/**
@@ -169,10 +197,12 @@ export class TrialHandler extends PsychObject {
 	 * <p>This is typically used in the LoopBegin function, in order to capture the current state of a TrialHandler</p>
 	 *
 	 * @public
-	 * @return {Snapshot} - the snapshot of the current internal state.
+	 * @return {Snapshot} - a snapshot of the current internal state.
 	 */
-	getSnapshot() {
+	getSnapshot()
+	{
 		const currentIndex = this.thisIndex;
+
 		const snapshot = {
 			name: this.name,
 			nStim: this.nStim,
@@ -183,6 +213,7 @@ export class TrialHandler extends PsychObject {
 			thisN: this.thisN,
 			thisIndex: this.thisIndex,
 			ran: this.ran,
+			finished: this.finished,
 
 			getCurrentTrial: () => this.getTrial(currentIndex)
 		};

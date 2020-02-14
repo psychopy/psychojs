@@ -2,8 +2,8 @@
  * Various utilities.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -121,13 +121,13 @@ export function isEmpty(x)
  * Detect the user's browser.
  *
  * <p> Note: since user agent is easily spoofed, we use a more sophisticated approach, as described here:
- * https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser </p>
+ * https://stackoverflow.com/a/9851769</p>
  *
  * @name module:util.detectBrowser
  * @function
  * @public
  * @return {string} the detected browser, one of 'Opera', 'Firefox', 'Safari',
- * 'IE', 'Edge', 'Chrome', 'Blink", 'unknown'
+ * 'IE', 'Edge', 'EdgeChromium', 'Chrome', 'unknown'
  */
 export function detectBrowser()
 {
@@ -136,7 +136,7 @@ export function detectBrowser()
 	if (isOpera) return 'Opera';
 
 	// Firefox 1.0+
-	const isFirefox = typeof InstallTrigger !== 'undefined';
+	const isFirefox = (typeof InstallTrigger !== 'undefined');
 	if (isFirefox) return 'Firefox';
 
 	// Safari 3.0+ "[object HTMLElementConstructor]" 
@@ -144,6 +144,9 @@ export function detectBrowser()
 	if (isSafari) return 'Safari';
 
 	// Internet Explorer 6-11
+	// const isIE6 = !window.XMLHttpRequest;
+	// const isIE7 = document.all && window.XMLHttpRequest && !XDomainRequest && !window.opera;
+	// const isIE8 = document.documentMode==8;
 	const isIE = /*@cc_on!@*/false || !!document.documentMode;
 	if (isIE) return 'IE';
 
@@ -152,12 +155,12 @@ export function detectBrowser()
 	if (isEdge) return 'Edge';
 
 	// Chrome 1+
-	const isChrome = !!window.chrome && !!window.chrome.webstore;
+	const isChrome = window.chrome;
 	if (isChrome) return 'Chrome';
 
-	// Blink engine detection
-	const isBlink = (isChrome || isOpera) && !!window.CSS;
-	if (isBlink) return 'Blink';
+	// Chromium-based Edge:
+	const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") !== -1);
+	if (isEdgeChromium) return 'EdgeChromium';
 
 	return 'unknown';
 }
@@ -466,9 +469,19 @@ export function to_pixiPoint(pos, posUnit, win)
  */
 export function toString(object)
 {
+	if (typeof object === 'undefined')
+		return 'undefined';
+
+	if (!object)
+		return 'null';
+
 	if (typeof object === 'string')
 		return object;
-	
+
+	// if the object is a class and has a toString method:
+	if (object.constructor.toString().substring(0, 5) === 'class' && typeof object.toString === 'function')
+		return object.toString();
+
 	try {
 		const symbolReplacer = (key, value) => {
 			if (typeof value === 'symbol')
@@ -483,22 +496,51 @@ export function toString(object)
 }
 
 
-if (!String.prototype.format) {
-  String.prototype.format = function() {
+if (!String.prototype.format)
+{
+  String.prototype.format = function()
+	{
     var args = arguments;
     return this
-		.replace(/{(\d+)}/g, function(match, number) { 
+		.replace(/{(\d+)}/g, function(match, number)
+		{
 			return typeof args[number] != 'undefined' ? args[number] : match;
 		})
-		.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name) {
+		.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name)
+		{
 			//console.log("n=" + name + " args[0][name]=" + args[0][name]);
-			return args.length > 0 &&  args[0][name] !== undefined
-			? args[0][name]
-			: match
-			;
+			return args.length > 0 &&  args[0][name] !== undefined ? args[0][name] : match;
 		});
   };
 }
+
+
+/**
+ * Get the most informative error from the server response from a jquery server request.
+ *
+ * @name module:util.getRequestError
+ * @function
+ * @public
+ * @param jqXHR
+ * @param textStatus
+ * @param errorThrown
+ */
+export function getRequestError(jqXHR, textStatus, errorThrown)
+{
+	let errorMsg = 'unknown error';
+
+	if (typeof jqXHR.responseJSON !== 'undefined')
+		errorMsg = jqXHR.responseJSON;
+
+	else if (typeof jqXHR.responseText !== 'undefined')
+		errorMsg = jqXHR.responseText;
+
+	else if (typeof errorThrown !== 'undefined')
+		errorMsg = errorThrown;
+
+	return errorMsg;
+}
+
 
 
 /**
@@ -564,9 +606,12 @@ export function addInfoFromUrl(info)
 
 	// note: parameters starting with a double underscore are reserved for client/server communication,
 	// we do not add them to info
-	for (const [key, value] of infoFromUrl)
+	// for (const [key, value] of infoFromUrl)
+	infoFromUrl.forEach( (key, value) =>
+	{
 		if (key.indexOf('__') !== 0)
 			info[key] = value;
+	});
 
 	return info;
 }
@@ -679,6 +724,9 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 /**
  * Offer data as download in the browser.
  *
+ * @name module:util.offerDataForDownload
+ * @function
+ * @public
  * @param {string} filename - the name of the file to be downloaded
  * @param {*} data - the data
  * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'

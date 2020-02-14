@@ -2,8 +2,8 @@
  * Rectangular Stimulus.
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -37,7 +37,8 @@ import { Color } from '../util/Color';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class Rect extends ShapeStim {
+export class Rect extends ShapeStim
+{
 	constructor({
 		name,
 		win,
@@ -56,7 +57,8 @@ export class Rect extends ShapeStim {
 		interpolate = true,
 		autoDraw,
 		autoLog
-	} = {}) {
+	} = {})
+	{
 		super({ name, win, lineWidth, lineColor, fillColor, opacity, pos, ori, size, units, contrast, depth, interpolate, autoDraw, autoLog });
 
 		this._psychoJS.logger.debug('create a new Rect with name: ', name);
@@ -65,9 +67,10 @@ export class Rect extends ShapeStim {
 
 		this._updateVertices();
 
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+		if (this._autoLog)
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 	}
+
 
 
 	/**
@@ -78,12 +81,14 @@ export class Rect extends ShapeStim {
 	 * @param {number} width - the rectange width
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setWidth(width, log = false) {
+	setWidth(width, log = false)
+	{
 		this._psychoJS.logger.debug('set the width of Rect: ', this.name, 'to: ', width);
 
 		this._setAttribute('width', width, log);
 		this._updateVertices();
 	}
+
 
 
 	/**
@@ -94,7 +99,8 @@ export class Rect extends ShapeStim {
 	 * @param {number} height - the rectange height
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setHeight(height, log = false) {
+	setHeight(height, log = false)
+	{
 		this._psychoJS.logger.debug('set the height of Rect: ', this.name, 'to: ', height);
 
 		this._setAttribute('height', height, log);
@@ -103,19 +109,23 @@ export class Rect extends ShapeStim {
 
 
 	/**
-	 * Update the base shape vertices.
+	 * Update the vertices.
 	 * 
 	 * @name module:visual.Rect#_updateVertices
 	 * @private 
 	 */
-	_updateVertices() {
+	_updateVertices()
+	{
 		this._psychoJS.logger.debug('update the vertices of Rect: ', this.name);
 
+		const halfWidth = this._width / 2.0;
+		const halfHeight = this._height / 2.0;
+
 		this.setVertices([
-			[-this._width / 2.0, -this._height / 2.0],
-			[this._width / 2.0, -this._height / 2.0],
-			[this._width / 2.0, this._height / 2.0],
-			[-this._width / 2.0, this._height / 2.0]
+			[-halfWidth, -halfHeight],
+			[halfWidth, -halfHeight],
+			[halfWidth, halfHeight],
+			[-halfWidth, halfHeight]
 		]);
 	}
 

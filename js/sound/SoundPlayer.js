@@ -2,8 +2,8 @@
  * Sound player interface
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -84,6 +84,21 @@ export class SoundPlayer extends PsychObject
 	{
 		throw {origin: 'SoundPlayer.getDuration', context: 'when getting the duration of the sound', error: 'this method is abstract and should not be called.'};
 	}
+
+
+	/**
+	 * Set the duration of the sound, in seconds.
+	 *
+	 * @name module:sound.SoundPlayer#setDuration
+	 * @function
+	 * @public
+	 * @abstract
+	 */
+	setDuration(duration_s)
+	{
+		throw {origin: 'SoundPlayer.setDuration', context: 'when setting the duration of the sound', error: 'this method is abstract and should not be called.'};
+	}
+
 
 
 	/**

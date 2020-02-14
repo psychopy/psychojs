@@ -2,15 +2,14 @@
  * Experiment Handler
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
 import { PsychObject } from '../util/PsychObject';
 import { MonotonicClock } from '../util/Clock';
-import { PsychoJS } from '../core/PsychoJS';
 import * as util from '../util/Util';
 
 
@@ -23,7 +22,7 @@ import * as util from '../util/Util';
  * @class 
  * @extends PsychObject
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {string} options.name - name of the experiment
  * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
  */
@@ -81,11 +80,14 @@ export class ExperimentHandler extends PsychObject {
 	 * Whether or not the current entry (i.e. trial data) is empty.
 	 * <p>Note: this is mostly useful at the end of an experiment, in order to ensure that the last entry is saved.</p>
 	 *
-	 * @name module:data.ExperimentHandler#isEntryEmtpy
+	 * @name module:data.ExperimentHandler#isEntryEmpty
 	 * @function
 	 * @public
 	 * @returns {boolean} whether or not the current entry is empty
 	 */
+	isEntryEmpty() {
+		return (Object.keys(this._currentTrialData).length > 0);
+	}
 	isEntryEmtpy() {
 		return (Object.keys(this._currentTrialData).length > 0);
 	}
@@ -158,9 +160,10 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @param {Object[]} snapshots - array of loop snapshots
 	 */
-	nextEntry(snapshots) {
-		if (typeof snapshots !== 'undefined') {
-
+	nextEntry(snapshots)
+	{
+		if (typeof snapshots !== 'undefined')
+		{
 			// turn single snapshot into a one-element array:
 			if (!Array.isArray(snapshots))
 				snapshots = [snapshots];
@@ -172,6 +175,18 @@ export class ExperimentHandler extends PsychObject {
 						this._currentTrialData[a] = attributes[a];
 			}
 
+		}
+		// this is to support legacy generated JavaScript code and does not properly handle
+		// loops within loops:
+		else
+		{
+			for (const loop of this._unfinishedLoops)
+			{
+				const attributes = ExperimentHandler._getLoopAttributes(loop);
+				for (const a in attributes)
+					if (attributes.hasOwnProperty(a))
+						this._currentTrialData[a] = attributes[a];
+			}
 		}
 
 		// add the extraInfo dict to the data:
@@ -264,7 +279,7 @@ export class ExperimentHandler extends PsychObject {
 
 			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER && this._psychoJS.config.experiment.status === 'RUNNING')
+			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER && this._psychoJS.config.experiment.status === 'RUNNING')
 				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv);
 			else
 				util.offerDataForDownload(key, csv, 'text/csv');
@@ -272,7 +287,8 @@ export class ExperimentHandler extends PsychObject {
 
 
 		// (*) save in the database on the remote server:
-		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE) {
+		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE)
+		{
 			let documents = [];
 
 			for (let r = 0; r < this._trialsData.length; r++) {
@@ -284,7 +300,7 @@ export class ExperimentHandler extends PsychObject {
 			}
 
 			// upload data to the pavlovia server or offer them for download:
-			if (this._psychoJS.getEnvironment() === PsychoJS.Environment.SERVER) {
+			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER) {
 				const key = 'results'; // name of the mongoDB collection
 				return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
 			} else
@@ -370,4 +386,17 @@ ExperimentHandler.SaveFormat = {
 	 * Results are saved to a database
 	 */
 	DATABASE: Symbol.for('DATABASE')
+};
+
+
+/**
+ * Experiment environment.
+ *
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+ExperimentHandler.Environment = {
+	SERVER: Symbol.for('SERVER'),
+	LOCAL: Symbol.for('LOCAL')
 };

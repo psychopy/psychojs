@@ -3,8 +3,8 @@
  * Sound stimulus.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -36,7 +36,7 @@ import { TrackPlayer } from './TrackPlayer';
  * @extends PsychObject
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {number|string} [options.value= 'C'] - the sound value (see above for a full description)
  * @param {number} [options.octave= 4] - the octave corresponding to the tone (if applicable)
  * @param {number} [options.secs= 0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
@@ -84,10 +84,11 @@ export class Sound extends PsychObject {
 	 * Repeat calls to play may results in the sounds being played on top of each other.</p>
 	 * 
 	 * @public
-	 * @param {number} [loops= 0] how many times to repeat the sound after it plays once. If loops == -1, the sound will repeat indefinitely until stopped.
+	 * @param {number} loops how many times to repeat the sound after it plays once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 * @param {boolean} [log= true] whether or not to log
 	 */
-	play(loops, log = true) {
+	play(loops, log = true)
+	{
 		this.status = PsychoJS.Status.STARTED;
 		this._player.play(loops);
 	}
@@ -102,7 +103,8 @@ export class Sound extends PsychObject {
 	 */
 	stop({
 		log = true
-	} = {}) {
+	} = {})
+	{
 		this._player.stop();
 		this.status = PsychoJS.Status.STOPPED;
 	}
@@ -127,8 +129,10 @@ export class Sound extends PsychObject {
 	 * @param {boolean} [mute= false] - whether or not to mute the sound
 	 * @param {boolean} [log= true] - whether of not to log
 	 */
-	setVolume(volume, mute = false, log = true) {
+	setVolume(volume, mute = false, log = true)
+	{
 		this._setAttribute('volume', volume, log);
+
 		if (typeof this._player !== 'undefined')
 			this._player.setVolume(volume, mute);
 	}
@@ -141,11 +145,31 @@ export class Sound extends PsychObject {
 	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 * @param {boolean} [log=true] - whether of not to log
 	 */
-	setLoops(loops = 0, log = true) {
+	setLoops(loops = 0, log = true)
+	{
 		this._setAttribute('loops', loops, log);
+
 		if (typeof this._player !== 'undefined')
 			this._player.setLoops(loops);
 	}
+
+
+
+	/**
+	 * Set the duration (in seconds)
+	 *
+	 * @public
+	 * @param {number} [secs=0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
+	 * @param {boolean} [log=true] - whether of not to log
+	 */
+	setSecs(secs = 0.5, log = true)
+	{
+		this._setAttribute('secs', secs, log);
+
+		if (typeof this._player !== 'undefined')
+			this._player.setDuration(secs);
+	}
+
 
 
 	/**

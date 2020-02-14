@@ -2,8 +2,8 @@
  * Color management.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -179,6 +179,20 @@ export class Color {
 		return this._lms;
 	}
 	*/
+
+
+	/**
+	 * String representation of the color, i.e. the hexadecimal representation.
+	 *
+	 * @name module:util.Color.toString
+	 * @function
+	 * @return {string} the representation.
+	 *
+	 */
+	toString()
+	{
+		return this.hex;
+	}
 
 
 	/**
@@ -427,10 +441,13 @@ export class Color {
 	 * @param {Array.<number>} [range] - the lower and higher bounds of the range
 	 * @return {boolean} whether the argument is an array of numbers of size 3, and, potentially, whether its elements fall within the range (if range is not undefined)
 	 */
-	static _checkTypeAndRange(arg, range = undefined) {
-		if (!Array.isArray(arg) || arg.length !== 3
-			|| typeof arg[0] !== 'number' || typeof arg[1] !== 'number' || typeof arg[2] !== 'number')
+	static _checkTypeAndRange(arg, range = undefined)
+	{
+		if (!Array.isArray(arg) || arg.length !== 3  ||
+			typeof arg[0] !== 'number' || typeof arg[1] !== 'number' || typeof arg[2] !== 'number')
+		{
 			throw 'the argument should be an array of numbers of length 3';
+		}
 
 		if (typeof range !== 'undefined' && (arg[0] < range[0] || arg[0] > range[1] || arg[1] < range[0] || arg[1] > range[1] || arg[2] < range[0] || arg[2] > range[1]))
 			throw 'the color components should all belong to [' + range[0] + ', ' + range[1] + ']';

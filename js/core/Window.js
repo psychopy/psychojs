@@ -2,14 +2,15 @@
  * Window responsible for displaying the experiment stimuli
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 import { Color } from '../util/Color';
 import { PsychObject } from '../util/PsychObject';
 import { MonotonicClock } from '../util/Clock';
+import { Logger } from "./Logger";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -19,7 +20,7 @@ import { MonotonicClock } from '../util/Clock';
  * @class
  * @extends PsychObject
  * @param {Object} options
- * @param {PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {string} [options.name] the name of the window
  * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
  * @param {Color} [options.color= Color('black')] the background color of the window
@@ -47,7 +48,8 @@ export class Window extends PsychObject {
 		units = 'pix',
 		waitBlanking = false,
 		autoLog = true
-	} = {}) {
+	} = {})
+	{
 		super(psychoJS, name);
 
 		// messages to be logged at the next "flip":
@@ -70,8 +72,24 @@ export class Window extends PsychObject {
 
 		this._flipCallbacks = [];
 
-		/*if (autoLog)
-			logging.exp("Created %s = %s" % (self.name, str(self)));*/
+
+		// fullscreen listener:
+		this._windowAlreadyInFullScreen = false;
+		const self = this;
+		document.addEventListener('fullscreenchange', (event) => {
+			self._windowAlreadyInFullScreen = !!document.fullscreenElement;
+
+			console.log('windowAlreadyInFullScreen:', self._windowAlreadyInFullScreen);
+
+			// the Window and all of the stimuli need to be updated:
+			self._needUpdate = true;
+			for (const stimulus of self._drawList)
+				stimulus._needUpdate = true;
+		});
+
+
+		if (this._autoLog)
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 	}
 
 
@@ -84,12 +102,30 @@ export class Window extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	close() {
+	close()
+	{
+		if (!this._renderer)
+			return;
+
 		if (document.body.contains(this._renderer.view))
 			document.body.removeChild(this._renderer.view);
 
+		// destroy the renderer and the WebGL context:
+		if (typeof this._renderer.gl !== 'undefined')
+		{
+			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
+			this._renderer.destroy();
+			extension.loseContext();
+		}
+		else
+		{
+			this._renderer.destroy();
+		}
+			
 		window.removeEventListener('resize', this._resizeCallback);
 		window.removeEventListener('orientationchange', this._resizeCallback);
+
+		this._renderer = null;
 	}
 
 
@@ -103,7 +139,8 @@ export class Window extends PsychObject {
 	 * 
 	 * @todo estimate the actual frame rate.
 	 */
-	getActualFrameRate() {
+	getActualFrameRate()
+	{
 		// TODO
 		return 60.0;
 	}
@@ -116,31 +153,38 @@ export class Window extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	adjustScreenSize() {
-		// the following does not seem to work any longer (08.2019) on Google Chrome, there does not seem to be
-		// reliable ways to test whether the window is already fullscreen.
+	adjustScreenSize()
+	{
+		// (!window.screenTop && !window.screenY) does not work in all browsers on all operating systems (e.g. Chrome on
+		// Windows). As far as I can ascertain, as of 2019.08.01 there still does not seem to be a reliable way to
+		// test whether the window is already fullscreen.
 		// this._windowAlreadyInFullScreen = (!window.screenTop && !window.screenY);
-		this._windowAlreadyInFullScreen = false;
 
-		if (this.fullscr && !this._windowAlreadyInFullScreen) {
+		if (this.fullscr/* && !this._windowAlreadyInFullScreen*/)
+		{
 			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'to full screen.');
 
 			if (typeof document.documentElement.requestFullscreen === 'function')
-				document.documentElement.requestFullscreen();
+			{
+				document.documentElement.requestFullscreen()
+					.catch(() =>
+					{
+						this.psychoJS.logger.warn('Unable to go fullscreen.');
+					});
+			}
 			else if (typeof document.documentElement.mozRequestFullScreen === 'function')
 				document.documentElement.mozRequestFullScreen();
+
 			else if (typeof document.documentElement.webkitRequestFullscreen === 'function')
 				document.documentElement.webkitRequestFullscreen();
+
 			else if (typeof document.documentElement.msRequestFullscreen === 'function')
 				document.documentElement.msRequestFullscreen();
+
 			else
 				this.psychoJS.logger.warn('Unable to go fullscreen.');
-
-			// the Window and all of the stimuli need to be updated:
-			this._needUpdate = true;
-			for (const stimulus of this._drawList)
-				stimulus._needUpdate = true;
 		}
+
 	}
 
 
@@ -151,25 +195,31 @@ export class Window extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	closeFullScreen() {
-		// if the window was already full screen before we started the study, we don't close
-		// full screen:
-		if (this._windowAlreadyInFullScreen)
-			return;
-
-		// if the window is already back from full screen, we do nothing
-		const windowInFullScreen = (!window.screenTop && !window.screenY);
-		if (this.fullscr && windowInFullScreen) {
+	closeFullScreen()
+	{
+		if (this.fullscr)
+		{
 			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'back from full screen.');
 
 			if (typeof document.exitFullscreen === 'function')
-				document.exitFullscreen();
+			{
+				document.exitFullscreen()
+					.catch(() =>
+					{
+						this.psychoJS.logger.warn('Unable to close fullscreen.');
+					});
+			}
 			else if (typeof document.mozCancelFullScreen === 'function')
 				document.mozCancelFullScreen();
+
 			else if (typeof document.webkitExitFullscreen === 'function')
 				document.webkitExitFullscreen();
+
 			else if (typeof document.msExitFullscreen === 'function')
 				document.msExitFullscreen();
+
+			else
+				this.psychoJS.logger.warn('Unable to close fullscreen.');
 		}
 
 	}
@@ -185,10 +235,14 @@ export class Window extends PsychObject {
 	 * @public
 	 * @param {Object} options
 	 * @param {String} options.msg the message to be logged
-	 * @param {integer} level the log level
+	 * @param {module:util.Logger.ServerLevel} [level = module:util.Logger.ServerLevel.EXP] the log level
 	 * @param {Object} [obj] the object associated with the message
 	 */
-	logOnFlip({ msg, level, obj} = {}) {
+	logOnFlip({
+							msg,
+							level = Logger.ServerLevel.EXP,
+							obj} = {})
+	{
 		this._msgToBeLogged.push({ msg, level, obj });
 	}
 
@@ -211,7 +265,8 @@ export class Window extends PsychObject {
 	 * @param {module:core.Window~OnFlipCallback} flipCallback - callback function.
 	 * @param {...*} flipCallbackArgs - arguments for the callback function.
 	 */
-	callOnFlip(flipCallback, ...flipCallbackArgs) {
+	callOnFlip(flipCallback, ...flipCallbackArgs)
+	{
 		this._flipCallbacks.push({function: flipCallback, arguments: flipCallbackArgs});
 	}
 
@@ -223,27 +278,35 @@ export class Window extends PsychObject {
 	 * @function
 	 * @public
 	 */
-	render() {
+	render()
+	{
+		if (!this._renderer)
+			return;
+
+
 		this._frameCount++;
 
 		// render the PIXI container:
 		this._renderer.render(this._rootContainer);
 
-		// this is to make sure that the GPU is done rendering, it may not be necessary
-		// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
-		this._renderer.gl.readPixels(0, 0, 1, 1, this._renderer.gl.RGBA, this._renderer.gl.UNSIGNED_BYTE, new Uint8Array(4));
+		if (typeof this._renderer.gl !== 'undefined')
+		{
+			// this is to make sure that the GPU is done rendering, it may not be necessary
+			// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
+			this._renderer.gl.readPixels(0, 0, 1, 1, this._renderer.gl.RGBA, this._renderer.gl.UNSIGNED_BYTE, new Uint8Array(4));
 
-		// blocks execution until the rendering is fully done:
-		if (this._waitBlanking)
-			this._renderer.gl.finish();
-
-		// log:
-		this._writeLogOnFlip();
+			// blocks execution until the rendering is fully done:
+			if (this._waitBlanking)
+				this._renderer.gl.finish();
+		}
 
 		// call the callOnFlip functions and remove them:
 		for (let callback of this._flipCallbacks)
 			callback['function'](...callback['arguments']);
 		this._flipCallbacks = [];
+
+		// log:
+		this._writeLogOnFlip();
 
 		// prepare the scene for the next animation frame:
 		this._refresh();
@@ -257,9 +320,13 @@ export class Window extends PsychObject {
 	 * @function
 	 * @private
 	 */
-	_updateIfNeeded() {
-		if (this._needUpdate) {
-			this._renderer.backgroundColor = this._color.int;
+	_updateIfNeeded()
+	{
+		if (this._needUpdate)
+		{
+			if (this._renderer)
+				this._renderer.backgroundColor = this._color.int;
+
 			// we also change the background color of the body since the dialog popup may be longer than the window's height:
 			document.body.style.backgroundColor = this._color.hex;
 
@@ -275,7 +342,8 @@ export class Window extends PsychObject {
 	 * @function
 	 * @private
 	 */
-	_refresh() {
+	_refresh()
+	{
 		this._updateIfNeeded();
 
 		// if a stimuli needs to be updated, we remove it from the window container, update it, then put it back
@@ -295,7 +363,8 @@ export class Window extends PsychObject {
 	 * @function
 	 * @private
 	 */
-	_fullRefresh() {
+	_fullRefresh()
+	{
 		this._needUpdate = true;
 
 		for (const stimulus of this._drawList)
@@ -308,13 +377,15 @@ export class Window extends PsychObject {
 	/**
 	 * Setup PIXI.
 	 * 
-	 * <p>A new renderer is created and a container is added to it. The renderer's touch and mouse events are handled by the {@link EventManager}.</p>
+	 * <p>A new renderer is created and a container is added to it. The renderer's touch and mouse events
+	 * are handled by the {@link EventManager}.</p>
 	 * 
 	 * @name module:core.Window#_setupPixi
 	 * @function
 	 * @private
 	 */
-	_setupPixi() {
+	_setupPixi()
+	{
 		// the size of the PsychoJS Window is always that of the browser
 		this._size[0] = window.innerWidth;
 		this._size[1] = window.innerHeight;
@@ -360,7 +431,8 @@ export class Window extends PsychObject {
 	 * @param {module:core.Window} pjsWindow - the PsychoJS Window
 	 * @param event
 	 */
-	static _resizePixiRenderer(pjsWindow, event) {
+	static _resizePixiRenderer(pjsWindow, event)
+	{
 		pjsWindow._psychoJS.logger.debug('resizing Window: ', pjsWindow._name, 'event:', JSON.stringify(event));
 
 		// update the size of the PsychoJS Window:
@@ -389,11 +461,12 @@ export class Window extends PsychObject {
 	 * @function
 	 * @private
 	 */
-	_writeLogOnFlip() {
-		var logTime = MonotonicClock.getReferenceTime();
-		for (var i = 0; i < this._msgToBeLogged.length; ++i) {
-			var entry = this._msgToBeLogged[i];
-			this._psychoJS.logger.log(entry.msg, entry.level, logTime, entry.obj);
+	_writeLogOnFlip()
+	{
+		const logTime = MonotonicClock.getReferenceTime();
+		for (const entry of this._msgToBeLogged)
+		{
+			this._psychoJS.experimentLogger.log(entry.msg, entry.level, logTime, entry.obj);
 		}
 
 		this._msgToBeLogged = [];

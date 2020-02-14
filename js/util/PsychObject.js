@@ -3,13 +3,14 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
 import { EventEmitter } from './EventEmitter';
+import * as util from './Util';
 
 
 /**
@@ -21,11 +22,14 @@ import { EventEmitter } from './EventEmitter';
  * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
  * @param {string} name - the name of the object (mostly useful for debugging)
  */
-export class PsychObject extends EventEmitter {
-	constructor(psychoJS, name) {
+export class PsychObject extends EventEmitter
+{
+	constructor(psychoJS, name)
+	{
 		super();
 
 		this._psychoJS = psychoJS;
+		this._userAttributes = new Set();
 
 		// name:
 		if (typeof name === 'undefined')
@@ -40,18 +44,59 @@ export class PsychObject extends EventEmitter {
 	 * @public
 	 * @return {PsychoJS} the PsychoJS instance
 	 */
-	get psychoJS() { return this._psychoJS; }
+	get psychoJS()
+	{
+		return this._psychoJS;
+	}
 
 
 	/**
 	 * Setter for the PsychoJS attribute.
 	 * 
 	 * @public
-	 * @param {PsychoJS} psychoJS - the PsychoJS instance
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
 	 */
-	set psychoJS(psychoJS) {
+	set psychoJS(psychoJS)
+	{
 		this._psychoJS = psychoJS;
 	}
+
+
+	/**
+	 * String representation of the PsychObject.
+	 *
+	 * <p>Note: attribute values are limited to 50 characters.</p>
+	 *
+	 * @public
+	 * @return {string} the representation
+	 */
+	toString()
+	{
+		let representation = this.constructor.name + '( ';
+		let addComma = false;
+		for (const attribute of this._userAttributes)
+		{
+			if (addComma)
+				representation += ', ';
+			addComma = true;
+
+			let value = util.toString(this['_'+attribute]);
+			const l = value.length;
+			if (l > 50)
+			{
+				if (value[l-1] === ')')
+					value = value.substring(0, 50) + '~)';
+				else
+					value = value.substring(0, 50) + '~';
+			}
+
+			representation += attribute + '=' + value;
+		}
+		representation += ' )';
+
+		return representation;
+	}
+
 
 
 	/**
@@ -66,7 +111,8 @@ export class PsychObject extends EventEmitter {
 	 * @return {boolean} whether or not the value of that attribute has changed (false if the attribute
 	 * was not previously set)
 	 */
-	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false) {
+	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false)
+	{
 		const response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
 
 		if (typeof attributeName == 'undefined')
@@ -220,9 +266,13 @@ export class PsychObject extends EventEmitter {
 
 
 		// (*) log if appropriate:
-		if (!stealth && (log || this._autoLog) && (typeof this.win !== 'undefined')) {
-			const message = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
-			//this.win.logOnFlip(message, psychoJS.logging.EXP, this);
+		if (!stealth && (log || this._autoLog) && (typeof this.win !== 'undefined'))
+		{
+			const msg = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
+			this.win.logOnFlip({
+				msg,
+				// obj: this
+			});
 		}
 
 
@@ -250,18 +300,19 @@ export class PsychObject extends EventEmitter {
 	 * @param {...*} [args] - the values for the attributes (this also determines which attributes will be set)
 	 *
 	 */
-	_addAttributes(cls, ...args) {
+	_addAttributes(cls, ...args)
+	{
 		// (*) look for the line in the subclass constructor where addAttributes is called
 		// and extract its arguments:
-		let callLine = cls.toString().match(/this.*\._addAttributes\(.*\;/)[0];
-		let startIndex = callLine.indexOf('._addAttributes(') + 16;
-		let endIndex = callLine.indexOf(');');
-		let callArgs = callLine.substr(startIndex, endIndex - startIndex).split(',').map((s) => s.trim());
+		const callLine = cls.toString().match(/this.*\._addAttributes\(.*\;/)[0];
+		const startIndex = callLine.indexOf('._addAttributes(') + 16;
+		const endIndex = callLine.indexOf(');');
+		const callArgs = callLine.substr(startIndex, endIndex - startIndex).split(',').map((s) => s.trim());
 
 
 		// (*) add (argument name, argument value) pairs to the attribute map:
 		let attributeMap = new Map();
-		for (var i = 1; i < callArgs.length; ++i)
+		for (let i = 1; i < callArgs.length; ++i)
 			attributeMap.set(callArgs[i], args[i - 1]);
 
 		// (*) set the value, define the get/set<attributeName> properties and define the getter and setter:
@@ -277,12 +328,13 @@ export class PsychObject extends EventEmitter {
 	 * @param {string} name - the name of the attribute
 	 * @param {object} value - the value of the attribute
 	 */
-	_addAttribute(name, value) {
-		let getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
+	_addAttribute(name, value)
+	{
+		const getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[getPropertyName] === 'undefined')
 			this[getPropertyName] = () => this['_' + name];
 
-		let setPropertyName = 'set' + name[0].toUpperCase() + name.substr(1);
+		const setPropertyName = 'set' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[setPropertyName] === 'undefined')
 			this[setPropertyName] = (value, log = false) => {
 				this._setAttribute(name, value, log);
@@ -298,6 +350,8 @@ export class PsychObject extends EventEmitter {
 		// in the object, in which case we need to call it
 		this[name] = value;
 		//this['_' + name] = value;
+
+		this._userAttributes.add(name);
 	}
 
 }

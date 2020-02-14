@@ -31,8 +31,8 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 3.1.4
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -44,8 +44,9 @@ import { EventManager } from './EventManager';
 import { Window } from './Window';
 import { GUI } from './GUI';
 import { MonotonicClock } from '../util/Clock';
-import { Logger } from '../util/Logger';
+import { Logger } from './Logger';
 import * as util from '../util/Util';
+
 
 
 /**
@@ -56,7 +57,8 @@ import * as util from '../util/Util';
  * @param {boolean} [options.debug= true] whether or not to log debug information in the browser console
  * @param {boolean} [options.collectIP= false] whether or not to collect the IP information of the participant
  */
-export class PsychoJS {
+export class PsychoJS
+{
 	/**
 	 * Properties
 	 */
@@ -71,11 +73,14 @@ export class PsychoJS {
 	get scheduler() { return this._scheduler; }
 	get monotonicClock() { return this._monotonicClock; }
 	get logger() { return this._logger.consoleLogger; }
+	get experimentLogger() { return this._logger; }
 	get eventManager() { return this._eventManager; }
 	get gui() { return this._gui; }
 	get IP() { return this._IP; }
 	// this._serverMsg is a bi-directional message board for communications with the pavlovia.org server:
 	get serverMsg() { return this._serverMsg; }
+	get browser() { return this._browser; }
+
 
 
 	/**
@@ -83,12 +88,18 @@ export class PsychoJS {
 	 * @public
 	 */
 	constructor({
-		debug = true,
-		collectIP = false
-	} = {}) {
+								debug = true,
+								collectIP = false,
+								topLevelStatus = true
+	} = {})
+	{
 		// logging:
-		this._logger = new Logger((debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
+		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
 		this._captureErrors();
+
+		// detect the browser:
+		this._browser = util.detectBrowser();
+		this.logger.info('[PsychoJS] Detected browser:', this._browser);
 
 		// core clock:
 		this._monotonicClock = new MonotonicClock();
@@ -115,20 +126,26 @@ export class PsychoJS {
 		this._cancellationUrl = undefined;
 		this._completionUrl = undefined;
 
-
 		// status:
 		this._status = PsychoJS.Status.NOT_CONFIGURED;
+
+		// make the PsychoJS.Status accessible from the top level of the generated experiment script
+		// in order to accommodate PsychoPy's Code Components
+		if (topLevelStatus)
+			this._makeStatusTopLevel();
 
 		this.logger.info('[PsychoJS] Initialised.');
 	}
 
 
+
 	/**
 	 * Get the experiment's environment.
 	 *
-	 * @returns {PsychoJS.Environment | undefined} the environment of the experiment, or undefined
+	 * @returns {ExperimentHandler.Environment | undefined} the environment of the experiment, or undefined
 	 */
-	getEnvironment() {
+	getEnvironment()
+	{
 		if (typeof this._config === 'undefined')
 			return undefined;
 		return this._config.environment;
@@ -145,7 +162,9 @@ export class PsychoJS {
 	 * @param {boolean} [options.fullscr] whether or not to go fullscreen
 	 * @param {Color} [options.color] the background color of the window
 	 * @param {string} [options.units] the units of the window
-	 * @param {boolean} [options.autoLog] whether of not to log
+	 * @param {boolean} [options.autoLog] whether or not to log
+	 * @param {boolean} [options.waitBlanking] whether or not to wait for all rendering operations to be done
+	 * before flipping
 	 * @throws {Object.&lt;string, *>} exception if a window has already been opened
 	 * 
 	 * @public
@@ -155,6 +174,7 @@ export class PsychoJS {
 		fullscr,
 		color,
 		units,
+		waitBlanking,
 		autoLog
 	} = {}) {
 		this.logger.info('[PsychoJS] Open Window.');
@@ -168,6 +188,7 @@ export class PsychoJS {
 			fullscr,
 			color,
 			units,
+			waitBlanking,
 			autoLog
 		});
 	}
@@ -231,7 +252,8 @@ export class PsychoJS {
 	 *
 	 * @todo: close session on window or tab close
 	 */
-	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {}) {
+	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {})
+	{
 		this.logger.debug();
 
 		const response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
@@ -264,18 +286,28 @@ export class PsychoJS {
 			//my.logger.console.setLevel(psychoJS.logging.WARNING);
 			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
-			// if the experiment is running on the server, we open a session:
-			if (this.getEnvironment() === PsychoJS.Environment.SERVER)
+			// if the experiment is running on the server:
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			{
+				// open a session:
 				await this._serverManager.openSession();
 
+				// attempt to close the session on beforeunload/unload (we use a synchronous request since
+				// the Beacon API only allows POST and we need DELETE ) and release the WebGL context:
+				const self = this;
+				window.onbeforeunload = () => {
+					self._serverManager.closeSession(false, true);
 
-			// attempt to close the session on onunload:
-			const self = this;
-			window.addEventListener("unload",() => {
-				// we need to use either the Beacon API (https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon)
-				// or synchronous requests
-				// TODO
-			});
+					if (typeof self._window !== 'undefined')
+						self._window.close();
+				};
+				window.addEventListener('unload', function(event) {
+					self._serverManager.closeSession(false, true);
+
+					if (typeof self._window !== 'undefined')
+						self._window.close();
+				});
+			}
 
 
 			// start the asynchronous download of resources:
@@ -361,20 +393,25 @@ export class PsychoJS {
 			this._scheduler.stop();
 
 			// save the results and the logs of the experiment:
-			this.gui.dialog({ warning: 'Saving the experiment results and closing the session. Please wait a few moments.', showOK: false });
+			this.gui.dialog({
+				warning: 'Closing the session. Please wait a few moments.',
+				showOK: false
+			});
 			await this._experiment.save();
+			await this._logger.flush();
 
 			// close the session:
-			if (this.getEnvironment() === PsychoJS.Environment.SERVER) {
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER) {
 				await this._serverManager.closeSession(isCompleted);
 			}
 
 			// thank participant for waiting and either quit or redirect:
-			let text = 'Thank you for your patience. The data have been saved.&lt;br/>&lt;br/>';
+			let text = 'Thank you for your patience.&lt;br/>&lt;br/>';
 			text += (typeof message !== 'undefined') ? message : 'Goodbye!';
 			const self = this;
 			this._gui.dialog({
-				message: text, onOK: () => {
+				message: text,
+				onOK: () => {
 					// close the window:
 					self._window.close();
 
@@ -445,13 +482,13 @@ export class PsychoJS {
 				if (!('URL' in this._config.pavlovia))
 					throw 'missing URL in pavlovia block in configuration';
 
-				this._config.environment = PsychoJS.Environment.SERVER;
+				this._config.environment = ExperimentHandler.Environment.SERVER;
 
 			} else
 			// otherwise we create an ad-hoc configuration:
 			{
 				this._config = {
-					environment: PsychoJS.Environment.LOCAL,
+					environment: ExperimentHandler.Environment.LOCAL,
 					experiment: { name, saveFormat: ExperimentHandler.SaveFormat.CSV }
 				};
 			}
@@ -528,6 +565,17 @@ export class PsychoJS {
 
 	}
 
+
+	/**
+	 * Make the various Status top level, in order to accommodate PsychoPy's Code Components.
+	 * @private
+	 */
+	_makeStatusTopLevel() {
+		for (const status in PsychoJS.Status) {
+			window[status] = PsychoJS.Status[status];
+		}
+	}
+
 }
 
 
@@ -553,19 +601,6 @@ PsychoJS.Status = {
 	STOPPED: Symbol.for('FINISHED') //Symbol.for('STOPPED')
 };
 
-
-/**
- * Experiment environment.
- *
- * @enum {Symbol}
- * @readonly
- * @public
- */
-PsychoJS.Environment = {
-	SERVER: Symbol.for('SERVER'),
-	LOCAL: Symbol.for('LOCAL')
-};
-
 </code></pre>
         </article>
     </section>
@@ -576,13 +611,13 @@ PsychoJS.Environment = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.Logger.html">Logger</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Global</h3><ul><li><a href="global.html#offerDataForDownload">offerDataForDownload</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 08 2019 09:06:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

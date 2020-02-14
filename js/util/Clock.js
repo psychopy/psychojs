@@ -2,8 +2,8 @@
  * Clock component.
  * 
  * @author Alain Pitiot
- * @version 3.2.0
- * @copyright (c) 2019 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.1
+ * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
@@ -55,8 +55,10 @@ export class MonotonicClock {
 	 * @public
 	 * @return {number} the time elapsed since the reference point (in seconds)
 	 */
-	static getReferenceTime() {
-		return (new Date().getTime()) / 1000.0 - MonotonicClock._referenceTime;
+	static getReferenceTime()
+	{
+		return (performance.now() / 1000.0 - MonotonicClock._referenceTime);
+		// return (new Date().getTime()) / 1000.0 - MonotonicClock._referenceTime;
 	}
 
 
@@ -72,7 +74,8 @@ export class MonotonicClock {
 	 * @param {string} [format= 'YYYY-MM-DD_HH[h]mm.ss.SSS'] - the format for the string (see [momentjs.com]{@link https://momentjs.com/docs/#/parsing/string-format/} for details)
 	 * @return {string} a string representing the current time in the given format
 	 */
-	static getDateStr(format = 'YYYY-MM-DD_HH[h]mm.ss.SSS') {
+	static getDateStr(format = 'YYYY-MM-DD_HH[h]mm.ss.SSS')
+	{
 		return moment().format(format);
 	}
 }
@@ -86,7 +89,8 @@ export class MonotonicClock {
  * @private
  * @type {number}
  */
-MonotonicClock._referenceTime = new Date().getTime() / 1000.0;
+MonotonicClock._referenceTime = performance.now() / 1000.0;
+// MonotonicClock._referenceTime = new Date().getTime() / 1000.0;
 
 
 /**
