@@ -164,7 +164,7 @@ export function detectBrowser()
 
   // Blink engine detection
   const isBlink = (isChrome || isOpera) && !!window.CSS;
-  if (isBlink) return "Blink";
+  if (isBlink) return 'Blink';
 
 	return 'unknown';
 }
