@@ -178,14 +178,15 @@ export class CountdownTimer extends Clock {
 	 * @name module:util.CountdownTimer#reset
 	 * @function
 	 * @public
-	 * @param {number} [newTime] - if newTime is undefined, the coundown time is reset to zero, otherwise we set it to newTime
+	 * @param {number} [newTime] - if newTime is undefined, the countdown time is reset to zero, otherwise we set it
+	 * to newTime
 	 */
 	reset(newTime = undefined) {
 		if (typeof newTime == 'undefined') {
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + this._countdown_duration;
 		}
 		else {
-			this._countdown_duration = t;
+			this._countdown_duration = newTime;
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + newTime;
 		}
 	}

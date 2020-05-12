@@ -135,7 +135,7 @@ export class GUI
 					// only create an input if the key is not in the URL:
 					let inUrl = false;
 					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach( (urlKey, urlValue) =>
+					infoFromUrl.forEach( (urlValue, urlKey) =>
 					{
 						const cleanedUrlKey = urlKey.trim().toLowerCase();
 						if (cleanedUrlKey === cleanedDictKey) {

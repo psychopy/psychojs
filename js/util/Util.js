@@ -607,7 +607,7 @@ export function addInfoFromUrl(info)
 	// note: parameters starting with a double underscore are reserved for client/server communication,
 	// we do not add them to info
 	// for (const [key, value] of infoFromUrl)
-	infoFromUrl.forEach( (key, value) =>
+	infoFromUrl.forEach( (value, key) =>
 	{
 		if (key.indexOf('__') !== 0)
 			info[key] = value;

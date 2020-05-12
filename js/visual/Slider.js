@@ -555,8 +555,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		self._markerDragging = false;
 
 		this._marker.pointerdown = this._marker.mousedown = this._marker.touchstart = (event) => {
-			if (event.data.button === 0)
+			if (event.data.button === 0) {
 				self._markerDragging = true;
+
+				// set markerPos, but not rating:
+				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
+				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				self._markerPos = self._granularise(rating);
+
+				self._needMarkerUpdate = true;
+			}
 
 			event.stopPropagation();
 		};
@@ -601,8 +609,24 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		// (*) slider mouse events outside of marker
 		// note: this only works thanks to eventCaptureRectangle
+		this._pixi.pointerdown = this._pixi.mousedown = this._pixi.touchstart = (event) => {
+			if (event.data.button === 0) {
+				self._markerDragging = true;
+
+				// set markerPos, but not rating:
+				const mouseLocalPos_px = event.data.getLocalPosition(self._body);
+				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				self._markerPos = self._granularise(rating);
+
+				// update the marker:
+				self._needMarkerUpdate = true;
+				self._updateMarker();
+			}
+
+			event.stopPropagation();
+		};
+
 		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) => {
-		// this._body.pointerup = this._body.mouseup = this._body.touchend = event => { console.log(event);
 			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
 			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
 			self._recordRating(rating);

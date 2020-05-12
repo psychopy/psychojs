@@ -215,7 +215,8 @@ export class TrialHandler extends PsychObject {
 			ran: this.ran,
 			finished: this.finished,
 
-			getCurrentTrial: () => this.getTrial(currentIndex)
+			getCurrentTrial: () => this.getTrial(currentIndex),
+			getTrial: (index = 0) => this.getTrial(index)
 		};
 
 		return snapshot;

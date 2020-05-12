@@ -21,6 +21,9 @@ import { TrackPlayer } from './TrackPlayer';
  * <li> If value is a number then a tone will be generated at that frequency in Hz.</li>
  * <li> It value is a string, it must either be a note in the PsychoPy format (e.g 'A', 'Bfl', 'B', 'C', 'Csh'), in which case an octave must also be given, or the name of the resource track.</li>
  * </ul>
+ *
+ * <p> Note: the PsychoPy hamming parameter has not been implemented yet. It might be rather tricky to do so using
+ * Tone.js</p>
  * 
  * @example
  * [...]
@@ -45,7 +48,6 @@ import { TrackPlayer } from './TrackPlayer';
  * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
  * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
  * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played once. If loops == -1, the track or tone will repeat indefinitely until stopped.
- * @param {boolean} [options.hamming= true] whether or not to apodize the sound (i.e., the onset and offset smoothly ramped up from down to zero). This only affects tones.
  * @param {boolean} [options.autoLog= true] whether or not to log
 */
 export class Sound extends PsychObject {
@@ -60,7 +62,7 @@ export class Sound extends PsychObject {
 		stereo = true,
 		volume = 1.0,
 		loops = 0,
-		hamming = true,
+		//hamming = true,
 		autoLog = true
 	} = {}) {
 		super(win._psychoJS, name);
@@ -68,7 +70,7 @@ export class Sound extends PsychObject {
 		// the SoundPlayer, e.g. TonePlayer:
 		this._player = undefined;
 
-		this._addAttributes(Sound, win, value, octave, secs, startTime, stopTime, stereo, volume, loops, hamming, autoLog);
+		this._addAttributes(Sound, win, value, octave, secs, startTime, stopTime, stereo, volume, loops, /*hamming,*/ autoLog);
 
 		// identify an appropriate player:
 		this._getPlayer();
