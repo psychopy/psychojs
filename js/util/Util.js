@@ -162,6 +162,10 @@ export function detectBrowser()
 	const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") !== -1);
 	if (isEdgeChromium) return 'EdgeChromium';
 
+  // Blink engine detection
+  const isBlink = (isChrome || isOpera) && !!window.CSS;
+  if (isBlink) return 'Blink';
+
 	return 'unknown';
 }
 
