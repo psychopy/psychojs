@@ -203,7 +203,7 @@ export class GUI
 					const keyId = $.escapeSelector(key) + '_id';
 					const input = document.getElementById(keyId);
 					if (input)
-						input.onchange = (event) => GUI._onKeyChange(self, event);
+						input.oninput = (event) => GUI._onKeyChange(self, event);
 				}
 
 				// init and open the dialog box:
