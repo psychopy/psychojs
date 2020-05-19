@@ -19,7 +19,7 @@ import * as util from '../util/Util';
 /**
  * @class
  * Graphic User Interface
- * 
+ *
  * @name module:core.GUI
  * @class
  * @param {module:core.PsychoJS} psychoJS the PsychoJS instance
@@ -46,7 +46,7 @@ export class GUI
 	 * <p>Create a dialog box that (a) enables the participant to set some
 	 * experimental values (e.g. the session name), (b) shows progress of resource
 	 * download, and (c) enables the participant to cancel the experiment.</p>
-	 * 
+	 *
 	 * <b>Setting experiment values</b>
 	 * <p>DlgFromDict displays an input field for all values in the dictionary.
 	 * It is possible to specify default values e.g.:</p>
@@ -55,7 +55,7 @@ export class GUI
 	 * psychoJS.schedule(psychoJS.gui.DlgFromDict({dictionary: expInfo, title: expName}));</code>
 	 * <p>If the participant cancels (by pressing Cancel or by closing the dialog box), then
 	 * the dictionary remains unchanged.</p>
-	 * 
+	 *
 	 * @name module:core.GUI#DlgFromDict
 	 * @function
 	 * @public
@@ -146,7 +146,7 @@ export class GUI
 
 					if (!inUrl)
 					{
-						htmlCode += '<label for="' + key + '">' + key + '</label>';
+						htmlCode += '<label for="' + keyId + '">' + key + '</label>';
 
 						// if the field is required:
 						if (key.slice(-1) === '*')
@@ -293,9 +293,9 @@ export class GUI
 	 */
 	/**
 	 * Show a message to the participant in a dialog box.
-	 * 
+	 *
 	 * <p>This function can be used to display both warning and error messages.</p>
-	 * 
+	 *
 	 * @name module:core.GUI#dialog
 	 * @function
 	 * @public
@@ -348,7 +348,7 @@ export class GUI
 				{
 					stackCode += '<li><b>' + error  + '</b></li>';
 					break;
-				}		
+				}
 			}
 			stackCode += '</ul>';
 
@@ -391,7 +391,7 @@ export class GUI
 		// replace root by the html code:
 		const dialogElement = document.getElementById('root');
 		dialogElement.innerHTML = htmlCode;
-		
+
 		// init and open the dialog box:
 		this._estimateDialogScalingFactor();
 		const dialogSize = this._getDialogSize();
@@ -506,7 +506,7 @@ export class GUI
 
 	/**
 	 * Destroy the currently opened dialog box.
-	 * 
+	 *
 	 * @name module:core.GUI#dialog
 	 * @function
 	 * @public
