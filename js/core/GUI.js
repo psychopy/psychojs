@@ -255,6 +255,7 @@ export class GUI
 					// close is called by both buttons and when the user clicks on the cross:
 					close: function () {
 						//$.unblockUI();
+						$(this).dialog('destroy').remove();
 						self._dialogComponent.status = PsychoJS.Status.FINISHED;
 					}
 
@@ -313,8 +314,6 @@ export class GUI
 		showOK = true,
 		onOK
 	} = {}) {
-		// destroy previous dialog box:
-		this.destroyDialog();
 
 		let htmlCode;
 		let titleColour;
@@ -410,7 +409,7 @@ export class GUI
 				id: "buttonOk",
 				text: "Ok",
 				click: function() {
-					$(this).dialog("close");
+					$(this).dialog("destroy").remove();
 
 					// execute callback function:
 					if (typeof onOK !== 'undefined')
@@ -501,24 +500,6 @@ export class GUI
 				top: Math.max(0, (windowSize[1] - parent.outerHeight()) / 2.0),
 			});
 		} );
-	}
-
-
-	/**
-	 * Destroy the currently opened dialog box.
-	 *
-	 * @name module:core.GUI#dialog
-	 * @function
-	 * @public
-	 */
-	destroyDialog()
-	{
-		if ($("#expDialog").length) {
-			$("#expDialog").dialog("destroy");
-		}
-		if ($("#msgDialog").length) {
-			$("#msgDialog").dialog("destroy");
-		}
 	}
 
 
