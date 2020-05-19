@@ -1,6 +1,6 @@
 /**
  * Manager responsible for the communication between the experiment running in the participant's browser and the remote PsychoJS manager running on the remote https://pavlovia.org server.
- * 
+ *
  * @author Alain Pitiot
  * @version 2020.1
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
@@ -21,7 +21,7 @@ import {MonotonicClock} from "../util/Clock";
  * <p>This manager handles all communications between the experiment running in the participant's browser and the remote PsychoJS manager running on the [pavlovia.org]{@link http://pavlovia.org} server, <em>in an asynchronous manner</em>.</p>
  * <p>It is responsible for reading the configuration file of an experiment, for opening and closing a session, for listing and downloading resources, and for uploading results and log.</p>
  * <p>Note: The Server Manager uses [Promises]{@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise} to deal with asynchronicity, is mostly called by {@link PsychoJS}, and is not exposed to the experiment code.</p>
- * 
+ *
  * @name module:core.ServerManager
  * @class
  * @extends PsychObject
@@ -30,7 +30,7 @@ import {MonotonicClock} from "../util/Clock";
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class ServerManager extends PsychObject {
-	
+
 	constructor({
 		psychoJS,
 		autoLog = false
@@ -58,12 +58,12 @@ export class ServerManager extends PsychObject {
 	 */
 	/**
 	 * Read the configuration file for the experiment.
-	 * 
+	 *
 	 * @name module:core.ServerManager#getConfiguration
 	 * @function
 	 * @public
 	 * @param {string} configURL - the URL of the configuration file
-	 * 
+	 *
 	 * @returns {Promise<ServerManager.GetConfigurationPromise>} the response
 	 */
 	getConfiguration(configURL) {
@@ -98,7 +98,7 @@ export class ServerManager extends PsychObject {
 	 */
 	/**
 	 * Open a session for this experiment on the remote PsychoJS manager.
-	 * 
+	 *
 	 * @name module:core.ServerManager#openSession
 	 * @function
 	 * @public
@@ -170,7 +170,7 @@ export class ServerManager extends PsychObject {
 	 */
 	/**
 	 * Close the session for this experiment on the remote PsychoJS manager.
-	 * 
+	 *
 	 * @name module:core.ServerManager#closeSession
 	 * @function
 	 * @public
@@ -230,7 +230,7 @@ export class ServerManager extends PsychObject {
 
 	/**
 	 * Get the value of a resource.
-	 * 
+	 *
 	 * @name module:core.ServerManager#getResource
 	 * @function
 	 * @public
@@ -252,7 +252,7 @@ export class ServerManager extends PsychObject {
 
 	/**
 	 * Set the resource manager status.
-	 * 
+	 *
 	 * @name module:core.ServerManager#setStatus
 	 * @function
 	 * @public
@@ -280,7 +280,7 @@ export class ServerManager extends PsychObject {
 
 	/**
 	 * Reset the resource manager status to ServerManager.Status.READY.
-	 * 
+	 *
 	 * @name module:core.ServerManager#resetStatus
 	 * @function
 	 * @public
@@ -315,6 +315,7 @@ export class ServerManager extends PsychObject {
 		// we use an anonymous async function here since downloadResources is non-blocking (asynchronous)
 		// but we want to run the asynchronous _listResources and _downloadResources in sequence
 		const self = this;
+		const newResources = new Map();
 		let download = async () => {
 			try {
 				if (self._psychoJS.config.environment === ExperimentHandler.Environment.SERVER) {
@@ -327,13 +328,17 @@ export class ServerManager extends PsychObject {
 					}
 					else {
 						// only registered the specified resources:
-						for (const {name, path} of resources)
-							self._resources.set(name, { path });
+						for (const {name, path} of resources) {
+							self._resources.set(name, {path});
+							newResources.set(name, {path});
+						}
 					}
 				} else {
 					// register the specified resources:
-					for (const {name, path} of resources)
-						self._resources.set(name, { path });
+					for (const {name, path} of resources) {
+						self._resources.set(name, {path});
+						newResources.set(name, {path});
+					}
 				}
 
 				self._nbResources = self._resources.size;
@@ -343,7 +348,7 @@ export class ServerManager extends PsychObject {
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCES_REGISTERED, count: self._nbResources });
 
 				// download the registered resources:
-				await self._downloadRegisteredResources();
+				await self._downloadRegisteredResources(newResources);
 			}
 			catch (error) {
 				console.log('error', error);
@@ -355,7 +360,7 @@ export class ServerManager extends PsychObject {
 		download();
 	}
 
-	
+
 	/**
 	 * @typedef ServerManager.UploadDataPromise
 	 * @property {string} origin the calling method
@@ -364,13 +369,13 @@ export class ServerManager extends PsychObject {
 	 */
 	/**
 	 * Asynchronously upload experiment data to the remote PsychoJS manager.
-	 * 
+	 *
 	 * @name module:core.ServerManager#uploadData
 	 * @function
 	 * @public
 	 * @param {string} key - the data key (e.g. the name of .csv file)
 	 * @param {string} value - the data value (e.g. a string containing the .csv header and records)
-	 * 
+	 *
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
 	uploadData(key, value)
@@ -549,14 +554,14 @@ export class ServerManager extends PsychObject {
 
 	/**
 	 * Download the resources previously registered.
-	 * 
+	 *
 	 * <p>Note: we use the [preloadjs library]{@link https://www.createjs.com/preloadjs}.</p>
-	 * 
+	 *
 	 * @name module:core.ServerManager#_downloadRegisteredResources
 	 * @function
 	 * @private
 	 */
-	_downloadRegisteredResources()
+	_downloadRegisteredResources(resources = new Map())
 	{
 		const response = { origin: 'ServerManager._downloadResources', context: 'when downloading the resources for experiment: ' + this._psychoJS.config.experiment.name };
 
@@ -570,6 +575,9 @@ export class ServerManager extends PsychObject {
 		this._resourceQueue = new createjs.LoadQueue(true); //, this._psychoJS.config.experiment.resourceDirectory);
 
 		const self = this;
+
+		const filesToDownload = resources.size ? resources : this._resources;
+
 		this._resourceQueue.addEventListener("filestart", event => {
 			self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOADING_RESOURCE, resource: event.item.id });
 		});
@@ -584,7 +592,7 @@ export class ServerManager extends PsychObject {
 		// loading completed:
 		this._resourceQueue.addEventListener("complete", event => {
 			self._resourceQueue.close();
-			if (self._nbLoadedResources === self._nbResources) {
+			if (self._nbLoadedResources === filesToDownload.size) {
 				self.setStatus(ServerManager.Status.READY);
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 			}
@@ -602,7 +610,7 @@ export class ServerManager extends PsychObject {
 		// (*) dispatch resources to preload.js or howler.js based on extension:
 		let manifest = [];
 		let soundResources = [];
-		for (const [name, path_data] of this._resources)
+		for (const [name, path_data] of filesToDownload)
 		{
 			const nameParts = name.toLowerCase().split('.');
 			const extension = (nameParts.length > 1) ? nameParts.pop() : undefined;
@@ -642,7 +650,7 @@ export class ServerManager extends PsychObject {
 		if (manifest.length > 0)
 			this._resourceQueue.loadManifest(manifest);
 		else {
-			if (this._nbLoadedResources === this._nbResources) {
+			if (this._nbLoadedResources === filesToDownload.size) {
 				this.setStatus(ServerManager.Status.READY);
 				this.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 			}
@@ -665,7 +673,7 @@ export class ServerManager extends PsychObject {
 				// self._resources.set(resource.name, howl);
 				self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.RESOURCE_DOWNLOADED, resource: name });
 
-				if (self._nbLoadedResources === self._nbResources) {
+				if (self._nbLoadedResources === filesToDownload.size) {
 					self.setStatus(ServerManager.Status.READY);
 					self.emit(ServerManager.Event.RESOURCE, { message: ServerManager.Event.DOWNLOAD_COMPLETED });
 				}
@@ -684,9 +692,9 @@ export class ServerManager extends PsychObject {
 
 /**
  * Server event
- * 
+ *
  * <p>A server event is emitted by the manager to inform its listeners of either a change of status, or of a resource related event (e.g. download started, download is completed).</p>
- * 
+ *
  * @name module:core.ServerManager#Event
  * @enum {Symbol}
  * @readonly
@@ -723,7 +731,7 @@ ServerManager.Event = {
 
 /**
  * Server status
- * 
+ *
  * @name module:core.ServerManager#Status
  * @enum {Symbol}
  * @readonly
