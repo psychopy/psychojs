@@ -79,7 +79,7 @@ export class GUI
 		this._progressBarMax = 0;
 		this._allResourcesDownloaded = false;
 		this._requiredKeys = [];
-		this._nbSetRequiredKeys = 0;
+		this._setRequiredKeys = new Map();
 
 
 		// prepare PsychoJS component:
@@ -581,7 +581,7 @@ export class GUI
 	 */
 	_updateOkButtonStatus()
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) )
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length) )
 		{
 			$("#buttonOk").button("option", "disabled", false);
 		} else
@@ -656,9 +656,9 @@ export class GUI
 		const value = element.value;
 
 		if (typeof value !== 'undefined' && value.length > 0)
-			gui._nbSetRequiredKeys++;
+			gui._setRequiredKeys.set(event.target, true);
 		else
-			gui._nbSetRequiredKeys--;
+			gui._setRequiredKeys.delete(event.target);
 
 		gui._updateOkButtonStatus();
 	}
