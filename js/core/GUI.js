@@ -130,7 +130,7 @@ export class GUI
 				htmlCode += '<form>';
 				for (const key in dictionary) {
 					const value = dictionary[key];
-					const keyId = $.escapeSelector(key) + '_id';
+					const keyId = CSS.escape(key) + '_id';
 
 					// only create an input if the key is not in the URL:
 					let inUrl = false;
@@ -200,7 +200,7 @@ export class GUI
 
 				// setup change event handlers for all required keys:
 				for (const key of this._requiredKeys) {
-					const keyId = $.escapeSelector(key) + '_id';
+					const keyId = CSS.escape(key) + '_id';
 					const input = document.getElementById(keyId);
 					if (input)
 						input.oninput = (event) => GUI._onKeyChange(self, event);
@@ -227,7 +227,7 @@ export class GUI
 
 								// update dictionary:
 								for (const key in dictionary) {
-									const input = document.getElementById($.escapeSelector(key) + "_id");
+									const input = document.getElementById(CSS.escape(key) + "_id");
 									if (input)
 										dictionary[key] = input.value;
 								}
