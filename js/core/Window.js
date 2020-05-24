@@ -392,7 +392,8 @@ export class Window extends PsychObject {
 
 		// create a PIXI renderer and add it to the document:
 		this._renderer = PIXI.autoDetectRenderer(this._size[0], this._size[1], {
-			backgroundColor: this.color.int
+			backgroundColor: this.color.int,
+			resolution: window.devicePixelRatio
 		});
 		this._renderer.view.style.transform = 'translatez(0)';
 		this._renderer.view.style.position = 'absolute';
