@@ -23,7 +23,7 @@ import * as util from '../util/Util';
 
 /**
  * <p>PsychoJS manages the lifecycle of an experiment. It initialises the PsychoJS library and its various components (e.g. the {@link ServerManager}, the {@link EventManager}), and is used by the experiment to schedule the various tasks.</p>
- * 
+ *
  * @class
  * @param {Object} options
  * @param {boolean} [options.debug= true] whether or not to log debug information in the browser console
@@ -125,10 +125,10 @@ export class PsychoJS
 
 	/**
 	 * Open a PsychoJS Window.
-	 * 
+	 *
 	 * <p>This opens a PIXI canvas.</p>
 	 * <p>Note: we can only open one window.</p>
-	 * 
+	 *
 	 * @param {Object} options
 	 * @param {string} [options.name] the name of the window
 	 * @param {boolean} [options.fullscr] whether or not to go fullscreen
@@ -138,7 +138,7 @@ export class PsychoJS
 	 * @param {boolean} [options.waitBlanking] whether or not to wait for all rendering operations to be done
 	 * before flipping
 	 * @throws {Object.<string, *>} exception if a window has already been opened
-	 * 
+	 *
 	 * @public
 	 */
 	openWindow({
@@ -168,7 +168,7 @@ export class PsychoJS
 
 	/**
 	 * Set the completion and cancellation URL to which the participant will be redirect at the end of the experiment.
-	 * 
+	 *
 	 * @param {string} completionUrl  - the completion URL
 	 * @param {string} cancellationUrl - the cancellation URL
 	 */
@@ -180,7 +180,7 @@ export class PsychoJS
 
 	/**
 	 * Schedule a task.
-	 * 
+	 *
 	 * @param task - the task to be scheduled
 	 * @param args - arguments for that task
 	 * @public
@@ -198,8 +198,8 @@ export class PsychoJS
 	 */
 	/**
 	 * Schedule a series of task based on a condition.
-	 * 
-	 * @param {PsychoJS.condition} condition 
+	 *
+	 * @param {PsychoJS.condition} condition
 	 * @param {Scheduler} thenScheduler scheduler to run if the condition is true
 	 * @param {Scheduler} elseScheduler scheduler to run if the condition is false
 	 * @public
@@ -213,7 +213,7 @@ export class PsychoJS
 
 	/**
 	 * Start the experiment.
-	 * 
+	 *
 	 * @param {Object} options
 	 * @param {string} [options.configURL=config.json] - the URL of the configuration file
 	 * @param {string} [options.expName=UNKNOWN] - the name of the experiment
@@ -324,7 +324,7 @@ export class PsychoJS
 	/**
 	 * Make the attributes of the given object those of PsychoJS and those of
 	 * the top level variable (e.g. window) as well.
-	 * 
+	 *
 	 * @param {Object.<string, *>} obj the object whose attributes we will mirror
 	 * @public
 	 */
@@ -344,10 +344,10 @@ export class PsychoJS
 	/**
 	 * Close everything and exit nicely at the end of the experiment,
 	 * potentially redirecting to one of the URLs previously specified by setRedirectUrls.
-	 * 
+	 *
 	 * <p>Note: if the resource manager is busy, we inform the participant
 	 * that he or she needs to wait for a bit.</p>
-	 * 
+	 *
 	 * @param {Object} options
 	 * @param {string} [options.message] - optional message to be displayed in a dialog box before quitting
 	 * @param {boolean} [options.isCompleted = false] - whether or not the participant has completed the experiment
@@ -387,9 +387,6 @@ export class PsychoJS
 					// close the window:
 					self._window.close();
 
-					// destroy dialog boxes:
-					self._gui.destroyDialog();
-
 					// remove everything from the browser window:
 					while (document.body.hasChildNodes())
 						document.body.removeChild(document.body.lastChild);
@@ -415,7 +412,7 @@ export class PsychoJS
 
 	/**
 	 * Configure PsychoJS for the running experiment.
-	 * 
+	 *
 	 * @async
 	 * @protected
 	 * @param {string} configURL - the URL of the configuration file
@@ -515,7 +512,7 @@ export class PsychoJS
 
 	/**
 	 * Capture all errors and display them in a pop-up error box.
-	 * 
+	 *
 	 * @protected
 	 */
 	_captureErrors() {
@@ -553,7 +550,7 @@ export class PsychoJS
 
 /**
  * PsychoJS status.
- * 
+ *
  * @enum {Symbol}
  * @readonly
  * @public

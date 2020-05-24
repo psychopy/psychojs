@@ -19,7 +19,7 @@ import * as util from '../util/Util';
 /**
  * @class
  * Graphic User Interface
- * 
+ *
  * @name module:core.GUI
  * @class
  * @param {module:core.PsychoJS} psychoJS the PsychoJS instance
@@ -46,7 +46,7 @@ export class GUI
 	 * <p>Create a dialog box that (a) enables the participant to set some
 	 * experimental values (e.g. the session name), (b) shows progress of resource
 	 * download, and (c) enables the participant to cancel the experiment.</p>
-	 * 
+	 *
 	 * <b>Setting experiment values</b>
 	 * <p>DlgFromDict displays an input field for all values in the dictionary.
 	 * It is possible to specify default values e.g.:</p>
@@ -55,7 +55,7 @@ export class GUI
 	 * psychoJS.schedule(psychoJS.gui.DlgFromDict({dictionary: expInfo, title: expName}));</code>
 	 * <p>If the participant cancels (by pressing Cancel or by closing the dialog box), then
 	 * the dictionary remains unchanged.</p>
-	 * 
+	 *
 	 * @name module:core.GUI#DlgFromDict
 	 * @function
 	 * @public
@@ -79,7 +79,7 @@ export class GUI
 		this._progressBarMax = 0;
 		this._allResourcesDownloaded = false;
 		this._requiredKeys = [];
-		this._nbSetRequiredKeys = 0;
+		this._setRequiredKeys = new Map();
 
 
 		// prepare PsychoJS component:
@@ -130,7 +130,7 @@ export class GUI
 				htmlCode += '<form>';
 				for (const key in dictionary) {
 					const value = dictionary[key];
-					const keyId = key + '_id';
+					const keyId = $.escapeSelector(key) + '_id';
 
 					// only create an input if the key is not in the URL:
 					let inUrl = false;
@@ -146,7 +146,7 @@ export class GUI
 
 					if (!inUrl)
 					{
-						htmlCode += '<label for="' + key + '">' + key + '</label>';
+						htmlCode += '<label for="' + keyId + '">' + key + '</label>';
 
 						// if the field is required:
 						if (key.slice(-1) === '*')
@@ -200,10 +200,10 @@ export class GUI
 
 				// setup change event handlers for all required keys:
 				for (const key of this._requiredKeys) {
-					const keyId = key + '_id';
+					const keyId = $.escapeSelector(key) + '_id';
 					const input = document.getElementById(keyId);
 					if (input)
-						input.onchange = (event) => GUI._onKeyChange(self, event);
+						input.oninput = (event) => GUI._onKeyChange(self, event);
 				}
 
 				// init and open the dialog box:
@@ -227,7 +227,7 @@ export class GUI
 
 								// update dictionary:
 								for (const key in dictionary) {
-									const input = document.getElementById(key + "_id");
+									const input = document.getElementById($.escapeSelector(key) + "_id");
 									if (input)
 										dictionary[key] = input.value;
 								}
@@ -255,6 +255,7 @@ export class GUI
 					// close is called by both buttons and when the user clicks on the cross:
 					close: function () {
 						//$.unblockUI();
+						$(this).dialog('destroy').remove();
 						self._dialogComponent.status = PsychoJS.Status.FINISHED;
 					}
 
@@ -293,9 +294,9 @@ export class GUI
 	 */
 	/**
 	 * Show a message to the participant in a dialog box.
-	 * 
+	 *
 	 * <p>This function can be used to display both warning and error messages.</p>
-	 * 
+	 *
 	 * @name module:core.GUI#dialog
 	 * @function
 	 * @public
@@ -313,8 +314,6 @@ export class GUI
 		showOK = true,
 		onOK
 	} = {}) {
-		// destroy previous dialog box:
-		this.destroyDialog();
 
 		let htmlCode;
 		let titleColour;
@@ -348,7 +347,7 @@ export class GUI
 				{
 					stackCode += '<li><b>' + error  + '</b></li>';
 					break;
-				}		
+				}
 			}
 			stackCode += '</ul>';
 
@@ -391,7 +390,7 @@ export class GUI
 		// replace root by the html code:
 		const dialogElement = document.getElementById('root');
 		dialogElement.innerHTML = htmlCode;
-		
+
 		// init and open the dialog box:
 		this._estimateDialogScalingFactor();
 		const dialogSize = this._getDialogSize();
@@ -410,7 +409,7 @@ export class GUI
 				id: "buttonOk",
 				text: "Ok",
 				click: function() {
-					$(this).dialog("close");
+					$(this).dialog("destroy").remove();
 
 					// execute callback function:
 					if (typeof onOK !== 'undefined')
@@ -505,24 +504,6 @@ export class GUI
 
 
 	/**
-	 * Destroy the currently opened dialog box.
-	 * 
-	 * @name module:core.GUI#dialog
-	 * @function
-	 * @public
-	 */
-	destroyDialog()
-	{
-		if ($("#expDialog").length) {
-			$("#expDialog").dialog("destroy");
-		}
-		if ($("#msgDialog").length) {
-			$("#msgDialog").dialog("destroy");
-		}
-	}
-
-
-	/**
 	 * Listener for resource event from the [Server Manager]{@link ServerManager}.
 	 *
 	 * @name module:core.GUI#_onResourceEvents
@@ -581,7 +562,7 @@ export class GUI
 	 */
 	_updateOkButtonStatus()
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._nbSetRequiredKeys >= this._requiredKeys.length) )
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length) )
 		{
 			$("#buttonOk").button("option", "disabled", false);
 		} else
@@ -656,9 +637,9 @@ export class GUI
 		const value = element.value;
 
 		if (typeof value !== 'undefined' && value.length > 0)
-			gui._nbSetRequiredKeys++;
+			gui._setRequiredKeys.set(event.target, true);
 		else
-			gui._nbSetRequiredKeys--;
+			gui._setRequiredKeys.delete(event.target);
 
 		gui._updateOkButtonStatus();
 	}

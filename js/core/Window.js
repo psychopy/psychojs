@@ -1,6 +1,6 @@
 /**
  * Window responsible for displaying the experiment stimuli
- * 
+ *
  * @author Alain Pitiot
  * @version 2020.1
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
@@ -15,7 +15,7 @@ import { Logger } from "./Logger";
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
  * <p>It sets up a [PIXI]{@link http://www.pixijs.com/} renderer, which we use to render the experiment stimuli.</p>
- * 
+ *
  * @name module:core.Window
  * @class
  * @extends PsychObject
@@ -33,7 +33,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Getter for monitorFramePeriod.
-	 * 
+	 *
 	 * @name module:core.Window#monitorFramePeriod
 	 * @function
 	 * @public
@@ -95,9 +95,9 @@ export class Window extends PsychObject {
 
 	/**
 	 * Close the window.
-	 * 
+	 *
 	 * <p> Note: this actually only removes the canvas used to render the experiment stimuli.</p>
-	 * 
+	 *
 	 * @name module:core.Window#close
 	 * @function
 	 * @public
@@ -121,7 +121,7 @@ export class Window extends PsychObject {
 		{
 			this._renderer.destroy();
 		}
-			
+
 		window.removeEventListener('resize', this._resizeCallback);
 		window.removeEventListener('orientationchange', this._resizeCallback);
 
@@ -131,12 +131,12 @@ export class Window extends PsychObject {
 
 	/**
 	 * Estimate the frame rate.
-	 * 
+	 *
 	 * @name module:core.Window#getActualFrameRate
 	 * @function
 	 * @public
 	 * @return {number} always returns 60.0 at the moment
-	 * 
+	 *
 	 * @todo estimate the actual frame rate.
 	 */
 	getActualFrameRate()
@@ -148,7 +148,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Take the browser full screen if possible.
-	 * 
+	 *
 	 * @name module:core.Window#adjustScreenSize
 	 * @function
 	 * @public
@@ -227,9 +227,9 @@ export class Window extends PsychObject {
 
 	/**
 	 * Log a message.
-	 * 
+	 *
 	 * <p> Note: the message will be time-stamped at the next call to requestAnimationFrame.</p>
-	 * 
+	 *
 	 * @name module:core.Window#logOnFlip
 	 * @function
 	 * @public
@@ -256,9 +256,9 @@ export class Window extends PsychObject {
 	/**
 	 * Add a callback function that will run after the next screen flip, i.e. immediately after the next rendering of the
 	 * Window.
-	 * 
+	 *
 	 * <p>This is typically used to reset a timer or clock.</p>
-	 * 
+	 *
 	 * @name module:core.Window#callOnFlip
 	 * @function
 	 * @public
@@ -273,7 +273,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Render the stimuli onto the canvas.
-	 * 
+	 *
 	 * @name module:core.Window#render
 	 * @function
 	 * @public
@@ -315,7 +315,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Update this window, if need be.
-	 * 
+	 *
 	 * @name module:core.Window#_updateIfNeeded
 	 * @function
 	 * @private
@@ -337,7 +337,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Recompute this window's draw list and _container children for the next animation frame.
-	 * 
+	 *
 	 * @name module:core.Window#_refresh
 	 * @function
 	 * @private
@@ -376,10 +376,10 @@ export class Window extends PsychObject {
 
 	/**
 	 * Setup PIXI.
-	 * 
+	 *
 	 * <p>A new renderer is created and a container is added to it. The renderer's touch and mouse events
 	 * are handled by the {@link EventManager}.</p>
-	 * 
+	 *
 	 * @name module:core.Window#_setupPixi
 	 * @function
 	 * @private
@@ -457,7 +457,7 @@ export class Window extends PsychObject {
 
 	/**
 	 * Send all logged messages to the {@link Logger}.
-	 * 
+	 *
 	 * @name module:core.Window#_writeLogOnFlip
 	 * @function
 	 * @private
