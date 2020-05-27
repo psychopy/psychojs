@@ -127,7 +127,6 @@ export class GUI
 
 
 				// add a combobox or text areas for each entry in the dictionary:
-				htmlCode += '<form>';
 				for (const key in dictionary) {
 					const value = dictionary[key];
 					const keyId = $.escapeSelector(key) + '_id';
@@ -174,7 +173,6 @@ export class GUI
 
 					}
 				}
-				htmlCode += '</form>';
 
 
 				// add a progress bar:
