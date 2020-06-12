@@ -373,8 +373,12 @@ export class TrialHandler extends PsychObject {
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1) {
 				// (*) read conditions from resource:
 				const resourceValue = serverManager.getResource(resourceName);
-				const workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
-				// const workbook = XLSX.read(resourceValue, { type: "buffer" }); // would work for ascii .csv
+				let workbook;
+				if (['csv'].indexOf(resourceExtension) > -1)
+					// use TextDecoder to decode utf-8 with or without BOM
+					workbook = XLSX.read((new TextDecoder).decode(new Uint8Array(resourceValue)), { type: "string" });
+				else
+					workbook = XLSX.read(new Uint8Array(resourceValue), { type: "array" });
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
