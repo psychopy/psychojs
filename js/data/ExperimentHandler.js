@@ -1,15 +1,15 @@
 /**
  * Experiment Handler
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { PsychObject } from '../util/PsychObject';
-import { MonotonicClock } from '../util/Clock';
+import {PsychObject} from '../util/PsychObject';
+import {MonotonicClock} from '../util/Clock';
 import * as util from '../util/Util';
 
 
@@ -17,48 +17,63 @@ import * as util from '../util/Util';
  * <p>An ExperimentHandler keeps track of multiple loops and handlers. It is particularly useful
  * for generating a single data file from an experiment with many different loops (e.g. interleaved
  * staircases or loops within loops.</p>
- * 
+ *
  * @name module:data.ExperimentHandler
- * @class 
+ * @class
  * @extends PsychObject
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {string} options.name - name of the experiment
  * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
  */
-export class ExperimentHandler extends PsychObject {
+export class ExperimentHandler extends PsychObject
+{
 
 	/**
 	 * Getter for experimentEnded.
-	 * 
+	 *
 	 * @name module:core.Window#experimentEnded
 	 * @function
 	 * @public
 	 */
-	get experimentEnded() { return this._experimentEnded; }
+	get experimentEnded()
+	{
+		return this._experimentEnded;
+	}
 
 	/**
 	 * Setter for experimentEnded.
-	 * 
+	 *
 	 * @name module:core.Window#experimentEnded
 	 * @function
 	 * @public
 	 */
-	set experimentEnded(ended) { this._experimentEnded = ended; }
+	set experimentEnded(ended)
+	{
+		this._experimentEnded = ended;
+	}
 
 
 	/**
 	 * Legacy experiment getters.
 	 */
-	get _thisEntry() { return this._currentTrialData; }
-	get _entries() { return this._trialsData; }
+	get _thisEntry()
+	{
+		return this._currentTrialData;
+	}
+
+	get _entries()
+	{
+		return this._trialsData;
+	}
 
 
 	constructor({
-		psychoJS,
-		name,
-		extraInfo
-	} = {}) {
+								psychoJS,
+								name,
+								extraInfo
+							} = {})
+	{
 		super(psychoJS, name);
 
 		this._addAttributes(ExperimentHandler, extraInfo);
@@ -85,10 +100,13 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @returns {boolean} whether or not the current entry is empty
 	 */
-	isEntryEmpty() {
+	isEntryEmpty()
+	{
 		return (Object.keys(this._currentTrialData).length > 0);
 	}
-	isEntryEmtpy() {
+
+	isEntryEmtpy()
+	{
 		return (Object.keys(this._currentTrialData).length > 0);
 	}
 
@@ -104,7 +122,8 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
 	 */
-	addLoop(loop) {
+	addLoop(loop)
+	{
 		this._loops.push(loop);
 		this._unfinishedLoops.push(loop);
 		loop.experimentHandler = this;
@@ -119,10 +138,13 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
 	 */
-	removeLoop(loop) {
+	removeLoop(loop)
+	{
 		const index = this._unfinishedLoops.indexOf(loop);
 		if (index !== -1)
+		{
 			this._unfinishedLoops.splice(index, 1);
+		}
 	}
 
 
@@ -138,14 +160,18 @@ export class ExperimentHandler extends PsychObject {
 	 * @param {Object} key - the key
 	 * @param {Object} value - the value
 	 */
-	addData(key, value) {
-		if (this._trialsKeys.indexOf(key) === -1) {
+	addData(key, value)
+	{
+		if (this._trialsKeys.indexOf(key) === -1)
+		{
 			this._trialsKeys.push(key);
 		}
 
 		// turn arrays into their json equivalent:
 		if (Array.isArray(value))
+		{
 			value = JSON.stringify(value);
+		}
 
 		this._currentTrialData[key] = value;
 	}
@@ -166,13 +192,20 @@ export class ExperimentHandler extends PsychObject {
 		{
 			// turn single snapshot into a one-element array:
 			if (!Array.isArray(snapshots))
+			{
 				snapshots = [snapshots];
+			}
 
-			for (const snapshot of snapshots) {
+			for (const snapshot of snapshots)
+			{
 				const attributes = ExperimentHandler._getLoopAttributes(snapshot);
 				for (let a in attributes)
+				{
 					if (attributes.hasOwnProperty(a))
+					{
 						this._currentTrialData[a] = attributes[a];
+					}
+				}
 			}
 
 		}
@@ -184,15 +217,23 @@ export class ExperimentHandler extends PsychObject {
 			{
 				const attributes = ExperimentHandler._getLoopAttributes(loop);
 				for (const a in attributes)
+				{
 					if (attributes.hasOwnProperty(a))
+					{
 						this._currentTrialData[a] = attributes[a];
+					}
+				}
 			}
 		}
 
 		// add the extraInfo dict to the data:
 		for (let a in this.extraInfo)
+		{
 			if (this.extraInfo.hasOwnProperty(a))
+			{
 				this._currentTrialData[a] = this.extraInfo[a];
+			}
+		}
 
 		this._trialsData.push(this._currentTrialData);
 
@@ -214,26 +255,38 @@ export class ExperimentHandler extends PsychObject {
 	 * @public
 	 * @param {Object} options
 	 * @param {Array.<Object>} [options.attributes] - the attributes to be saved
+	 * @param {Array.<Object>} [options.sync] - whether or not to communicate with the server in a synchronous manner
 	 */
 	async save({
-		attributes = []
-	} = {}) {
+							 attributes = [],
+							 sync = false
+						 } = {})
+	{
 		this._psychoJS.logger.info('[PsychoJS] Save experiment results.');
 
 		// (*) get attributes:
-		if (attributes.length === 0) {
+		if (attributes.length === 0)
+		{
 			attributes = this._trialsKeys.slice();
-			for (let l = 0; l < this._loops.length; l++) {
+			for (let l = 0; l < this._loops.length; l++)
+			{
 				const loop = this._loops[l];
 
 				const loopAttributes = ExperimentHandler._getLoopAttributes(loop);
 				for (let a in loopAttributes)
+				{
 					if (loopAttributes.hasOwnProperty(a))
+					{
 						attributes.push(a);
+					}
+				}
 			}
-			for (let a in this.extraInfo) {
+			for (let a in this.extraInfo)
+			{
 				if (this.extraInfo.hasOwnProperty(a))
+				{
 					attributes.push(a);
+				}
 			}
 		}
 
@@ -249,40 +302,25 @@ export class ExperimentHandler extends PsychObject {
 
 
 		// (*) save to a .csv file:
-		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV) {
-			/*
-			// a. manual approach
-			let csv = "";
-
-			// build the csv header:
-			for (let h = 0; h < attributes.length; h++) {
-				if (h > 0)
-					csv = csv + ', ';
-				csv = csv + attributes[h];
-			}
-			csv = csv + '\n';
-
-			// build the records:
-			for (let r = 0; r < this._trialsData.length; r++) {
-				for (let h = 0; h < attributes.length; h++) {
-					if (h > 0)
-						csv = csv + ', ';
-					csv = csv + this._trialsData[r][attributes[h]];
-				}
-				csv = csv + '\n';
-			}
-			*/
-
-			// b. XLSX approach (automatically deal with header, takes care of quotes, newlines, etc.)
+		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV)
+		{
+			// note: we use the XLSX library as it automatically deals with header, takes care of quotes,
+			// newlines, etc.
 			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
 			const csv = XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER && this._psychoJS.config.experiment.status === 'RUNNING')
-				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv);
+			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
+				this._psychoJS.config.experiment.status === 'RUNNING' &&
+				!this._psychoJS._serverMsg.has('__pilotToken'))
+			{
+				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv, sync);
+			}
 			else
+			{
 				util.offerDataForDownload(key, csv, 'text/csv');
+			}
 		}
 
 
@@ -291,20 +329,29 @@ export class ExperimentHandler extends PsychObject {
 		{
 			let documents = [];
 
-			for (let r = 0; r < this._trialsData.length; r++) {
+			for (let r = 0; r < this._trialsData.length; r++)
+			{
 				let doc = {__projectId, __experimentName, __participant, __session, __datetime};
 				for (let h = 0; h < attributes.length; h++)
+				{
 					doc[attributes[h]] = this._trialsData[r][attributes[h]];
+				}
 
 				documents.push(doc);
 			}
 
 			// upload data to the pavlovia server or offer them for download:
-			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER) {
+			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
+				this._psychoJS.config.experiment.status === 'RUNNING' &&
+				!this._psychoJS._serverMsg.has('__pilotToken'))
+			{
 				const key = 'results'; // name of the mongoDB collection
-				return await this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents));
-			} else
+				return /*await*/ this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents), sync);
+			}
+			else
+			{
 				util.offerDataForDownload('results.json', JSON.stringify(documents), 'application/json');
+			}
 
 		}
 	}
@@ -313,29 +360,36 @@ export class ExperimentHandler extends PsychObject {
 	/**
 	 * Get the attribute names and values for the current trial of a given loop.
 	 * <p> Only only info relating to the trial execution are returned.</p>
-	 * 
+	 *
 	 * @name module:data.ExperimentHandler#_getLoopAttributes
 	 * @function
 	 * @static
 	 * @protected
 	 * @param {Object} loop - the loop
 	 */
-	static _getLoopAttributes(loop) {
+	static _getLoopAttributes(loop)
+	{
 		// standard trial attributes:
 		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
 		let attributes = {};
 		const loopName = loop.name;
 		for (const loopProperty in loop)
-			if (properties.includes(loopProperty)) {
-				const key = (loopProperty === 'stepSizeCurrent')? loopName + '.stepSize' : loopName + '.' + loopProperty;
+		{
+			if (properties.includes(loopProperty))
+			{
+				const key = (loopProperty === 'stepSizeCurrent') ? loopName + '.stepSize' : loopName + '.' + loopProperty;
 				attributes[key] = loop[loopProperty];
 			}
+		}
 
 		// specific trial attributes:
-		if (typeof loop.getCurrentTrial === 'function') {
+		if (typeof loop.getCurrentTrial === 'function')
+		{
 			const currentTrial = loop.getCurrentTrial();
 			for (const trialProperty in currentTrial)
+			{
 				attributes[trialProperty] = currentTrial[trialProperty];
+			}
 		}
 
 		/* TODO
@@ -370,7 +424,7 @@ export class ExperimentHandler extends PsychObject {
 
 /**
  * Experiment result format
- * 
+ *
  * @name module:core.ServerManager#SaveFormat
  * @enum {Symbol}
  * @readonly

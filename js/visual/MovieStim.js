@@ -1,18 +1,18 @@
 /**
  * Movie Stimulus.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { VisualStim } from './VisualStim';
-import { Color } from '../util/Color';
-import { ColorMixin } from '../util/ColorMixin';
+import {VisualStim} from './VisualStim';
+import {Color} from '../util/Color';
+import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
-import { PsychoJS } from "../core/PsychoJS";
+import {PsychoJS} from "../core/PsychoJS";
 
 
 /**
@@ -45,29 +45,31 @@ import { PsychoJS } from "../core/PsychoJS";
  *
  * @todo autoPlay does not work for the moment.
  */
-export class MovieStim extends VisualStim {
+export class MovieStim extends VisualStim
+{
 	constructor({
-		name,
-		win,
-		movie,
-		pos,
-		units,
-		ori,
-		size,
-		color = new Color('white'),
-		opacity = 1.0,
-		contrast = 1.0,
-		interpolate = false,
-		flipHoriz = false,
-		flipVert = false,
-		loop = false,
-		volume = 1.0,
-		noAudio = false,
-		autoPlay = true,
-		autoDraw,
-		autoLog
-	} = {}) {
-		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
+								name,
+								win,
+								movie,
+								pos,
+								units,
+								ori,
+								size,
+								color = new Color('white'),
+								opacity = 1.0,
+								contrast = 1.0,
+								interpolate = false,
+								flipHoriz = false,
+								flipVert = false,
+								loop = false,
+								volume = 1.0,
+								noAudio = false,
+								autoPlay = true,
+								autoDraw,
+								autoLog
+							} = {})
+	{
+		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
 
 		this.psychoJS.logger.debug('create a new MovieStim with name: ', name);
 
@@ -78,35 +80,48 @@ export class MovieStim extends VisualStim {
 		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
 
 		if (this._autoLog)
+		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
 	}
 
 
 	/**
 	 * Setter for the movie attribute.
-	 * 
+	 *
 	 * @name module:visual.MovieStim#setMovie
 	 * @public
 	 * @param {string | HTMLVideoElement} movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setMovie(movie, log = false) {
-		const response = { origin: 'MovieStim.setMovie', context: 'when setting the movie of MovieStim: ' + this._name };
+	setMovie(movie, log = false)
+	{
+		const response = {
+			origin: 'MovieStim.setMovie',
+			context: 'when setting the movie of MovieStim: ' + this._name
+		};
 
-		try {
+		try
+		{
 			// movie is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
-			if (typeof movie === 'undefined') {
+			if (typeof movie === 'undefined')
+			{
 				this.psychoJS.logger.warn('setting the movie of MovieStim: ' + this._name + ' with argument: undefined.');
 				this.psychoJS.logger.debug('set the movie of MovieStim: ' + this._name + ' as: undefined');
 			}
-			else {
+			else
+			{
 				// movie is a string: it should be the name of a resource, which we load
 				if (typeof movie === 'string')
+				{
 					movie = this.psychoJS.serverManager.getResource(movie);
+				}
 
 				// movie should now be an actual HTMLVideoElement: we raise an error if it is not
 				if (!(movie instanceof HTMLVideoElement))
+				{
 					throw 'the argument: ' + movie.toString() + ' is not a video" }';
+				}
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
 			}
@@ -114,12 +129,16 @@ export class MovieStim extends VisualStim {
 			this._setAttribute('movie', movie, log);
 
 			// change status of stimulus when movie finish playing:
-			this._movie.onended = () => { this.status = PsychoJS.Status.FINISHED; };
+			this._movie.onended = () =>
+			{
+				this.status = PsychoJS.Status.FINISHED;
+			};
 
 			this._needUpdate = true;
 		}
-		catch (error) {
-			throw Object.assign(response, { error });
+		catch (error)
+		{
+			throw Object.assign(response, {error});
 		}
 	}
 
@@ -130,19 +149,21 @@ export class MovieStim extends VisualStim {
 	 * @param {number} volume - the volume of the audio track (must be between 0.0 and 1.0)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setVolume(volume, log = false) {
+	setVolume(volume, log = false)
+	{
 		this._setAttribute('volume', volume, log);
 
 		this._needUpdate = true;
 	}
 
 	/**
- * Setter for the noAudio attribute.
- *
+	 * Setter for the noAudio attribute.
+	 *
 	 * @param {boolean} noAudio - whether or not to mute the audio
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setNoAudio(noAudio, log = false) {
+	setNoAudio(noAudio, log = false)
+	{
 		this._setAttribute('noAudio', noAudio, log);
 
 		this._needUpdate = true;
@@ -150,13 +171,14 @@ export class MovieStim extends VisualStim {
 
 	/**
 	 * Setter for the flipVert attribute.
-	 * 
+	 *
 	 * @name module:visual.MovieStim#setFlipVert
 	 * @public
 	 * @param {boolean} flipVert - whether or not to flip vertically
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setFlipVert(flipVert, log = false) {
+	setFlipVert(flipVert, log = false)
+	{
 		this._setAttribute('flipVert', flipVert, log);
 
 		this._needUpdate = true;
@@ -165,13 +187,14 @@ export class MovieStim extends VisualStim {
 
 	/**
 	 * Setter for the flipHoriz attribute.
-	 * 
+	 *
 	 * @name module:visual.MovieStim#setFlipHoriz
 	 * @public
 	 * @param {boolean} flipHoriz - whether or not to flip horizontally
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setFlipHoriz(flipHoriz, log = false) {
+	setFlipHoriz(flipHoriz, log = false)
+	{
 		this._setAttribute('flipHoriz', flipHoriz, log);
 
 		this._needUpdate = true;
@@ -179,34 +202,40 @@ export class MovieStim extends VisualStim {
 
 
 	/**
- * Reset the stimulus.
- *
+	 * Reset the stimulus.
+	 *
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	reset(log = false) {
+	reset(log = false)
+	{
 		this.status = PsychoJS.Status.NOT_STARTED;
 		this._movie.pause();
-		if (this._hasFastSeek) this._movie.fastSeek(0);
+		if (this._hasFastSeek)
+		{
+			this._movie.fastSeek(0);
+		}
 	}
 
 
 	/**
 	 * Start playing the movie.
- *
+	 *
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	play(log = false) {
+	play(log = false)
+	{
 		this.status = PsychoJS.Status.STARTED;
 		this._movie.play();
 	}
 
 
 	/**
- * Pause the movie.
- *
+	 * Pause the movie.
+	 *
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	pause(log = false) {
+	pause(log = false)
+	{
 		this.status = PsychoJS.Status.STOPPED;
 		this._movie.pause();
 	}
@@ -217,12 +246,15 @@ export class MovieStim extends VisualStim {
 	 *
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	stop(log = false) {
+	stop(log = false)
+	{
 		this.status = PsychoJS.Status.STOPPED;
 		this._movie.pause();
-		if (this._hasFastSeek) this._movie.fastSeek(0);
+		if (this._hasFastSeek)
+		{
+			this._movie.fastSeek(0);
+		}
 	}
-
 
 
 	/**
@@ -233,8 +265,10 @@ export class MovieStim extends VisualStim {
 	 * @param {number} timePoint - the timepoint to which to jump (in second)
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	seek(timePoint, log = false) {
-		if (timePoint < 0 || timePoint > this._movie.duration) {
+	seek(timePoint, log = false)
+	{
+		if (timePoint < 0 || timePoint > this._movie.duration)
+		{
 			throw {
 				origin: 'MovieStim.seek',
 				context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
@@ -243,23 +277,28 @@ export class MovieStim extends VisualStim {
 		}
 
 
-		if (this._hasFastSeek) this._movie.fastSeek(timePoint);
+		if (this._hasFastSeek)
+		{
+			this._movie.fastSeek(timePoint);
+		}
 	}
 
 
 	/**
 	 * Determine whether the given object is inside this movie.
-	 * 
+	 *
 	 * @name module:visual.MovieStim#contains
 	 * @public
 	 * @param {Object} object - the object
 	 * @param {string} units - the units
 	 * @return {boolean} whether or not the image contains the object
 	 */
-	contains(object, units) {
+	contains(object, units)
+	{
 		// get position of object:
 		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined') {
+		if (typeof objectPos_px === 'undefined')
+		{
 			throw {
 				origin: 'MovieStim.contains',
 				context: `when determining whether MovieStim: ${this._name} contains object: ${util.toString(object)}`,
@@ -283,20 +322,25 @@ export class MovieStim extends VisualStim {
 
 	/**
 	 * Update the stimulus, if necessary.
-	 * 
+	 *
 	 * @name module:visual.MovieStim#_updateIfNeeded
 	 * @private
 	 */
-	_updateIfNeeded() {
+	_updateIfNeeded()
+	{
 		if (!this._needUpdate)
+		{
 			return;
+		}
 		this._needUpdate = false;
 
 		this._pixi = undefined;
 
 		// no movie to draw: return immediately
 		if (typeof this._movie === 'undefined')
+		{
 			return;
+		}
 
 		// create a PixiJS video sprite:
 		this._texture = PIXI.Texture.fromVideo(this._movie);
@@ -305,7 +349,8 @@ export class MovieStim extends VisualStim {
 
 		// since _texture.width may not be immedialy available but the rest of the code needs its value
 		// we arrange for repeated calls to _updateIfNeeded until we have a width:
-		if (this._texture.width === 0) {
+		if (this._texture.width === 0)
+		{
 			this._needUpdate = true;
 			return;
 		}
@@ -325,7 +370,8 @@ export class MovieStim extends VisualStim {
 		// stimulus size:
 		// note: we use the size of the texture if MovieStim has no specified size:
 		let stimSize = this.size;
-		if (typeof stimSize === 'undefined') {
+		if (typeof stimSize === 'undefined')
+		{
 			const textureSize = [this._texture.width, this._texture.height];
 			stimSize = util.to_unit(textureSize, 'pix', this.win, this.units);
 		}

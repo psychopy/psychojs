@@ -1,8 +1,8 @@
 /**
  * Event Emitter.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -18,7 +18,7 @@ import * as util from './Util';
  *
  * @name module:util.EventEmitter
  * @class
- *  
+ *
  * @example
  * let observable = new EventEmitter();
  * let uuid1 = observable.on('change', data => { console.log(data); });
@@ -28,7 +28,7 @@ import * as util from './Util';
  */
 export class EventEmitter
 {
- 	constructor()
+	constructor()
 	{
 		this._listeners = new Map();
 		this._onceUuids = new Map();
@@ -37,7 +37,7 @@ export class EventEmitter
 
 	/**
 	 * Listener called when this instance emits an event for which it is registered.
-	 *  
+	 *
 	 * @callback module:util.EventEmitter~Listener
 	 * @param {object} data - the data passed to the listener
 	 */
@@ -45,7 +45,7 @@ export class EventEmitter
 
 	/**
 	 * Register a new listener for events with the given name emitted by this instance.
-	 * 
+	 *
 	 * @name module:util.EventEmitter#on
 	 * @function
 	 * @public
@@ -57,14 +57,18 @@ export class EventEmitter
 	{
 		// check that the listener is a function:
 		if (typeof listener !== 'function')
+		{
 			throw new TypeError('listener must be a function');
+		}
 
 		// generate a new uuid:
 		let uuid = util.makeUuid();
 
 		// add the listener to the event map:
 		if (!this._listeners.has(name))
+		{
 			this._listeners.set(name, []);
+		}
 		this._listeners.get(name).push({uuid, listener});
 
 		return uuid;
@@ -73,7 +77,7 @@ export class EventEmitter
 
 	/**
 	 * Register a new listener for the given event name, and remove it as soon as the event has been emitted.
-	 * 
+	 *
 	 * @name module:util.EventEmitter#once
 	 * @function
 	 * @public
@@ -86,7 +90,9 @@ export class EventEmitter
 		let uuid = this.on(name, listener);
 
 		if (!this._onceUuids.has(name))
+		{
 			this._onceUuids.set(name, []);
+		}
 		this._onceUuids.get(name).push(uuid);
 
 		return uuid;
@@ -95,7 +101,7 @@ export class EventEmitter
 
 	/**
 	 * Remove the listener with the given uuid associated to the given event name.
-	 * 
+	 *
 	 * @name module:util.EventEmitter#off
 	 * @function
 	 * @public
@@ -106,8 +112,9 @@ export class EventEmitter
 	{
 		let relevantUuidListeners = this._listeners.get(name);
 
-		if (relevantUuidListeners && relevantUuidListeners.length) {
-			this._listeners.set(name, relevantUuidListeners.filter( uuidlistener => (uuidlistener.uuid != uuid) ) );
+		if (relevantUuidListeners && relevantUuidListeners.length)
+		{
+			this._listeners.set(name, relevantUuidListeners.filter(uuidlistener => (uuidlistener.uuid != uuid)));
 			return true;
 		}
 		return false;
@@ -131,11 +138,14 @@ export class EventEmitter
 		{
 			let onceUuids = this._onceUuids.get(name);
 			let self = this;
-			relevantUuidListeners.forEach( ({uuid, listener}) => {
+			relevantUuidListeners.forEach(({uuid, listener}) =>
+			{
 				listener(data);
 
 				if (typeof onceUuids !== 'undefined' && onceUuids.includes(uuid))
+				{
 					self.off(name, uuid);
+				}
 			});
 			return true;
 		}

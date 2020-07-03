@@ -1,8 +1,8 @@
 /**
  * Various utilities.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -24,19 +24,23 @@
  * class NewClass extends mix(BaseClass).with(Mixin1, Mixin2) { ... }
  */
 export let mix = (superclass) => new MixinBuilder(superclass);
-class MixinBuilder {  
-  constructor(superclass) {
-    this.superclass = superclass;
-  }
+
+class MixinBuilder
+{
+	constructor(superclass)
+	{
+		this.superclass = superclass;
+	}
 
 	/**
 	 *
 	 * @param mixins
 	 * @returns {*}
 	 */
-  with(...mixins) { 
-    return mixins.reduce((c, mixin) => mixin(c), this.superclass);
-  }
+	with(...mixins)
+	{
+		return mixins.reduce((c, mixin) => mixin(c), this.superclass);
+	}
 }
 
 
@@ -50,7 +54,8 @@ class MixinBuilder {
  * @return {Object[]} the resulting value in the format [error, return data]
  * where error is null if there was no error
  */
-export function promiseToTupple(promise) {
+export function promiseToTupple(promise)
+{
 	return promise
 		.then(data => [null, data])
 		.catch(error => [error, null]);
@@ -68,7 +73,8 @@ export function promiseToTupple(promise) {
  */
 export function makeUuid()
 {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c)
+	{
 		const r = Math.random() * 16 | 0, v = (c === 'x') ? r : (r & 0x3 | 0x8);
 		return v.toString(16);
 	});
@@ -85,13 +91,16 @@ export function makeUuid()
  */
 export function getErrorStack()
 {
-  try {
+	try
+	{
 		throw Error('');
-	} catch(error) {
+	}
+	catch (error)
+	{
 		// we need to remove the second line since it references getErrorStack:
 		let stack = error.stack.split("\n");
 		stack.splice(1, 1);
-			
+
 		return JSON.stringify(stack.join('\n'));
 	}
 }
@@ -108,10 +117,22 @@ export function getErrorStack()
  */
 export function isEmpty(x)
 {
-	if (typeof x === 'undefined') return true;
-	if (!Array.isArray(x)) return false;
-	if (x.length === 0) return true;
-	if (x.length === 1 && typeof x[0] === 'undefined') return true;
+	if (typeof x === 'undefined')
+	{
+		return true;
+	}
+	if (!Array.isArray(x))
+	{
+		return false;
+	}
+	if (x.length === 0)
+	{
+		return true;
+	}
+	if (x.length === 1 && typeof x[0] === 'undefined')
+	{
+		return true;
+	}
 
 	return false;
 }
@@ -133,38 +154,65 @@ export function detectBrowser()
 {
 	// Opera 8.0+
 	const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-	if (isOpera) return 'Opera';
+	if (isOpera)
+	{
+		return 'Opera';
+	}
 
 	// Firefox 1.0+
 	const isFirefox = (typeof InstallTrigger !== 'undefined');
-	if (isFirefox) return 'Firefox';
+	if (isFirefox)
+	{
+		return 'Firefox';
+	}
 
 	// Safari 3.0+ "[object HTMLElementConstructor]" 
-	const isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
-	if (isSafari) return 'Safari';
+	const isSafari = /constructor/i.test(window.HTMLElement) || (function (p)
+	{
+		return p.toString() === "[object SafariRemoteNotification]";
+	})(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+	if (isSafari)
+	{
+		return 'Safari';
+	}
 
 	// Internet Explorer 6-11
 	// const isIE6 = !window.XMLHttpRequest;
 	// const isIE7 = document.all && window.XMLHttpRequest && !XDomainRequest && !window.opera;
 	// const isIE8 = document.documentMode==8;
 	const isIE = /*@cc_on!@*/false || !!document.documentMode;
-	if (isIE) return 'IE';
+	if (isIE)
+	{
+		return 'IE';
+	}
 
 	// Edge 20+
 	const isEdge = !isIE && !!window.StyleMedia;
-	if (isEdge) return 'Edge';
+	if (isEdge)
+	{
+		return 'Edge';
+	}
 
 	// Chrome 1+
 	const isChrome = window.chrome;
-	if (isChrome) return 'Chrome';
+	if (isChrome)
+	{
+		return 'Chrome';
+	}
 
 	// Chromium-based Edge:
 	const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") !== -1);
-	if (isEdgeChromium) return 'EdgeChromium';
+	if (isEdgeChromium)
+	{
+		return 'EdgeChromium';
+	}
 
-  // Blink engine detection
-  const isBlink = (isChrome || isOpera) && !!window.CSS;
-  if (isBlink) return 'Blink';
+	// Blink engine detection
+	const isBlink = (isChrome || isOpera) && !!window.CSS;
+	if (isBlink)
+	{
+		return 'Blink';
+	}
 
 	return 'unknown';
 }
@@ -188,20 +236,30 @@ export function detectBrowser()
  */
 export function toNumerical(obj)
 {
-	const response = { origin: 'util.toNumerical', context: 'when converting an object to its numerical form' };
+	const response = {origin: 'util.toNumerical', context: 'when converting an object to its numerical form'};
 
 	if (typeof obj === 'number')
+	{
 		return obj;
+	}
 
 	if (typeof obj === 'string')
+	{
 		obj = [obj];
+	}
 
-	if (Array.isArray(obj)) {
-		return obj.map( e => {
+	if (Array.isArray(obj))
+	{
+		return obj.map(e =>
+		{
 			let n = Number.parseFloat(e);
 			if (Number.isNaN(n))
-				Object.assign(response, { error: 'unable to convert: ' + e + ' to a' +
-						' number.'});
+			{
+				Object.assign(response, {
+					error: 'unable to convert: ' + e + ' to a' +
+						' number.'
+				});
+			}
 			return n;
 		});
 	}
@@ -224,17 +282,20 @@ export function IsPointInsidePolygon(point, vertices)
 {
 	const x = point[0];
 	const y = point[1];
-    
+
 	let isInside = false;
 	for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++)
 	{
-  	const xi = vertices[i][0], yi = vertices[i][1];
-    const xj = vertices[j][0], yj = vertices[j][1];
-    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-    if (intersect) isInside = !isInside;
-  }
-    
-  return isInside;
+		const xi = vertices[i][0], yi = vertices[i][1];
+		const xj = vertices[j][0], yj = vertices[j][1];
+		const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+		if (intersect)
+		{
+			isInside = !isInside;
+		}
+	}
+
+	return isInside;
 }
 
 
@@ -269,18 +330,22 @@ export function shuffle(array)
  * @param {string} units - the units
  * @returns {number[]} the position of the object in pixel units
  */
-export function	getPositionFromObject(object, units)
+export function getPositionFromObject(object, units)
 {
-	const response = { origin: 'util.getPositionFromObject', context: 'when getting the position of an object' };
+	const response = {origin: 'util.getPositionFromObject', context: 'when getting the position of an object'};
 
-	try {
+	try
+	{
 		if (typeof object === 'undefined')
+		{
 			throw 'cannot get the position of an undefined object';
+		}
 
 		let objectWin = undefined;
 
 		// object has a getPos function:
-		if (typeof object.getPos === 'function') {
+		if (typeof object.getPos === 'function')
+		{
 			units = object.units;
 			objectWin = object.win;
 			object = object.getPos();
@@ -289,8 +354,9 @@ export function	getPositionFromObject(object, units)
 		// convert object to pixel units:
 		return to_px(object, units, objectWin);
 	}
-	catch (error) {
-		throw Object.assign(response, { error });
+	catch (error)
+	{
+		throw Object.assign(response, {error});
 	}
 }
 
@@ -308,18 +374,25 @@ export function	getPositionFromObject(object, units)
  */
 export function to_px(pos, posUnit, win)
 {
-	const response = { origin: 'util.to_px', context: 'when converting a position to pixel units' };
-	
+	const response = {origin: 'util.to_px', context: 'when converting a position to pixel units'};
+
 	if (posUnit === 'pix')
+	{
 		return pos;
+	}
 	else if (posUnit === 'norm')
-		return [pos[0] * win.size[0]/2.0, pos[1] * win.size[1]/2.0];
-	else if (posUnit === 'height') {
+	{
+		return [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
+	}
+	else if (posUnit === 'height')
+	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		return [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
-		throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
+	{
+		throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+	}
 }
 
 
@@ -336,18 +409,23 @@ export function to_px(pos, posUnit, win)
  */
 export function to_norm(pos, posUnit, win)
 {
-	const response = { origin: 'util.to_norm', context: 'when converting a position to norm units' };
+	const response = {origin: 'util.to_norm', context: 'when converting a position to norm units'};
 
 	if (posUnit === 'norm')
+	{
 		return pos;
+	}
 	if (posUnit === 'pix')
-		return [pos[0] / (win.size[0]/2.0), pos[1] / (win.size[1]/2.0)];
-	if (posUnit === 'height') {
+	{
+		return [pos[0] / (win.size[0] / 2.0), pos[1] / (win.size[1] / 2.0)];
+	}
+	if (posUnit === 'height')
+	{
 		const minSize = Math.min(win.size[0], win.size[1]);
-		return [pos[0] * minSize / (win.size[0]/2.0), pos[1] * minSize / (win.size[1]/2.0)];
+		return [pos[0] * minSize / (win.size[0] / 2.0), pos[1] * minSize / (win.size[1] / 2.0)];
 	}
 
-	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
+	throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
 }
 
 
@@ -364,20 +442,24 @@ export function to_norm(pos, posUnit, win)
  */
 export function to_height(pos, posUnit, win)
 {
-	const response = { origin: 'util.to_height', context: 'when converting a position to height units' };
+	const response = {origin: 'util.to_height', context: 'when converting a position to height units'};
 
 	if (posUnit === 'height')
+	{
 		return pos;
-	if (posUnit === 'pix') {
+	}
+	if (posUnit === 'pix')
+	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		return [pos[0] / minSize, pos[1] / minSize];
 	}
-	if (posUnit === 'norm') {
+	if (posUnit === 'norm')
+	{
 		const minSize = Math.min(win.size[0], win.size[1]);
-		return [pos[0] * win.size[0]/2.0 / minSize, pos[1] * win.size[1]/2.0 / minSize];
+		return [pos[0] * win.size[0] / 2.0 / minSize, pos[1] * win.size[1] / 2.0 / minSize];
 	}
 
-	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
+	throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
 }
 
 
@@ -394,19 +476,28 @@ export function to_height(pos, posUnit, win)
  */
 export function to_win(pos, posUnit, win)
 {
-	const response = { origin: 'util.to_win', context: 'when converting a position to window units' };
+	const response = {origin: 'util.to_win', context: 'when converting a position to window units'};
 
-	try {
+	try
+	{
 		if (win._units === 'pix')
+		{
 			return to_px(pos, posUnit, win);
+		}
 		if (win._units === 'norm')
+		{
 			return to_norm(pos, posUnit, win);
+		}
 		if (win._units === 'height')
+		{
 			return to_height(pos, posUnit, win);
+		}
 
 		throw `unknown window units: ${win._units}`;
-	} catch (error) {
-		throw Object.assign(response, { response, error });
+	}
+	catch (error)
+	{
+		throw Object.assign(response, {response, error});
 	}
 }
 
@@ -425,19 +516,28 @@ export function to_win(pos, posUnit, win)
  */
 export function to_unit(pos, posUnit, win, targetUnit)
 {
-	const response = { origin: 'util.to_unit', context: 'when converting a position to different units' };
+	const response = {origin: 'util.to_unit', context: 'when converting a position to different units'};
 
-	try {
+	try
+	{
 		if (targetUnit === 'pix')
+		{
 			return to_px(pos, posUnit, win);
+		}
 		if (targetUnit === 'norm')
+		{
 			return to_norm(pos, posUnit, win);
+		}
 		if (targetUnit === 'height')
+		{
 			return to_height(pos, posUnit, win);
+		}
 
 		throw `unknown target units: ${targetUnit}`;
-	} catch (error) {
-		throw Object.assign(response, { error });
+	}
+	catch (error)
+	{
+		throw Object.assign(response, {error});
 	}
 }
 
@@ -474,26 +574,39 @@ export function to_pixiPoint(pos, posUnit, win)
 export function toString(object)
 {
 	if (typeof object === 'undefined')
+	{
 		return 'undefined';
+	}
 
 	if (!object)
+	{
 		return 'null';
+	}
 
 	if (typeof object === 'string')
+	{
 		return object;
+	}
 
 	// if the object is a class and has a toString method:
 	if (object.constructor.toString().substring(0, 5) === 'class' && typeof object.toString === 'function')
+	{
 		return object.toString();
+	}
 
-	try {
-		const symbolReplacer = (key, value) => {
+	try
+	{
+		const symbolReplacer = (key, value) =>
+		{
 			if (typeof value === 'symbol')
+			{
 				value = Symbol.keyFor(value);
+			}
 			return value;
 		};
 		return JSON.stringify(object, symbolReplacer);
-	} catch (e)
+	}
+	catch (e)
 	{
 		return 'Object (circular)';
 	}
@@ -502,20 +615,20 @@ export function toString(object)
 
 if (!String.prototype.format)
 {
-  String.prototype.format = function()
+	String.prototype.format = function ()
 	{
-    var args = arguments;
-    return this
-		.replace(/{(\d+)}/g, function(match, number)
-		{
-			return typeof args[number] != 'undefined' ? args[number] : match;
-		})
-		.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name)
-		{
-			//console.log("n=" + name + " args[0][name]=" + args[0][name]);
-			return args.length > 0 &&  args[0][name] !== undefined ? args[0][name] : match;
-		});
-  };
+		var args = arguments;
+		return this
+			.replace(/{(\d+)}/g, function (match, number)
+			{
+				return typeof args[number] != 'undefined' ? args[number] : match;
+			})
+			.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function (match, name)
+			{
+				//console.log("n=" + name + " args[0][name]=" + args[0][name]);
+				return args.length > 0 && args[0][name] !== undefined ? args[0][name] : match;
+			});
+	};
 }
 
 
@@ -534,17 +647,20 @@ export function getRequestError(jqXHR, textStatus, errorThrown)
 	let errorMsg = 'unknown error';
 
 	if (typeof jqXHR.responseJSON !== 'undefined')
+	{
 		errorMsg = jqXHR.responseJSON;
-
+	}
 	else if (typeof jqXHR.responseText !== 'undefined')
+	{
 		errorMsg = jqXHR.responseText;
-
+	}
 	else if (typeof errorThrown !== 'undefined')
+	{
 		errorMsg = errorThrown;
+	}
 
 	return errorMsg;
 }
-
 
 
 /**
@@ -557,9 +673,12 @@ export function getRequestError(jqXHR, textStatus, errorThrown)
  * @param {Object} obj - the input object
  * @returns {boolean} whether or not the object is an integer or the string representation of an integer
  */
-export function isInt(obj) {
+export function isInt(obj)
+{
 	if (isNaN(obj))
-	  return false;
+	{
+		return false;
+	}
 
 	const x = parseFloat(obj);
 	return (x | 0) === x;
@@ -573,12 +692,12 @@ export function isInt(obj) {
  * @function
  * @public
  * @returns {URLSearchParams} the iterable URLSearchParams
- * 
+ *
  * @example
  * const urlParameters = util.getUrlParameters();
  * for (const [key, value] of urlParameters)
  *   console.log(key + ' = ' + value);
- * 
+ *
  */
 export function getUrlParameters()
 {
@@ -611,10 +730,12 @@ export function addInfoFromUrl(info)
 	// note: parameters starting with a double underscore are reserved for client/server communication,
 	// we do not add them to info
 	// for (const [key, value] of infoFromUrl)
-	infoFromUrl.forEach( (value, key) =>
+	infoFromUrl.forEach((value, key) =>
 	{
 		if (key.indexOf('__') !== 0)
+		{
 			info[key] = value;
+		}
 	});
 
 	return info;
@@ -641,34 +762,48 @@ export function addInfoFromUrl(info)
  * @param {number | Array.<number> | string} selection -  the selection
  * @returns {Object | Array.<Object>} the array of selected items
  */
-export function selectFromArray(array, selection) {
+export function selectFromArray(array, selection)
+{
 
 	// if selection is an integer, or a string representing an integer, we treat it as an index in the array
 	// and return that entry:
 	if (isInt(selection))
+	{
 		return array[parseInt(selection)];
-
-	// if selection is an array, we treat it as a list of indices
+	}// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
-		return array.filter( (e,i) => (selection.includes(i)) );
-
-	// if selection is a string, we decode it:
-	else if (typeof selection === 'string') {
+	{
+		return array.filter((e, i) => (selection.includes(i)));
+	}// if selection is a string, we decode it:
+	else if (typeof selection === 'string')
+	{
 		if (selection.indexOf(',') > -1)
+		{
 			return selection.split(',').map(a => selectFromArray(array, a));
-			// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
-		else if (selection.indexOf(':') > -1) {
+		}// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
+		else if (selection.indexOf(':') > -1)
+		{
 			let sliceParams = selection.split(':').map(a => parseInt(a));
 			if (sliceParams.length === 3)
+			{
 				return sliceArray(array, sliceParams[0], sliceParams[2], sliceParams[1]);
+			}
 			else
+			{
 				return sliceArray(array, ...sliceParams);
+			}
 		}
 	}
 
 	else
-		throw { origin: 'selectFromArray', context: 'when selecting entries from an array', error: 'unknown selection type: ' + (typeof selection)};
+	{
+		throw {
+			origin: 'selectFromArray',
+			context: 'when selecting entries from an array',
+			error: 'unknown selection type: ' + (typeof selection)
+		};
+	}
 }
 
 
@@ -681,10 +816,12 @@ export function selectFromArray(array, selection) {
  * @param {Array.<Object>} array - the input array of arrays
  * @returns {Array.<Object>} the flatten array
  */
-export function flattenArray(array) {
+export function flattenArray(array)
+{
 	return array.reduce(
-		(flat, next) => {
-			flat.push( (Array.isArray(next) && Array.isArray(next[0])) ? flattenArray(next) : next );
+		(flat, next) =>
+		{
+			flat.push((Array.isArray(next) && Array.isArray(next[0])) ? flattenArray(next) : next);
 			return flat;
 		},
 		[]
@@ -706,22 +843,36 @@ export function flattenArray(array) {
  */
 export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 {
-	if (isNaN(from)) from = 0;
-	if (isNaN(to)) to = array.length;
+	if (isNaN(from))
+	{
+		from = 0;
+	}
+	if (isNaN(to))
+	{
+		to = array.length;
+	}
 
 	let arraySlice = array.slice(from, to);
 
 	if (isNaN(step))
+	{
 		return arraySlice;
+	}
 
 	if (step < 0)
+	{
 		arraySlice.reverse();
+	}
 
 	step = Math.abs(step);
 	if (step == 1)
+	{
 		return arraySlice;
+	}
 	else
-		return arraySlice.filter( (e,i) => (i % step == 0) );
+	{
+		return arraySlice.filter((e, i) => (i % step == 0));
+	}
 }
 
 
@@ -735,11 +886,15 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
  * @param {*} data - the data
  * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'
  */
-export function offerDataForDownload(filename, data, type) {
-	const blob = new Blob([data], { type });
+export function offerDataForDownload(filename, data, type)
+{
+	const blob = new Blob([data], {type});
 	if (window.navigator.msSaveOrOpenBlob)
+	{
 		window.navigator.msSaveBlob(blob, filename);
-	else {
+	}
+	else
+	{
 		let elem = window.document.createElement('a');
 		elem.href = window.URL.createObjectURL(blob);
 		elem.download = filename;

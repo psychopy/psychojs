@@ -1,8 +1,8 @@
 /**
  * Base class for all visual stimuli.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -15,7 +15,7 @@ import * as util from '../util/Util';
 
 /**
  * Base class for all visual stimuli.
- * 
+ *
  * @name module:visual.VisualStim
  * @class
  * @extends MinimalStim
@@ -28,7 +28,7 @@ import * as util from '../util/Util';
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {number} [options.size= 1.0] - the size
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip 
+ * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
@@ -43,7 +43,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 								size,
 								autoDraw,
 								autoLog
-	} = {})
+							} = {})
 	{
 		super({win, name, autoDraw, autoLog});
 
@@ -67,19 +67,22 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 	/**
 	 * Setter for the size attribute.
-	 * 
+	 *
 	 * @name module:visual.VisualStim#setSize
-	 * @public 
+	 * @public
 	 * @param {number | number[]} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setSize(size, log = false)
 	{
 		// size is either undefined or a tuple of numbers:
-		if (typeof size !== 'undefined') {
+		if (typeof size !== 'undefined')
+		{
 			size = util.toNumerical(size);
 			if (!Array.isArray(size))
+			{
 				size = [size, size];
+			}
 		}
 
 		this._setAttribute('size', size, log);
@@ -90,10 +93,10 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 	/**
 	 * Setter for the orientation attribute.
-	 * 
+	 *
 	 * @name module:visual.VisualStim#setOri
 	 * @public
-	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise. 
+	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setOri(ori, log = false)
@@ -111,7 +114,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 	/**
 	 * Setter for the position attribute.
-	 * 
+	 *
 	 * @name module:visual.VisualStim#setPos
 	 * @public
 	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
@@ -124,13 +127,13 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		this._needUpdate = true;
 	}
 
-	
+
 	/**
 	 * Setter for the opacity attribute.
-	 * 
+	 *
 	 * @name module:visual.VisualStim#setOpacity
 	 * @public
-	 * @param {number} opacity - the opacity: 0 is completely transparent, 1 is fully opaque 
+	 * @param {number} opacity - the opacity: 0 is completely transparent, 1 is fully opaque
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setOpacity(opacity, log = false)

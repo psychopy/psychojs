@@ -2,7 +2,7 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -12,7 +12,7 @@ import {PsychoJS} from './PsychoJS';
 import {ServerManager} from './ServerManager';
 import {Scheduler} from '../util/Scheduler';
 import {Clock} from '../util/Clock';
-import { ExperimentHandler } from '../data/ExperimentHandler';
+import {ExperimentHandler} from '../data/ExperimentHandler';
 import * as util from '../util/Util';
 
 
@@ -27,14 +27,18 @@ import * as util from '../util/Util';
 export class GUI
 {
 
-	get dialogComponent() { return this._dialogComponent; }
+	get dialogComponent()
+	{
+		return this._dialogComponent;
+	}
 
 	constructor(psychoJS)
 	{
 		this._psychoJS = psychoJS;
 
 		// gui listens to RESOURCE events from the server manager:
-		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) => {
+		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) =>
+		{
 			this._onResourceEvents(signal);
 		});
 
@@ -66,11 +70,11 @@ export class GUI
 	 * @param {String} options.title - name of the project
 	 */
 	DlgFromDict({
-		logoUrl,
-		text,
-		dictionary,
-		title
-	})
+								logoUrl,
+								text,
+								dictionary,
+								title
+							})
 	{
 		// get info from URL:
 		const infoFromUrl = util.getUrlParameters();
@@ -116,7 +120,7 @@ export class GUI
 				// logo:
 				if (typeof logoUrl === 'string')
 				{
-					htmlCode += '<img id="dialog-logo" class="logo" src="' + logoUrl + '">';
+					htmlCode += '<img id="dialog-logo" class="logo" alt="logo" src="' + logoUrl + '">';
 				}
 
 				// information text:
@@ -128,17 +132,19 @@ export class GUI
 
 				// add a combobox or text areas for each entry in the dictionary:
 				htmlCode += '<form>';
-				for (const key in dictionary) {
+				for (const key in dictionary)
+				{
 					const value = dictionary[key];
 					const keyId = CSS.escape(key) + '_id';
 
 					// only create an input if the key is not in the URL:
 					let inUrl = false;
 					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach( (urlValue, urlKey) =>
+					infoFromUrl.forEach((urlValue, urlKey) =>
 					{
 						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey) {
+						if (cleanedUrlKey === cleanedDictKey)
+						{
 							inUrl = true;
 							// break;
 						}
@@ -150,19 +156,26 @@ export class GUI
 
 						// if the field is required:
 						if (key.slice(-1) === '*')
+						{
 							self._requiredKeys.push(key);
+						}
 
 						// if value is an array, we create a select drop-down menu:
-						if (Array.isArray(value)) {
+						if (Array.isArray(value))
+						{
 							htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
 								' ui-corner-all">';
 
 							// if the field is required, we add an empty option and select it:
 							if (key.slice(-1) === '*')
+							{
 								htmlCode += '<option disabled selected>...</option>';
+							}
 
 							for (const option of value)
+							{
 								htmlCode += '<option>' + option + '</option>';
+							}
 
 							htmlCode += '</select>';
 							$('#' + keyId).selectmenu({classes: {}});
@@ -170,8 +183,10 @@ export class GUI
 
 						// otherwise we use a single string input:
 						else /*if (typeof value === 'string')*/
-							htmlCode += '<input type="text" name="' + key + '" id="' + keyId + '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
-
+						{
+							htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
+							htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+						}
 					}
 				}
 				htmlCode += '</form>';
@@ -199,11 +214,14 @@ export class GUI
 
 
 				// setup change event handlers for all required keys:
-				for (const key of this._requiredKeys) {
+				for (const key of this._requiredKeys)
+				{
 					const keyId = CSS.escape(key) + '_id';
 					const input = document.getElementById(keyId);
 					if (input)
+					{
 						input.oninput = (event) => GUI._onKeyChange(self, event);
+					}
 				}
 
 				// init and open the dialog box:
@@ -223,17 +241,21 @@ export class GUI
 						{
 							id: "buttonOk",
 							text: "Ok",
-							click: function () {
+							click: function ()
+							{
 
 								// update dictionary:
-								for (const key in dictionary) {
+								for (const key in dictionary)
+								{
 									const input = document.getElementById(CSS.escape(key) + "_id");
 									if (input)
+									{
 										dictionary[key] = input.value;
+									}
 								}
 
 								self._dialogComponent.button = 'OK';
-								$("#expDialog").dialog("close");
+								$("#expDialog").dialog('close');
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
@@ -242,9 +264,10 @@ export class GUI
 						{
 							id: "buttonCancel",
 							text: "Cancel",
-							click: function () {
+							click: function ()
+							{
 								self._dialogComponent.button = 'Cancel';
-								$("#expDialog").dialog("close");
+								$("#expDialog").dialog('close');
 							}
 						}
 					],
@@ -253,7 +276,8 @@ export class GUI
 					open: self._onDialogOpen('#expDialog'),
 
 					// close is called by both buttons and when the user clicks on the cross:
-					close: function () {
+					close: function ()
+					{
 						//$.unblockUI();
 						$(this).dialog('destroy').remove();
 						self._dialogComponent.status = PsychoJS.Status.FINISHED;
@@ -282,9 +306,13 @@ export class GUI
 			}
 
 			if (self._dialogComponent.status === PsychoJS.Status.FINISHED)
+			{
 				return Scheduler.Event.NEXT;
+			}
 			else
+			{
 				return Scheduler.Event.FLIP_REPEAT;
+			}
 		};
 	}
 
@@ -308,12 +336,25 @@ export class GUI
 	 * @param {GUI.onOK} [options.onOK] - function called when the participant presses the OK button
 	 */
 	dialog({
-		message,
-		warning,
-		error,
-		showOK = true,
-		onOK
-	} = {}) {
+					 message,
+					 warning,
+					 error,
+					 showOK = true,
+					 onOK
+				 } = {})
+	{
+
+		// close the previously opened dialog box, if there is one:
+		const expDialog = $("#expDialog");
+		if (expDialog.length)
+		{
+			expDialog.dialog("destroy").remove();
+		}
+		const msgDialog = $("#msgDialog");
+		if (msgDialog.length)
+		{
+			msgDialog.dialog("destroy").remove();
+		}
 
 		let htmlCode;
 		let titleColour;
@@ -325,13 +366,16 @@ export class GUI
 
 			// deal with null error:
 			if (!error)
+			{
 				error = 'Unspecified JavaScript error';
+			}
 
 			let errorCode = null;
 
 			// go through the error stack and look for errorCode if there is one:
 			let stackCode = '<ul>';
-			while (true) {
+			while (true)
+			{
 
 				if (typeof error === 'object' && 'errorCode' in error)
 				{
@@ -340,12 +384,12 @@ export class GUI
 
 				if (typeof error === 'object' && 'context' in error)
 				{
-						stackCode += '<li>' + error.context + '</li>';
-						error = error.error;
+					stackCode += '<li>' + error.context + '</li>';
+					error = error.error;
 				}
 				else
 				{
-					stackCode += '<li><b>' + error  + '</b></li>';
+					stackCode += '<li><b>' + error + '</b></li>';
 					break;
 				}
 			}
@@ -371,7 +415,8 @@ export class GUI
 		}
 
 		// we are displaying a message:
-		else if (typeof message !== 'undefined') {
+		else if (typeof message !== 'undefined')
+		{
 			htmlCode = '<div id="msgDialog" title="Message">' +
 				'<p class="validateTips">' + message + '</p>' +
 				'</div>';
@@ -379,7 +424,8 @@ export class GUI
 		}
 
 		// we are displaying a warning:
-		else if (typeof warning !== 'undefined') {
+		else if (typeof warning !== 'undefined')
+		{
 			htmlCode = '<div id="msgDialog" title="Warning">' +
 				'<p class="validateTips">' + warning + '</p>' +
 				'</div>';
@@ -395,7 +441,7 @@ export class GUI
 		this._estimateDialogScalingFactor();
 		const dialogSize = this._getDialogSize();
 		const self = this;
-		$('#msgDialog').dialog({
+		$("#msgDialog").dialog({
 			dialogClass: 'no-close',
 
 			width: dialogSize[0],
@@ -405,15 +451,18 @@ export class GUI
 			modal: true,
 			closeOnEscape: false,
 
-			buttons: (!showOK)?[]:[{
+			buttons: (!showOK) ? [] : [{
 				id: "buttonOk",
 				text: "Ok",
-				click: function() {
+				click: function ()
+				{
 					$(this).dialog("destroy").remove();
 
 					// execute callback function:
 					if (typeof onOK !== 'undefined')
+					{
 						onOK();
+					}
 				}
 			}],
 
@@ -422,7 +471,7 @@ export class GUI
 
 		})
 		// change colour of title bar
-		.prev(".ui-dialog-titlebar").css("background", titleColour);
+			.prev(".ui-dialog-titlebar").css("background", titleColour);
 
 
 		// when the browser window is resize, we redimension and reposition the dialog:
@@ -471,10 +520,12 @@ export class GUI
 	 * @param {String} dialogId - the dialog ID
 	 * @private
 	 */
-	_dialogResize(dialogId) {
+	_dialogResize(dialogId)
+	{
 		const self = this;
 
-		$(window).resize( function() {
+		$(window).resize(function ()
+		{
 			const parent = $(dialogId).parent();
 			const windowSize = [$(window).width(), $(window).height()];
 
@@ -486,7 +537,8 @@ export class GUI
 			});
 
 			const isDifferent = self._estimateDialogScalingFactor();
-			if (!isDifferent) {
+			if (!isDifferent)
+			{
 				$(dialogId).css({
 					width: dialogSize[0] - self._contentDelta[0],
 					maxHeight: dialogSize[1] - self._contentDelta[1]
@@ -499,7 +551,7 @@ export class GUI
 				left: Math.max(0, (windowSize[0] - parent.outerWidth()) / 2.0),
 				top: Math.max(0, (windowSize[1] - parent.outerHeight()) / 2.0),
 			});
-		} );
+		});
 	}
 
 
@@ -511,11 +563,13 @@ export class GUI
 	 * @private
 	 * @param {Object.<string, string|Symbol>} signal the signal
 	 */
-	_onResourceEvents(signal) {
+	_onResourceEvents(signal)
+	{
 		this._psychoJS.logger.debug('signal: ' + util.toString(signal));
 
 		// all resources have been registered:
-		if (signal.message === ServerManager.Event.RESOURCES_REGISTERED) {
+		if (signal.message === ServerManager.Event.RESOURCES_REGISTERED)
+		{
 			// for each resource, we have a 'downloading resource' and a 'resource downloaded' message:
 			this._progressBarMax = signal.count * 2;
 			$("#progressbar").progressbar("option", "max", this._progressBarMax);
@@ -525,7 +579,8 @@ export class GUI
 		}
 
 		// all the resources have been downloaded: show the ok button
-		else if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED) {
+		else if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
+		{
 			this._allResourcesDownloaded = true;
 			$("#progressMsg").text('all resources downloaded.');
 			this._updateOkButtonStatus();
@@ -535,21 +590,27 @@ export class GUI
 		else if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE || signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
 		{
 			if (typeof this._progressBarCurrentIncrement === 'undefined')
+			{
 				this._progressBarCurrentIncrement = 0;
-			++ this._progressBarCurrentIncrement;
+			}
+			++this._progressBarCurrentIncrement;
 
 			if (signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
-				$("#progressMsg").text('downloaded ' + this._progressBarCurrentIncrement/2 + ' / ' + this._progressBarMax/2);
+			{
+				$("#progressMsg").text('downloaded ' + this._progressBarCurrentIncrement / 2 + ' / ' + this._progressBarMax / 2);
+			}
 			// $("#progressMsg").text(signal.resource + ': downloaded.');
 			// else
-				// $("#progressMsg").text(signal.resource + ': downloading...');
+			// $("#progressMsg").text(signal.resource + ': downloading...');
 
 			$("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
 		}
 
 		// unknown message: we just display it
 		else
+		{
 			$("#progressMsg").text(signal.message);
+		}
 	}
 
 
@@ -562,15 +623,21 @@ export class GUI
 	 */
 	_updateOkButtonStatus()
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length) )
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
 			$("#buttonOk").button("option", "disabled", false);
-		} else
+		}
+		else
+		{
 			$("#buttonOk").button("option", "disabled", true);
+		}
 
 		// strangely, changing the disabled option sometimes fails to update the ui,
 		// so we need to hide it and show it again:
-		$("#buttonOk").hide(0, () => { $("#buttonOk").show(); });
+		$("#buttonOk").hide(0, () =>
+		{
+			$("#buttonOk").show();
+		});
 	}
 
 
@@ -582,20 +649,25 @@ export class GUI
 	 * @private
 	 * @returns {boolean} whether or not the scaling factor is different from the previously estimated one
 	 */
-	_estimateDialogScalingFactor() {
+	_estimateDialogScalingFactor()
+	{
 		const windowSize = [$(window).width(), $(window).height()];
 
 		// desktop:
 		let dialogScalingFactor = 1.0;
 
 		// mobile or tablet:
-		if (windowSize[0] < 1080) {
+		if (windowSize[0] < 1080)
+		{
 			// landscape:
 			if (windowSize[0] > windowSize[1])
+			{
 				dialogScalingFactor = 1.5;
-			// portrait:
+			}// portrait:
 			else
+			{
 				dialogScalingFactor = 2.0;
+			}
 		}
 
 		const isDifferent = (dialogScalingFactor !== this._dialogScalingFactor);
@@ -612,13 +684,14 @@ export class GUI
 	 * @private
 	 * @returns {number[]} the size of the popup dialog window
 	 */
-	_getDialogSize() {
+	_getDialogSize()
+	{
 		const windowSize = [$(window).width(), $(window).height()];
 		this._estimateDialogScalingFactor();
 
 		return [
-			Math.min(GUI.dialogMaxSize[0], (windowSize[0]-GUI.dialogMargin[0]) / this._dialogScalingFactor),
-			Math.min(GUI.dialogMaxSize[1], (windowSize[1]-GUI.dialogMargin[1]) / this._dialogScalingFactor)];
+			Math.min(GUI.dialogMaxSize[0], (windowSize[0] - GUI.dialogMargin[0]) / this._dialogScalingFactor),
+			Math.min(GUI.dialogMaxSize[1], (windowSize[1] - GUI.dialogMargin[1]) / this._dialogScalingFactor)];
 	}
 
 
@@ -632,14 +705,19 @@ export class GUI
 	 * @param {module:core.GUI} gui - this GUI
 	 * @param {Event} event - event
 	 */
-	static _onKeyChange(gui, event) {
+	static _onKeyChange(gui, event)
+	{
 		const element = event.target;
 		const value = element.value;
 
 		if (typeof value !== 'undefined' && value.length > 0)
+		{
 			gui._setRequiredKeys.set(event.target, true);
+		}
 		else
+		{
 			gui._setRequiredKeys.delete(event.target);
+		}
 
 		gui._updateOkButtonStatus();
 	}

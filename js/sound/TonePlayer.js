@@ -2,17 +2,17 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
-import { SoundPlayer } from './SoundPlayer';
+import {SoundPlayer} from './SoundPlayer';
 
 
 /**
  * <p>This class handles the playing of tones.</p>
- * 
+ *
  * @name module:sound.TonePlayer
  * @class
  * @extends SoundPlayer
@@ -26,14 +26,14 @@ import { SoundPlayer } from './SoundPlayer';
 export class TonePlayer extends SoundPlayer
 {
 	constructor({
-		psychoJS,
-		note = 'C4',
-		duration_s = 0.5,
-		volume = 1.0,
-		loops = 0,
-		soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
-		autoLog = true
-	} = {})
+								psychoJS,
+								note = 'C4',
+								duration_s = 0.5,
+								volume = 1.0,
+								loops = 0,
+								soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
+								autoLog = true
+							} = {})
 	{
 		super(psychoJS);
 
@@ -84,7 +84,8 @@ export class TonePlayer extends SoundPlayer
 		{
 			// mapping between the PsychoPY notes and the standard ones:
 			let psychopyToToneMap = new Map();
-			for (const note of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) {
+			for (const note of ['A', 'B', 'C', 'D', 'E', 'F', 'G'])
+			{
 				psychopyToToneMap.set(note, note);
 				psychopyToToneMap.set(note + 'fl', note + 'b');
 				psychopyToToneMap.set(note + 'sh', note + '#');
@@ -123,7 +124,6 @@ export class TonePlayer extends SoundPlayer
 	}
 
 
-
 	/**
 	 * Set the duration of the tone.
 	 *
@@ -136,7 +136,6 @@ export class TonePlayer extends SoundPlayer
 	{
 		this.duration_s = duration_s;
 	}
-
 
 
 	/**
@@ -155,7 +154,7 @@ export class TonePlayer extends SoundPlayer
 
 	/**
 	 * Set the volume of the tone.
-	 * 
+	 *
 	 * @name module:sound.TonePlayer#setVolume
 	 * @function
 	 * @public
@@ -197,7 +196,9 @@ export class TonePlayer extends SoundPlayer
 	play(loops)
 	{
 		if (typeof loops !== 'undefined')
+		{
 			this._loops = loops;
+		}
 
 		// if duration_s == -1, the sound should play indefinitely, therefore we use an arbitrarily long playing time
 		const actualDuration_s = (this._duration_s === -1) ? 1000000 : this._duration_s;
@@ -250,7 +251,7 @@ export class TonePlayer extends SoundPlayer
 				this.duration_s * (this._loops + 1)
 			);
 		}
-}
+	}
 
 
 	/**
@@ -269,7 +270,9 @@ export class TonePlayer extends SoundPlayer
 
 			// clear the repeat event if need be:
 			if (this._toneId)
+			{
 				Tone.Transport.clear(this._toneId);
+			}
 		}
 		else
 		{

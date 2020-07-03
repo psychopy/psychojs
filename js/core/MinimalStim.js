@@ -1,19 +1,19 @@
 /**
  * Base class for all stimuli.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
-import { PsychObject } from '../util/PsychObject';
-import { PsychoJS } from './PsychoJS';
+import {PsychObject} from '../util/PsychObject';
+import {PsychoJS} from './PsychoJS';
 
 
 /**
  * <p>MinimalStim is the base class for all stimuli.</p>
- * 
+ *
  * @name module:core.MinimalStim
  * @class
  * @extends PsychObject
@@ -26,11 +26,11 @@ import { PsychoJS } from './PsychoJS';
 export class MinimalStim extends PsychObject
 {
 	constructor({
-		name,
-		win,
-		autoDraw = false,
-		autoLog = win.autoLog
-	} = {})
+								name,
+								win,
+								autoDraw = false,
+								autoLog = win.autoLog
+							} = {})
 	{
 		super(win._psychoJS, name);
 
@@ -55,31 +55,41 @@ export class MinimalStim extends PsychObject
 	 */
 	setAutoDraw(autoDraw, log = false)
 	{
-		let response = { origin : 'MinimalStim.setAutoDraw', context: 'when setting the autoDraw attribute of stimulus: ' + this._name };
+		let response = {
+			origin: 'MinimalStim.setAutoDraw',
+			context: 'when setting the autoDraw attribute of stimulus: ' + this._name
+		};
 
 		this._setAttribute('autoDraw', autoDraw, log);
 
 		const index = this.win._drawList.indexOf(this);
 
 		// autoDraw = true: add the stimulus to the draw list if it's not there already
-		if (this._autoDraw) {
-			if (this.win) {
+		if (this._autoDraw)
+		{
+			if (this.win)
+			{
 				// if the stimilus is not already in the draw list:
-				if (index < 0) {
+				if (index < 0)
+				{
 					// update the stimulus if need be before we add its PIXI representation to the window container:
 					this._updateIfNeeded();
 					if (typeof this._pixi === 'undefined')
+					{
 						this.psychoJS.logger.warn('the Pixi.js representation of this stimulus is undefined.');
-						// throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
-					else {
+					}// throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
+					else
+					{
 						this.win._rootContainer.addChild(this._pixi);
 						this.win._drawList.push(this);
 					}
-				} else
+				}
+				else
 				{
 					// the stimulus is already in the list, if it needs to be updated, we remove it
 					// from the window container, update it, then put it back:
-					if (this._needUpdate && typeof this._pixi !== 'undefined') {
+					if (this._needUpdate && typeof this._pixi !== 'undefined')
+					{
 						this.win._rootContainer.removeChild(this._pixi);
 						this._updateIfNeeded();
 						this.win._rootContainer.addChild(this._pixi);
@@ -91,13 +101,18 @@ export class MinimalStim extends PsychObject
 		}
 
 		// autoDraw = false: remove the stimulus from the draw list and window container if it's already there
-		else {
-			if (this.win) {
+		else
+		{
+			if (this.win)
+			{
 				// if the stimulus is in the draw list, remove it from the list and from the window container:
-				if (index >= 0) {
+				if (index >= 0)
+				{
 					this.win._drawList.splice(index, 1);
 					if (typeof this._pixi !== 'undefined')
+					{
 						this.win._rootContainer.removeChild(this._pixi);
+					}
 				}
 			}
 
@@ -108,7 +123,7 @@ export class MinimalStim extends PsychObject
 
 	/**
 	 * Draw this stimulus on the next frame draw.
-	 * 
+	 *
 	 * @name module:core.MinimalStim#draw
 	 * @function
 	 * @public
@@ -127,7 +142,7 @@ export class MinimalStim extends PsychObject
 
 	/**
 	 * Determine whether an object is inside this stimulus.
-	 * 
+	 *
 	 * @name module:core.MinimalStim#contains
 	 * @function
 	 * @abstract
@@ -137,7 +152,11 @@ export class MinimalStim extends PsychObject
 	 */
 	contains(object, units)
 	{
-		throw {origin: 'MinimalStim.contains', context: `when determining whether stimulus: ${this._name} contains object: ${util.toString(object)}`, error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'MinimalStim.contains',
+			context: `when determining whether stimulus: ${this._name} contains object: ${util.toString(object)}`,
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
@@ -145,7 +164,7 @@ export class MinimalStim extends PsychObject
 	 * Update the stimulus, if necessary.
 	 *
 	 * Note: this is an abstract function, which should not be called.
-	 * 
+	 *
 	 * @name module:core.MinimalStim#_updateIfNeeded
 	 * @function
 	 * @abstract
@@ -153,6 +172,10 @@ export class MinimalStim extends PsychObject
 	 */
 	_updateIfNeeded()
 	{
-		throw {origin: 'MinimalStim._updateIfNeeded', context: 'when updating stimulus: ' + this._name, error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'MinimalStim._updateIfNeeded',
+			context: 'when updating stimulus: ' + this._name,
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 }

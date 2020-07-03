@@ -2,7 +2,7 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -62,34 +62,35 @@ import {PsychoJS} from "../core/PsychoJS";
 export class Slider extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
-		name,
-		win,
-		pos,
-		size,
-		ori,
-		units = 'height',
+								name,
+								win,
+								pos,
+								size,
+								ori,
+								units = 'height',
 
-		color = new Color('LightGray'),
-		contrast = 1.0,
-		opacity,
+								color = new Color('LightGray'),
+								contrast = 1.0,
+								opacity,
 
-		style = [Slider.Style.RATING],
-		ticks = [1,2,3,4,5],
-		labels = [],
-		labelHeight,
-		granularity = 0,
-		flip = false,
-		readOnly = false,
+								style = [Slider.Style.RATING],
+								ticks = [1, 2, 3, 4, 5],
+								labels = [],
+								labelHeight,
+								granularity = 0,
+								flip = false,
+								readOnly = false,
 
-		fontFamily = 'Helvetica',
-		bold = true,
-		italic = false,
-		fontSize,
+								fontFamily = 'Helvetica',
+								bold = true,
+								italic = false,
+								fontSize,
 
-		autoDraw,
-		autoLog
-	} = {}) {
-		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
+								autoDraw,
+								autoLog
+							} = {})
+	{
+		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
 
 		this._needMarkerUpdate = false;
 
@@ -113,7 +114,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		this._isCategorical = (this._ticks.length === 0);
 
 		if (this._autoLog)
+		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
 	}
 
 
@@ -128,12 +131,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * @todo this is currently not implemented and always returns false
 	 */
-	contains(object, units) {
+	contains(object, units)
+	{
 		// get position of object:
 		let objectPos_px = util.getPositionFromObject(object, units);
 		if (typeof objectPos_px === 'undefined')
-			throw { origin : 'Slider.contains', context : `when determining whether Slider: ${this._name} contains
-			object: ${util.toString(object)}`, error : 'unable to determine the position of the object' };
+		{
+			throw {
+				origin: 'Slider.contains', context: `when determining whether Slider: ${this._name} contains
+			object: ${util.toString(object)}`, error: 'unable to determine the position of the object'
+			};
+		}
 
 		return false;
 	}
@@ -145,7 +153,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#reset
 	 * @public
 	 */
-	reset() {
+	reset()
+	{
 		this.psychoJS.logger.debug('reset Slider: ', this._name);
 
 		this._markerPos = undefined;
@@ -159,7 +168,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		// the marker should be invisible when markerPos is undefined:
 		if (typeof this._marker !== 'undefined')
+		{
 			this._marker.alpha = 0;
+		}
 	}
 
 
@@ -170,12 +181,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 * @returns {number | undefined} the rating or undefined if there is none
 	 */
-	getRating() {
+	getRating()
+	{
 		const historyLength = this._history.length;
 		if (historyLength > 0)
-			return this._history[historyLength-1]['rating'];
+		{
+			return this._history[historyLength - 1]['rating'];
+		}
 		else
+		{
 			return undefined;
+		}
 	}
 
 
@@ -186,12 +202,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 * @returns {number | undefined} the response time (in second) or undefined if there is none
 	 */
-	getRT() {
+	getRT()
+	{
 		const historyLength = this._history.length;
 		if (historyLength > 0)
-			return this._history[historyLength-1]['responseTime'];
+		{
+			return this._history[historyLength - 1]['responseTime'];
+		}
 		else
+		{
 			return undefined;
+		}
 	}
 
 
@@ -205,14 +226,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number} [fontSize] - the font size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setFontSize(fontSize, log = false) {
-		if (typeof fontSize === 'undefined') {
+	setFontSize(fontSize, log = false)
+	{
+		if (typeof fontSize === 'undefined')
+		{
 			fontSize = (this._units === 'pix') ? 14 : 0.03;
 		}
 
 		const hasChanged = this._setAttribute('fontSize', fontSize, log);
 
-		if (hasChanged) {
+		if (hasChanged)
+		{
 			this._needUpdate = true;
 			this._needVertexUpdate = true;
 		}
@@ -226,11 +250,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [bold= true] - whether or not the font of the labels is bold
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setBold(bold = true, log = false) {
+	setBold(bold = true, log = false)
+	{
 		const hasChanged = this._setAttribute('bold', bold, log);
 
-		if (hasChanged) {
-			this._fontWeight = (bold)?'bold':'normal';
+		if (hasChanged)
+		{
+			this._fontWeight = (bold) ? 'bold' : 'normal';
 			this._needUpdate = true;
 			this._needVertexUpdate = true;
 		}
@@ -245,11 +271,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [italic= false] - whether or not the font of the labels is italic
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setItalic(italic = false, log = false) {
+	setItalic(italic = false, log = false)
+	{
 		const hasChanged = this._setAttribute('italic', italic, log);
 
-		if (hasChanged) {
-			this._fontStyle = (italic)?'italic':'normal';
+		if (hasChanged)
+		{
+			this._fontStyle = (italic) ? 'italic' : 'normal';
 			this._needUpdate = true;
 			this._needVertexUpdate = true;
 		}
@@ -265,17 +293,23 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#setReadOnly
 	 * @public
 	 * @param {boolean} [readOnly= true] - whether or not the slider is read-only
- 	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setReadOnly(readOnly = true, log = false) {
+	setReadOnly(readOnly = true, log = false)
+	{
 		const hasChanged = this._setAttribute('readOnly', readOnly, log);
 
-		if (hasChanged) {
+		if (hasChanged)
+		{
 			// halve the opacity:
 			if (readOnly)
+			{
 				this._opacity /= 2.0;
+			}
 			else
+			{
 				this._opacity *= 2.0;
+			}
 
 			this._needUpdate = true;
 		}
@@ -294,12 +328,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number} displayedRating - the displayed rating
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setMarkerPos(displayedRating, log = false) {
+	setMarkerPos(displayedRating, log = false)
+	{
 		const previousMarkerPos = this._markerPos;
 		this._markerPos = this._granularise(displayedRating);
 
 		// if the displayed rating has changed, we need to update the pixi representation:
-		if (previousMarkerPos !== this._markerPos) {
+		if (previousMarkerPos !== this._markerPos)
+		{
 			this._needMarkerUpdate = true;
 			this._needUpdate = true;
 		}
@@ -314,13 +350,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#setRating
 	 * @public
 	 * @param {number} rating - the rating
- 	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setRating(rating, log = false) {
+	setRating(rating, log = false)
+	{
 		rating = this._granularise(rating);
 		this._markerPos = rating;
 		if (this._isCategorical)
+		{
 			rating = this._labels[Math.round(rating)];
+		}
 
 		this._setAttribute('rating', rating, log);
 	}
@@ -337,10 +376,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number} [responseTime] - the reaction time
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	_recordRating(rating, responseTime = undefined, log = false) {
+	_recordRating(rating, responseTime = undefined, log = false)
+	{
 		// get response time:
 		if (typeof responseTime === 'undefined')
+		{
 			responseTime = this._responseClock.getTime();
+		}
 
 		// set rating:
 		// rating = this._granularise(rating);
@@ -363,9 +405,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#_updateIfNeeded
 	 * @private
 	 */
-	_updateIfNeeded() {
+	_updateIfNeeded()
+	{
 		if (!this._needUpdate)
+		{
 			return;
+		}
 		this._needUpdate = false;
 
 		this._buildSlider();
@@ -387,21 +432,28 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#_updateMarker
 	 * @private
 	 */
-	_updateMarker() {
+	_updateMarker()
+	{
 		if (!this._needMarkerUpdate)
+		{
 			return;
+		}
 		this._needMarkerUpdate = false;
 
-		if (typeof this._marker !== 'undefined') {
-			if (typeof this._markerPos !== 'undefined') {
+		if (typeof this._marker !== 'undefined')
+		{
+			if (typeof this._markerPos !== 'undefined')
+			{
 				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
 				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win);
 				this._marker.alpha = 1;
-			} else
+			}
+			else
+			{
 				this._marker.alpha = 0;
+			}
 		}
 	}
-
 
 
 	/**
@@ -412,9 +464,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#_buildSlider
 	 * @private
 	 */
-	_buildSlider() {
+	_buildSlider()
+	{
 		if (!this._needVertexUpdate)
+		{
 			return;
+		}
 		this._needVertexUpdate = false;
 
 		this._applyStyle();
@@ -430,30 +485,39 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		// (*) central bar:
 		const barSize_px = util.to_px(this._barSize, this._units, this._win).map(v => Math.max(1, v));
-		if (this._barLineWidth_px > 0) {
+		if (this._barLineWidth_px > 0)
+		{
 			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, this._opacity, 0.5);
 			if (typeof this._barFillColor !== 'undefined')
+			{
 				this._body.beginFill(this._barFillColor.int, this._opacity);
+			}
 			this._body.drawRect(-barSize_px[0] / 2, -barSize_px[1] / 2, barSize_px[0], barSize_px[1]);
 			if (typeof this._barFillColor !== 'undefined')
+			{
 				this._body.endFill();
+			}
 		}
 
 		// (*) ticks:
-		if (this._isCategorical) {
+		if (this._isCategorical)
+		{
 			this._ticks = [...Array(this._labels.length)].map((_, i) => i);
 			this._granularity = 1.0;
 		}
 		const tickPositions = this._ratingToPos(this._ticks);
-		const tickPositions_px = tickPositions.map( p => util.to_px(p, this._units, this._win));
-		this._body.lineStyle(this._barLineWidth_px*2, this._tickColor.int, this._opacity, 0.5);
+		const tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		this._body.lineStyle(this._barLineWidth_px * 2, this._tickColor.int, this._opacity, 0.5);
 		const tickSize_px = util.to_px(this._tickSize, this._units, this._win);
-		for (let tickPosition_px of tickPositions_px) {
-			if (this._tickType === Slider.Shape.LINE) {
-				this._body.moveTo(tickPosition_px[0] - tickSize_px[0]/2, tickPosition_px[1] - tickSize_px[1]/2);
-				this._body.lineTo(tickPosition_px[0] + tickSize_px[0]/2, tickPosition_px[1] + tickSize_px[1]/2);
+		for (let tickPosition_px of tickPositions_px)
+		{
+			if (this._tickType === Slider.Shape.LINE)
+			{
+				this._body.moveTo(tickPosition_px[0] - tickSize_px[0] / 2, tickPosition_px[1] - tickSize_px[1] / 2);
+				this._body.lineTo(tickPosition_px[0] + tickSize_px[0] / 2, tickPosition_px[1] + tickSize_px[1] / 2);
 			}
-			else if (this._tickType === Slider.Shape.DISC) {
+			else if (this._tickType === Slider.Shape.DISC)
+			{
 				this._body.beginFill(this._tickColor.int, this._opacity);
 				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], Math.max(tickSize_px[0], tickSize_px[1]));
 				this._body.endFill();
@@ -465,7 +529,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// outside of marker and labels:
 		const eventCaptureRectangle = new PIXI.Graphics();
 		eventCaptureRectangle.beginFill(0, 0);
-		eventCaptureRectangle.drawRect(-barSize_px[0]/2 - tickSize_px[0]/2, -barSize_px[1]/2 - tickSize_px[1]/2,
+		eventCaptureRectangle.drawRect(-barSize_px[0] / 2 - tickSize_px[0] / 2, -barSize_px[1] / 2 - tickSize_px[1] / 2,
 			barSize_px[0] + tickSize_px[0], barSize_px[1] + tickSize_px[1]);
 		eventCaptureRectangle.endFill();
 		this._pixi.addChild(eventCaptureRectangle);
@@ -473,17 +537,19 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		// (*) labels:
 		const labelPositions_px = [...Array(this._labels.length)].map(
-			(_, i) => tickPositions_px[Math.round(i / (this._labels.length-1) * (this._ticks.length-1))]);
+			(_, i) => tickPositions_px[Math.round(i / (this._labels.length - 1) * (this._ticks.length - 1))]);
 
 		const fontSize_px = util.to_px([this._fontSize, this._fontSize], this._units, this._win);
-		for (let l = 0; l < labelPositions_px.length; ++l) {
+		for (let l = 0; l < labelPositions_px.length; ++l)
+		{
 			const labelText = new PIXI.Text(this._labels[l], {
-				fontFamily : this._fontFamily,
+				fontFamily: this._fontFamily,
 				fontWeight: this._fontWeight,
 				fontStyle: this._fontStyle,
 				fontSize: Math.round(fontSize_px[0]),
 				fill: this._labelColor.hex,
-				align: this._labelAlign});
+				align: this._labelAlign
+			});
 
 			const labelBounds = labelText.getBounds(true);
 			labelText.position.x = labelPositions_px[l][0];
@@ -491,19 +557,31 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			labelText.anchor.x = this._labelAnchor.x;
 			labelText.anchor.y = this._labelAnchor.y;
 
-			if (this._isHorizontal()) {
+			if (this._isHorizontal())
+			{
 				if (this._flip)
+				{
 					labelText.position.y -= labelBounds.height + tickSize_px[1];
+				}
 				else
+				{
 					labelText.position.y += tickSize_px[1];
-			} else {
+				}
+			}
+			else
+			{
 				if (this._flip)
+				{
 					labelText.position.x += tickSize_px[0];
+				}
+				else if (this._labelOri === 0)
+				{
+					labelText.position.x -= labelBounds.width + tickSize_px[0];
+				}
 				else
-					if (this._labelOri === 0)
-						labelText.position.x -= labelBounds.width + tickSize_px[0];
-					else
-						labelText.position.x -= tickSize_px[0];
+				{
+					labelText.position.x -= tickSize_px[0];
+				}
 			}
 
 			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
@@ -519,31 +597,42 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
-		if (this._markerType === Slider.Shape.DISC) {
+		if (this._markerType === Slider.Shape.DISC)
+		{
 			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
 			this._marker.beginFill(this._markerColor.int, this._opacity);
-			this._marker.drawCircle(0, 0, markerSize_px/2);
+			this._marker.drawCircle(0, 0, markerSize_px / 2);
 			this._marker.endFill();
 		}
-		else if (this._markerType === Slider.Shape.TRIANGLE) {
+		else if (this._markerType === Slider.Shape.TRIANGLE)
+		{
 			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
 			this._marker.beginFill(this._markerColor.int, this._opacity);
 			this._marker.moveTo(0, 0);
-			if (this._isHorizontal()) {
-				if (this._flip) {
-					this._marker.lineTo(markerSize_px/2, markerSize_px/2);
-					this._marker.lineTo(-markerSize_px/2, markerSize_px/2);
-				} else {
-					this._marker.lineTo(markerSize_px/2, -markerSize_px/2);
-					this._marker.lineTo(-markerSize_px/2, -markerSize_px/2);
+			if (this._isHorizontal())
+			{
+				if (this._flip)
+				{
+					this._marker.lineTo(markerSize_px / 2, markerSize_px / 2);
+					this._marker.lineTo(-markerSize_px / 2, markerSize_px / 2);
 				}
-			} else {
-				if (this._flip) {
-					this._marker.lineTo(-markerSize_px/2, markerSize_px/2);
-					this._marker.lineTo(-markerSize_px/2, -markerSize_px/2);
-				} else {
-					this._marker.lineTo(markerSize_px/2, markerSize_px/2);
-					this._marker.lineTo(markerSize_px/2, -markerSize_px/2);
+				else
+				{
+					this._marker.lineTo(markerSize_px / 2, -markerSize_px / 2);
+					this._marker.lineTo(-markerSize_px / 2, -markerSize_px / 2);
+				}
+			}
+			else
+			{
+				if (this._flip)
+				{
+					this._marker.lineTo(-markerSize_px / 2, markerSize_px / 2);
+					this._marker.lineTo(-markerSize_px / 2, -markerSize_px / 2);
+				}
+				else
+				{
+					this._marker.lineTo(markerSize_px / 2, markerSize_px / 2);
+					this._marker.lineTo(markerSize_px / 2, -markerSize_px / 2);
 				}
 			}
 			this._marker.endFill();
@@ -554,25 +643,29 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const self = this;
 		self._markerDragging = false;
 
-		this._marker.pointerdown = this._marker.mousedown = this._marker.touchstart = (event) => {
-			if (event.data.button === 0) {
+		this._marker.pointerdown = this._marker.mousedown = this._marker.touchstart = (event) =>
+		{
+			if (event.data.button === 0)
+			{
 				self._markerDragging = true;
-/* not quite right, just yet (as of May 2020)
-				// set markerPos, but not rating:
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self._markerPos = self._granularise(rating);
+				/* not quite right, just yet (as of May 2020)
+								// set markerPos, but not rating:
+								const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
+								const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+								self._markerPos = self._granularise(rating);
 
-				self._needMarkerUpdate = true;
- */
+								self._needMarkerUpdate = true;
+				 */
 			}
 
 			event.stopPropagation();
 		};
 
 		// pointer was released inside the marker: if we were dragging, we record the rating
-		this._marker.pointerup = this._marker.mouseup = this._marker.touchend = (event) => {
-			if (self._markerDragging) {
+		this._marker.pointerup = this._marker.mouseup = this._marker.touchend = (event) =>
+		{
+			if (self._markerDragging)
+			{
 				self._markerDragging = false;
 
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
@@ -584,8 +677,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		};
 
 		// pointer was released outside of the marker: cancel the dragging
-		this._marker.pointerupoutside = this._marker.mouseupoutside = this._marker.touchendoutside = (event) => {
-			if (self._markerDragging) {
+		this._marker.pointerupoutside = this._marker.mouseupoutside = this._marker.touchendoutside = (event) =>
+		{
+			if (self._markerDragging)
+			{
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
 				self._recordRating(rating);
@@ -597,8 +692,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		};
 
 		// pointer is moving: if we are dragging, we move the marker position
-		this._marker.pointermove = (event) => {
-			if (self._markerDragging) {
+		this._marker.pointermove = (event) =>
+		{
+			if (self._markerDragging)
+			{
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
 				self.setMarkerPos(rating);
@@ -631,7 +728,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		};
 		*/
 
-		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) => {
+		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) =>
+		{
 			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
 			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
 			self._recordRating(rating);
@@ -650,14 +748,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.Slider#_applyStyle
 	 * @private
 	 */
-	_applyStyle() {
+	_applyStyle()
+	{
 
 		// default style:
-		if (this._isHorizontal()) {
+		if (this._isHorizontal())
+		{
 			this._barSize = [this._size[0], 0];
 			this._tickSize = [0, this._size[1]];
 			this._labelAnchor = new PIXI.Point(0.5, 0);
-		} else {
+		}
+		else
+		{
 			this._barSize = [0, this._size[1]];
 			this._tickSize = [this._size[0], 0];
 			this._labelAnchor = new PIXI.Point(0, 0.5);
@@ -668,7 +770,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		this._barFillColor = undefined; //new Color('darkgray');
 
 		this._tickType = Slider.Shape.LINE;
-		this._tickColor  = this._color;
+		this._tickColor = this._color;
 
 		this._markerColor = new Color('red');
 		this._markerType = Slider.Shape.DISC;
@@ -681,37 +783,45 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 
 		// rating:
-		if (this._style.indexOf(Slider.Style.RATING) > -1) {
+		if (this._style.indexOf(Slider.Style.RATING) > -1)
+		{
 			// nothing to do
 		}
 
 		// triangleMarker:
-		if (this._style.indexOf(Slider.Style.TRIANGLE_MARKER) > -1) {
+		if (this._style.indexOf(Slider.Style.TRIANGLE_MARKER) > -1)
+		{
 			this._markerType = Slider.Shape.TRIANGLE;
-			this._markerSize = this._markerSize.map( s => s*2 );
+			this._markerSize = this._markerSize.map(s => s * 2);
 		}
 
 		// slider:
-		if (this._style.indexOf(Slider.Style.SLIDER) > -1) {
+		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+		{
 			this.psychoJS.logger.warn('"slider" style not implemented!');
 			//TODO
 		}
 
 		// whiteOnBlack:
-		if (this._style.indexOf(Slider.Style.WHITE_ON_BLACK) > -1) {
+		if (this._style.indexOf(Slider.Style.WHITE_ON_BLACK) > -1)
+		{
 			this._barLineColor = new Color('black');
 			// this._barFillColor = new Color('black');
-			this._tickColor  = new Color('black');
+			this._tickColor = new Color('black');
 			this._markerColor = new Color('white');
 			this._labelColor = new Color('black');
 		}
 
 		// labels45:
-		if (this._style.indexOf(Slider.Style.LABELS45) > -1) {
-			if (this._flip) {
+		if (this._style.indexOf(Slider.Style.LABELS45) > -1)
+		{
+			if (this._flip)
+			{
 				this._labelAnchor = new PIXI.Point(0, 0.5);
 				this._labelAlign = 'left';
-			} else {
+			}
+			else
+			{
 				this._labelAnchor = new PIXI.Point(1, 0.5);
 				this._labelAlign = 'right';
 			}
@@ -719,7 +829,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		// radio:
-		if (this._style.indexOf(Slider.Style.RADIO) > -1) {
+		if (this._style.indexOf(Slider.Style.RADIO) > -1)
+		{
 			this._barLineWidth_px = 0;
 			this._tickType = Slider.Shape.DISC;
 
@@ -739,13 +850,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @returns {Array.<Array.<number>>} the positions corresponding to the ratings (in Slider units,
 	 * with 0 at the center of the Slider)
 	 */
-	_ratingToPos(ratings) {
-		const range = this._ticks[this._ticks.length-1] - this._ticks[0];
+	_ratingToPos(ratings)
+	{
+		const range = this._ticks[this._ticks.length - 1] - this._ticks[0];
 		if (this._isHorizontal())
-			return ratings.map( v => [((v-this._ticks[0])/range-0.5) * this._size[0], 0]);
+		{
+			return ratings.map(v => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
+		}
 		else
-			return ratings.map( v => [0, (1.0 - (v-this._ticks[0])/range - 0.5) * this._size[1]]);
-			// return ratings.map( v => [0, ((v-this._ticks[0])/range-0.5) * this._size[1]]);
+		{
+			return ratings.map(v => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
+		}
+		// return ratings.map( v => [0, ((v-this._ticks[0])/range-0.5) * this._size[1]]);
 	}
 
 
@@ -757,16 +873,20 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number[]} pos_px - the [x,y] position, in pixel units, relative to the slider.
 	 * @returns {number} the corresponding rating.
 	 */
-	_posToRating(pos_px) {
-		const range = this._ticks[this._ticks.length-1] - this._ticks[0];
+	_posToRating(pos_px)
+	{
+		const range = this._ticks[this._ticks.length - 1] - this._ticks[0];
 		const size_px = util.to_px(this._size, this._units, this._win);
 		if (this._isHorizontal())
+		{
 			return (pos_px[0] / size_px[0] + 0.5) * range + this._ticks[0];
-			// return ((pos_px[0]-this._pixi.position.x) / size_px[0] + 0.5) * range + this._ticks[0];
+		}// return ((pos_px[0]-this._pixi.position.x) / size_px[0] + 0.5) * range + this._ticks[0];
 		else
+		{
 			return (1.0 - (pos_px[1] / size_px[1] + 0.5)) * range + this._ticks[0];
-			// return (pos_px[1] / size_px[1] + 0.5) * range + this._ticks[0];
-			// return ((pos_px[1]-this._pixi.position.y) / size_px[1] + 0.5) * range + this._ticks[0];
+		}
+		// return (pos_px[1] / size_px[1] + 0.5) * range + this._ticks[0];
+		// return ((pos_px[1]-this._pixi.position.y) / size_px[1] + 0.5) * range + this._ticks[0];
 	}
 
 
@@ -779,7 +899,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @private
 	 * @returns {boolean} whether or not the slider is horizontal
 	 */
-	_isHorizontal() {
+	_isHorizontal()
+	{
 		return (this._size[0] > this._size[1]);
 	}
 
@@ -792,13 +913,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number} rating - the input rating
 	 * @returns {number} the new rating with granularity applied
 	 */
-	_granularise(rating) {
+	_granularise(rating)
+	{
 		if (typeof rating === 'undefined')
+		{
 			return undefined;
+		}
 
 		if (this._granularity > 0)
-			rating = Math.round( rating / this._granularity ) * this._granularity;
-		rating = Math.min( Math.max(this._ticks[0], rating), this._ticks[this._ticks.length-1]);
+		{
+			rating = Math.round(rating / this._granularity) * this._granularity;
+		}
+		rating = Math.min(Math.max(this._ticks[0], rating), this._ticks[this._ticks.length - 1]);
 
 		return rating;
 	}

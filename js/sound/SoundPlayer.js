@@ -1,13 +1,13 @@
 /**
  * Sound player interface
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
-import { PsychObject } from '../util/PsychObject';
+import {PsychObject} from '../util/PsychObject';
 
 
 /**
@@ -39,7 +39,11 @@ export class SoundPlayer extends PsychObject
 	 */
 	static accept(sound)
 	{
-		throw {origin: 'SoundPlayer.accept', context: 'when evaluating whether this player can play a given sound', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.accept',
+			context: 'when evaluating whether this player can play a given sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
@@ -54,7 +58,11 @@ export class SoundPlayer extends PsychObject
 	 */
 	play(loops)
 	{
-		throw {origin: 'SoundPlayer.play', context: 'when starting the playback of a sound', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.play',
+			context: 'when starting the playback of a sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
@@ -68,7 +76,11 @@ export class SoundPlayer extends PsychObject
 	 */
 	stop()
 	{
-		throw {origin: 'SoundPlayer.stop', context: 'when stopping the playback of a sound', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.stop',
+			context: 'when stopping the playback of a sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
@@ -82,7 +94,11 @@ export class SoundPlayer extends PsychObject
 	 */
 	getDuration()
 	{
-		throw {origin: 'SoundPlayer.getDuration', context: 'when getting the duration of the sound', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.getDuration',
+			context: 'when getting the duration of the sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
@@ -96,9 +112,12 @@ export class SoundPlayer extends PsychObject
 	 */
 	setDuration(duration_s)
 	{
-		throw {origin: 'SoundPlayer.setDuration', context: 'when setting the duration of the sound', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.setDuration',
+			context: 'when setting the duration of the sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
-
 
 
 	/**
@@ -112,13 +131,17 @@ export class SoundPlayer extends PsychObject
 	 */
 	setLoops(loops)
 	{
-		throw {origin: 'SoundPlayer.setLoops', context: 'when setting the number of loops', error: 'this method is abstract and should not be called.'};
+		throw {
+			origin: 'SoundPlayer.setLoops',
+			context: 'when setting the number of loops',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 
 	/**
 	 * Set the volume of the tone.
-	 * 
+	 *
 	 * @name module:sound.SoundPlayer#setVolume
 	 * @function
 	 * @public
@@ -126,8 +149,13 @@ export class SoundPlayer extends PsychObject
 	 * @param {Integer} volume - the volume of the tone
 	 * @param {boolean} [mute= false] - whether or not to mute the tone
 	 */
-	setVolume(volume, mute = false) {
-		throw {origin: 'SoundPlayer.setVolume', context: 'when setting the volume of the sound', error: 'this method is abstract and should not be called.'};
+	setVolume(volume, mute = false)
+	{
+		throw {
+			origin: 'SoundPlayer.setVolume',
+			context: 'when setting the volume of the sound',
+			error: 'this method is abstract and should not be called.'
+		};
 	}
 
 }

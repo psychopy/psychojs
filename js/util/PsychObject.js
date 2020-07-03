@@ -3,20 +3,20 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { EventEmitter } from './EventEmitter';
+import {EventEmitter} from './EventEmitter';
 import * as util from './Util';
 
 
 /**
  * <p>PsychoObject is the base class for all PsychoJS objects.
  * It is responsible for handling attributes.</p>
- * 
+ *
  * @class
  * @extends EventEmitter
  * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
@@ -33,14 +33,16 @@ export class PsychObject extends EventEmitter
 
 		// name:
 		if (typeof name === 'undefined')
+		{
 			name = this.constructor.name;
+		}
 		this._addAttribute('name', name);
 	}
 
 
 	/**
 	 * Get the PsychoJS instance.
-	 * 
+	 *
 	 * @public
 	 * @return {PsychoJS} the PsychoJS instance
 	 */
@@ -52,7 +54,7 @@ export class PsychObject extends EventEmitter
 
 	/**
 	 * Setter for the PsychoJS attribute.
-	 * 
+	 *
 	 * @public
 	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
 	 */
@@ -77,17 +79,23 @@ export class PsychObject extends EventEmitter
 		for (const attribute of this._userAttributes)
 		{
 			if (addComma)
+			{
 				representation += ', ';
+			}
 			addComma = true;
 
-			let value = util.toString(this['_'+attribute]);
+			let value = util.toString(this['_' + attribute]);
 			const l = value.length;
 			if (l > 50)
 			{
-				if (value[l-1] === ')')
+				if (value[l - 1] === ')')
+				{
 					value = value.substring(0, 50) + '~)';
+				}
 				else
+				{
 					value = value.substring(0, 50) + '~';
+				}
 			}
 
 			representation += attribute + '=' + value;
@@ -98,47 +106,60 @@ export class PsychObject extends EventEmitter
 	}
 
 
-
 	/**
 	 * Set the value of an attribute.
-	 * 
+	 *
 	 * @private
 	 * @param {string} attributeName - the name of the attribute
 	 * @param {object} attributeValue - the value of the attribute
- 	 * @param {boolean} [log= false] - whether of not to log
- 	 * @param {string} [operation] - the binary operation such that the new value of the attribute is the result of the application of the operation to the current value of the attribute and attributeValue
- 	 * @param {boolean} [stealth= false] - whether or not to call the potential attribute setters when setting the value of this attribute
+	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {string} [operation] - the binary operation such that the new value of the attribute is the result of the application of the operation to the current value of the attribute and attributeValue
+	 * @param {boolean} [stealth= false] - whether or not to call the potential attribute setters when setting the value of this attribute
 	 * @return {boolean} whether or not the value of that attribute has changed (false if the attribute
 	 * was not previously set)
 	 */
 	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false)
 	{
-		const response = { origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object' };
+		const response = {origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object'};
 
 		if (typeof attributeName == 'undefined')
-			throw Object.assign(response, { error: 'the attribute name cannot be' +
-		' undefined' });
-		if (typeof attributeValue == 'undefined') {
+		{
+			throw Object.assign(response, {
+				error: 'the attribute name cannot be' +
+					' undefined'
+			});
+		}
+		if (typeof attributeValue == 'undefined')
+		{
 			this._psychoJS.logger.warn('setting the value of attribute: ' + attributeName + ' in PsychObject: ' + this._name + ' as: undefined');
 		}
 
 		// (*) apply operation to old and new values:
-		if (typeof operation !== 'undefined' && this.hasOwnProperty('_' + attributeName)) {
+		if (typeof operation !== 'undefined' && this.hasOwnProperty('_' + attributeName))
+		{
 			let oldValue = this['_' + attributeName];
 
 			// operations can only be applied to numbers and array of numbers (which can be empty):
-			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) && (attributeValue.length === 0 || typeof attributeValue[0] == 'number'))) {
+			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) && (attributeValue.length === 0 || typeof attributeValue[0] == 'number')))
+			{
 
 				// value is an array:
-				if (Array.isArray(attributeValue)) {
+				if (Array.isArray(attributeValue))
+				{
 					// old value is also an array
-					if (Array.isArray(oldValue)) {
+					if (Array.isArray(oldValue))
+					{
 						if (attributeValue.length !== oldValue.length)
-							throw Object.assign(response, { error: 'old and new' +
+						{
+							throw Object.assign(response, {
+								error: 'old and new' +
 									' value should have' +
-									' the same size when they are both arrays' });
+									' the same size when they are both arrays'
+							});
+						}
 
-						switch (operation) {
+						switch (operation)
+						{
 							case '':
 								// no change to value;
 								break;
@@ -161,14 +182,18 @@ export class PsychObject extends EventEmitter
 								attributeValue = attributeValue.map((v, i) => oldValue[i] % v);
 								break;
 							default:
-								throw Object.assign(response, { error: 'unsupported' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
+								throw Object.assign(response, {
+									error: 'unsupported' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+								});
 						}
 
-					} else
+					}
+					else
 					// old value is a scalar
 					{
-						switch (operation) {
+						switch (operation)
+						{
 							case '':
 								// no change to value;
 								break;
@@ -191,17 +216,22 @@ export class PsychObject extends EventEmitter
 								attributeValue = attributeValue.map(v => oldValue % v);
 								break;
 							default:
-								throw Object.assign(response, { error: 'unsupported' +
-							' value: ' + JSON.stringify(attributeValue) + ' for' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
+								throw Object.assign(response, {
+									error: 'unsupported' +
+										' value: ' + JSON.stringify(attributeValue) + ' for' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+								});
 						}
 					}
-				} else
+				}
+				else
 				// value is a scalar
 				{
 					// old value is an array
-					if (Array.isArray(oldValue)) {
-						switch (operation) {
+					if (Array.isArray(oldValue))
+					{
+						switch (operation)
+						{
 							case '':
 								attributeValue = oldValue.map(v => attributeValue);
 								break;
@@ -224,14 +254,18 @@ export class PsychObject extends EventEmitter
 								attributeValue = oldValue.map(v => v % attributeValue);
 								break;
 							default:
-								throw Object.assign(response, { error: 'unsupported' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
+								throw Object.assign(response, {
+									error: 'unsupported' +
+										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+								});
 						}
 
-					} else
+					}
+					else
 					// old value is a scalar
 					{
-						switch (operation) {
+						switch (operation)
+						{
 							case '':
 								// no change to value;
 								break;
@@ -254,14 +288,19 @@ export class PsychObject extends EventEmitter
 								attributeValue = oldValue % attributeValue;
 								break;
 							default:
-								throw Object.assign(response, { error: 'unsupported' +
-										' value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name });
+								throw Object.assign(response, {
+									error: 'unsupported' +
+										' value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+								});
 						}
 					}
 				}
 
-			} else
-				throw Object.assign(response, { error: 'operation: ' + operation + ' is invalid for old value: ' + JSON.stringify(oldValue) + ' and new value: ' + JSON.stringify(attributeValue) });
+			}
+			else
+			{
+				throw Object.assign(response, {error: 'operation: ' + operation + ' is invalid for old value: ' + JSON.stringify(oldValue) + ' and new value: ' + JSON.stringify(attributeValue)});
+			}
 		}
 
 
@@ -286,7 +325,7 @@ export class PsychObject extends EventEmitter
 
 	/**
 	 * Add attributes to this instance (e.g. define setters and getters) and affect values to them.
-	 * 
+	 *
 	 * <p>Notes:
 	 * <ul>
 	 * <li> If the object already has a set<attributeName> method, we do not redefine it,
@@ -295,7 +334,7 @@ export class PsychObject extends EventEmitter
 	 * the call to super (see module:visual.ImageStim for an illustration).</li>
 	 * </ul></p>
 	 *
- 	 * @protected
+	 * @protected
 	 * @param {Object} cls - the class object of the subclass of PsychoObject whose attributes we will set
 	 * @param {...*} [args] - the values for the attributes (this also determines which attributes will be set)
 	 *
@@ -313,18 +352,22 @@ export class PsychObject extends EventEmitter
 		// (*) add (argument name, argument value) pairs to the attribute map:
 		let attributeMap = new Map();
 		for (let i = 1; i < callArgs.length; ++i)
+		{
 			attributeMap.set(callArgs[i], args[i - 1]);
+		}
 
 		// (*) set the value, define the get/set<attributeName> properties and define the getter and setter:
 		for (let [name, value] of attributeMap.entries())
+		{
 			this._addAttribute(name, value);
+		}
 	}
 
 
 	/**
 	 * Add an attribute to this instance (e.g. define setters and getters) and affect a value to it.
-	 * 
- 	 * @protected
+	 *
+	 * @protected
 	 * @param {string} name - the name of the attribute
 	 * @param {object} value - the value of the attribute
 	 */
@@ -332,18 +375,29 @@ export class PsychObject extends EventEmitter
 	{
 		const getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[getPropertyName] === 'undefined')
+		{
 			this[getPropertyName] = () => this['_' + name];
+		}
 
 		const setPropertyName = 'set' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[setPropertyName] === 'undefined')
-			this[setPropertyName] = (value, log = false) => {
+		{
+			this[setPropertyName] = (value, log = false) =>
+			{
 				this._setAttribute(name, value, log);
 			};
+		}
 
 		Object.defineProperty(this, name, {
 			configurable: true,
-			get() { return this[getPropertyName](); /* return this['_' + name];*/ },
-			set(value) { this[setPropertyName](value); }
+			get()
+			{
+				return this[getPropertyName](); /* return this['_' + name];*/
+			},
+			set(value)
+			{
+				this[setPropertyName](value);
+			}
 		});
 
 		// note: we use this[name] instead of this['_' + name] since a this.set<Name> method may available

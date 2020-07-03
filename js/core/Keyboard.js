@@ -2,7 +2,7 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -21,8 +21,10 @@ import {EventManager} from "./EventManager";
  * @param {number} tDown - time of key press (keydown event) relative to the global Monotonic Clock
  * @param {string | undefined} name - pyglet key name
  */
-export class KeyPress {
-	constructor(code, tDown, name) {
+export class KeyPress
+{
+	constructor(code, tDown, name)
+	{
 		this.code = code;
 		this.tDown = tDown;
 		this.name = (typeof name !== 'undefined') ? name : EventManager.w3c2pyglet(code);
@@ -49,7 +51,8 @@ export class KeyPress {
  * @param {Clock} [options.clock= undefined] - an optional clock
  * @param {boolean} options.autoLog - whether or not to log
  */
-export class Keyboard extends PsychObject {
+export class Keyboard extends PsychObject
+{
 
 	constructor({
 								psychoJS,
@@ -57,16 +60,19 @@ export class Keyboard extends PsychObject {
 								waitForStart = false,
 								clock,
 								autoLog = false,
-							} = {}) {
+							} = {})
+	{
 
 		super(psychoJS);
 
 		if (typeof clock === 'undefined')
-			clock = new Clock(); //this._psychoJS.monotonicClock;
+		{
+			clock = new Clock();
+		} //this._psychoJS.monotonicClock;
 
 		this._addAttributes(Keyboard, bufferSize, waitForStart, clock, autoLog);
 		// start recording key events if need be:
-		this._addAttribute('status', (waitForStart)?PsychoJS.Status.NOT_STARTED:PsychoJS.Status.STARTED);
+		this._addAttribute('status', (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
 
 		// setup circular buffer:
 		this.clearEvents();
@@ -85,7 +91,8 @@ export class Keyboard extends PsychObject {
 	 * @public
 	 *
 	 */
-	start() {
+	start()
+	{
 		this._status = PsychoJS.Status.STARTED;
 	}
 
@@ -98,7 +105,8 @@ export class Keyboard extends PsychObject {
 	 * @public
 	 *
 	 */
-	stop() {
+	stop()
+	{
 		this._status = PsychoJS.Status.STOPPED;
 	}
 
@@ -121,20 +129,26 @@ export class Keyboard extends PsychObject {
 	 * @public
 	 * @return {Keyboard.KeyEvent[]} the list of events still in the buffer
 	 */
-	getEvents() {
+	getEvents()
+	{
 		if (this._bufferLength === 0)
+		{
 			return [];
+		}
 
-		
+
 		// iterate over the buffer, from start to end, and discard the null event:
 		let filteredEvents = [];
 		const bufferWrap = (this._bufferLength === this._bufferSize);
 		let i = bufferWrap ? this._bufferIndex : -1;
-		do {
+		do
+		{
 			i = (i + 1) % this._bufferSize;
 			const keyEvent = this._circularBuffer[i];
 			if (keyEvent)
+			{
 				filteredEvents.push(keyEvent);
+			}
 		} while (i !== this._bufferIndex);
 
 		return filteredEvents;
@@ -160,29 +174,37 @@ export class Keyboard extends PsychObject {
 						keyList = [],
 						waitRelease = true,
 						clear = true
-					} = {}) {
+					} = {})
+	{
 
 		// if nothing in the buffer, return immediately:
 		if (this._bufferLength === 0)
+		{
 			return [];
+		}
 
 		let keyPresses = [];
 
 		// iterate over the circular buffer, looking for keyup events:
 		const bufferWrap = (this._bufferLength === this._bufferSize);
 		let i = bufferWrap ? this._bufferIndex : -1;
-		do {
+		do
+		{
 			i = (i + 1) % this._bufferSize;
 
 			const keyEvent = this._circularBuffer[i];
-			if (keyEvent && keyEvent.status === Keyboard.KeyStatus.KEY_UP) {
+			if (keyEvent && keyEvent.status === Keyboard.KeyStatus.KEY_UP)
+			{
 				// check that the key is in the keyList:
-				if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey)) {
+				if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey))
+				{
 					// look for a corresponding, preceding keydown event:
 					const precedingKeydownIndex = keyEvent.keydownIndex;
-					if (typeof precedingKeydownIndex !== 'undefined') {
+					if (typeof precedingKeydownIndex !== 'undefined')
+					{
 						const precedingKeydownEvent = this._circularBuffer[precedingKeydownIndex];
-						if (precedingKeydownEvent) {
+						if (precedingKeydownEvent)
+						{
 							// prepare KeyPress and add it to the array:
 							const tDown = precedingKeydownEvent.timestamp;
 							const keyPress = new KeyPress(keyEvent.code, tDown, keyEvent.pigletKey);
@@ -191,7 +213,9 @@ export class Keyboard extends PsychObject {
 							keyPresses.push(keyPress);
 
 							if (clear)
+							{
 								this._circularBuffer[precedingKeydownIndex] = null;
+							}
 						}
 					}
 
@@ -220,7 +244,9 @@ export class Keyboard extends PsychObject {
 					} while ((bufferWrap && j !== i) || (j > -1));*/
 
 					if (clear)
+					{
 						this._circularBuffer[i] = null;
+					}
 
 				}
 			}
@@ -229,18 +255,23 @@ export class Keyboard extends PsychObject {
 
 
 		// if waitRelease = false, we iterate again over the map of unmatched keydown events:
-		if (!waitRelease) {
-			for (const unmatchedKeyDownIndex of this._unmatchedKeydownMap.values()) {
+		if (!waitRelease)
+		{
+			for (const unmatchedKeyDownIndex of this._unmatchedKeydownMap.values())
+			{
 				const keyEvent = this._circularBuffer[unmatchedKeyDownIndex];
-				if (keyEvent) {
+				if (keyEvent)
+				{
 					// check that the key is in the keyList:
-					if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey)) {
+					if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey))
+					{
 						const tDown = keyEvent.timestamp;
 						const keyPress = new KeyPress(keyEvent.code, tDown, keyEvent.pigletKey);
 						keyPress.rt = tDown - this._clock.getLastResetTime();
 						keyPresses.push(keyPress);
 
-						if (clear) {
+						if (clear)
+						{
 							this._unmatchedKeydownMap.delete(keyEvent.code);
 							this._circularBuffer[unmatchedKeyDownIndex] = null;
 						}
@@ -272,14 +303,15 @@ export class Keyboard extends PsychObject {
 
 		// if clear = true and the keyList is empty, we clear all the events:
 		if (clear && keyList.length === 0)
+		{
 			this.clearEvents();
+		}
 
 
 		return keyPresses;
 	}
 
 
-	
 	/**
 	 * Clear all events and resets the circular buffers.
 	 *
@@ -299,7 +331,6 @@ export class Keyboard extends PsychObject {
 	}
 
 
-
 	/**
 	 * Test whether a list of KeyPress's contains one with a particular name.
 	 *
@@ -317,10 +348,9 @@ export class Keyboard extends PsychObject {
 			return false;
 		}
 
-		const value = keypressList.find( (keypress) => keypress.name === keyName );
+		const value = keypressList.find((keypress) => keypress.name === keyName);
 		return (typeof value !== 'undefined');
 	}
-
 
 
 	/**
@@ -338,17 +368,21 @@ export class Keyboard extends PsychObject {
 
 		// add a keydown listener:
 		window.addEventListener("keydown", (event) =>
-		// document.addEventListener("keydown", (event) =>
+			// document.addEventListener("keydown", (event) =>
 		{
 			// only consider non-repeat events, i.e. only the first keydown event associated with a participant
 			// holding a key down:
 			if (event.repeat)
+			{
 				return;
+			}
 
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
 			if (this._status !== PsychoJS.Status.STARTED)
+			{
 				return;
+			}
 
 			/**
 			 * DEPRECATED: we now use event.repeat
@@ -362,7 +396,9 @@ export class Keyboard extends PsychObject {
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === 'undefined')
+			{
 				code = EventManager.keycode2w3c(event.keyCode);
+			}
 
 			let pigletKey = EventManager.w3c2pyglet(code);
 
@@ -387,12 +423,14 @@ export class Keyboard extends PsychObject {
 
 		// add a keyup listener:
 		window.addEventListener("keyup", (event) =>
-		// document.addEventListener("keyup", (event) =>
+			// document.addEventListener("keyup", (event) =>
 		{
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
 			if (this._status !== PsychoJS.Status.STARTED)
+			{
 				return;
+			}
 
 			self._previousKeydownKey = undefined;
 
@@ -400,7 +438,9 @@ export class Keyboard extends PsychObject {
 
 			// take care of legacy Microsoft Edge:
 			if (typeof code === 'undefined')
+			{
 				code = EventManager.keycode2w3c(event.keyCode);
+			}
 
 			let pigletKey = EventManager.w3c2pyglet(code);
 
@@ -418,7 +458,8 @@ export class Keyboard extends PsychObject {
 			// note: if more keys are down than there are slots in the circular buffer, there might
 			// not be a corresponding keydown event
 			const correspondingKeydownIndex = self._unmatchedKeydownMap.get(event.code);
-			if (typeof correspondingKeydownIndex !== 'undefined') {
+			if (typeof correspondingKeydownIndex !== 'undefined')
+			{
 				self._circularBuffer[self._bufferIndex].keydownIndex = correspondingKeydownIndex;
 				self._unmatchedKeydownMap.delete(event.code);
 			}

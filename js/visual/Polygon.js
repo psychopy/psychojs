@@ -2,14 +2,14 @@
  * Polygonal Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { ShapeStim } from './ShapeStim';
-import { Color } from '../util/Color';
+import {ShapeStim} from './ShapeStim';
+import {Color} from '../util/Color';
 
 
 /**
@@ -59,7 +59,23 @@ export class Polygon extends ShapeStim
 								autoLog
 							} = {})
 	{
-		super({ name, win, lineWidth, lineColor, fillColor, opacity, pos, ori, size, units, contrast, depth, interpolate, autoDraw, autoLog });
+		super({
+			name,
+			win,
+			lineWidth,
+			lineColor,
+			fillColor,
+			opacity,
+			pos,
+			ori,
+			size,
+			units,
+			contrast,
+			depth,
+			interpolate,
+			autoDraw,
+			autoLog
+		});
 
 		this._psychoJS.logger.debug('create a new Polygon with name: ', name);
 
@@ -68,9 +84,10 @@ export class Polygon extends ShapeStim
 		this._updateVertices();
 
 		if (this._autoLog)
+		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
 	}
-
 
 
 	/**
@@ -88,7 +105,6 @@ export class Polygon extends ShapeStim
 		this._setAttribute('radius', radius, log);
 		this._updateVertices();
 	}
-
 
 
 	/**
@@ -121,7 +137,9 @@ export class Polygon extends ShapeStim
 		const angle = 2.0 * Math.PI / this._edges;
 		const vertices = [];
 		for (let v = 0; v < this._edges; ++v)
-			vertices.push([ Math.sin(v * angle) * this._radius, Math.cos(v * angle) * this._radius ]);
+		{
+			vertices.push([Math.sin(v * angle) * this._radius, Math.cos(v * angle) * this._radius]);
+		}
 		this.setVertices(vertices);
 	}
 

@@ -1,8 +1,8 @@
 /**
  * Logger
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -10,20 +10,21 @@
 
 import * as util from '../util/Util';
 import {MonotonicClock} from '../util/Clock';
-import { ExperimentHandler } from '../data/ExperimentHandler';
+import {ExperimentHandler} from '../data/ExperimentHandler';
 
 
 /**
  * <p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging),
  * a remote one, etc.</p>
- * 
+ *
  * <p>Note: we use log4javascript for the console logger, and our own for the server logger.</p>
- * 
+ *
  * @name module:core.Logger
  * @class
  * @param {*} threshold - the logging threshold, e.g. log4javascript.Level.ERROR
  */
-export class Logger {
+export class Logger
+{
 
 	constructor(psychoJS, threshold)
 	{
@@ -80,11 +81,10 @@ export class Logger {
 	}
 
 
-
 	/**
 	 * Log a server message at the DATA level.
 	 *
- 	 * @name module:core.Logger#data
+	 * @name module:core.Logger#data
 	 * @public
 	 * @param {string} msg - the message to be logged.
 	 * @param {number} [time] - the logging time
@@ -94,7 +94,6 @@ export class Logger {
 	{
 		this.log(msg, Logger.ServerLevel.DATA, time, obj);
 	}
-
 
 
 	/**
@@ -110,7 +109,9 @@ export class Logger {
 	log(msg, level, time, obj)
 	{
 		if (typeof time === 'undefined')
+		{
 			time = MonotonicClock.getReferenceTime();
+		}
 
 		this._serverLogs.push({
 			msg,
@@ -120,7 +121,6 @@ export class Logger {
 		});
 
 	}
-
 
 
 	/**
@@ -149,7 +149,9 @@ export class Logger {
 				'\t' + Symbol.keyFor(log.level) +
 				'\t' + log.msg;
 			if (log.obj !== 'undefined')
+			{
 				formattedLog += '\t' + log.obj;
+			}
 			formattedLog += '\n';
 
 			formattedLogs += formattedLog;
@@ -157,7 +159,8 @@ export class Logger {
 
 		// send logs to the server or display them in the console:
 		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
-			this._psychoJS.config.experiment.status === 'RUNNING')
+			this._psychoJS.config.experiment.status === 'RUNNING' &&
+			!this._psychoJS._serverMsg.has('__pilotToken'))
 		{
 			// if the pako compression library is present, we compress the logs:
 			if (typeof pako !== 'undefined')
@@ -189,10 +192,9 @@ export class Logger {
 	}
 
 
-
 	/**
 	 * Create a custom console layout.
-	 * 
+	 *
 	 * @name module:core.Logger#_customConsoleLayout
 	 * @private
 	 * @return {*} the custom layout
@@ -219,10 +221,13 @@ export class Logger {
 				{
 					// look for entry immediately after those of log4javascript:
 					for (let entry of stackEntries)
-						if (entry.indexOf('log4javascript.min.js') <= 0) {
+					{
+						if (entry.indexOf('log4javascript.min.js') <= 0)
+						{
 							relevantEntry = entry;
 							break;
 						}
+					}
 
 					const buf = relevantEntry.split(':');
 					const line = buf[buf.length - 2];
@@ -242,15 +247,17 @@ export class Logger {
 					let buf = relevantEntry.split(' ');
 					let fileLine = buf.pop();
 					const method = buf.pop();
-					buf = fileLine.split(':'); buf.pop();
+					buf = fileLine.split(':');
+					buf.pop();
 					const line = buf.pop();
 					const file = buf.pop().split('/').pop();
 
 					return method + ' ' + file + ' ' + line;
-
 				}
 				else
+				{
 					return 'unknown';
+				}
 			}
 		});
 
