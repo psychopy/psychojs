@@ -121,6 +121,20 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
+	 * Force a refresh of the stimulus.
+	 *
+	 * @name module:visual.Slider#refresh
+	 * @public
+	 */
+	refresh()
+	{
+		super.refresh();
+
+		this._needVertexUpdate = true;
+	}
+
+
+	/**
 	 * Determine whether an object is inside the bounding box of the slider.
 	 *
 	 * @name module:visual.Slider#contains
