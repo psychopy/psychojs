@@ -101,9 +101,9 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	setOri(ori, log = false)
 	{
-		this._setAttribute('ori', ori, log);
+		this._setAttribute('ori', -ori, log);
 
-		let radians = ori * 0.017453292519943295;
+		let radians = -ori * 0.017453292519943295;
 		this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)],
 			[Math.sin(radians), Math.cos(radians)]];
 
