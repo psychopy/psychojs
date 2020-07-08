@@ -244,36 +244,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Determine whether an object is inside the bounding box of the text.
-	 *
-	 * @name module:visual.TextStim#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the object is inside the bounding box of the text
-	 *
-	 * @todo this is currently NOT implemented
-	 */
-	contains(object, units)
-	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-		{
-			throw {
-				origin: 'TextStim.contains',
-				context: 'when determining whether TextStim: ' + this._name + ' contains object: ' + util.toString(object),
-				error: 'unable to determine the position of the object'
-			};
-		}
-
-		// test for inclusion:
-		// TODO
-		return false;
-	}
-
-
-	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.TextStim#_updateIfNeeded
