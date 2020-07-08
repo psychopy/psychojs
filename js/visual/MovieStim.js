@@ -285,42 +285,6 @@ export class MovieStim extends VisualStim
 
 
 	/**
-	 * Determine whether the given object is inside this movie.
-	 *
-	 * @name module:visual.MovieStim#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the image contains the object
-	 */
-	contains(object, units)
-	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-		{
-			throw {
-				origin: 'MovieStim.contains',
-				context: `when determining whether MovieStim: ${this._name} contains object: ${util.toString(object)}`,
-				error: 'unable to determine the position of the object'
-			};
-		}
-
-		// test for inclusion:
-		// note: since _pixi.anchor is [0.5, 0.5] the movie is actually centered on pos
-		let pos_px = util.to_px(this.pos, this.units, this._win);
-		let size_px = util.to_px(this.size, this.units, this._win);
-		const polygon_px = [
-			[pos_px[0] - size_px[0] / 2, pos_px[1] - size_px[1] / 2],
-			[pos_px[0] + size_px[0] / 2, pos_px[1] - size_px[1] / 2],
-			[pos_px[0] + size_px[0] / 2, pos_px[1] + size_px[1] / 2],
-			[pos_px[0] - size_px[0] / 2, pos_px[1] + size_px[1] / 2]];
-
-		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
-	}
-
-
-	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.MovieStim#_updateIfNeeded

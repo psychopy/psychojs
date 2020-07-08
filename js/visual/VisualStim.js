@@ -66,6 +66,44 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 
 	/**
+	 * Determine whether the given object is inside this stimulus.
+	 *
+	 * @name module:visual.VisualStim#contains
+	 * @public
+	 * @param {Object} object - the object
+	 * @param {string} units - the units
+	 * @return {boolean} whether or not the stimulus bounding box contains the object
+	 */
+	contains(object, units)
+	{
+		// get position of object:
+		let objectPos_px = util.getPositionFromObject(object, units);
+		if (typeof objectPos_px === 'undefined')
+		{
+			const constructorName = this.constructor.name
+
+			throw {
+				origin: `${constructorName}.contains`,
+				context: `when determining whether ${constructorName}: ${this._name} contains object: ${util.toString(object)}`,
+				error: 'unable to determine the position of the object'
+			};
+		}
+
+		// test for inclusion:
+		// note: since _pixi.anchor is [0.5, 0.5] the movie is actually centered on pos
+		let pos_px = util.to_px(this.pos, this.units, this._win);
+		let size_px = util.to_px(this.size, this.units, this._win);
+		const polygon_px = [
+			[pos_px[0] - size_px[0] / 2, pos_px[1] - size_px[1] / 2],
+			[pos_px[0] + size_px[0] / 2, pos_px[1] - size_px[1] / 2],
+			[pos_px[0] + size_px[0] / 2, pos_px[1] + size_px[1] / 2],
+			[pos_px[0] - size_px[0] / 2, pos_px[1] + size_px[1] / 2]];
+
+		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
+	}
+
+
+	/**
 	 * Setter for the size attribute.
 	 *
 	 * @name module:visual.VisualStim#setSize
