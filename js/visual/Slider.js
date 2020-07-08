@@ -135,33 +135,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Determine whether an object is inside the bounding box of the slider.
-	 *
-	 * @name module:visual.Slider#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the object is inside the bounding box of the slider
-	 *
-	 * @todo this is currently not implemented and always returns false
-	 */
-	contains(object, units)
-	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-		{
-			throw {
-				origin: 'Slider.contains', context: `when determining whether Slider: ${this._name} contains
-			object: ${util.toString(object)}`, error: 'unable to determine the position of the object'
-			};
-		}
-
-		return false;
-	}
-
-
-	/**
 	 * Reset the slider.
 	 *
 	 * @name module:visual.Slider#reset
