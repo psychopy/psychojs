@@ -149,6 +149,33 @@ export class Mouse extends PsychObject
 		}
 	}
 
+	/**
+	 * Helper method for checking whether a stimulus has had any button presses within bounds.
+	 *
+	 * <p>Note: Since there can only be one button pressed at a time, there is no point passing in a "buttons" array like PsychoPy. Pass in a "wanted" array index for the target button instead.</p>
+	 *
+	 * @name module:core.Mouse#isPressedIn
+	 * @function
+	 * @public
+	 * @param {object|module:visual.VisualStim} [stimulus= undefined] A type of stimulus implementing a `contains()` method.
+	 * @param {number} [wanted= undefined] The target button index.
+	 * @return {boolean} Whether mouse with button(s) pressed is contained within stimulus.
+	 */
+	isPressedIn(stimulus, wanted)
+	{
+		// Will throw if stimulus is falsy or non-object like
+		if (typeof stimulus.contains === 'function')
+		{
+			const { buttons } = this.psychoJS.eventManager.getMouseInfo();
+			// If no specific button wanted, any pressed will do
+			const pressed = Number.isInteger(wanted) ? buttons.pressed[wanted] > 0 : buttons.pressed.some(v => v > 0);
+
+			return pressed && stimulus.contains(this);
+		}
+
+		return false;
+	}
+
 
 	/**
 	 * Determine whether the mouse has moved beyond a certain distance.
