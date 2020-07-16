@@ -152,25 +152,52 @@ export class Mouse extends PsychObject
 	/**
 	 * Helper method for checking whether a stimulus has had any button presses within bounds.
 	 *
-	 * <p>Note: Since there can only be one button pressed at a time, there is no point passing in a "buttons" array like PsychoPy. Pass in a "wanted" array index for the target button instead.</p>
-	 *
 	 * @name module:core.Mouse#isPressedIn
 	 * @function
 	 * @public
-	 * @param {object|module:visual.VisualStim} [stimulus= undefined] A type of stimulus implementing a `contains()` method.
-	 * @param {number} [wanted= undefined] The target button index.
+	 * @param {object|module:visual.VisualStim} [shape= undefined] A type of stimulus implementing a `contains()` method.
+	 * @param {object|number} [buttons= undefined] The target button index.
 	 * @return {boolean} Whether mouse with button(s) pressed is contained within stimulus.
 	 */
-	isPressedIn(stimulus, wanted)
+	isPressedIn(...args)
 	{
-		// Will throw if stimulus is falsy or non-object like
-		if (typeof stimulus.contains === 'function')
-		{
-			const { buttons } = this.psychoJS.eventManager.getMouseInfo();
-			// If no specific button wanted, any pressed will do
-			const pressed = Number.isInteger(wanted) ? buttons.pressed[wanted] > 0 : buttons.pressed.some(v => v > 0);
+		// Helper to check if some object features a certain key
+		const hasKey = key => object => !!(object && object[key]);
 
-			return pressed && stimulus.contains(this);
+		// Look for options given in object literal form, cut out falsy inputs
+		const [{ shape: shapeMaybe, buttons: buttonsMaybe } = {}] = args.filter(v => !!v);
+
+		// Shapes are expected to be instances of stimuli, or at
+		// the very least objects featuring a `contains()` method
+		const isShape = hasKey('contains');
+
+		// Go through arguments array looking for a shape if options object offers none
+		const shapeFound = isShape(shapeMaybe) ? shapeMaybe : args.find(isShape);
+		// Default to input (pass through)
+		const shape = shapeFound || shapeMaybe;
+
+		// Buttons values may be extracted from an object literal
+		// featuring the `buttons` key, or found as integers
+		// in the arguments array
+		const hasButtons = hasKey('buttons');
+		const { isInteger } = Number;
+		// Prioritize buttons value given as part of an options object literal,
+		// then look for the first occurrence in the arguments array of either
+		// an integer or an extra object with a `buttons` key
+		const buttonsFound = isInteger(buttonsMaybe) ? buttonsMaybe : args.find(o => hasButtons(o) || isInteger(o));
+		// Worst case scenario `wanted` ends up being an empty object literal
+		const { buttons: wanted = buttonsFound || buttonsMaybe } = buttonsFound || {};
+
+		// Will throw if stimulus is falsy or non-object like
+		if (typeof shape.contains === 'function')
+		{
+			const mouseInfo = this.psychoJS.eventManager.getMouseInfo();
+			const { pressed } = mouseInfo.buttons;
+
+			// If no specific button wanted, any pressed will do
+			const hasButtonPressed = isInteger(wanted) ? pressed[wanted] > 0 : pressed.some(v => v > 0);
+
+			return hasButtonPressed && shape.contains(this);
 		}
 
 		return false;
