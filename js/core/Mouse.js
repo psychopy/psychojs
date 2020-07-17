@@ -149,23 +149,27 @@ export class Mouse extends PsychObject
 		}
 	}
 
+
 	/**
 	 * Helper method for checking whether a stimulus has had any button presses within bounds.
 	 *
 	 * @name module:core.Mouse#isPressedIn
 	 * @function
 	 * @public
-	 * @param {object|module:visual.VisualStim} [shape= undefined] A type of stimulus implementing a `contains()` method.
-	 * @param {object|number} [buttons= undefined] The target button index.
+	 * @param {object|module:visual.VisualStim} shape A type of visual stimulus or object having a `contains()` method.
+	 * @param {object|number} [buttons] The target button index potentially tucked inside an object.
+	 * @param {object} [options]
+	 * @param {object|module:visual.VisualStim} [options.shape]
+	 * @param {number} [options.buttons]
 	 * @return {boolean} Whether mouse with button(s) pressed is contained within stimulus.
 	 */
 	isPressedIn(...args)
 	{
-		// Helper to check if some object features a certain key
-		const hasKey = key => object => !!(object && object[key]);
-
 		// Look for options given in object literal form, cut out falsy inputs
 		const [{ shape: shapeMaybe, buttons: buttonsMaybe } = {}] = args.filter(v => !!v);
+
+		// Helper to check if some object features a certain key
+		const hasKey = key => object => !!(object && object[key]);
 
 		// Shapes are expected to be instances of stimuli, or at
 		// the very least objects featuring a `contains()` method
