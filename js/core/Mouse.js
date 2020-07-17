@@ -176,16 +176,16 @@ export class Mouse extends PsychObject
 		// Default to input (pass through)
 		const shape = shapeFound || shapeMaybe;
 
-		// Buttons values may be extracted from an object literal
+		// Buttons values may be extracted from an object
 		// featuring the `buttons` key, or found as integers
 		// in the arguments array
 		const hasButtons = hasKey('buttons');
 		const { isInteger } = Number;
-		// Prioritize buttons value given as part of an options object literal,
+		// Prioritize buttons value given as part of an options object,
 		// then look for the first occurrence in the arguments array of either
 		// an integer or an extra object with a `buttons` key
 		const buttonsFound = isInteger(buttonsMaybe) ? buttonsMaybe : args.find(o => hasButtons(o) || isInteger(o));
-		// Worst case scenario `wanted` ends up being an empty object literal
+		// Worst case scenario `wanted` ends up being an empty object
 		const { buttons: wanted = buttonsFound || buttonsMaybe } = buttonsFound || {};
 
 		// Will throw if stimulus is falsy or non-object like
