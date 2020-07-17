@@ -161,7 +161,7 @@ export class Mouse extends PsychObject
 	 * @param {object} [options]
 	 * @param {object|module:visual.VisualStim} [options.shape]
 	 * @param {number} [options.buttons]
-	 * @return {boolean} Whether mouse with button(s) pressed is contained within stimulus.
+	 * @return {boolean} Whether button pressed is contained within stimulus.
 	 */
 	isPressedIn(...args)
 	{
