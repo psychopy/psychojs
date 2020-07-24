@@ -444,6 +444,13 @@ export class TrialHandler extends PsychObject
 							value = Number.parseFloat(value);
 						}
 
+						const [arrayMaybe] = util.turnSquareBracketsIntoArrays(value)
+
+						if (Array.isArray(arrayMaybe))
+						{
+							value = arrayMaybe
+						}
+
 						trial[fields[l]] = value;
 					}
 					trialList[r] = trial;
