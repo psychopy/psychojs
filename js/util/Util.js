@@ -903,3 +903,53 @@ export function offerDataForDownload(filename, data, type)
 		document.body.removeChild(elem);
 	}
 }
+
+
+/**
+ * To overcome built-in JSON parsing limitations when it comes to eg. floats missing the naught prefix, turn substrings contained within square brackets into arrays type casting numeric looking values in the process.
+ *
+ * @name module:util.turnSquareBracketsIntoArrays
+ * @function
+ * @public
+ * @param {string} input - string containing lists in square brackets
+ * @returns {array} an array of arrays found
+ */
+function turnSquareBracketsIntoArrays(input) {
+	// Only interested in strings
+	// https://stackoverflow.com/questions/4059147
+	if (String(input) !== input)
+	{
+		return input
+	}
+
+	// Matches content within square brackets (using literal
+	// form is MDN's advice for patterns unlikely to change)
+	const regexp = /\[(.*?)\]/g
+	// Find all matches (iterator)
+	const matchesFound = input.matchAll(regexp)
+	// Remap results
+	const matches = Array.from(matchesFound, (data) =>
+		{
+			// Out of all the information for each match, focus
+			// on substrings inside of square brackets
+			const [_, arrayLikeContent = ''] = data
+
+			// Eat up space after comma
+			const commaSplitValues = arrayLikeContent.split(/[, ]+/)
+			// Type cast numeric values
+			const output = commaSplitValues.map((value) =>
+				{
+					// Leave empty strings untouched
+					const numberMaybe = value && Number(value)
+
+					return Number.isNaN(numberMaybe) ? value : numberMaybe
+				}
+			)
+
+			return output
+		}
+	)
+
+	// Pass through if no array-like matches
+	return matches.length ? matches : input
+}
