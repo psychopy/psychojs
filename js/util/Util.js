@@ -919,37 +919,37 @@ function turnSquareBracketsIntoArrays(input) {
 	// https://stackoverflow.com/questions/4059147
 	if (String(input) !== input)
 	{
-		return input
+		return input;
 	}
 
 	// Matches content within square brackets (using literal
 	// form is MDN's advice for patterns unlikely to change)
-	const regexp = /\[(.*?)\]/g
+	const regexp = /\[(.*?)\]/g;
 	// Find all matches (iterator)
-	const matchesFound = input.matchAll(regexp)
+	const matchesFound = input.matchAll(regexp);
 	// Remap results
 	const matches = Array.from(matchesFound, (data) =>
 		{
 			// Out of all the information for each match, focus
 			// on substrings inside of square brackets
-			const [_, arrayLikeContent = ''] = data
+			const [_, arrayLikeContent = ''] = data;
 
 			// Eat up space after comma
-			const commaSplitValues = arrayLikeContent.split(/[, ]+/)
+			const commaSplitValues = arrayLikeContent.split(/[, ]+/);
 			// Type cast numeric values
 			const output = commaSplitValues.map((value) =>
 				{
 					// Leave empty strings untouched
-					const numberMaybe = value && Number(value)
+					const numberMaybe = value && Number(value);
 
-					return Number.isNaN(numberMaybe) ? value : numberMaybe
+					return Number.isNaN(numberMaybe) ? value : numberMaybe;
 				}
-			)
+			);
 
-			return output
+			return output;
 		}
-	)
+	);
 
 	// Pass through if no array-like matches
-	return matches.length ? matches : input
+	return matches.length ? matches : input;
 }
