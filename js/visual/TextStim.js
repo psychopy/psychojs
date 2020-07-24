@@ -297,6 +297,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			(this._bold ? 'bold ' : '') +
 			(this._italic ? 'italic ' : '') +
 			fontSize + 'px ' + this._font;
+
+		// Guard against memory leaks
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+		}
+
 		this._pixi = new PIXI.Text(this._text, {
 			font: font,
 			fill: color.hex,

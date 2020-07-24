@@ -268,6 +268,14 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 		this._needUpdate = false;
 
+		// Guard against memory leaks
+		// https://discourse.psychopy.org/t/psychojs-platform-version-2020-1-memory-leak-in-visual-stimulus-setters/14571
+		// https://www.html5gamedevs.com/topic/1189-pixi-how-to-destroy-cleanup/
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+		}
+
 		this._pixi = undefined;
 
 		// no image to draw: return immediately

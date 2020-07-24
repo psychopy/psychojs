@@ -252,6 +252,12 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 
 		this._getPolygon(/*true*/); // this also updates _vertices_px
 
+		// Guard against memory leaks
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+		}
+
 		this._pixi = undefined;
 
 		// no polygon to draw: return immediately
