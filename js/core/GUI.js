@@ -239,6 +239,15 @@ export class GUI
 
 					buttons: [
 						{
+							id: "buttonCancel",
+							text: "Cancel",
+							click: function ()
+							{
+								self._dialogComponent.button = 'Cancel';
+								$("#expDialog").dialog('close');
+							}
+						},
+						{
 							id: "buttonOk",
 							text: "Ok",
 							click: function ()
@@ -259,15 +268,6 @@ export class GUI
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
-							}
-						},
-						{
-							id: "buttonCancel",
-							text: "Cancel",
-							click: function ()
-							{
-								self._dialogComponent.button = 'Cancel';
-								$("#expDialog").dialog('close');
 							}
 						}
 					],
