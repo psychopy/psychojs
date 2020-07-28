@@ -928,7 +928,7 @@ export function randint(min = 0, max)
 
 	if (hi < lo)
 	{
-		throw Error('max need be less than min');
+		throw Error('min need be less than max please');
 	}
 
 	return Math.floor(Math.random() * (hi - lo)) + lo;
