@@ -903,3 +903,33 @@ export function offerDataForDownload(filename, data, type)
 		document.body.removeChild(elem);
 	}
 }
+
+
+/**
+ * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ *
+ * @name module:util.randint
+ * @function
+ * @public
+ * @param {number} min - lowest integer to be drawn, or highest plus one if max undefined (default)
+ * @param {number} max - one above the largest integer to be drawn
+ * @returns {number} a random integer in the requested range (signed)
+ */
+export function randint(min = 0, max)
+{
+	let lo = min;
+	let hi = max;
+
+	if (typeof max === 'undefined')
+	{
+		hi = lo;
+		lo = 0;
+	}
+
+	if (hi < lo)
+	{
+		throw Error('max need be less than min');
+	}
+
+	return Math.floor(Math.random() * (hi - lo)) + lo;
+}
