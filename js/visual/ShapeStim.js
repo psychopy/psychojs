@@ -262,10 +262,16 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// prepare the polygon in the given color and opacity:
 		this._pixi = new PIXI.Graphics();
-		this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
+		// Adjust opacity if line color considered transparent (fallback)
+		const lineOpacity = this._lineColor.invisible ? 0 : this._opacity;
+
+		this._pixi.lineStyle(this._lineWidth, this._lineColor.int, lineOpacity, 0.5);
 		if (typeof this._fillColor !== 'undefined')
 		{
-			this._pixi.beginFill(this._fillColor.int, this._opacity);
+			// Same for fill color
+			const fillOpacity = this._fillColor.invisible ? 0 : this._opacity;
+
+			this._pixi.beginFill(this._fillColor.int, fillOpacity);
 		}
 		this._pixi.drawPolygon(this._pixiPolygon_px);
 		if (typeof this._fillColor !== 'undefined')
