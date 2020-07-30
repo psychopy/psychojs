@@ -501,10 +501,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const barSize_px = util.to_px(this._barSize, this._units, this._win).map(v => Math.max(1, v));
 		if (this._barLineWidth_px > 0)
 		{
-			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, this._opacity, 0.5);
+			// Drop line opacity if passed in color is the fallback type of black
+			const barLineOpacity = this._barLineColor.invisible ? 0 : this._opacity;
+
+			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, barLineOpacity, 0.5);
 			if (typeof this._barFillColor !== 'undefined')
 			{
-				this._body.beginFill(this._barFillColor.int, this._opacity);
+				// Same for fill color
+				const barFillOpacity = this._barFillColor.invisible ? 0 : this._opacity;
+
+				this._body.beginFill(this._barFillColor.int, barFillOpacity);
 			}
 			this._body.drawRect(-barSize_px[0] / 2, -barSize_px[1] / 2, barSize_px[0], barSize_px[1]);
 			if (typeof this._barFillColor !== 'undefined')
@@ -521,7 +527,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 		const tickPositions = this._ratingToPos(this._ticks);
 		const tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
-		this._body.lineStyle(this._barLineWidth_px * 2, this._tickColor.int, this._opacity, 0.5);
+		const tickOpacity = this._tickColor.invisible ? 0 : this._opacity;
+
+		this._body.lineStyle(this._barLineWidth_px*2, this._tickColor.int, tickOpacity, 0.5);
 		const tickSize_px = util.to_px(this._tickSize, this._units, this._win);
 		for (let tickPosition_px of tickPositions_px)
 		{
@@ -532,7 +540,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			}
 			else if (this._tickType === Slider.Shape.DISC)
 			{
-				this._body.beginFill(this._tickColor.int, this._opacity);
+				this._body.beginFill(this._tickColor.int, tickOpacity);
 				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], Math.max(tickSize_px[0], tickSize_px[1]));
 				this._body.endFill();
 			}
@@ -599,13 +607,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			}
 
 			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
-			labelText.alpha = this._opacity;
+			labelText.alpha = this._labelColor.invisible ? 0 : this._opacity;
 			this._pixi.addChild(labelText);
 		}
 
 
 		// (*) marker:
 		const markerSize_px = Math.max(...util.to_px(this._markerSize, this._units, this._win));
+		const markerOpacity = this._markerColor.invisible ? 0 : this._opacity;
 		this._marker = new PIXI.Graphics();
 		this._marker.alpha = 0; // invisible until markerPos is defined
 		this._marker.interactive = true;
@@ -613,15 +622,15 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 		if (this._markerType === Slider.Shape.DISC)
 		{
-			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
-			this._marker.beginFill(this._markerColor.int, this._opacity);
+			this._marker.lineStyle(1, this._markerColor.int, markerOpacity, 0.5);
+			this._marker.beginFill(this._markerColor.int, markerOpacity);
 			this._marker.drawCircle(0, 0, markerSize_px / 2);
 			this._marker.endFill();
 		}
 		else if (this._markerType === Slider.Shape.TRIANGLE)
 		{
-			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
-			this._marker.beginFill(this._markerColor.int, this._opacity);
+			this._marker.lineStyle(1, this._markerColor.int, markerOpacity, 0.5);
+			this._marker.beginFill(this._markerColor.int, markerOpacity);
 			this._marker.moveTo(0, 0);
 			if (this._isHorizontal())
 			{
@@ -849,6 +858,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			this._tickType = Slider.Shape.DISC;
 
 			this._markerColor = this.getContrastedColor(this._tickColor, 0.5);
+			// Set visibility manually on the new instance
+			this._markerColor._fallback = this._tickColor.invisible;
 			this._markerSize.x *= 0.7;
 			this._markerSize.y *= 0.7;
 		}
