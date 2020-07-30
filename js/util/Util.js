@@ -903,3 +903,21 @@ export function offerDataForDownload(filename, data, type)
 		document.body.removeChild(elem);
 	}
 }
+
+
+/**
+ * Round to a certain number of decimal places.
+ *
+ * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
+ *
+ * @name module:util.round
+ * @function
+ * @public
+ * @see {@link https://stackoverflow.com/questions/11832914|Stack Overflow}
+ * @param {number} input - the number to be rounded
+ * @param {number} places - the max number of decimals desired
+ * @returns {number} input rounded to the specified number of decimal places at most
+ */
+export function round(input, places = 0) {
+	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
+}
