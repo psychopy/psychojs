@@ -314,7 +314,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.rotation = this._ori * Math.PI / 180;
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 
-		this._pixi.alpha = this._opacity;
+		// Consider the color instance prior to adjusting contrast when setting opacity
+		this._pixi.alpha = this._color.invisible ? 0 : this._opacity;
 
 		this._size = [
 			this._getLengthUnits(Math.abs(this._pixi.width)),
