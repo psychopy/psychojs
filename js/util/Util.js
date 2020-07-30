@@ -921,3 +921,27 @@ export function offerDataForDownload(filename, data, type)
 export function round(input, places = 0) {
 	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
 }
+
+
+/**
+ * Calculate a total for all numeric input array elements.
+ *
+ * @name module:util.sum
+ * @function
+ * @public
+ * @param {array} input - a list of numbers to add up
+ * @returns {number} numeric input entries added up
+ */
+export function sum(inputMaybe = []) {
+	// Cover against null input
+	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
+	const add = (a, b) => a + b;
+
+	return input
+		// Type cast everything as a number
+		.map(value => Number(value))
+		// Drop non numeric looking entries, needs transpiling for IE11
+		.filter(value => Number.isNaN(value) === false)
+		// Add up each successive entry starting from naught
+		.reduce(add, 0);
+}
