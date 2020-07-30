@@ -33,8 +33,17 @@
 export class Color
 {
 
-	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB)
+	constructor(objMaybe, colorspace = Color.COLOR_SPACE.RGB)
 	{
+		// Passed in strings that would have previously thrown a color is unknown type error
+		const knownUnknowns = ['null', 'undefined', 'transparent', 'none', 'None'];
+		// Check if passed in color problematic
+		const objFalsy = !objMaybe || knownUnknowns.indexOf(objMaybe) !== -1;
+		const obj = objFalsy ? 'black' : objMaybe;
+
+		// Is this color instance a fallback type of black?
+		this._fallback = objFalsy;
+
 		const response = {origin: 'Color', context: 'when defining a color'};
 
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
@@ -127,6 +136,21 @@ export class Color
 			}
 
 		}
+	}
+
+
+	/**
+	 * Invisible ink property.
+	 *
+	 * Indicates if this Color fell back to default because of the way it was instantiated using willy-nilly parameters.
+	 *
+	 * @name module:util.Color.invisible
+	 * @function
+	 * @public
+	 * @return {boolean} whether the Color instance can be considered transparent
+	 */
+	get invisible() {
+		return this._fallback;
 	}
 
 
