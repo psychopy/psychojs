@@ -161,6 +161,26 @@ export class MinimalStim extends PsychObject
 
 
 	/**
+	 * Release the PIXI representation, if there is one.
+	 *
+	 * @name module:core.MinimalStim#release
+	 * @function
+	 * @public
+	 */
+	release()
+	{
+		this._setAttribute('autoDraw', false, log);
+		this.status = PsychoJS.Status.STOPPED;
+
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+			this._pixi = undefined;
+		}
+	}
+
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * Note: this is an abstract function, which should not be called.
