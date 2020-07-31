@@ -906,7 +906,36 @@ export function offerDataForDownload(filename, data, type)
 
 
 /**
- * Round to a certain number of decimal places.
+ * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ *
+ * @name module:util.randint
+ * @function
+ * @public
+ * @param {number} min - lowest integer to be drawn, or highest plus one if max undefined (default)
+ * @param {number} max - one above the largest integer to be drawn
+ * @returns {number} a random integer in the requested range (signed)
+ */
+export function randint(min = 0, max)
+{
+	let lo = min;
+	let hi = max;
+
+	if (typeof max === 'undefined')
+	{
+		hi = lo;
+		lo = 0;
+	}
+
+	if (hi < lo)
+	{
+		throw Error('min need be less than max please');
+	}
+
+	return Math.floor(Math.random() * (hi - lo)) + lo;
+}
+
+
+/** Round to a certain number of decimal places.
  *
  * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
  *
@@ -918,7 +947,8 @@ export function offerDataForDownload(filename, data, type)
  * @param {number} places - the max number of decimals desired
  * @returns {number} input rounded to the specified number of decimal places at most
  */
-export function round(input, places = 0) {
+export function round(input, places = 0)
+{
 	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
 }
 
@@ -932,7 +962,8 @@ export function round(input, places = 0) {
  * @param {array} input - a list of numbers to add up
  * @returns {number} numeric input entries added up
  */
-export function sum(inputMaybe = []) {
+export function sum(inputMaybe = [])
+{
 	// Cover against null input
 	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
 	const add = (a, b) => a + b;
