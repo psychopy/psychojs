@@ -903,3 +903,45 @@ export function offerDataForDownload(filename, data, type)
 		document.body.removeChild(elem);
 	}
 }
+
+
+/**
+ * Round to a certain number of decimal places.
+ *
+ * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
+ *
+ * @name module:util.round
+ * @function
+ * @public
+ * @see {@link https://stackoverflow.com/questions/11832914|Stack Overflow}
+ * @param {number} input - the number to be rounded
+ * @param {number} places - the max number of decimals desired
+ * @returns {number} input rounded to the specified number of decimal places at most
+ */
+export function round(input, places = 0) {
+	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
+}
+
+
+/**
+ * Calculate a total for all numeric input array elements.
+ *
+ * @name module:util.sum
+ * @function
+ * @public
+ * @param {array} input - a list of numbers to add up
+ * @returns {number} numeric input entries added up
+ */
+export function sum(inputMaybe = []) {
+	// Cover against null input
+	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
+	const add = (a, b) => a + b;
+
+	return input
+		// Type cast everything as a number
+		.map(value => Number(value))
+		// Drop non numeric looking entries, needs transpiling for IE11
+		.filter(value => Number.isNaN(value) === false)
+		// Add up each successive entry starting from naught
+		.reduce(add, 0);
+}
