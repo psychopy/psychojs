@@ -334,6 +334,12 @@ export class MovieStim extends VisualStim
 		}
 		this._needUpdate = false;
 
+		// Guard against memory leaks
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+		}
+
 		this._pixi = undefined;
 
 		// no movie to draw: return immediately
