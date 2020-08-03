@@ -134,16 +134,14 @@ a:hover {
   content: "initialising the experiment...";
   position: fixed;
   top: 50%;
-  left: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Initialisation message for IE11 */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   #root:after {
     content: "initialising the experiment... | Internet Explorer / Edge [beta]";
-    position: fixed;
-    top: 50%;
-    left: 30%;
 
     color: #A05000;
     font-weight: bold;
