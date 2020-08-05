@@ -359,7 +359,7 @@ export class ExperimentHandler extends PsychObject
 
 	/**
 	 * Get the attribute names and values for the current trial of a given loop.
-	 * <p> Only only info relating to the trial execution are returned.</p>
+	 * <p> Only info relating to the trial execution are returned.</p>
 	 *
 	 * @name module:data.ExperimentHandler#_getLoopAttributes
 	 * @function

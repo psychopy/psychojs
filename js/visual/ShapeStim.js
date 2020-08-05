@@ -13,6 +13,7 @@ import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
+import {WindowMixin} from "../core/WindowMixin";
 
 
 /**
@@ -40,7 +41,7 @@ import * as util from '../util/Util';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
+export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
 	constructor({
 								name,
@@ -66,9 +67,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
-
-		// whether the vertices need to be updated:
-		this._needVertexUpdate = true;
 		// the vertices (in pixel units):
 		this._vertices_px = undefined;
 
@@ -76,18 +74,24 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
 	/**
 	 * Force a refresh of the stimulus.
 	 *
+	 * refresh() is called, in particular, when the Window is resized.
+	 *
 	 * @name module:visual.ShapeStim#refresh
 	 * @public
+	 * @override
 	 */
 	refresh()
 	{
-		super.refresh();
+		// the polygon needs to be recreated:
+		this._pixiPolygon_px = undefined;
 
-		this._needVertexUpdate = true;
+		super.refresh();
 	}
+
 
 
 	/**
@@ -95,15 +99,18 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * @name module:visual.ShapeStim#setSize
 	 * @public
+	 * @override
 	 * @param {number | number[]} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setSize(size, log = false)
 	{
-		super.setSize(size, log);
+		// the polygon needs to be recreated:
+		this._pixiPolygon_px = undefined;
 
-		this._needVertexUpdate = true;
+		super.setSize(size);
 	}
+
 
 
 	/**
@@ -116,10 +123,19 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	setLineWidth(lineWidth, log = false)
 	{
-		this._setAttribute('lineWidth', lineWidth, log);
+		const hasChanged = this._setAttribute('lineWidth', lineWidth, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+			// the pixi representation needs to be updated:
+			this._needPixiUpdate = true;
+
+			// immediately estimate the bounding box:
+			this._estimateBoundingBox();
+		}
 	}
+
 
 
 	/**
@@ -132,10 +148,16 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	setLineColor(lineColor, log = false)
 	{
-		this._setAttribute('lineColor', lineColor, log);
+		const hasChanged = this._setAttribute('lineColor', lineColor, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+			// the pixi representation needs to be updated:
+			this._needPixiUpdate = true;
+		}
 	}
+
 
 
 	/**
@@ -148,10 +170,16 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	setFillColor(fillColor, log = false)
 	{
-		this._setAttribute('fillColor', fillColor, log);
+		const hasChanged = this._setAttribute('fillColor', fillColor, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+			// the pixi representation needs to be updated:
+			this._needPixiUpdate = true;
+		}
 	}
+
 
 
 	/**
@@ -193,8 +221,14 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 			// 	assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
 			// 	log);
 
-			this._needVertexUpdate = true;
 			this._needUpdate = true;
+			// the pixi representation needs to be updated:
+			this._needPixiUpdate = true;
+			// the polygon needs to be recreated:
+			this._pixiPolygon_px = undefined;
+
+			// estimate the bounding box:
+			this._estimateBoundingBox();
 		}
 		catch (error)
 		{
@@ -203,37 +237,48 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
-	/**
-	 * Determine whether this stimulus contains the given object.
-	 *
-	 * @name module:visual.ShapeStim#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the stimulus contains the object
-	 */
-	contains(object, units)
-	{
-		this._psychoJS.logger.debug('test whether BaseShameStim:', this.name, 'contains object: ', ('name' in object) ? object.name : object);
 
-		// get position of object:
-		const objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @name module:visual.ShapeStim#_estimateBoundingBox
+	 * @function
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		if (typeof this._pixiPolygon_px === 'undefined')
 		{
-			throw {
-				origin: 'ShapeStim.contains',
-				context: 'when determining whether BaseShameStim: ' + this._name + ' contains object: ' + util.toString(object),
-				error: 'unable to determine the position of the object'
-			};
+			// get the PIXI polygon (this also updates _vertices_px):
+			this._getPixiPolygon();
 		}
 
-		// test for inclusion
-		// note: the vertices are centered around (0, 0) so we need to add to them the stimulus' position
-		const pos_px = util.to_px(this.pos, this.units, this.win);
-		const polygon_px = this._vertices_px.map(v => [v[0] + pos_px[0], v[1] + pos_px[1]]);
+		// left, top, right, bottom limits:
+		const limits_px = [
+			Number.POSITIVE_INFINITY,
+			Number.POSITIVE_INFINITY,
+			Number.NEGATIVE_INFINITY,
+			Number.NEGATIVE_INFINITY
+		];
+		for (const vertex of this._vertices_px)
+		{
+			limits_px[0] = Math.min(limits_px[0], vertex[0]);
+			limits_px[1] = Math.min(limits_px[1], vertex[1]);
+			limits_px[2] = Math.max(limits_px[2], vertex[0]);
+			limits_px[3] = Math.max(limits_px[3], vertex[1]);
+		}
 
-		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] + this._getLengthUnits(limits_px[0]),
+			this._pos[1] + this._getLengthUnits(limits_px[1]),
+			this._getLengthUnits(limits_px[2] - limits_px[0]),
+			this._getLengthUnits(limits_px[3] - limits_px[1])
+		);
+
+		// TODO take the orientation into account
 	}
+
 
 
 	/**
@@ -250,33 +295,39 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 		this._needUpdate = false;
 
-		this._getPolygon(/*true*/); // this also updates _vertices_px
-
-		this._pixi = undefined;
-
-		// no polygon to draw: return immediately
-		if (typeof this._pixiPolygon_px === 'undefined')
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
 		{
-			return;
-		}
+			this._needPixiUpdate = false;
 
-		// prepare the polygon in the given color and opacity:
-		this._pixi = new PIXI.Graphics();
-		this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
-		if (typeof this._fillColor !== 'undefined')
-		{
-			this._pixi.beginFill(this._fillColor.int, this._opacity);
-		}
-		this._pixi.drawPolygon(this._pixiPolygon_px);
-		if (typeof this._fillColor !== 'undefined')
-		{
-			this._pixi.endFill();
+			if (typeof this._pixi !== 'undefined')
+			{
+				this._pixi.destroy(true);
+			}
+			this._pixi = undefined;
+
+			// get the PIXI polygon (this also updates _vertices_px):
+			this._getPixiPolygon();
+
+			// prepare the polygon in the given color and opacity:
+			this._pixi = new PIXI.Graphics();
+			this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
+			if (typeof this._fillColor !== 'undefined')
+			{
+				this._pixi.beginFill(this._fillColor.int, this._opacity);
+			}
+			this._pixi.drawPolygon(this._pixiPolygon_px);
+			if (typeof this._fillColor !== 'undefined')
+			{
+				this._pixi.endFill();
+			}
 		}
 
 		// set polygon position and rotation:
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180.0;
 	}
+
 
 
 	/**
@@ -286,22 +337,18 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @private
 	 * @return {Object} the PIXI polygon corresponding to this stimulus vertices.
 	 */
-	_getPolygon(/*force = false*/)
+	_getPixiPolygon()
 	{
-		if (!this._needVertexUpdate)
+		// if the polygon already exists, we return immediately:
+		if (typeof this._pixiPolygon_px !== 'undefined')
 		{
 			return;
 		}
-		this._needVertexUpdate = false;
 
-		console.log('>>>>>>>>> CREATING PIXI POLYGON!!!!');
+		// make sure the vertices in pixel units are available:
+		this._getVertices_px();
 
-
-		//if (!force && typeof this._pixiPolygon_px !== 'undefined')
-		//	return this._pixiPolygon_px;
-
-		// make sure the vertices in pixel units are available, and flatten the array of arrays:
-		this._getVertices_px(/*force*/);
+		// flatten the vertex_px, which is an array of arrays:
 		let coords_px = [];
 		for (const vertex_px of this._vertices_px)
 		{
@@ -320,10 +367,11 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 			}
 		}
 
-		// create the PIXI polygon:
+		// destroy the previous PIXI polygon and create a new one:
 		this._pixiPolygon_px = new PIXI.Polygon(coords_px);
 		return this._pixiPolygon_px;
 	}
+
 
 
 	/**
@@ -333,11 +381,8 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @protected
 	 * @return {Array.<number[]>} the vertices (in pixel units)
 	 */
-	_getVertices_px(/*force = false*/)
+	_getVertices_px()
 	{
-		/*if (!force && typeof this._vertices_px !== 'undefined')
-			return this._vertices_px;*/
-
 		// handle flipping:
 		let flip = [1.0, 1.0];
 		if ('_flipHoriz' in this && this._flipHoriz)
@@ -350,7 +395,11 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		// handle size, flipping, and convert to pixel units:
-		this._vertices_px = this._vertices.map(v => util.to_px([v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]], this._units, this._win));
+		this._vertices_px = this._vertices.map(v => util.to_px(
+			[v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]],
+			this._units,
+			this._win)
+		);
 
 		return this._vertices_px;
 	}

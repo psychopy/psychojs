@@ -90,6 +90,7 @@ export class Polygon extends ShapeStim
 	}
 
 
+
 	/**
 	 * Setter for the radius attribute.
 	 *
@@ -100,11 +101,14 @@ export class Polygon extends ShapeStim
 	 */
 	setRadius(radius, log = false)
 	{
-		this._psychoJS.logger.debug('set the radius of Polygon: ', this.name, 'to: ', radius);
+		const hasChanged = this._setAttribute('radius', radius, log);
 
-		this._setAttribute('radius', radius, log);
-		this._updateVertices();
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
 	}
+
 
 
 	/**
@@ -117,11 +121,14 @@ export class Polygon extends ShapeStim
 	 */
 	setEdges(edges, log = false)
 	{
-		this._psychoJS.logger.debug('set the edges of Polygon: ', this.name, 'to: ', edges);
+		const hasChanged = this._setAttribute('edges', Math.round(edges), log);
 
-		this._setAttribute('edges', Math.round(edges), log);
-		this._updateVertices();
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
 	}
+
 
 
 	/**

@@ -109,7 +109,7 @@ export class PsychObject extends EventEmitter
 	/**
 	 * Set the value of an attribute.
 	 *
-	 * @private
+	 * @protected
 	 * @param {string} attributeName - the name of the attribute
 	 * @param {object} attributeValue - the value of the attribute
 	 * @param {boolean} [log= false] - whether of not to log
@@ -307,7 +307,7 @@ export class PsychObject extends EventEmitter
 		// (*) log if appropriate:
 		if (!stealth && (log || this._autoLog) && (typeof this.win !== 'undefined'))
 		{
-			const msg = this.name + ": " + attributeName + " = " + JSON.stringify(attributeValue);
+			const msg = this.name + ": " + attributeName + " = " + util.toString(attributeValue);
 			this.win.logOnFlip({
 				msg,
 				// obj: this
@@ -319,7 +319,7 @@ export class PsychObject extends EventEmitter
 		const previousAttributeValue = this['_' + attributeName];
 		this['_' + attributeName] = attributeValue;
 
-		return (attributeValue !== previousAttributeValue);
+		return (typeof previousAttributeValue !== 'undefined' && attributeValue !== previousAttributeValue);
 	}
 
 

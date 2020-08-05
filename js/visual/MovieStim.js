@@ -75,6 +75,9 @@ export class MovieStim extends VisualStim
 
 		this._addAttributes(MovieStim, movie, color, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay);
 
+		// estimate the bounding box:
+		this._estimateBoundingBox();
+
 		// check whether the fastSeek method on HTMLVideoElement is implemented:
 		const videoElement = document.createElement('video');
 		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
@@ -135,12 +138,14 @@ export class MovieStim extends VisualStim
 			};
 
 			this._needUpdate = true;
+			this._needPixiUpdate = true;
 		}
 		catch (error)
 		{
 			throw Object.assign(response, {error});
 		}
 	}
+
 
 
 	/**
@@ -151,10 +156,15 @@ export class MovieStim extends VisualStim
 	 */
 	setVolume(volume, log = false)
 	{
-		this._setAttribute('volume', volume, log);
+		const hasChanged = this._setAttribute('volume', volume, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+		}
 	}
+
+
 
 	/**
 	 * Setter for the noAudio attribute.
@@ -164,10 +174,15 @@ export class MovieStim extends VisualStim
 	 */
 	setNoAudio(noAudio, log = false)
 	{
-		this._setAttribute('noAudio', noAudio, log);
+		const hasChanged = this._setAttribute('noAudio', noAudio, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+		}
 	}
+
+
 
 	/**
 	 * Setter for the flipVert attribute.
@@ -179,10 +194,14 @@ export class MovieStim extends VisualStim
 	 */
 	setFlipVert(flipVert, log = false)
 	{
-		this._setAttribute('flipVert', flipVert, log);
+		const hasChanged = this._setAttribute('flipVert', flipVert, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+		}
 	}
+
 
 
 	/**
@@ -195,10 +214,14 @@ export class MovieStim extends VisualStim
 	 */
 	setFlipHoriz(flipHoriz, log = false)
 	{
-		this._setAttribute('flipHoriz', flipHoriz, log);
+		const hasChanged = this._setAttribute('flipHoriz', flipHoriz, log);
 
-		this._needUpdate = true;
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+		}
 	}
+
 
 
 	/**
@@ -217,6 +240,7 @@ export class MovieStim extends VisualStim
 	}
 
 
+
 	/**
 	 * Start playing the movie.
 	 *
@@ -229,6 +253,7 @@ export class MovieStim extends VisualStim
 	}
 
 
+
 	/**
 	 * Pause the movie.
 	 *
@@ -239,6 +264,7 @@ export class MovieStim extends VisualStim
 		this.status = PsychoJS.Status.STOPPED;
 		this._movie.pause();
 	}
+
 
 
 	/**
@@ -255,6 +281,7 @@ export class MovieStim extends VisualStim
 			this._movie.fastSeek(0);
 		}
 	}
+
 
 
 	/**
@@ -276,7 +303,6 @@ export class MovieStim extends VisualStim
 			};
 		}
 
-
 		if (this._hasFastSeek)
 		{
 			this._movie.fastSeek(timePoint);
@@ -284,40 +310,31 @@ export class MovieStim extends VisualStim
 	}
 
 
+
 	/**
-	 * Determine whether the given object is inside this movie.
+	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.MovieStim#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the image contains the object
+	 * @name module:visual.ImageStim#_estimateBoundingBox
+	 * @function
+	 * @override
+	 * @protected
 	 */
-	contains(object, units)
+	_estimateBoundingBox()
 	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
+		const size = this._getDisplaySize();
+		if (typeof size !== 'undefined')
 		{
-			throw {
-				origin: 'MovieStim.contains',
-				context: `when determining whether MovieStim: ${this._name} contains object: ${util.toString(object)}`,
-				error: 'unable to determine the position of the object'
-			};
+			this._boundingBox = new PIXI.Rectangle(
+				this._pos[0] - this._size[0] / 2,
+				this._pos[1] - this._size[1] / 2,
+				this._size[0],
+				this._size[1]
+			);
 		}
 
-		// test for inclusion:
-		// note: since _pixi.anchor is [0.5, 0.5] the movie is actually centered on pos
-		let pos_px = util.to_px(this.pos, this.units, this._win);
-		let size_px = util.to_px(this.size, this.units, this._win);
-		const polygon_px = [
-			[pos_px[0] - size_px[0] / 2, pos_px[1] - size_px[1] / 2],
-			[pos_px[0] + size_px[0] / 2, pos_px[1] - size_px[1] / 2],
-			[pos_px[0] + size_px[0] / 2, pos_px[1] + size_px[1] / 2],
-			[pos_px[0] - size_px[0] / 2, pos_px[1] + size_px[1] / 2]];
-
-		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
+		// TODO take the orientation into account
 	}
+
 
 
 	/**
@@ -334,27 +351,36 @@ export class MovieStim extends VisualStim
 		}
 		this._needUpdate = false;
 
-		this._pixi = undefined;
-
-		// no movie to draw: return immediately
-		if (typeof this._movie === 'undefined')
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
 		{
-			return;
+			this._needPixiUpdate = false;
+
+			if (typeof this._pixi !== 'undefined')
+			{
+				this._pixi.destroy(true);
+			}
+			this._pixi = undefined;
+
+			// no movie to draw: return immediately
+			if (typeof this._movie === 'undefined')
+			{
+				return;
+			}
+
+			// create a PixiJS video sprite:
+			this._texture = PIXI.Texture.fromVideo(this._movie);
+			this._pixi = new PIXI.Sprite(this._texture);
+
+			// since _texture.width may not be immedialy available but the rest of the code needs its value
+			// we arrange for repeated calls to _updateIfNeeded until we have a width:
+			if (this._texture.width === 0)
+			{
+				this._needUpdate = true;
+				this._needPixiUpdate = true;
+				return;
+			}
 		}
-
-		// create a PixiJS video sprite:
-		this._texture = PIXI.Texture.fromVideo(this._movie);
-		this._pixi = new PIXI.Sprite(this._texture);
-
-
-		// since _texture.width may not be immedialy available but the rest of the code needs its value
-		// we arrange for repeated calls to _updateIfNeeded until we have a width:
-		if (this._texture.width === 0)
-		{
-			this._needUpdate = true;
-			return;
-		}
-
 
 		// audio:
 		this._movie.muted = this._noAudio;
@@ -367,17 +393,9 @@ export class MovieStim extends VisualStim
 		// opacity:
 		this._pixi.alpha = this.opacity;
 
-		// stimulus size:
-		// note: we use the size of the texture if MovieStim has no specified size:
-		let stimSize = this.size;
-		if (typeof stimSize === 'undefined')
-		{
-			const textureSize = [this._texture.width, this._texture.height];
-			stimSize = util.to_unit(textureSize, 'pix', this.win, this.units);
-		}
-
 		// set the scale:
-		const size_px = util.to_px(stimSize, this.units, this.win);
+		const displaySize = this._getDisplaySize();
+		const size_px = util.to_px(displaySize, this.units, this.win);
 		const scaleX = size_px[0] / this._texture.width;
 		const scaleY = size_px[1] / this._texture.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
@@ -388,6 +406,36 @@ export class MovieStim extends VisualStim
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
+
+		// re-estimate the bounding box, as the texture's width may now be available:
+		this._estimateBoundingBox();
+	}
+
+
+
+	/**
+	 * Get the size of the display image, which is either that of the ImageStim or that of the image
+	 * it contains.
+	 *
+	 * @name module:visual.ImageStim#_getDisplaySize
+	 * @private
+	 * @return {number[]} the size of the displayed image
+	 */
+	_getDisplaySize()
+	{
+		let displaySize = this.size;
+
+		if (typeof displaySize === 'undefined')
+		{
+			// use the size of the texture, if we have access to it:
+			if (typeof this._texture !== 'undefined' && this._texture.width > 0)
+			{
+				const textureSize = [this._texture.width, this._texture.height];
+				displaySize = util.to_unit(textureSize, 'pix', this.win, this.units);
+			}
+		}
+
+		return displaySize;
 	}
 
 

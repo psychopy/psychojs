@@ -1,5 +1,5 @@
 /**
- * Text Stimulus.
+ * Editable TextBox Stimulus.
  *
  * @author Alain Pitiot
  * @version 2020.5
@@ -13,18 +13,19 @@ import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
 
-
+// TODO finish documenting all options
 /**
- * @name module:visual.TextStim
+ * @name module:visual.TextBox
  * @class
  * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
- * @param {string} [options.text="Hello World"] - the text to be rendered
+ * @param {string} [options.text=""] - the text to be rendered
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
+ *
  * @param {Color} [options.color= Color('white')] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
@@ -34,47 +35,52 @@ import * as util from '../util/Util';
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [options.alignHoriz = 'left'] - horizontal alignment
- * @param {string} [options.alignVert = 'center'] - vertical alignment
- * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
+ * @param {string} [options.anchor = 'left'] - horizontal alignment
+ *
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [foptions.lipVert= false] - whether or not to flip the text vertically
  * @param {PIXI.Graphics} options.clipMask - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
- *
- * @todo vertical alignment, and orientation are currently NOT implemented
  */
-export class TextStim extends util.mix(VisualStim).with(ColorMixin)
+export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
 	constructor({
 								name,
 								win,
-								text = 'Hello World',
-								font = 'Arial',
 								pos,
-								color = new Color('white'),
-								opacity,
-								depth = 0,
-								contrast = 1.0,
+								anchor = 'center',
+								size,
 								units,
 								ori,
-								height = 0.1,
+								opacity,
+								depth = 0,
+
+								text = '',
+								font = 'Arial',
+								letterHeight = 0.1,
 								bold = false,
 								italic = false,
-								alignHoriz = 'center',
-								alignVert = 'center',
-								wrapWidth,
+								alignment = 'left',
+								color = new Color('white'),
+								contrast = 1.0,
 								flipHoriz = false,
 								flipVert = false,
+
+								borderColor,
+								borderWidth = 1,
+								padding,
+
+								editable = false,
+
 								clipMask,
 								autoDraw,
 								autoLog
 							} = {})
 	{
-		super({name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog});
+		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
 
-		this._addAttributes(TextStim, text, font, color, contrast, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert);
+		this._addAttributes(TextBox, text, anchor, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, borderColor, borderWidth, padding, editable);
 
 		// estimate the bounding box (using TextMetrics):
 		this._estimateBoundingBox();
@@ -90,7 +96,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the text attribute.
 	 *
-	 * @name module:visual.TextStim#setText
+	 * @name module:visual.TextBox#setText
 	 * @public
 	 * @param {string} text - the text
 	 * @param {boolean} [log= false] - whether of not to log
@@ -103,7 +109,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
-			this._textMetrics = undefined;
 
 			// immediately estimate the bounding box:
 			this._estimateBoundingBox();
@@ -115,7 +120,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the alignHoriz attribute.
 	 *
-	 * @name module:visual.TextStim#setAlignHoriz
+	 * @name module:visual.TextBox#setAlignHoriz
 	 * @public
 	 * @param {string} alignHoriz - the text horizontal alignment, e.g. 'center'
 	 * @param {boolean} [log= false] - whether of not to log
@@ -127,7 +132,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			this._textMetrics = undefined;
 			this._needPixiUpdate = true;
 
 			// immediately estimate the bounding box:
@@ -138,36 +142,35 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Setter for the wrapWidth attribute.
+	 * Setter for the size attribute.
 	 *
-	 * @name module:visual.TextStim#setWrapWidth
+	 * @name module:visual.TextBox#setSize
 	 * @public
-	 * @param {boolean} wrapWidth - whether or not to wrap the text at the given width
+	 * @param {boolean} size - whether or not to wrap the text at the given width
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setWrapWidth(wrapWidth, log)
+	setSize(size, log)
 	{
-		if (typeof wrapWidth === 'undefined')
+		if (typeof size === 'undefined')
 		{
-			if (!TextStim._defaultWrapWidthMap.has(this._units))
+			if (!TextBox._defaultWrapWidthMap.has(this._units))
 			{
 				throw {
-					origin: 'TextStim.setWrapWidth',
-					context: 'when setting the wrap width of TextStim: ' + this._name,
-					error: 'no default wrap width for unit: ' + this._units
+					origin: 'TextBox.setSize',
+					context: 'when setting the size of TextBox: ' + this._name,
+					error: 'no default size for unit: ' + this._units
 				};
 			}
 
-			wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
+			size = TextBox._defaultSizeMap.get(this._units);
 		}
 
-		const hasChanged = this._setAttribute('wrapWidth', wrapWidth, log);
+		const hasChanged = this._setAttribute('size', size, log);
 
 		if (hasChanged)
 		{
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
-			this._textMetrics = undefined;
 
 			// immediately estimate the bounding box:
 			this._estimateBoundingBox();
@@ -177,36 +180,35 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Setter for the height attribute.
+	 * Setter for the letterHeight attribute.
 	 *
-	 * @name module:visual.TextStim#setHeight
+	 * @name module:visual.TextBox#setLetterHeight
 	 * @public
-	 * @param {number} height - text height
+	 * @param {number} letterHeight - text height
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setHeight(height, log)
+	setLetterHeight(letterHeight, log)
 	{
-		if (typeof height === 'undefined')
+		if (typeof letterHeight === 'undefined')
 		{
-			if (!TextStim._defaultLetterHeightMap.has(this._units))
+			if (!TextBox._defaultLetterHeightMap.has(this._units))
 			{
 				throw {
-					origin: 'TextStim.setHeight',
-					context: 'when setting the height of TextStim: ' + this._name,
+					origin: 'TextBox.setLetterHeight',
+					context: 'when setting the letter height of TextBox: ' + this._name,
 					error: 'no default letter height for unit: ' + this._units
 				};
 			}
 
-			height = TextStim._defaultLetterHeightMap.get(this._units);
+			letterHeight = TextStim._defaultLetterHeightMap.get(this._units);
 		}
 
-		const hasChanged = this._setAttribute('height', height, log);
+		const hasChanged = this._setAttribute('letterHeight', letterHeight, log);
 
 		if (hasChanged)
 		{
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
-			this._textMetrics = undefined;
 
 			// immediately estimate the bounding box:
 			this._estimateBoundingBox();
@@ -218,7 +220,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the italic attribute.
 	 *
-	 * @name module:visual.TextStim#setItalic
+	 * @name module:visual.TextBox#setItalic
 	 * @public
 	 * @param {boolean} italic - whether or not the text is italic
 	 * @param {boolean} [log= false] - whether of not to log
@@ -230,7 +232,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			this._textMetrics = undefined;
 			this._needPixiUpdate = true;
 
 			// immediately estimate the bounding box:
@@ -243,7 +244,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the bold attribute.
 	 *
-	 * @name module:visual.TextStim#setBold
+	 * @name module:visual.TextBox#setBold
 	 * @public
 	 * @param {boolean} bold - whether or not the text is bold
 	 * @param {boolean} [log= false] - whether of not to log
@@ -255,7 +256,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			this._textMetrics = undefined;
 			this._needPixiUpdate = true;
 
 			// immediately estimate the bounding box:
@@ -268,7 +268,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the flipVert attribute.
 	 *
-	 * @name module:visual.TextStim#setFlipVert
+	 * @name module:visual.TextBox#setFlipVert
 	 * @public
 	 * @param {boolean} flipVert - whether or not to flip vertically
 	 * @param {boolean} [log= false] - whether of not to log
@@ -280,7 +280,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			this._textMetrics = undefined;
 			this._needPixiUpdate = true;
 
 			// immediately estimate the bounding box:
@@ -293,7 +292,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the flipHoriz attribute.
 	 *
-	 * @name module:visual.TextStim#setFlipHoriz
+	 * @name module:visual.TextBox#setFlipHoriz
 	 * @public
 	 * @param {boolean} flipHoriz - whether or not to flip horizontally
 	 * @param {boolean} [log= false] - whether of not to log
@@ -305,7 +304,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			this._textMetrics = undefined;
 			this._needPixiUpdate = true;
 
 			// immediately estimate the bounding box:
@@ -316,22 +314,48 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Get the metrics estimated for the text and style.
+	 * Get the TextInput options applied to the PIXI.TextInput.
 	 *
-	 * Note: getTextMetrics does not require the PIXI representation of the stimulus to be instantiated,
-	 * unlike getSize().
-	 *
-	 * @name module:visual.TextStim#getTextMetrics
-	 * @public
+	 * @name module:visual.TextBox#_getTextInputOptions
+	 * @private
 	 */
-	getTextMetrics()
+	_getTextInputOptions()
 	{
-		if (typeof this._textMetrics === 'undefined')
-		{
-			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
-		}
+		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
+		const padding_px = Math.round(this._getLengthPix(this._padding));
+		const width_px = Math.round(this._getLengthPix(this._size[0]));
+		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
 
-		return this._textMetrics;
+		return {
+			input: {
+				fontSize: letterHeight_px + 'px',
+				padding: padding_px + 'px',
+				width: (width_px - 2 * padding_px) + 'px',
+				color: this._color.hex
+			},
+			box: {
+				default: {
+					fill: this.getContrastedColor(this._color, 0.2).int,
+					rounded: 5,
+					stroke: {
+						color: this._borderColor.int,
+						width: borderWidth_px
+					}
+				},
+				focused: {
+					fill: this.getContrastedColor(this._color, 0.2).int,
+					rounded: 5,
+					stroke: {
+						color: this._borderColor.int,
+						width: borderWidth_px
+					}
+				},
+				disabled: {
+					fill: this.getContrastedColor(this._color, 0.2).int,
+					rounded: 5
+				}
+			}
+		};
 	}
 
 
@@ -339,29 +363,23 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.TextStim#_estimateBoundingBox
+	 * @name module:visual.TextBox#_estimateBoundingBox
 	 * @function
 	 * @override
 	 * @protected
 	 */
 	_estimateBoundingBox()
 	{
-		// size of the text, irrespective of the orientation:
-		const textMetrics = this.getTextMetrics();
-		const textSize =  util.to_unit(
-			[textMetrics.width, textMetrics.height],
-			'pix',
-			this._win,
-			this._units
-		);
+		// estimate the vertical size:
+		const boxHeight = this._letterHeight + 2 * this._padding + 2 * this._borderWidth;
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
-			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - anchor[1] * textSize[1],
-			textSize[0],
-			textSize[1]
+			this._pos[0] - anchor[0] * this._size[0],
+			this._pos[1] - anchor[1] * boxHeight,
+			this._size[0],
+			boxHeight
 		);
 
 		// TODO take the orientation into account
@@ -370,33 +388,12 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Get the PIXI Text Style applied to the PIXI.Text
-	 *
-	 * @name module:visual.TextStim#_getTextStyle
-	 * @private
-	 */
-	_getTextStyle()
-	{
-		return new PIXI.TextStyle({
-			fontFamily: this._font,
-			fontSize: Math.round(this._getLengthPix(this._height)),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
-			fill: this.getContrastedColor(this._color, this._contrast).hex,
-			align: this._alignHoriz,
-			wordWrap: (typeof this._wrapWidth !== 'undefined'),
-			wordWrapWidth: (typeof this._wrapWidth !== 'undefined') ? this._getHorLengthPix(this._wrapWidth) : 0
-		});
-	}
-
-
-
-	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.TextStim#_updateIfNeeded
-	 * @function
+	 * @name module:visual.TextBox#_updateIfNeeded
 	 * @private
+	 *
+	 * @todo take size into account
 	 */
 	_updateIfNeeded()
 	{
@@ -415,93 +412,74 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
-			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
+			this._pixi = new PIXI.TextInput(this._getTextInputOptions());
+			this._pixi.placeholder = this._text;
 		}
 
+		this._pixi.disabled = !this._editable;
+
 		const anchor = this._getAnchor();
-		[this._pixi.anchor.x, this._pixi.anchor.y] = anchor;
+		this._pixi.pivot.x = anchor[0] * this._pixi.width;
+		this._pixi.pivot.y = anchor[1] * this._pixi.height;
 
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
-
 		this._pixi.rotation = this._ori * Math.PI / 180;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = this._depth;
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
-
-		// update the size attributes:
-		this._size = [
-			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height))
-		];
-
-		// refine the estimate of the bounding box:
-		this._boundingBox = new PIXI.Rectangle(
-			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - anchor[1] * this._size[1],
-			this._size[0],
-			this._size[1]
-		);
 	}
 
 
-	
+
 	/**
-	 * Convert the alignment attributes into an anchor.
+	 * Convert the anchor attributes into a numerical value
 	 *
-	 * @name module:visual.TextStim#_getAnchor
+	 * @name module:visual.TextBox#_getAnchor
 	 * @function
 	 * @private
-	 * @return {number[]} - the anchor
+	 * @return {number[]} - the anchoring
 	 */
 	_getAnchor()
 	{
-		let anchor = [];
+		const anchor = [0.5, 0.5];
 
-		switch (this._alignHoriz)
+		if (this._anchor.indexOf('left'))
 		{
-			case 'left':
-				anchor.push(0);
-				break;
-			case 'right':
-				anchor.push(1);
-				break;
-			default:
-			case 'center':
-				anchor.push(0.5);
+			anchor[0] = 0;
 		}
-		switch (this._alignVert)
+		else if (this._anchor.indexOf('right'))
 		{
-			case 'top':
-				anchor.push(0);
-				break;
-			case 'bottom':
-				anchor.push(1);
-				break;
-			default:
-			case 'center':
-				anchor.push(0.5);
+			anchor[0] = 1;
+		}
+		if (this._anchor.indexOf('top'))
+		{
+			anchor[1] = 0;
+		}
+		else if (this._anchor.indexOf('bottom'))
+		{
+			anchor[1] = 1;
 		}
 
 		return anchor;
 	}
 
-}
 
+}
 
 
 /**
  * <p>This map associates units to default letter height.</p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @name module:visual.TextBox#_defaultLetterHeightMap
  * @readonly
  * @private
  */
-TextStim._defaultLetterHeightMap = new Map([
+TextBox._defaultLetterHeightMap = new Map([
 	['cm', 1.0],
 	['deg', 1.0],
 	['degs', 1.0],
@@ -515,20 +493,20 @@ TextStim._defaultLetterHeightMap = new Map([
 
 
 /**
- * <p>This map associates units to default wrap width.</p>
+ * <p>This map associates units to default sizes.</p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @name module:visual.TextBox#_defaultSizeMap
  * @readonly
  * @private
  */
-TextStim._defaultWrapWidthMap = new Map([
-	['cm', 15.0],
-	['deg', 15.0],
-	['degs', 15.0],
-	['degFlatPos', 15.0],
-	['degFlat', 15.0],
-	['norm', 1],
-	['height', 1],
-	['pix', 500],
-	['pixels', 500]
+TextBox._defaultSizeMap = new Map([
+	['cm', [15.0, -1]],
+	['deg', [15.0, -1]],
+	['degs', [15.0, -1]],
+	['degFlatPos', [15.0, -1]],
+	['degFlat', [15.0, -1]],
+	['norm', [1, -1]],
+	['height', [1, -1]],
+	['pix', [500, -1]],
+	['pixels', [500, -1]]
 ]);

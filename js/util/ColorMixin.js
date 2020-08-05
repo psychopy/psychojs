@@ -60,7 +60,7 @@ export let ColorMixin = (superclass) => class extends superclass
 
 
 	/**
-	 * Adjust the contrast of the color and convert it to [-1, 1] RGB
+	 * Get a new contrasted Color.
 	 *
 	 * @name module:util.ColorMixin#getContrastedColor
 	 * @function

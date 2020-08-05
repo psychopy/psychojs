@@ -320,19 +320,23 @@ export function shuffle(array)
 }
 
 
+
 /**
- * Get the position of the object in pixel units
+ * Get the position of the object, in pixel units
  *
  * @name module:util.getPositionFromObject
  * @function
  * @public
  * @param {Object} object - the input object
  * @param {string} units - the units
- * @returns {number[]} the position of the object in pixel units
+ * @returns {number[]} the position of the object, in pixel units
  */
 export function getPositionFromObject(object, units)
 {
-	const response = {origin: 'util.getPositionFromObject', context: 'when getting the position of an object'};
+	const response = {
+		origin: 'util.getPositionFromObject',
+		context: 'when getting the position of an object'
+	};
 
 	try
 	{
@@ -343,7 +347,7 @@ export function getPositionFromObject(object, units)
 
 		let objectWin = undefined;
 
-		// object has a getPos function:
+		// the object has a getPos function:
 		if (typeof object.getPos === 'function')
 		{
 			units = object.units;
@@ -361,6 +365,7 @@ export function getPositionFromObject(object, units)
 }
 
 
+
 /**
  * Convert the position to pixel units.
  *
@@ -370,28 +375,43 @@ export function getPositionFromObject(object, units)
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
+ * @param {boolean} [integerCoordinates = false] - whether or not to round the position coordinates.
  * @returns {number[]} the position in pixel units
  */
-export function to_px(pos, posUnit, win)
+export function to_px(pos, posUnit, win, integerCoordinates = false)
 {
-	const response = {origin: 'util.to_px', context: 'when converting a position to pixel units'};
+	const response = {
+		origin: 'util.to_px',
+		context: 'when converting a position to pixel units'
+	};
+
+	let pos_px;
 
 	if (posUnit === 'pix')
 	{
-		return pos;
+		pos_px = pos;
 	}
 	else if (posUnit === 'norm')
 	{
-		return [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
+		pos_px = [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
 	}
 	else if (posUnit === 'height')
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
-		return [pos[0] * minSize, pos[1] * minSize];
+		pos_px = [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
 	{
 		throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+	}
+
+	if (integerCoordinates)
+	{
+		return [Math.round(pos_px[0]), Math.round(pos_px[1])];
+	}
+	else
+	{
+		return pos_px;
 	}
 }
 
@@ -551,12 +571,20 @@ export function to_unit(pos, posUnit, win, targetUnit)
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
+ * @param {boolean} [integerCoordinates = false] - whether or not to round the PIXI Point coordinates.
  * @returns {number[]} the position as a PIXI Point
  */
-export function to_pixiPoint(pos, posUnit, win)
+export function to_pixiPoint(pos, posUnit, win, integerCoordinates = false)
 {
 	const pos_px = to_px(pos, posUnit, win);
-	return new PIXI.Point(pos_px[0], pos_px[1]);
+	if (integerCoordinates)
+	{
+		return new PIXI.Point(Math.round(pos_px[0]), Math.round(pos_px[1]));
+	}
+	else
+	{
+		return new PIXI.Point(pos_px[0], pos_px[1]);
+	}
 }
 
 

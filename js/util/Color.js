@@ -44,9 +44,7 @@ export class Color
 			if (colorspace !== Color.COLOR_SPACE.RGB)
 			{
 				throw Object.assign(response, {
-					error: 'the colorspace must be RGB for' +
-						' a' +
-						' named color'
+					error: 'the colorspace must be RGB for a named color'
 				});
 			}
 
@@ -416,7 +414,7 @@ export class Color
 	 */
 	static _rgbToHex(rgb)
 	{
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToHex(rgb255);
 	}
 
@@ -435,7 +433,7 @@ export class Color
 	 */
 	static _rgbToInt(rgb)
 	{
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToInt(rgb255);
 	}
 
