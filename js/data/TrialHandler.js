@@ -405,8 +405,14 @@ export class TrialHandler extends PsychObject
 			{
 				// (*) read conditions from resource:
 				const resourceValue = serverManager.getResource(resourceName);
-				const workbook = XLSX.read(new Uint8Array(resourceValue), {type: "array"});
-				// const workbook = XLSX.read(resourceValue, { type: "buffer" }); // would work for ascii .csv
+
+				// Conditionally use a `TextDecoder` to reprocess .csv type input,
+				// which is then read in as a string
+				const decodedResourceMaybe = new Uint8Array(resourceValue);
+				// Could be set to 'buffer' for ASCII .csv
+				const type = resourceExtension === 'csv' ? 'string' : 'array';
+				const decodedResource = type === 'string' ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
+				const workbook = XLSX.read(decodedResource, { type });
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
