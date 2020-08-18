@@ -132,7 +132,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.ImageStim#setImage
+	 * @name module:visual.ImageStim#setMask
 	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
