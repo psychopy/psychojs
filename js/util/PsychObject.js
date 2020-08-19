@@ -335,7 +335,7 @@ export class PsychObject extends EventEmitter
 
 		// Objects that belong to us such as colors feature a `toString()`
 		// method, exclude others that don't, important in turn when figuring
-		// out a `hasChanged` in a `ShapeStim.setPost()` for example
+		// out a `hasChanged` in a `ShapeStim.setPos()` for example
 		return prev !== 'Object (circular)' && next !== 'Object (circular)' && prev !== next;
 	}
 
