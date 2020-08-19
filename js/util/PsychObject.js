@@ -319,7 +319,24 @@ export class PsychObject extends EventEmitter
 		const previousAttributeValue = this['_' + attributeName];
 		this['_' + attributeName] = attributeValue;
 
-		return (attributeValue !== previousAttributeValue);
+		// Things seem OK without this check except for 'vertices'
+		if (typeof previousAttributeValue === 'undefined')
+		{
+			// Not that any of the following lines should throw, but evaluating
+			// `this._vertices.map` on `ShapeStim._getVertices_px()` seems to
+			return;
+		}
+
+		// Need check for equality differently for each type of attribute somehow,
+		// Lodash has an example of what an all encompassing solution looks like below,
+		// https://github.com/lodash/lodash/blob/master/.internal/baseIsEqualDeep.js
+		const prev = toString(previousAttributeValue);
+		const next = toString(attributeValue);
+
+		// Objects that belong to us such as colors feature a `toString()`
+		// method, exclude others that don't, important in turn when figuring
+		// out a `hasChanged` in a `ShapeStim.setPost()` for example
+		return prev !== 'Object (circular)' && next !== 'Object (circular)' && prev !== next;
 	}
 
 
