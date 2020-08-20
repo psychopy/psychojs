@@ -192,6 +192,20 @@ export class MovieStim extends VisualStim
 
 
 	/**
+	 * Reset the stimulus.
+	 *
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	reset(log = false)
+	{
+		this.status = PsychoJS.Status.NOT_STARTED;
+		this._movie.pause();
+		this.seek(0, log);
+	}
+
+
+
+	/**
 	 * Start playing the movie.
 	 *
 	 * @param {boolean} [log= false] - whether of not to log
@@ -226,10 +240,7 @@ export class MovieStim extends VisualStim
 	{
 		this.status = PsychoJS.Status.STOPPED;
 		this._movie.pause();
-		if (this._hasFastSeek)
-		{
-			this._movie.fastSeek(0);
-		}
+		this.seek(0, log);
 	}
 
 
@@ -256,6 +267,21 @@ export class MovieStim extends VisualStim
 		if (this._hasFastSeek)
 		{
 			this._movie.fastSeek(timePoint);
+		}
+		else
+		{
+			try
+			{
+				this._movie.currentTime = timePoint;
+			}
+			catch (error)
+			{
+				throw {
+					origin: 'MovieStim.seek',
+					context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
+					error
+				};
+			}
 		}
 	}
 

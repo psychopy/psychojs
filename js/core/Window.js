@@ -127,13 +127,10 @@ export class Window extends PsychObject
 		if (typeof this._renderer.gl !== 'undefined')
 		{
 			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
-			this._renderer.destroy();
 			extension.loseContext();
 		}
-		else
-		{
-			this._renderer.destroy();
-		}
+
+		this._renderer.destroy();
 
 		window.removeEventListener('resize', this._resizeCallback);
 		window.removeEventListener('orientationchange', this._resizeCallback);
