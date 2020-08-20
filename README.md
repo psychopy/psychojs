@@ -72,7 +72,7 @@ It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](
 - Hiroyuki Sogo - [@hsogo](https://github.com/hsogo)
 - Sijia Zhao - [@sijiazhao](https://github.com/sijiazhao)
 
-The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the [University of Nottingham](https://www.nottingham.ac.uk), with support from the [Wellcome Trust](https://wellcome.ac.uk) (2018-2020), from the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021), and from [Open Science Tools](https://opensciencetools.org/) (2020-):
+The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the [University of Nottingham](https://www.nottingham.ac.uk), with support from the [Wellcome Trust](https://wellcome.ac.uk) (2017-2019), from the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021), and from [Open Science Tools](https://opensciencetools.org/) (2020-):
 
 - Jonathan Peirce - [@peircej](https://github.com/peircej)
 - David Bridges - [@dvbridges](https://github.com/dvbridges)
