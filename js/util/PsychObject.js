@@ -3,8 +3,8 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -350,7 +350,7 @@ export class PsychObject extends EventEmitter
 
 
 		// (*) add (argument name, argument value) pairs to the attribute map:
-		let attributeMap = new Map();
+		const attributeMap = new Map();
 		for (let i = 1; i < callArgs.length; ++i)
 		{
 			attributeMap.set(callArgs[i], args[i - 1]);
@@ -370,8 +370,10 @@ export class PsychObject extends EventEmitter
 	 * @protected
 	 * @param {string} name - the name of the attribute
 	 * @param {object} value - the value of the attribute
+	 * @param {object} defaultValue - the default value for the attribute
+	 * @param {function} onChange - function called upon changes to the attribute value
 	 */
-	_addAttribute(name, value)
+	_addAttribute(name, value, defaultValue, onChange = () => {})
 	{
 		const getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[getPropertyName] === 'undefined')
@@ -384,8 +386,24 @@ export class PsychObject extends EventEmitter
 		{
 			this[setPropertyName] = (value, log = false) =>
 			{
-				this._setAttribute(name, value, log);
+				if (typeof value === 'undefined' || value === null)
+				{
+					value = defaultValue;
+				}
+				const hasChanged = this._setAttribute(name, value, log);
+				if (hasChanged)
+				{
+					onChange();
+				}
 			};
+		}
+		else
+		{
+			// deal with default value:
+			if (typeof value === 'undefined' || value === null)
+			{
+				value = defaultValue;
+			}
 		}
 
 		Object.defineProperty(this, name, {
@@ -399,6 +417,7 @@ export class PsychObject extends EventEmitter
 				this[setPropertyName](value);
 			}
 		});
+
 
 		// note: we use this[name] instead of this['_' + name] since a this.set<Name> method may available
 		// in the object, in which case we need to call it

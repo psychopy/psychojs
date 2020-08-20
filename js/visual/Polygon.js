@@ -2,7 +2,7 @@
  * Polygonal Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
+ * @version 2020.2
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -39,25 +39,7 @@ import {Color} from '../util/Color';
  */
 export class Polygon extends ShapeStim
 {
-	constructor({
-								name,
-								win,
-								lineWidth = 1.5,
-								lineColor = new Color('white'),
-								fillColor,
-								opacity = 1.0,
-								edges = 3,
-								radius = 0.5,
-								pos = [0, 0],
-								size = 1.0,
-								ori = 0.0,
-								units,
-								contrast = 1.0,
-								depth = 0,
-								interpolate = true,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, lineWidth, lineColor, fillColor, opacity, edges, radius, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
 	{
 		super({
 			name,
@@ -79,7 +61,16 @@ export class Polygon extends ShapeStim
 
 		this._psychoJS.logger.debug('create a new Polygon with name: ', name);
 
-		this._addAttributes(Polygon, edges, radius);
+		this._addAttribute(
+			'edges',
+			edges,
+			3
+		);
+		this._addAttribute(
+			'radius',
+			radius,
+			0.5
+		);
 
 		this._updateVertices();
 
@@ -147,6 +138,7 @@ export class Polygon extends ShapeStim
 		{
 			vertices.push([Math.sin(v * angle) * this._radius, Math.cos(v * angle) * this._radius]);
 		}
+
 		this.setVertices(vertices);
 	}
 

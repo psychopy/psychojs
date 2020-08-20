@@ -2,7 +2,7 @@
  * Image Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
+ * @version 2020.2
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -31,7 +31,7 @@ import * as util from '../util/Util';
  * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= Color('white')] the background color
+ * @param {Color} [options.color= 'white'] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
@@ -44,30 +44,54 @@ import * as util from '../util/Util';
  */
 export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({
-								name,
-								win,
-								image,
-								mask,
-								pos,
-								units,
-								ori,
-								size,
-								color = new Color('white'),
-								opacity = 1.0,
-								contrast = 1.0,
-								texRes = 128,
-								depth = 0,
-								interpolate = false,
-								flipHoriz = false,
-								flipVert = false,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog});
 
-		this._addAttributes(ImageStim, image, mask, color, contrast, texRes, interpolate, flipHoriz, flipVert);
+		this._addAttribute(
+			'image',
+			image
+		);
+		this._addAttribute(
+			'mask',
+			mask
+		);
+		this._addAttribute(
+			'color',
+			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'texRes',
+			texRes,
+			128,
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'interpolate',
+			interpolate,
+			false,
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'flipHoriz',
+			flipHoriz,
+			false,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'flipVert',
+			flipVert,
+			false,
+			this._onChange(false, false)
+		);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -122,11 +146,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 			this._setAttribute('image', image, log);
 
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
+			this._onChange(true, true)();
 		}
 		catch (error)
 		{
@@ -139,7 +159,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.ImageStim#setImage
+	 * @name module:visual.ImageStim#setMask
 	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
@@ -178,60 +198,11 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 			this._setAttribute('mask', mask, log);
 
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
+			this._onChange(true, false)();
 		}
 		catch (error)
 		{
 			throw Object.assign(response, {error});
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipVert attribute.
-	 *
-	 * @name module:visual.ImageStim#setFlipVert
-	 * @public
-	 * @param {boolean} flipVert - whether or not to flip vertically
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipVert(flipVert, log = false)
-	{
-		const hasChanged = this._setAttribute('flipVert', flipVert, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipHoriz attribute.
-	 *
-	 * @name module:visual.ImageStim#setFlipHoriz
-	 * @public
-	 * @param {boolean} flipHoriz - whether or not to flip horizontally
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipHoriz(flipHoriz, log = false)
-	{
-		const hasChanged = this._setAttribute('flipHoriz', flipHoriz, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
 		}
 	}
 

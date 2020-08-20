@@ -2,7 +2,7 @@
  * Editable TextBox Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
+ * @version 2020.2
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -11,6 +11,7 @@
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
+import {TextInput} from './TextInput';
 import * as util from '../util/Util';
 
 // TODO finish documenting all options
@@ -21,7 +22,7 @@ import * as util from '../util/Util';
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {string} [options.text=""] - the text to be rendered
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
@@ -31,111 +32,135 @@ import * as util from '../util/Util';
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {string} [options.units= "norm"] - the units of the text size and position
- * @param {number} options.ori - the orientation (in degrees)
+ * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
  * @param {string} [options.anchor = 'left'] - horizontal alignment
  *
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [foptions.lipVert= false] - whether or not to flip the text vertically
- * @param {PIXI.Graphics} options.clipMask - the clip mask
+ * @param {boolean} [options.lipVert= false] - whether or not to flip the text vertically
+ * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({
-								name,
-								win,
-								pos,
-								anchor = 'center',
-								size,
-								units,
-								ori,
-								opacity,
-								depth = 0,
-
-								text = '',
-								font = 'Arial',
-								letterHeight = 0.1,
-								bold = false,
-								italic = false,
-								alignment = 'left',
-								color = new Color('white'),
-								contrast = 1.0,
-								flipHoriz = false,
-								flipVert = false,
-
-								borderColor,
-								borderWidth = 1,
-								padding,
-
-								editable = false,
-
-								clipMask,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
 
-		this._addAttributes(TextBox, text, anchor, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, borderColor, borderWidth, padding, editable);
+		this._addAttribute(
+			'text',
+			text,
+			'',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'anchor',
+			anchor,
+			'center',
+			this._onChange(false, true)
+		);
+		this._addAttribute(
+			'flipHoriz',
+			flipHoriz,
+			false,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'flipVert',
+			flipVert,
+			false,
+			this._onChange(false, false)
+		);
 
-		// estimate the bounding box (using TextMetrics):
+		// font:
+		this._addAttribute(
+			'font',
+			font,
+			'Arial',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'letterHeight',
+			letterHeight,
+			this._getDefaultLetterHeight(),
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'bold',
+			bold,
+			false,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'italic',
+			italic,
+			false,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'alignment',
+			alignment,
+			'left',
+			this._onChange(true, true)
+		);
+
+		// colors:
+		this._addAttribute(
+			'color',
+			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'fillColor',
+			fillColor,
+			'lightgrey',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'borderColor',
+			borderColor,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+
+		// default border width: 1px
+		this._addAttribute(
+			'borderWidth',
+			borderWidth,
+			util.to_unit([1, 0], 'pix', win, this._units)[0],
+			this._onChange(true, true)
+		);
+		// default padding: half of the letter height
+		this._addAttribute(
+			'padding',
+			padding,
+			this._letterHeight / 2.0,
+			this._onChange(true, true)
+		);
+
+		this._addAttribute('editable', editable, false, this._onChange(true, true));
+			// this._setAttribute({
+			// 	name: 'vertices',
+			// 	value: vertices,
+			// 	assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
+			// 	log);
+
+		// estimate the bounding box:
 		this._estimateBoundingBox();
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
-		}
-	}
-
-
-
-	/**
-	 * Setter for the text attribute.
-	 *
-	 * @name module:visual.TextBox#setText
-	 * @public
-	 * @param {string} text - the text
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setText(text, log)
-	{
-		const hasChanged = this._setAttribute('text', text, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the alignHoriz attribute.
-	 *
-	 * @name module:visual.TextBox#setAlignHoriz
-	 * @public
-	 * @param {string} alignHoriz - the text horizontal alignment, e.g. 'center'
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setAlignHoriz(alignHoriz, log)
-	{
-		const hasChanged = this._setAttribute('alignHoriz', alignHoriz, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
 		}
 	}
 
@@ -151,9 +176,17 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	setSize(size, log)
 	{
-		if (typeof size === 'undefined')
+		// test with the size is undefined, or [undefined, undefined]:
+		let isSizeUndefined = (
+			(typeof size === 'undefined') || (size === null) ||
+			( Array.isArray(size) && size.every( v => typeof v === 'undefined' || v === null) )
+		); 
+
+		if (isSizeUndefined)
 		{
-			if (!TextBox._defaultWrapWidthMap.has(this._units))
+			size = TextBox._defaultSizeMap.get(this._units);
+
+			if (typeof size === 'undefined')
 			{
 				throw {
 					origin: 'TextBox.setSize',
@@ -161,8 +194,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 					error: 'no default size for unit: ' + this._units
 				};
 			}
-
-			size = TextBox._defaultSizeMap.get(this._units);
 		}
 
 		const hasChanged = this._setAttribute('size', size, log);
@@ -180,135 +211,26 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Setter for the letterHeight attribute.
+	 * Get the default letter height given the stimulus' units.
 	 *
-	 * @name module:visual.TextBox#setLetterHeight
-	 * @public
-	 * @param {number} letterHeight - text height
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @name module:visual.TextBox#_getDefaultLetterHeight
+	 * @return {number} - the letter height corresponding to this stimulus' units.
+	 * @protected
 	 */
-	setLetterHeight(letterHeight, log)
+	_getDefaultLetterHeight()
 	{
-		if (typeof letterHeight === 'undefined')
-		{
-			if (!TextBox._defaultLetterHeightMap.has(this._units))
-			{
-				throw {
-					origin: 'TextBox.setLetterHeight',
-					context: 'when setting the letter height of TextBox: ' + this._name,
-					error: 'no default letter height for unit: ' + this._units
-				};
-			}
+		const height = TextBox._defaultLetterHeightMap.get(this._units);
 
-			letterHeight = TextStim._defaultLetterHeightMap.get(this._units);
+		if (typeof height === 'undefined')
+		{
+			throw {
+				origin: 'TextBox._getDefaultLetterHeight',
+				context: 'when getting the default height of TextBox: ' + this._name,
+				error: 'no default letter height for unit: ' + this._units
+			};
 		}
 
-		const hasChanged = this._setAttribute('letterHeight', letterHeight, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the italic attribute.
-	 *
-	 * @name module:visual.TextBox#setItalic
-	 * @public
-	 * @param {boolean} italic - whether or not the text is italic
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setItalic(italic, log)
-	{
-		const hasChanged = this._setAttribute('italic', italic, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the bold attribute.
-	 *
-	 * @name module:visual.TextBox#setBold
-	 * @public
-	 * @param {boolean} bold - whether or not the text is bold
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setBold(bold, log)
-	{
-		const hasChanged = this._setAttribute('bold', bold, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipVert attribute.
-	 *
-	 * @name module:visual.TextBox#setFlipVert
-	 * @public
-	 * @param {boolean} flipVert - whether or not to flip vertically
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipVert(flipVert, log)
-	{
-		const hasChanged = this._setAttribute('flipVert', flipVert, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipHoriz attribute.
-	 *
-	 * @name module:visual.TextBox#setFlipHoriz
-	 * @public
-	 * @param {boolean} flipHoriz - whether or not to flip horizontally
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipHoriz(flipHoriz, log)
-	{
-		const hasChanged = this._setAttribute('flipHoriz', flipHoriz, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
+		return height;
 	}
 
 
@@ -328,32 +250,46 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		return {
 			input: {
+				fontFamily: this._font,
 				fontSize: letterHeight_px + 'px',
+				color: new Color(this._color).hex,
+				fontWeight: (this._bold) ? 'bold' : 'normal',
+				fontStyle: (this._italic) ? 'italic' : 'normal',
+
 				padding: padding_px + 'px',
-				width: (width_px - 2 * padding_px) + 'px',
-				color: this._color.hex
+				width: (width_px - 2 * padding_px) + 'px'
 			},
 			box: {
-				default: {
-					fill: this.getContrastedColor(this._color, 0.2).int,
+				fill: new Color(this._fillColor).int,
+				rounded: 5,
+				stroke: {
+					color: new Color(this._borderColor).int,
+					width: borderWidth_px
+				}
+				/*default: {
+					fill: new Color(this._fillColor).int,
 					rounded: 5,
 					stroke: {
-						color: this._borderColor.int,
+						color: new Color(this._borderColor).int,
 						width: borderWidth_px
 					}
 				},
 				focused: {
-					fill: this.getContrastedColor(this._color, 0.2).int,
+					fill: new Color(this._fillColor).int,
 					rounded: 5,
 					stroke: {
-						color: this._borderColor.int,
+						color: new Color(this._borderColor).int,
 						width: borderWidth_px
 					}
 				},
 				disabled: {
-					fill: this.getContrastedColor(this._color, 0.2).int,
-					rounded: 5
-				}
+					fill: new Color(this._fillColor).int,
+					rounded: 5,
+					stroke: {
+						color: new Color(this._borderColor).int,
+						width: borderWidth_px
+					}
+				}*/
 			}
 		};
 	}
@@ -412,8 +348,15 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
-			this._pixi = new PIXI.TextInput(this._getTextInputOptions());
-			this._pixi.placeholder = this._text;
+			this._pixi = new TextInput(this._getTextInputOptions());
+			if (this._editable)
+			{
+				this._pixi.placeholder = this._text;
+			}
+			else
+			{
+				this._pixi.text = this._text;
+			}
 		}
 
 		this._pixi.disabled = !this._editable;
@@ -437,30 +380,30 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Convert the anchor attributes into a numerical value
+	 * Convert the anchor attribute into numerical values.
 	 *
 	 * @name module:visual.TextBox#_getAnchor
 	 * @function
-	 * @private
-	 * @return {number[]} - the anchoring
+	 * @protected
+	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
 	 */
 	_getAnchor()
 	{
 		const anchor = [0.5, 0.5];
 
-		if (this._anchor.indexOf('left'))
+		if (this._anchor.indexOf('left') > -1)
 		{
 			anchor[0] = 0;
 		}
-		else if (this._anchor.indexOf('right'))
+		else if (this._anchor.indexOf('right') > -1)
 		{
 			anchor[0] = 1;
 		}
-		if (this._anchor.indexOf('top'))
+		if (this._anchor.indexOf('top') > -1)
 		{
 			anchor[1] = 0;
 		}
-		else if (this._anchor.indexOf('bottom'))
+		else if (this._anchor.indexOf('bottom') > -1)
 		{
 			anchor[1] = 1;
 		}

@@ -2,8 +2,8 @@
  * Base class for all stimuli.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -22,30 +22,40 @@ import * as util from '../util/Util';
  * @extends PsychObject
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= win.autoLog] - whether or not to log
  */
 export class MinimalStim extends PsychObject
 {
-	constructor({
-								name,
-								win,
-								autoDraw = false,
-								autoLog = win.autoLog
-							} = {})
+	constructor({name, win, autoDraw, autoLog} = {})
 	{
 		super(win._psychoJS, name);
 
 		// the PIXI representation of the stimulus:
 		this._pixi = undefined;
 
-		this._addAttributes(MinimalStim, win, autoDraw, autoLog);
+		this._addAttribute(
+			'win',
+			win,
+			undefined
+		);
+		this._addAttribute(
+			'autoDraw',
+			autoDraw,
+			false
+		);
+		this._addAttribute(
+			'autoLog',
+			autoLog,
+			(typeof win !== 'undefined' && win !== null) ? win.autoLog : false
+		);
 
 		this._needUpdate = false;
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
 
+	
 
 	/**
 	 * Setter for the autoDraw attribute.

@@ -2,8 +2,8 @@
  * Base class for all visual stimuli.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -22,8 +22,8 @@ import * as util from '../util/Util';
  * @mixes WindowMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+ * @param {module:core.Window} options.win - the associated Window
+ * @param {string} [options.units= "height"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
@@ -35,31 +35,59 @@ import * as util from '../util/Util';
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
-	constructor({
-								name,
-								win,
-								units,
-								ori = 0.0,
-								opacity = 1.0,
-								depth = 0,
-								pos = [0, 0],
-								size,
-								clipMask = null,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog} = {})
 	{
 		super({win, name, autoDraw, autoLog});
 
-		this._addAttributes(VisualStim, units, ori, opacity, depth, pos, size, clipMask);
+		this._addAttribute(
+			'units',
+			units,
+			(typeof win !== 'undefined' && win !== null) ? win.units : 'height',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'pos',
+			pos,
+			[0, 0]
+		);
+		this._addAttribute(
+			'size',
+			size,
+			undefined
+		);
+		this._addAttribute(
+			'ori',
+			ori,
+			0.0
+		);
+		this._addAttribute(
+			'opacity',
+			opacity,
+			1.0,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'depth',
+			depth,
+			0,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'clipMask',
+			clipMask,
+			null,
+			this._onChange(false, false)
+		);
 
 		// bounding box of the stimulus, in stimulus units
 		// note: boundingBox does not take the orientation into account
 		this._addAttribute('boundingBox', PIXI.Rectangle.EMPTY);
 
+		
+		// the stimulus need to be updated:
 		this._needUpdate = true;
 
-		// the pixi representation needs to be updated:
+		// the PIXI representation also needs to be updated:
 		this._needPixiUpdate = true;
 	}
 
@@ -75,11 +103,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	refresh()
 	{
-		this._needUpdate = true;
-		this._needPixiUpdate = true;
-
-		// estimate the bounding box:
-		this._estimateBoundingBox();
+		this._onChange(true, true)();
 	}
 
 
@@ -89,13 +113,13 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 *
 	 * @name module:visual.VisualStim#setSize
 	 * @public
-	 * @param {number | number[]} size - the stimulus size
+	 * @param {undefined | null | number | number[]} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setSize(size, log = false)
 	{
-		// size is either undefined or a tuple of numbers:
-		if (typeof size !== 'undefined')
+		// size is either undefined, null, or a tuple of numbers:
+		if (typeof size !== 'undefined' && size !== null)
 		{
 			size = util.toNumerical(size);
 			if (!Array.isArray(size))
@@ -108,12 +132,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		if (hasChanged)
 		{
-			this._needUpdate = true;
-			// the pixi representation needs to be updated:
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
+			this._onChange(true, true)();
 		}
 	}
 
@@ -133,16 +152,11 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		if (hasChanged)
 		{
-			let radians = ori * 0.017453292519943295;
+			let radians = -ori * 0.017453292519943295;
 			this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)],
 				[Math.sin(radians), Math.cos(radians)]];
 
-			this._needUpdate = true;
-			// the pixi representation needs to be updated:
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
+			this._onChange(true, true)();
 		}
 	}
 
@@ -174,33 +188,13 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 
 	/**
-	 * Setter for the opacity attribute.
-	 *
-	 * @name module:visual.VisualStim#setOpacity
-	 * @public
-	 * @param {number} opacity - the opacity: 0 is completely transparent, 1 is fully opaque
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setOpacity(opacity, log = false)
-	{
-		const hasChanged = this._setAttribute('opacity', opacity, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-		}
-	}
-
-
-
-	/**
 	 * Determine whether an object is inside the bounding box of the stimulus.
 	 *
 	 * @name module:visual.VisualStim#contains
 	 * @public
 	 * @param {Object} object - the object
 	 * @param {string} units - the units
-	 * @return {boolean} whether or not the object is inside the bounding box of the text
+	 * @return {boolean} whether or not the object is inside the bounding box of the stimulus
 	 */
 	contains(object, units)
 	{
@@ -277,6 +271,35 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		{
 			throw Object.assign(response, {error: `unknown units: ${this._units}`});
 		}
+	}
+
+
+
+	/**
+	 * Generate a callback that prepares updates to the stimulus.
+	 * This is typically called in the constructor of a stimulus, when attributes are added with _addAttribute.
+	 *
+	 * @name module:visual.VisualStim#_onChange
+	 * @function
+	 * @param {boolean} [withPixi = false] - whether or not the PIXI representation must also be updated
+	 * @param {boolean} [withBoundingBox = false] - whether or not to immediately estimate the bounding box
+	 * @return {Function}
+	 * @protected
+	 */
+	_onChange(withPixi = false, withBoundingBox = false)
+	{
+		return () =>
+		{
+			this._needUpdate = true;
+			if (withPixi)
+			{
+				this._needPixiUpdate = true;
+			}
+			if (withBoundingBox)
+			{
+				this._estimateBoundingBox();
+			}
+		};
 	}
 
 }

@@ -36,12 +36,14 @@ A convenient way to make experiment available to participants is to host them on
 PsychoJS currently supports the following Components:
 
 ### Stimuli:
+* Form
 * ImageStim
 * Rect
 * ShapeStim (Polygon)
 * Slider
 * Sound (tones and tracks)
 * TextStim
+* TextBox
 
 ### Events:
 * Keyboard
@@ -54,9 +56,25 @@ We are constantly adding new Components and are regularly updating this list.
 The full documentation of the PsychoJS API is [here](https://psychopy.github.io/psychojs/).
 
 
-## Authors
+## Maintainers
 
-The PsychoJS library is written and maintained by [Ilixa Ltd.](http://www.ilixa.com). The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the [University of Nottingham](https://www.nottingham.ac.uk). Both efforts are generously supported by the [Wellcome Trust](https://wellcome.ac.uk) and the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/).
+Alain Pitiot - [@apitiot](https://github.com/apitiot)
+
+
+## Contributors
+
+The PsychoJS library was initially written by [Ilixa](http://www.ilixa.com) with support from the [Wellcome Trust](https://wellcome.ac.uk).
+It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and  [Open Science Tools](https://opensciencetools.org/) (2020-):
+- Alain Pitiot - [@apitiot](https://github.com/apitiot)
+- Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
+- Hiroyuki Sogo - [@hsogo](https://github.com/hsogo)
+- Sijia Zhao - [@sijiazhao](https://github.com/sijiazhao)
+
+The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the [University of Nottingham](https://www.nottingham.ac.uk), with support from the [Wellcome Trust](https://wellcome.ac.uk) (2018-2020), from the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021), and from [Open Science Tools](https://opensciencetools.org/) (2020-):
+
+- Jonathan Peirce - [@peircej](https://github.com/peircej)
+- David Bridges - [@dvbridges](https://github.com/dvbridges)
+- Todd Parsons [@TEParsons](https://github.com/TEParsons)
 
 
 ## License

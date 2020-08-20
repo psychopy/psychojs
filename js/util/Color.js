@@ -2,8 +2,8 @@
  * Color management.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -35,7 +35,10 @@ export class Color
 
 	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB)
 	{
-		const response = {origin: 'Color', context: 'when defining a color'};
+		const response = {
+			origin: 'Color',
+			context: 'when defining a color'
+		};
 
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
 		// note: we expect the color space to be RGB
@@ -123,7 +126,11 @@ export class Color
 				default:
 					throw Object.assign(response, {error: 'unknown colorspace: ' + colorspace});
 			}
+		}
 
+		else if (obj instanceof Color)
+		{
+			this._rgb = obj._rgb.slice();
 		}
 	}
 
@@ -585,6 +592,7 @@ Color.NAMED_COLORS = {
 	'darkcyan': '#008B8B',
 	'darkgoldenrod': '#B8860B',
 	'darkgray': '#A9A9A9',
+	'darkgrey': '#A9A9A9',
 	'darkgreen': '#006400',
 	'darkkhaki': '#BDB76B',
 	'darkmagenta': '#8B008B',
@@ -596,11 +604,13 @@ Color.NAMED_COLORS = {
 	'darkseagreen': '#8FBC8B',
 	'darkslateblue': '#483D8B',
 	'darkslategray': '#2F4F4F',
+	'darkslategrey': '#2F4F4F',
 	'darkturquoise': '#00CED1',
 	'darkviolet': '#9400D3',
 	'deeppink': '#FF1493',
 	'deepskyblue': '#00BFFF',
 	'dimgray': '#696969',
+	'dimgrey': '#696969',
 	'dodgerblue': '#1E90FF',
 	'firebrick': '#B22222',
 	'floralwhite': '#FFFAF0',
@@ -611,6 +621,7 @@ Color.NAMED_COLORS = {
 	'gold': '#FFD700',
 	'goldenrod': '#DAA520',
 	'gray': '#808080',
+	'grey': '#808080',
 	'green': '#008000',
 	'greenyellow': '#ADFF2F',
 	'honeydew': '#F0FFF0',
@@ -628,12 +639,14 @@ Color.NAMED_COLORS = {
 	'lightcyan': '#E0FFFF',
 	'lightgoldenrodyellow': '#FAFAD2',
 	'lightgray': '#D3D3D3',
+	'lightgrey': '#D3D3D3',
 	'lightgreen': '#90EE90',
 	'lightpink': '#FFB6C1',
 	'lightsalmon': '#FFA07A',
 	'lightseagreen': '#20B2AA',
 	'lightskyblue': '#87CEFA',
 	'lightslategray': '#778899',
+	'lightslategrey': '#778899',
 	'lightsteelblue': '#B0C4DE',
 	'lightyellow': '#FFFFE0',
 	'lime': '#00FF00',
@@ -686,6 +699,7 @@ Color.NAMED_COLORS = {
 	'skyblue': '#87CEEB',
 	'slateblue': '#6A5ACD',
 	'slategray': '#708090',
+	'slategrey': '#708090',
 	'snow': '#FFFAFA',
 	'springgreen': '#00FF7F',
 	'steelblue': '#4682B4',

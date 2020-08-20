@@ -2,8 +2,8 @@
  * Movie Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -23,7 +23,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * @extends VisualStim
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {string | HTMLVideoElement} options.movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
@@ -47,33 +47,75 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class MovieStim extends VisualStim
 {
-	constructor({
-								name,
-								win,
-								movie,
-								pos,
-								units,
-								ori,
-								size,
-								color = new Color('white'),
-								opacity = 1.0,
-								contrast = 1.0,
-								interpolate = false,
-								flipHoriz = false,
-								flipVert = false,
-								loop = false,
-								volume = 1.0,
-								noAudio = false,
-								autoPlay = true,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, movie, pos, units, ori, size, color, opacity, contrast, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
 
 		this.psychoJS.logger.debug('create a new MovieStim with name: ', name);
 
-		this._addAttributes(MovieStim, movie, color, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay);
+		// movie and movie control:
+		this._addAttribute(
+			'movie',
+			movie
+		);
+		this._addAttribute(
+			'volume',
+			volume,
+			1.0,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'noAudio',
+			noAudio,
+			false,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'autoPlay',
+			autoPlay,
+			true,
+			this._onChange(false, false)
+		);
+
+		this._addAttribute(
+			'flipHoriz',
+			flipHoriz,
+			false,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'flipVert',
+			flipVert,
+			false,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'interpolate',
+			interpolate,
+			false,
+			this._onChange(true, false)
+		);
+
+		// colors:
+		this._addAttribute(
+			'color',
+			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'opacity',
+			opacity,
+			1.0,
+			this._onChange(false, false)
+		);
+
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -87,6 +129,7 @@ export class MovieStim extends VisualStim
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
+
 
 
 	/**
@@ -143,99 +186,6 @@ export class MovieStim extends VisualStim
 		catch (error)
 		{
 			throw Object.assign(response, {error});
-		}
-	}
-
-
-
-	/**
-	 * Setter for the volume attribute.
-	 *
-	 * @param {number} volume - the volume of the audio track (must be between 0.0 and 1.0)
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setVolume(volume, log = false)
-	{
-		const hasChanged = this._setAttribute('volume', volume, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-		}
-	}
-
-
-
-	/**
-	 * Setter for the noAudio attribute.
-	 *
-	 * @param {boolean} noAudio - whether or not to mute the audio
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setNoAudio(noAudio, log = false)
-	{
-		const hasChanged = this._setAttribute('noAudio', noAudio, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipVert attribute.
-	 *
-	 * @name module:visual.MovieStim#setFlipVert
-	 * @public
-	 * @param {boolean} flipVert - whether or not to flip vertically
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipVert(flipVert, log = false)
-	{
-		const hasChanged = this._setAttribute('flipVert', flipVert, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-		}
-	}
-
-
-
-	/**
-	 * Setter for the flipHoriz attribute.
-	 *
-	 * @name module:visual.MovieStim#setFlipHoriz
-	 * @public
-	 * @param {boolean} flipHoriz - whether or not to flip horizontally
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipHoriz(flipHoriz, log = false)
-	{
-		const hasChanged = this._setAttribute('flipHoriz', flipHoriz, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-		}
-	}
-
-
-
-	/**
-	 * Reset the stimulus.
-	 *
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	reset(log = false)
-	{
-		this.status = PsychoJS.Status.NOT_STARTED;
-		this._movie.pause();
-		if (this._hasFastSeek)
-		{
-			this._movie.fastSeek(0);
 		}
 	}
 

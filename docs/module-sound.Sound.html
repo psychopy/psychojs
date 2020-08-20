@@ -36,7 +36,10 @@
 <ul>
 <li> If value is a number then a tone will be generated at that frequency in Hz.</li>
 <li> It value is a string, it must either be a note in the PsychoPy format (e.g 'A', 'Bfl', 'B', 'C', 'Csh'), in which case an octave must also be given, or the name of the resource track.</li>
-</ul></div>
+</ul>
+
+<p> Note: the PsychoPy hamming parameter has not been implemented yet. It might be rather tricky to do so using
+Tone.js</p></div>
         
     
 </header>
@@ -522,45 +525,6 @@
 
         <tr>
             
-                <td class="name"><code>hamming</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    true
-                
-                </td>
-            
-
-            <td class="description last">whether or not to apodize the sound (i.e., the onset and offset smoothly ramped up from down to zero). This only affects tones.</td>
-        </tr>
-
-    
-
-        <tr>
-            
                 <td class="name"><code>autoLog</code></td>
             
 
@@ -641,7 +605,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line52">line 52</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -772,7 +736,7 @@ track.play(2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line182">line 182</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line191">line 191</a>
     </li></ul></dd>
     
 
@@ -911,7 +875,7 @@ track.play(2);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line119">line 119</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -1128,7 +1092,7 @@ Repeat calls to play may results in the sounds being played on top of each other
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line90">line 90</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -1324,7 +1288,7 @@ Repeat calls to play may results in the sounds being played on top of each other
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line148">line 148</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line155">line 155</a>
     </li></ul></dd>
     
 
@@ -1520,7 +1484,7 @@ Repeat calls to play may results in the sounds being played on top of each other
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line165">line 165</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -1751,7 +1715,7 @@ Repeat calls to play may results in the sounds being played on top of each other
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line132">line 132</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line137">line 137</a>
     </li></ul></dd>
     
 
@@ -1957,7 +1921,7 @@ Repeat calls to play may results in the sounds being played on top of each other
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line104">line 104</a>
+        <a href="sound_Sound.js.html">sound/Sound.js</a>, <a href="sound_Sound.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -2003,13 +1967,13 @@ Repeat calls to play may results in the sounds being played on top of each other
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 20 2020 11:48:06 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

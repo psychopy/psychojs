@@ -28,9 +28,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * Scheduler.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
+ * @version 2020.5
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -39,7 +39,7 @@
 /**
  * &lt;p>A scheduler helps run the main loop by managing scheduled functions,
  * called tasks, after each frame is displayed.&lt;/p>
- * 
+ *
  * &lt;p>
  * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
  * JavaScript functions returning one of the following codes:
@@ -50,19 +50,19 @@
  * &lt;li>Scheduler.Event.QUIT: Quit the scheduler.&lt;/li>
  * &lt;/ul>
  * &lt;/p>
- * 
+ *
  * &lt;p> It is possible to create sub-schedulers, e.g. to handle loops.
  * Sub-schedulers are added to a parent scheduler as a normal
  * task would be by calling [scheduler.add(subScheduler)]{@link module:util.Scheduler#add}.&lt;/p>
- * 
+ *
  * &lt;p> Conditional branching is also available:
  * [scheduler.addConditionalBranches]{@link module:util.Scheduler#addConditional}&lt;/p>
- * 
- * 
+ *
+ *
  * @name module:util.Scheduler
  * @class
  * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
- * 
+ *
  */
 export class Scheduler
 {
@@ -89,24 +89,28 @@ export class Scheduler
 	 * @public
 	 * @returns {module:util.Scheduler#Status} the status of the scheduler
 	 */
-	get status() { return this._status; }
+	get status()
+	{
+		return this._status;
+	}
 
 
-  /**
-   * Task to be run by the scheduler.
-   *
-   * @callback module:util.Scheduler~Task
+	/**
+	 * Task to be run by the scheduler.
+	 *
+	 * @callback module:util.Scheduler~Task
 	 * @param {*} [args] optional arguments
-   */
+	 */
 	/**
 	 * Schedule a new task.
-	 * 
+	 *
 	 * @name module:util.Scheduler#add
 	 * @public
 	 * @param {module:util.Scheduler~Task | module:util.Scheduler} task - the task to be scheduled
 	 * @param {...*} args - arguments for that task
 	 */
-	add(task, ...args) {
+	add(task, ...args)
+	{
 		this._taskList.push(task);
 		this._argsList.push(args);
 	}
@@ -114,28 +118,34 @@ export class Scheduler
 
 	/**
 	 * Condition evaluated when the task is run.
-	 *  
+	 *
 	 * @callback module:util.Scheduler~Condition
-	 * @return {boolean} 
+	 * @return {boolean}
 	 */
 	/**
 	 * Schedule a series of task or another, based on a condition.
-	 * 
+	 *
 	 * &lt;p>Note: the tasks are [sub-schedulers]{@link module:util.Scheduler}.&lt;/p>
-	 * 
+	 *
 	 * @name module:util.Scheduler#addConditional
 	 * @public
 	 * @param {module:util.Scheduler~Condition} condition - the condition
 	 * @param {module:util.Scheduler} thenScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is satisfied
 	 * @param {module:util.Scheduler} elseScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is not satisfied
 	 */
-	addConditional(condition, thenScheduler, elseScheduler) {
+	addConditional(condition, thenScheduler, elseScheduler)
+	{
 		const self = this;
-		let task = function () {
+		let task = function ()
+		{
 			if (condition())
+			{
 				self.add(thenScheduler);
+			}
 			else
+			{
 				self.add(elseScheduler);
+			}
 
 			return Scheduler.Event.NEXT;
 		};
@@ -152,11 +162,14 @@ export class Scheduler
 	 * @name module:util.Scheduler#start
 	 * @public
 	 */
-	start() {
+	start()
+	{
 		const self = this;
-		let update = () => {
+		let update = () =>
+		{
 			// stop the animation if need be:
-			if (self._stopAtNextUpdate) {
+			if (self._stopAtNextUpdate)
+			{
 				self._status = Scheduler.Status.STOPPED;
 				return;
 			}
@@ -165,7 +178,8 @@ export class Scheduler
 
 			// run the next scheduled tasks until a scene render is requested:
 			const state = self._runNextTasks();
-			if (state === Scheduler.Event.QUIT) {
+			if (state === Scheduler.Event.QUIT)
+			{
 				self._status = Scheduler.Status.STOPPED;
 				return;
 			}
@@ -184,11 +198,12 @@ export class Scheduler
 
 	/**
 	 * Stop this scheduler.
-	 * 
+	 *
 	 * @name module:util.Scheduler#stop
 	 * @public
 	 */
-	stop() {
+	stop()
+	{
 		this._status = Scheduler.Status.STOPPED;
 		this._stopAtNextTask = true;
 		this._stopAtNextUpdate = true;
@@ -202,52 +217,67 @@ export class Scheduler
 	 * @private
 	 * @return {module:util.Scheduler#Event} the state of the scheduler after the last task ran
 	 */
-	_runNextTasks() {
+	_runNextTasks()
+	{
 		this._status = Scheduler.Status.RUNNING;
 
 		let state = Scheduler.Event.NEXT;
-		while (state === Scheduler.Event.NEXT) {
+		while (state === Scheduler.Event.NEXT)
+		{
 			// check if we need to quit:
 			if (this._stopAtNextTask)
+			{
 				return Scheduler.Event.QUIT;
+			}
 
 			// if there is no current task, we look for the next one in the list or quit if there is none:
-			if (typeof this._currentTask == 'undefined') {
+			if (typeof this._currentTask == 'undefined')
+			{
 
 				// a task is available in the taskList:
-				if (this._taskList.length > 0) {
+				if (this._taskList.length > 0)
+				{
 					this._currentTask = this._taskList.shift();
 					this._currentArgs = this._argsList.shift();
 				}
 				// the taskList is empty: we quit
-				else {
+				else
+				{
 					this._currentTask = undefined;
 					this._currentArgs = undefined;
 					return Scheduler.Event.QUIT;
 				}
-			} else {
+			}
+			else
+			{
 				// we are repeating a task
 			}
 
 			// if the current task is a function, we run it:
-			if (this._currentTask instanceof Function) {
+			if (this._currentTask instanceof Function)
+			{
 				state = this._currentTask(...this._currentArgs);
 			}
 			// otherwise, we assume that the current task is a scheduler and we run its tasks until a rendering
 			// of the scene is required.
 			// note: "if (this._currentTask instanceof Scheduler)" does not work because of CORS...
-			else {
+			else
+			{
 				state = this._currentTask._runNextTasks();
-				if (state === Scheduler.Event.QUIT) {
+				if (state === Scheduler.Event.QUIT)
+				{
 					// if the experiment has not ended, we move onto the next task:
 					if (!this._psychoJS.experiment.experimentEnded)
+					{
 						state = Scheduler.Event.NEXT;
+					}
 				}
 			}
 
 			// if the current task's return status is FLIP_REPEAT, we will re-run it, otherwise
 			// we move onto the next task:
-			if (state !== Scheduler.Event.FLIP_REPEAT) {
+			if (state !== Scheduler.Event.FLIP_REPEAT)
+			{
 				this._currentTask = undefined;
 				this._currentArgs = undefined;
 			}
@@ -262,7 +292,7 @@ export class Scheduler
 
 /**
  * Events.
- * 
+ *
  * @name module:util.Scheduler#Event
  * @enum {Symbol}
  * @readonly
@@ -276,7 +306,7 @@ Scheduler.Event = {
 
 	/**
 	 * Render the scene and repeat the task.
- 	 */
+	 */
 	FLIP_REPEAT: Symbol.for('FLIP_REPEAT'),
 
 	/**
@@ -309,7 +339,8 @@ Scheduler.Status = {
 	 * The Scheduler is stopped.
 	 */
 	STOPPED: Symbol.for('STOPPED')
-};</code></pre>
+};
+</code></pre>
         </article>
     </section>
 
@@ -319,13 +350,13 @@ Scheduler.Status = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 20 2020 11:48:06 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

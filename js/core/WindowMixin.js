@@ -2,8 +2,8 @@
  * Mixin implementing various unit-handling measurement methods.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2018-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -26,20 +26,6 @@ export let WindowMixin = (superclass) => class extends superclass
 		super(args);
 	}
 
-
-	/**
-	 * Setter for units attribute.
-	 *
-	 * @name module:core.WindowMixin#setUnits
-	 * @function
-	 * @public
-	 * @param {String} [units= this.win.units] - the units
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setUnits(units = this.win.units, log = false)
-	{
-		this._setAttribute('units', units, log);
-	}
 
 
 	/**

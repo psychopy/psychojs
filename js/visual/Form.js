@@ -2,7 +2,7 @@
  * Form Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
+ * @version 2020.2
  * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
  * @license Distributed under the terms of the MIT License
  */
@@ -29,7 +29,7 @@ import {Slider} from './Slider';
  *
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
  * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
  * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
@@ -48,49 +48,93 @@ import {Slider} from './Slider';
  * @param {number} [options.fontSize] - the font size of the labels (in form units), the default fontSize
  * depends on the Form units: 14 for 'pix', 0.03 otherwise
  *
- * @param {PIXI.Graphics} options.clipMask - the clip mask
+ * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
  *   frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class Form extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({
-								name,
-								win,
-								pos,
-								size,
-								units = 'height',
-
-								color = new Color('white'),
-								contrast = 1.0,
-								opacity,
-								depth,
-
-								items = [],
-								randomize = false,
-								itemPadding = 0.05,
-
-								fontFamily = 'Helvetica',
-								bold = true,
-								italic = false,
-								fontSize,
-
-								clipMask,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, pos, size, units, color, contrast, opacity, depth, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog});
 
-		this._addAttributes(Form, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, color, contrast);
+		this._addAttribute(
+			'itemPadding',
+			itemPadding,
+			util.to_unit([20, 0], 'pix', win, this._units)[0],
+			this._onChange(true, false)
+		);
+
+		// colors:
+		this._addAttribute(
+			'color',
+			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+
+		// fonts:
+		this._addAttribute(
+			'fontFamily',
+			fontFamily,
+			'Helvetica',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'fontSize',
+			fontSize,
+			(this._units === 'pix') ? 14 : 0.03,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'bold',
+			bold,
+			false,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'italic',
+			italic,
+			false,
+			this._onChange(true, true)
+		);
+
+		// callback to deal with changes to items:
+		const onItemChange = () =>
+		{
+			// reprocess the items:
+			this._processItems();
+
+			// setup the stimuli:
+			this._setupStimuli();
+
+			this._onChange(true, true)();
+		};
+
+		this._addAttribute(
+			'items',
+			items,
+			[],
+			onItemChange);
+		this._addAttribute(
+			'randomize',
+			randomize,
+			false,
+			onItemChange);
+
+
+		this._scrollbarWidth = 0.02;
+		this._responseTextHeightRatio = 0.8;
 
 		// process the items:
 		this._processItems();
-
-		this._visual = undefined;
-		this._scrollbarWidth = 0.02;
-		this._responseTextHeightRatio = 0.8;
 
 		// setup the stimuli:
 		this._setupStimuli();
@@ -130,7 +174,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Overridden draw that also calls the draw method of the form elements.
+	 * Overridden draw that also calls the draw method of all form elements.
 	 *
 	 * @name module:visual.Form#draw
 	 * @function
@@ -172,6 +216,44 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
+	 * Overridden hide that also calls the hide method of all form elements.
+	 *
+	 * @name module:visual.Form#hide
+	 * @function
+	 * @public
+	 * @override
+	 */
+	hide()
+	{
+		// hide the decorations:
+		super.hide();
+
+		// hide the stimuli:
+		if (typeof this._items !== 'undefined')
+		{
+			for (let i = 0; i < this._items.length; ++i)
+			{
+				if (this._visual.visibles[i])
+				{
+					const textStim = this._visual.textStims[i];
+					textStim.hide();
+
+					const responseStim = this._visual.responseStims[i];
+					if (responseStim)
+					{
+						responseStim.hide();
+					}
+				}
+			}
+
+			// hide the scrollbar:
+			this._scrollbar.hide();
+		}
+	}
+
+
+
+	/**
 	 * Reset the form.
 	 *
 	 * @name module:visual.Form#reset
@@ -196,90 +278,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		this._needUpdate = true;
-	}
-
-
-
-	/**
-	 * Setter for the font size.
-	 *
-	 * <p>The font size depends on the Slider's units: 14 for 'pix' and 0.03 otherwise.</p>
-	 *
-	 * @name module:visual.Form#setFontSize
-	 * @function
-	 * @public
-	 * @param {number} [fontSize] - the font size
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFontSize(fontSize, log = false)
-	{
-		if (typeof fontSize === 'undefined')
-		{
-			fontSize = (this._units === 'pix') ? 14 : 0.03;
-		}
-
-		const hasChanged = this._setAttribute('fontSize', fontSize, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the bold attribute.
-	 *
-	 * @name module:visual.Form#setBold
-	 * @function
-	 * @public
-	 * @param {boolean} [bold= true] - whether or not the font of the labels is bold
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setBold(bold = true, log = false)
-	{
-		const hasChanged = this._setAttribute('bold', bold, log);
-		this._fontWeight = (bold) ? 'bold' : 'normal';
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
-	}
-
-
-
-	/**
-	 * Setter for the italic attribute.
-	 *
-	 * @name module:visual.Form#setItalic
-	 * @function
-	 * @public
-	 * @param {boolean} [italic= false] - whether or not the font of the labels is italic
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setItalic(italic = false, log = false)
-	{
-		const hasChanged = this._setAttribute('italic', italic, log);
-		this._fontStyle = (italic) ? 'italic' : 'normal';
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needPixiUpdate = true;
-
-			// immediately estimate the bounding box:
-			this._estimateBoundingBox();
-		}
 	}
 
 
@@ -330,6 +328,53 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 		// return a copy of this._items:
 		return this._items.map(item => Object.assign({}, item));
+	}
+
+
+
+	/**
+	 * Add the form data to the given experiment.
+	 *
+	 * @name module:visual.Form#addDataToExp
+	 * @function
+	 * @public
+	 * @param {module:data.ExperimentHandler} experiment - the experiment into which to insert the form data
+	 * @param {string} [format= 'rows'] - whether to insert the data as rows or as columns
+	 */
+	addDataToExp(experiment, format = 'rows')
+	{
+		const addAsColumns = ['cols', 'columns'].includes(format.toLowerCase());
+		const data = this.getData();
+
+		const _doNotSave = [
+			'itemCtrl', 'responseCtrl',
+			'itemColor', 'options', 'ticks', 'tickLabels',
+				'responseWidth', 'responseColor', 'layout'
+		];
+
+		for (const item of this.getData())
+		{
+			let index = 0;
+			for (const field in item)
+			{
+				if (!_doNotSave.includes(field))
+				{
+					const columnName = (addAsColumns) ? `${this._name}[${index}]${field}` : `${this._name}${field}`;
+					experiment.addData(columnName, item[field]);
+				}
+				++ index;
+			}
+
+			if (!addAsColumns)
+			{
+				experiment.nextEntry();
+			}
+		}
+
+		if (addAsColumns)
+		{
+			experiment.nextEntry();
+		}
 	}
 
 
@@ -445,9 +490,30 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 		try
 		{
-			const defaultKeys = Object.keys(Form._defaultItems);
+			// convert old style questionnaire to new style:
+			for (const item of this._items)
+			{
+				// old style forms have questionText instead of itemText:
+				if (typeof item.questionText !== 'undefined')
+				{
+					item.itemText = item.questionText;
+					delete item.questionText;
+
+					item.itemWidth = item.questionWidth;
+					delete item.questionWidth;
+
+					// for items of type 'rating, the ticks are in 'options' instead of in 'ticks':
+					if (item.type === 'rating')
+					{
+						item.ticks = item.options;
+						item.options = undefined;
+					}
+
+				}
+			}
 
 			// fill in missing keys and undefined values:
+			const defaultKeys = Object.keys(Form._defaultItems);
 			const missingKeys = new Set();
 			for (const item of this._items)
 			{
@@ -506,7 +572,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 				else if (item.type === Form.Types.RATING)
 				{
 					item.ticks = item.ticks.split(',').map( (_,t) => parseInt(t) );
-					item.tickLabels = item.tickLabels.split(',');
+					item.tickLabels = (item.tickLabels.length > 0) ? item.tickLabels.split(',') : [];
 				}
 
 				// TODO
@@ -610,7 +676,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			alignHoriz: 'left',
 			alignVert: 'top',
 			height: this._fontSize,
-			color: new util.Color('white'),
+			color: 'white',
 			ori: 0,
 			opacity: 1,
 			depth: this._depth + 1,
@@ -635,16 +701,16 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			win: this._win,
 			name: 'free text response',
 			units: this._units,
-			anchor: 'center-top',
+			anchor: 'left-top',
 			flip: false,
 			opacity: 1,
 			depth: this._depth + 1,
-			fontFamily: 'Arial',
+			font: 'Arial',
 			letterHeight: this._fontSize * this._responseTextHeightRatio,
 			bold: false,
 			italic: false,
 			alignment: 'left',
-			color: new Color('white'),
+			color: this._color,
 			contrast: 1.0,
 			borderColor: this._color,
 			borderWidth: 0.002,
@@ -1053,6 +1119,7 @@ Form._defaultItems = {
 	'itemText': 'Default question',
 	'type': 'rating',
 	'options': 'Yes, No',
+	'tickLabels': '',
 	'itemWidth': 0.7,
 	'itemColor': 'white',
 
