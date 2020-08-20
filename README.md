@@ -67,6 +67,8 @@ The PsychoJS library was initially written by [Ilixa](http://www.ilixa.com) with
 It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and  [Open Science Tools](https://opensciencetools.org/) (2020-):
 - Alain Pitiot - [@apitiot](https://github.com/apitiot)
 - Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
+- Jonathan Peirce - [@peircej](https://github.com/peircej)
+- Thomas Pronk - [@tpronk](https://github.com/tpronk)
 - Hiroyuki Sogo - [@hsogo](https://github.com/hsogo)
 - Sijia Zhao - [@sijiazhao](https://github.com/sijiazhao)
 
@@ -74,7 +76,7 @@ The PsychoPy Builder's javascript code generator is built and maintained by the 
 
 - Jonathan Peirce - [@peircej](https://github.com/peircej)
 - David Bridges - [@dvbridges](https://github.com/dvbridges)
-- Todd Parsons [@TEParsons](https://github.com/TEParsons)
+- Todd Parsons - [@TEParsons](https://github.com/TEParsons)
 
 
 ## License
