@@ -47,7 +47,7 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class MovieStim extends VisualStim
 {
-	constructor({name, win, movie, pos, units, ori, size, color, opacity, contrast, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog} = {})
+	constructor({name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
 
