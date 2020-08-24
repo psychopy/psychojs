@@ -146,6 +146,36 @@ export class Sound extends PsychObject
 
 
 	/**
+	 * Set the sound value on demand past initialisation.
+	 *
+	 * @public
+	 * @param {object} sound - a sound instance to replace the current one
+	 * @param {boolean} [log= true] - whether or not to log
+	 */
+	setSound(sound, log = true)
+	{
+		if (sound instanceof Sound)
+		{
+			this._setAttribute('value', sound.value);
+
+			if (typeof this._player !== 'undefined')
+			{
+				this._player = this._player.constructor.accept(this);
+			}
+
+			// Be fluent?
+			return this;
+		}
+
+		throw {
+			origin: 'Sound.setSound',
+			context: 'when replacing the current sound',
+			error: 'invalid input, need an instance of the Sound class.'
+		};
+	}
+
+
+	/**
 	 * Set the number of loops.
 	 *
 	 * @public
