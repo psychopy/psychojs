@@ -168,7 +168,7 @@ export class Sound extends PsychObject
 	 *
 	 * @public
 	 * @param {number} [secs=0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
-	 * @param {boolean} [log=true] - whether of not to log
+	 * @param {boolean} [log=true] - whether or not to log
 	 */
 	setSecs(secs = 0.5, log = true)
 	{
