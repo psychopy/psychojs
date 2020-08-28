@@ -110,7 +110,7 @@ export class TrackPlayer extends SoundPlayer
 	{
 		if (typeof this._howl !== 'undefined')
 		{
-			// Unfortunately Howler.js provides no shorthand duration setter
+			// Unfortunately Howler.js provides duration setting method
 			this._howl._duration = duration_s;
 		}
 	}
