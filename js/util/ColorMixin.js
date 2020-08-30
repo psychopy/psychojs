@@ -39,6 +39,7 @@ export let ColorMixin = (superclass) => class extends superclass
 		this._setAttribute('color', color, log);
 
 		this._needUpdate = true;
+		this._needPixiUpdate = true;
 	}
 
 
@@ -56,6 +57,7 @@ export let ColorMixin = (superclass) => class extends superclass
 		this._setAttribute('contrast', contrast, log);
 
 		this._needUpdate = true;
+		this._needPixiUpdate = true;
 	}
 
 
