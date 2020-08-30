@@ -130,7 +130,7 @@ export class TonePlayer extends SoundPlayer
 	 * @name module:sound.TonePlayer#setDuration
 	 * @function
 	 * @public
-	 * @param {Integer} duration_s - dthe uration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
+	 * @param {number} duration_s - the duration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
 	 */
 	setDuration(duration_s)
 	{

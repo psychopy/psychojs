@@ -99,6 +99,24 @@ export class TrackPlayer extends SoundPlayer
 
 
 	/**
+	 * Set the duration of the default sprite.
+	 *
+	 * @name module:sound.TrackPlayer#setDuration
+	 * @function
+	 * @public
+	 * @param {number} duration_s - the duration of the track in seconds
+	 */
+	setDuration(duration_s)
+	{
+		if (typeof this._howl !== 'undefined')
+		{
+			// Unfortunately Howler.js provides duration setting method
+			this._howl._duration = duration_s;
+		}
+	}
+
+
+	/**
 	 * Set the volume of the tone.
 	 *
 	 * @name module:sound.TrackPlayer#setVolume
