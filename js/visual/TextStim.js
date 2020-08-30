@@ -2,8 +2,8 @@
  * Text Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -21,23 +21,25 @@ import * as util from '../util/Util';
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {string} [options.text="Hello World"] - the text to be rendered
- * @param {string} [options.font= "Arial"] - the text font
+ * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
- * @param {Color} [options.color= Color('white')] the background color
+ * @param {Color} [options.color= 'white'] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
+ * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {string} [options.units= "norm"] - the units of the text size and position
  * @param {number} options.ori - the orientation (in degrees)
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [alignHoriz = 'left'] - horizontal alignment
- * @param {string} [alignVert = 'center'] - vertical alignment
- * @param {boolean} wrapWidth - whether or not to wrap the text horizontally
- * @param {boolean} [flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [flipVert= false] - whether or not to flip the text vertically
+ * @param {string} [options.alignHoriz = 'left'] - horizontal alignment
+ * @param {string} [options.alignVert = 'center'] - vertical alignment
+ * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
+ * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
+ * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+ * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  *
@@ -45,32 +47,103 @@ import * as util from '../util/Util';
  */
 export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({
-								name,
-								win,
-								text = 'Hello World',
-								font = 'Arial',
-								pos,
-								color = new Color('white'),
-								opacity,
-								contrast = 1.0,
-								units,
-								ori,
-								height = 0.1,
-								bold = false,
-								italic = false,
-								alignHoriz = 'left',
-								alignVert = 'center',
-								wrapWidth,
-								flipHoriz = false,
-								flipVert = false,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, text, font, pos, color, opacity, depth, contrast, units, ori, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert, clipMask, autoDraw, autoLog} = {})
 	{
-		super({name, win, units, ori, opacity, pos, autoDraw, autoLog});
+		super({name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog});
 
-		this._addAttributes(TextStim, text, font, color, contrast, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert);
+		// callback to deal with text metrics invalidation:
+		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>
+		{
+			const visualOnChange = this._onChange(withPixi, withBoundingBox);
+			return () =>
+			{
+				visualOnChange();
+				if (withMetrics)
+				{
+					this._textMetrics = undefined;
+				}
+			};
+		};
+
+		// text and font:
+		this._addAttribute(
+			'text',
+			text,
+			'Hello World',
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'alignHoriz',
+			alignHoriz,
+			'center',
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'alignVert',
+			alignVert,
+			'center',
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'flipHoriz',
+			flipHoriz,
+			false,
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'flipVert',
+			flipVert,
+			false,
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'font',
+			font,
+			'Arial',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'height',
+			height,
+			this._getDefaultLetterHeight(),
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'wrapWidth',
+			wrapWidth,
+			this._getDefaultWrapWidth(),
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'bold',
+			bold,
+			false,
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'italic',
+			italic,
+			false,
+			onChange(true, true, true)
+		);
+
+		// color:
+		this._addAttribute(
+			'color',
+			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+
+
+		// estimate the bounding box (using TextMetrics):
+		this._estimateBoundingBox();
 
 		if (this._autoLog)
 		{
@@ -79,207 +152,139 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
-	/**
-	 * Setter for the text attribute.
-	 *
-	 * @name module:visual.TextStim#setText
-	 * @public
-	 * @param {string} text - the text
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setText(text, log)
-	{
-		this._setAttribute('text', text, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
 
 	/**
-	 * Setter for the alignHoriz attribute.
+	 * Get the metrics estimated for the text and style.
 	 *
-	 * @name module:visual.TextStim#setAlignHoriz
-	 * @public
-	 * @param {string} alignHoriz - the text horizontal alignment, e.g. 'center'
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setAlignHoriz(alignHoriz, log)
-	{
-		this._setAttribute('alignHoriz', alignHoriz, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Setter for the wrapWidth attribute.
+	 * Note: getTextMetrics does not require the PIXI representation of the stimulus to be instantiated,
+	 * unlike getSize().
 	 *
-	 * @name module:visual.TextStim#setWrapWidth
+	 * @name module:visual.TextStim#getTextMetrics
 	 * @public
-	 * @param {boolean} wrapWidth - whether or not to wrap the text at the given width
-	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setWrapWidth(wrapWidth, log)
+	getTextMetrics()
 	{
-		if (typeof wrapWidth === 'undefined')
+		if (typeof this._textMetrics === 'undefined')
 		{
-			if (!TextStim._defaultWrapWidthMap.has(this._units))
-			{
-				throw {
-					origin: 'TextStim.setWrapWidth',
-					context: 'when setting the wrap width of TextStim: ' + this._name,
-					error: 'no default wrap width for unit: ' + this._units
-				};
-			}
-
-			wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
+			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
 		}
 
-		this._setAttribute('wrapWidth', wrapWidth, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
+		return this._textMetrics;
 	}
 
 
+
 	/**
-	 * Setter for the height attribute.
+	 * Get the default letter height given the stimulus' units.
 	 *
-	 * @name module:visual.TextStim#setHeight
-	 * @public
-	 * @param {number} height - text height
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @name module:visual.TextStim#_getDefaultLetterHeight
+	 * @return {number} - the letter height corresponding to this stimulus' units.
+	 * @protected
 	 */
-	setHeight(height, log)
+	_getDefaultLetterHeight()
 	{
+		const height = TextStim._defaultLetterHeightMap.get(this._units);
+
 		if (typeof height === 'undefined')
 		{
-			if (!TextStim._defaultLetterHeightMap.has(this._units))
-			{
-				throw {
-					origin: 'TextStim.setHeight',
-					context: 'when setting the height of TextStim: ' + this._name,
-					error: 'no default letter height for unit: ' + this._units
-				};
-			}
-
-			height = TextStim._defaultLetterHeightMap.get(this._units);
-		}
-
-		this._setAttribute('height', height, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Setter for the italic attribute.
-	 *
-	 * @name module:visual.TextStim#setItalic
-	 * @public
-	 * @param {boolean} italic - whether or not the text is italic
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setItalic(italic, log)
-	{
-		this._setAttribute('italic', italic, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Setter for the bold attribute.
-	 *
-	 * @name module:visual.TextStim#setBold
-	 * @public
-	 * @param {boolean} bold - whether or not the text is bold
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setBold(bold, log)
-	{
-		this._setAttribute('bold', bold, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Setter for the flipVert attribute.
-	 *
-	 * @name module:visual.TextStim#setFlipVert
-	 * @public
-	 * @param {boolean} flipVert - whether or not to flip vertically
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipVert(flipVert, log)
-	{
-		this._setAttribute('flipVert', flipVert, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Setter for the flipHoriz attribute.
-	 *
-	 * @name module:visual.TextStim#setFlipHoriz
-	 * @public
-	 * @param {boolean} flipHoriz - whether or not to flip horizontally
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFlipHoriz(flipHoriz, log)
-	{
-		this._setAttribute('flipHoriz', flipHoriz, log);
-
-		this._needUpdate = true;
-		//this._needVertexUpdate = true;
-	}
-
-
-	/**
-	 * Determine whether an object is inside the bounding box of the text.
-	 *
-	 * @name module:visual.TextStim#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the object is inside the bounding box of the text
-	 *
-	 * @todo this is currently NOT implemented
-	 */
-	contains(object, units)
-	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-		{
 			throw {
-				origin: 'TextStim.contains',
-				context: 'when determining whether TextStim: ' + this._name + ' contains object: ' + util.toString(object),
-				error: 'unable to determine the position of the object'
+				origin: 'TextStim._getDefaultLetterHeight',
+				context: 'when getting the default height of TextStim: ' + this._name,
+				error: 'no default letter height for unit: ' + this._units
 			};
 		}
 
-		// test for inclusion:
-		// TODO
-		return false;
+		return height;
 	}
+
+
+
+	/**
+	 * Get the default wrap width given the stimulus' units.
+	 *
+	 * @name module:visual.TextStim#_getDefaultWrapWidth
+	 * @return {number} - the wrap width corresponding to this stimulus' units.
+	 * @protected
+	 */
+	_getDefaultWrapWidth()
+	{
+		const wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
+
+		if (typeof wrapWidth === 'undefined')
+		{
+			throw {
+				origin: 'TextStim._getDefaultWrapWidth',
+				context: 'when getting the default wrap width of TextStim: ' + this._name,
+				error: 'no default wrap width for unit: ' + this._units
+			};
+		}
+
+		return wrapWidth;
+	}
+
+
+
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @name module:visual.TextStim#_estimateBoundingBox
+	 * @function
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		// size of the text, irrespective of the orientation:
+		const textMetrics = this.getTextMetrics();
+		const textSize =  util.to_unit(
+			[textMetrics.width, textMetrics.height],
+			'pix',
+			this._win,
+			this._units
+		);
+
+		// take the alignment into account:
+		const anchor = this._getAnchor();
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] - anchor[0] * textSize[0],
+			this._pos[1] - anchor[1] * textSize[1],
+			textSize[0],
+			textSize[1]
+		);
+
+		// TODO take the orientation into account
+	}
+
+
+
+	/**
+	 * Get the PIXI Text Style applied to the PIXI.Text
+	 *
+	 * @name module:visual.TextStim#_getTextStyle
+	 * @private
+	 */
+	_getTextStyle()
+	{
+		return new PIXI.TextStyle({
+			fontFamily: this._font,
+			fontSize: Math.round(this._getLengthPix(this._height)),
+			fontWeight: (this._bold) ? 'bold' : 'normal',
+			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fill: this.getContrastedColor(new Color(this._color), this._contrast).hex,
+			align: this._alignHoriz,
+			wordWrap: (typeof this._wrapWidth !== 'undefined'),
+			wordWrapWidth: (typeof this._wrapWidth !== 'undefined') ? this._getHorLengthPix(this._wrapWidth) : 0
+		});
+	}
+
 
 
 	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.TextStim#_updateIfNeeded
+	 * @function
 	 * @private
-	 *
-	 * @todo take size into account
 	 */
 	_updateIfNeeded()
 	{
@@ -289,24 +294,20 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 		this._needUpdate = false;
 
-		this._heightPix = this._getLengthPix(this._height);
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
+		{
+			this._needPixiUpdate = false;
 
-		const fontSize = Math.round(this._heightPix);
-		let color = this.getContrastedColor(this._color, this._contrast);
-		const font =
-			(this._bold ? 'bold ' : '') +
-			(this._italic ? 'italic ' : '') +
-			fontSize + 'px ' + this._font;
-		this._pixi = new PIXI.Text(this._text, {
-			font: font,
-			fill: color.hex,
-			align: this._alignHoriz,
-			wordWrap: (typeof this._wrapWidth !== 'undefined'),
-			wordWrapWidth: this._wrapWidth ? this._getHorLengthPix(this._wrapWidth) : 0
-		});
+			if (typeof this._pixi !== 'undefined')
+			{
+				this._pixi.destroy(true);
+			}
+			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
+		}
 
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
+		const anchor = this._getAnchor();
+		[this._pixi.anchor.x, this._pixi.anchor.y] = anchor;
 
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
@@ -315,15 +316,70 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
+		this._pixi.zIndex = this._depth;
 
+		// apply the clip mask:
+		this._pixi.mask = this._clipMask;
+
+		// update the size attributes:
 		this._size = [
 			this._getLengthUnits(Math.abs(this._pixi.width)),
 			this._getLengthUnits(Math.abs(this._pixi.height))
 		];
+
+		// refine the estimate of the bounding box:
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] - anchor[0] * this._size[0],
+			this._pos[1] - anchor[1] * this._size[1],
+			this._size[0],
+			this._size[1]
+		);
 	}
 
 
+	
+	/**
+	 * Convert the alignment attributes into an anchor.
+	 *
+	 * @name module:visual.TextStim#_getAnchor
+	 * @function
+	 * @private
+	 * @return {number[]} - the anchor
+	 */
+	_getAnchor()
+	{
+		let anchor = [];
+
+		switch (this._alignHoriz)
+		{
+			case 'left':
+				anchor.push(0);
+				break;
+			case 'right':
+				anchor.push(1);
+				break;
+			default:
+			case 'center':
+				anchor.push(0.5);
+		}
+		switch (this._alignVert)
+		{
+			case 'top':
+				anchor.push(0);
+				break;
+			case 'bottom':
+				anchor.push(1);
+				break;
+			default:
+			case 'center':
+				anchor.push(0.5);
+		}
+
+		return anchor;
+	}
+
 }
+
 
 
 /**
@@ -344,6 +400,7 @@ TextStim._defaultLetterHeightMap = new Map([
 	['pix', 20],
 	['pixels', 20]
 ]);
+
 
 
 /**

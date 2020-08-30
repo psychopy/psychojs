@@ -2,8 +2,8 @@
  * Window responsible for displaying the experiment stimuli
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -127,13 +127,10 @@ export class Window extends PsychObject
 		if (typeof this._renderer.gl !== 'undefined')
 		{
 			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
-			this._renderer.destroy();
 			extension.loseContext();
 		}
-		else
-		{
-			this._renderer.destroy();
-		}
+
+		this._renderer.destroy();
 
 		window.removeEventListener('resize', this._resizeCallback);
 		window.removeEventListener('orientationchange', this._resizeCallback);

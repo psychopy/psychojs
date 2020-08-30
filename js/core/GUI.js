@@ -2,8 +2,9 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @author Sijia Zhao - fine-grained resource loading
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -239,6 +240,15 @@ export class GUI
 
 					buttons: [
 						{
+							id: "buttonCancel",
+							text: "Cancel",
+							click: function ()
+							{
+								self._dialogComponent.button = 'Cancel';
+								$("#expDialog").dialog('close');
+							}
+						},
+						{
 							id: "buttonOk",
 							text: "Ok",
 							click: function ()
@@ -259,15 +269,6 @@ export class GUI
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
-							}
-						},
-						{
-							id: "buttonCancel",
-							text: "Cancel",
-							click: function ()
-							{
-								self._dialogComponent.button = 'Cancel';
-								$("#expDialog").dialog('close');
 							}
 						}
 					],

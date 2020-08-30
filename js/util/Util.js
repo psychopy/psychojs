@@ -2,8 +2,8 @@
  * Various utilities.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -236,32 +236,53 @@ export function detectBrowser()
  */
 export function toNumerical(obj)
 {
-	const response = {origin: 'util.toNumerical', context: 'when converting an object to its numerical form'};
+	const response = {
+		origin: 'util.toNumerical',
+		context: 'when converting an object to its numerical form'
+	};
 
-	if (typeof obj === 'number')
+	try
 	{
-		return obj;
-	}
 
-	if (typeof obj === 'string')
-	{
-		obj = [obj];
-	}
-
-	if (Array.isArray(obj))
-	{
-		return obj.map(e =>
+		if (obj === null)
 		{
-			let n = Number.parseFloat(e);
-			if (Number.isNaN(n))
+			throw 'unable to convert null to a number';
+		}
+
+		if (typeof obj === 'undefined')
+		{
+			throw 'unable to convert undefined to a number';
+		}
+
+		if (typeof obj === 'number')
+		{
+			return obj;
+		}
+
+		if (typeof obj === 'string')
+		{
+			obj = [obj];
+		}
+
+		if (Array.isArray(obj))
+		{
+			return obj.map(e =>
 			{
-				Object.assign(response, {
-					error: 'unable to convert: ' + e + ' to a' +
-						' number.'
-				});
-			}
-			return n;
-		});
+				let n = Number.parseFloat(e);
+				if (Number.isNaN(n))
+				{
+					throw `unable to convert ${e} to a number`;
+				}
+				return n;
+			});
+		}
+
+		throw 'unable to convert the object to a number';
+	}
+	catch (error)
+	{
+		// this._gui.dialog({ error: { ...response, error } });
+		this._gui.dialog({ error: Object.assign(response, { error }) });
 	}
 
 }
@@ -320,19 +341,23 @@ export function shuffle(array)
 }
 
 
+
 /**
- * Get the position of the object in pixel units
+ * Get the position of the object, in pixel units
  *
  * @name module:util.getPositionFromObject
  * @function
  * @public
  * @param {Object} object - the input object
  * @param {string} units - the units
- * @returns {number[]} the position of the object in pixel units
+ * @returns {number[]} the position of the object, in pixel units
  */
 export function getPositionFromObject(object, units)
 {
-	const response = {origin: 'util.getPositionFromObject', context: 'when getting the position of an object'};
+	const response = {
+		origin: 'util.getPositionFromObject',
+		context: 'when getting the position of an object'
+	};
 
 	try
 	{
@@ -343,7 +368,7 @@ export function getPositionFromObject(object, units)
 
 		let objectWin = undefined;
 
-		// object has a getPos function:
+		// the object has a getPos function:
 		if (typeof object.getPos === 'function')
 		{
 			units = object.units;
@@ -361,6 +386,7 @@ export function getPositionFromObject(object, units)
 }
 
 
+
 /**
  * Convert the position to pixel units.
  *
@@ -370,28 +396,43 @@ export function getPositionFromObject(object, units)
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
+ * @param {boolean} [integerCoordinates = false] - whether or not to round the position coordinates.
  * @returns {number[]} the position in pixel units
  */
-export function to_px(pos, posUnit, win)
+export function to_px(pos, posUnit, win, integerCoordinates = false)
 {
-	const response = {origin: 'util.to_px', context: 'when converting a position to pixel units'};
+	const response = {
+		origin: 'util.to_px',
+		context: 'when converting a position to pixel units'
+	};
+
+	let pos_px;
 
 	if (posUnit === 'pix')
 	{
-		return pos;
+		pos_px = pos;
 	}
 	else if (posUnit === 'norm')
 	{
-		return [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
+		pos_px = [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
 	}
 	else if (posUnit === 'height')
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
-		return [pos[0] * minSize, pos[1] * minSize];
+		pos_px = [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
 	{
 		throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+	}
+
+	if (integerCoordinates)
+	{
+		return [Math.round(pos_px[0]), Math.round(pos_px[1])];
+	}
+	else
+	{
+		return pos_px;
 	}
 }
 
@@ -442,7 +483,10 @@ export function to_norm(pos, posUnit, win)
  */
 export function to_height(pos, posUnit, win)
 {
-	const response = {origin: 'util.to_height', context: 'when converting a position to height units'};
+	const response = {
+		origin: 'util.to_height',
+		context: 'when converting a position to height units'
+	};
 
 	if (posUnit === 'height')
 	{
@@ -551,12 +595,20 @@ export function to_unit(pos, posUnit, win, targetUnit)
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
+ * @param {boolean} [integerCoordinates = false] - whether or not to round the PIXI Point coordinates.
  * @returns {number[]} the position as a PIXI Point
  */
-export function to_pixiPoint(pos, posUnit, win)
+export function to_pixiPoint(pos, posUnit, win, integerCoordinates = false)
 {
 	const pos_px = to_px(pos, posUnit, win);
-	return new PIXI.Point(pos_px[0], pos_px[1]);
+	if (integerCoordinates)
+	{
+		return new PIXI.Point(Math.round(pos_px[0]), Math.round(pos_px[1]));
+	}
+	else
+	{
+		return new PIXI.Point(pos_px[0], pos_px[1]);
+	}
 }
 
 
@@ -865,13 +917,13 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 	}
 
 	step = Math.abs(step);
-	if (step == 1)
+	if (step === 1)
 	{
 		return arraySlice;
 	}
 	else
 	{
-		return arraySlice.filter((e, i) => (i % step == 0));
+		return arraySlice.filter((e, i) => (i % step === 0));
 	}
 }
 
@@ -953,4 +1005,81 @@ function turnSquareBracketsIntoArrays(input)
 
 	// Pass through if no array-like matches
 	return matches.length ? matches : input;
+}
+
+
+/**
+ * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ *
+ * @name module:util.randint
+ * @function
+ * @public
+ * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
+ * @param {number} max - one above the largest integer to be drawn
+ * @returns {number} a random integer in the requested range (signed)
+ */
+export function randint(min = 0, max)
+{
+	let lo = min;
+	let hi = max;
+
+	if (typeof max === 'undefined')
+	{
+		hi = lo;
+		lo = 0;
+	}
+
+	if (hi < lo)
+	{
+		throw {
+			origin: 'util.randint',
+			context: 'when generating a random integer',
+			error: 'min should be <= max'
+		};
+	}
+
+	return Math.floor(Math.random() * (hi - lo)) + lo;
+}
+
+
+/** Round to a certain number of decimal places.
+ *
+ * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
+ *
+ * @name module:util.round
+ * @function
+ * @public
+ * @see {@link https://stackoverflow.com/questions/11832914|Stack Overflow}
+ * @param {number} input - the number to be rounded
+ * @param {number} places - the max number of decimals desired
+ * @returns {number} input rounded to the specified number of decimal places at most
+ */
+export function round(input, places = 0)
+{
+	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
+}
+
+
+/**
+ * Calculate a total for all numeric input array elements.
+ *
+ * @name module:util.sum
+ * @function
+ * @public
+ * @param {array} inputMaybe - a list of numbers to add up
+ * @returns {number} numeric input entries added up
+ */
+export function sum(inputMaybe = [])
+{
+	// Cover against null input
+	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
+	const add = (a, b) => a + b;
+
+	return input
+		// Type cast everything as a number
+		.map(value => Number(value))
+		// Drop non numeric looking entries, needs transpiling for IE11
+		.filter(value => Number.isNaN(value) === false)
+		// Add up each successive entry starting from naught
+		.reduce(add, 0);
 }

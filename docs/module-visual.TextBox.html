@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: VisualStim</title>
+    <title>JSDoc: Class: TextBox</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: VisualStim</h1>
+    <h1 class="page-title">Class: TextBox</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>TextBox<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,16 +42,12 @@
     
 
     
-    <h4 class="name" id="VisualStim"><span class="type-signature"></span>new VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TextBox"><span class="type-signature"></span>new TextBox<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
 
 
-
-<div class="description">
-    Base class for all visual stimuli.
-</div>
 
 
 
@@ -202,7 +198,7 @@
 
         <tr>
             
-                <td class="name"><code>units</code></td>
+                <td class="name"><code>text</code></td>
             
 
             <td class="type">
@@ -229,25 +225,25 @@
             
                 <td class="default">
                 
-                    "height"
+                    ""
                 
                 </td>
             
 
-            <td class="description last">the units of the stimulus (e.g. for size, position, vertices)</td>
+            <td class="description last">the text to be rendered</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>ori</code></td>
+                <td class="name"><code>font</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
@@ -268,12 +264,90 @@
             
                 <td class="default">
                 
-                    0.0
+                    "Arial"
                 
                 </td>
             
 
-            <td class="description last">the orientation (in degrees)</td>
+            <td class="description last">the font family</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [0, 0]
+                
+                </td>
+            
+
+            <td class="description last">the position of the center of the text</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Color</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    Color('white')
+                
+                </td>
+            
+
+            <td class="description last">the background color</td>
         </tr>
 
     
@@ -358,46 +432,7 @@
 
         <tr>
             
-                <td class="name"><code>pos</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    [0, 0]
-                
-                </td>
-            
-
-            <td class="description last">the position of the center of the stimulus</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
+                <td class="name"><code>contrast</code></td>
             
 
             <td class="type">
@@ -429,7 +464,319 @@
                 </td>
             
 
-            <td class="description last">the size</td>
+            <td class="description last">the contrast</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "norm"
+                
+                </td>
+            
+
+            <td class="description last">the units of the text size and position</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.0
+                
+                </td>
+            
+
+            <td class="description last">the orientation (in degrees)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.1
+                
+                </td>
+            
+
+            <td class="description last">the height of the text</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not the text is bold</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>italic</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not the text is italic</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>anchor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'left'
+                
+                </td>
+            
+
+            <td class="description last">horizontal alignment</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flipHoriz</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to flip the text horizontally</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lipVert</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to flip the text vertically</td>
         </tr>
 
     
@@ -584,7 +931,7 @@
 
         <dd class="mixes"><ul>
         
-            <li>WindowMixin</li>
+            <li>ColorMixin</li>
         
         </ul></dd>
     
@@ -602,7 +949,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line16">line 16</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -642,7 +989,7 @@
 
 
     <ul>
-        <li>MinimalStim</li>
+        <li>VisualStim</li>
     </ul>
 
 
@@ -663,13 +1010,13 @@
 
         
             
-<h4 class="name" id="contains"><span class="type-signature"></span>contains<span class="type-signature"></span></h4>
+<h4 class="name" id="_defaultLetterHeightMap"><span class="type-signature">(private, readonly) </span>_defaultLetterHeightMap<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Determine whether an object is inside the bounding box of the stimulus.
+    <p>This map associates units to default letter height.</p>
 </div>
 
 
@@ -707,7 +1054,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line190">line 190</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line418">line 418</a>
     </li></ul></dd>
     
 
@@ -725,15 +1072,13 @@
 
         
             
-<h4 class="name" id="refresh"><span class="type-signature"></span>refresh<span class="type-signature"></span></h4>
+<h4 class="name" id="_defaultSizeMap"><span class="type-signature">(private, readonly) </span>_defaultSizeMap<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Force a refresh of the stimulus.
-
-refresh() is called, in particular, when the Window is resized.
+    <p>This map associates units to default sizes.</p>
 </div>
 
 
@@ -771,7 +1116,7 @@ refresh() is called, in particular, when the Window is resized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line96">line 96</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line438">line 438</a>
     </li></ul></dd>
     
 
@@ -789,13 +1134,13 @@ refresh() is called, in particular, when the Window is resized.
 
         
             
-<h4 class="name" id="setOri"><span class="type-signature"></span>setOri<span class="type-signature"></span></h4>
+<h4 class="name" id="_getDefaultLetterHeight"><span class="type-signature">(protected) </span>_getDefaultLetterHeight<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the orientation attribute.
+    Get the default letter height given the stimulus' units.
 </div>
 
 
@@ -833,7 +1178,7 @@ refresh() is called, in particular, when the Window is resized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line141">line 141</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line213">line 213</a>
     </li></ul></dd>
     
 
@@ -851,13 +1196,13 @@ refresh() is called, in particular, when the Window is resized.
 
         
             
-<h4 class="name" id="setPos"><span class="type-signature"></span>setPos<span class="type-signature"></span></h4>
+<h4 class="name" id="_getTextInputOptions"><span class="type-signature">(private) </span>_getTextInputOptions<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the position attribute.
+    Get the TextInput options applied to the PIXI.TextInput.
 </div>
 
 
@@ -895,7 +1240,7 @@ refresh() is called, in particular, when the Window is resized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line165">line 165</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line238">line 238</a>
     </li></ul></dd>
     
 
@@ -903,6 +1248,75 @@ refresh() is called, in particular, when the Window is resized.
 
     
 
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_updateIfNeeded"><span class="type-signature">(private) </span>_updateIfNeeded<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Update the stimulus, if necessary.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line326">line 326</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>take size into account</li>
+        </ul>
+    </dd>
     
 </dl>
 
@@ -957,7 +1371,7 @@ refresh() is called, in particular, when the Window is resized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line111">line 111</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line169">line 169</a>
     </li></ul></dd>
     
 
@@ -1037,7 +1451,7 @@ refresh() is called, in particular, when the Window is resized.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line219">line 219</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line299">line 299</a>
     </li></ul></dd>
     
 
@@ -1073,7 +1487,7 @@ refresh() is called, in particular, when the Window is resized.
     
 
     
-    <h4 class="name" id="_onChange"><span class="type-signature">(protected) </span>_onChange<span class="signature">(withPixi<span class="signature-attributes">opt</span>, withBoundingBox<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="_getAnchor"><span class="type-signature">(protected) </span>_getAnchor<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
     
 
     
@@ -1081,222 +1495,7 @@ refresh() is called, in particular, when the Window is resized.
 
 
 <div class="description">
-    Generate a callback that prepares updates to the stimulus.
-This is typically called in the constructor of a stimulus, when attributes are added with _addAttribute.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>withPixi</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not the PIXI representation must also be updated</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>withBoundingBox</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">whether or not to immediately estimate the bounding box</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line278">line 278</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">function</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="contains"><span class="type-signature">(protected) </span>contains<span class="signature">()</span><span class="type-signature"> &rarr; {PIXI.Rectangle}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Get the bounding box in pixel coordinates
+    Convert the anchor attribute into numerical values.
 </div>
 
 
@@ -1340,7 +1539,7 @@ This is typically called in the constructor of a stimulus, when attributes are a
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line237">line 237</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line382">line 382</a>
     </li></ul></dd>
     
 
@@ -1369,7 +1568,7 @@ This is typically called in the constructor of a stimulus, when attributes are a
 
         
 <div class="param-desc">
-    the bounding box, in pixel coordinates
+    - the anchor, as an array of numbers in [0,1]
 </div>
 
 
@@ -1380,7 +1579,7 @@ This is typically called in the constructor of a stimulus, when attributes are a
     </dt>
     <dd>
         
-<span class="param-type">PIXI.Rectangle</span>
+<span class="param-type">Array.&lt;number></span>
 
 
     </dd>

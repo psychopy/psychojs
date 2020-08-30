@@ -2,8 +2,8 @@
  * Color Mixin.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -39,6 +39,7 @@ export let ColorMixin = (superclass) => class extends superclass
 		this._setAttribute('color', color, log);
 
 		this._needUpdate = true;
+		this._needPixiUpdate = true;
 	}
 
 
@@ -56,11 +57,12 @@ export let ColorMixin = (superclass) => class extends superclass
 		this._setAttribute('contrast', contrast, log);
 
 		this._needUpdate = true;
+		this._needPixiUpdate = true;
 	}
 
 
 	/**
-	 * Adjust the contrast of the color and convert it to [-1, 1] RGB
+	 * Get a new contrasted Color.
 	 *
 	 * @name module:util.ColorMixin#getContrastedColor
 	 * @function

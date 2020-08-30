@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: visual/TextStim.js</title>
+    <title>JSDoc: Source: visual/TextBox.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: visual/TextStim.js</h1>
+    <h1 class="page-title">Source: visual/TextBox.js</h1>
 
     
 
@@ -27,7 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Text Stimulus.
+ * Editable TextBox Stimulus.
  *
  * @author Alain Pitiot
  * @version 2020.2
@@ -39,91 +39,71 @@
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
+import {TextInput} from './TextInput';
 import * as util from '../util/Util';
 
-
+// TODO finish documenting all options
 /**
- * @name module:visual.TextStim
+ * @name module:visual.TextBox
  * @class
  * @extends VisualStim
  * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {module:core.Window} options.win - the associated Window
- * @param {string} [options.text="Hello World"] - the text to be rendered
+ * @param {string} [options.text=""] - the text to be rendered
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the text
- * @param {Color} [options.color= 'white'] the background color
+ *
+ * @param {Color} [options.color= Color('white')] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {string} [options.units= "norm"] - the units of the text size and position
- * @param {number} options.ori - the orientation (in degrees)
+ * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [options.alignHoriz = 'left'] - horizontal alignment
- * @param {string} [options.alignVert = 'center'] - vertical alignment
- * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
+ * @param {string} [options.anchor = 'left'] - horizontal alignment
+ *
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+ * @param {boolean} [options.lipVert= false] - whether or not to flip the text vertically
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
- *
- * @todo vertical alignment, and orientation are currently NOT implemented
  */
-export class TextStim extends util.mix(VisualStim).with(ColorMixin)
+export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, text, font, pos, color, opacity, depth, contrast, units, ori, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, clipMask, autoDraw, autoLog} = {})
 	{
-		super({name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog});
+		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
 
-		// callback to deal with text metrics invalidation:
-		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>
-		{
-			const visualOnChange = this._onChange(withPixi, withBoundingBox);
-			return () =>
-			{
-				visualOnChange();
-				if (withMetrics)
-				{
-					this._textMetrics = undefined;
-				}
-			};
-		};
-
-		// text and font:
 		this._addAttribute(
 			'text',
 			text,
-			'Hello World',
-			onChange(true, true, true)
+			'',
+			this._onChange(true, true)
 		);
 		this._addAttribute(
-			'alignHoriz',
-			alignHoriz,
+			'anchor',
+			anchor,
 			'center',
-			onChange(true, true, true)
-		);
-		this._addAttribute(
-			'alignVert',
-			alignVert,
-			'center',
-			onChange(true, true, true)
+			this._onChange(false, true)
 		);
 		this._addAttribute(
 			'flipHoriz',
 			flipHoriz,
 			false,
-			onChange(true, true, true)
+			this._onChange(false, false)
 		);
 		this._addAttribute(
 			'flipVert',
 			flipVert,
 			false,
-			onChange(true, true, true)
+			this._onChange(false, false)
 		);
+
+		// font:
 		this._addAttribute(
 			'font',
 			font,
@@ -131,34 +111,46 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._onChange(true, true)
 		);
 		this._addAttribute(
-			'height',
-			height,
+			'letterHeight',
+			letterHeight,
 			this._getDefaultLetterHeight(),
-			onChange(true, true, true)
-		);
-		this._addAttribute(
-			'wrapWidth',
-			wrapWidth,
-			this._getDefaultWrapWidth(),
-			onChange(true, true, true)
+			this._onChange(true, true)
 		);
 		this._addAttribute(
 			'bold',
 			bold,
 			false,
-			onChange(true, true, true)
+			this._onChange(true, true)
 		);
 		this._addAttribute(
 			'italic',
 			italic,
 			false,
-			onChange(true, true, true)
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'alignment',
+			alignment,
+			'left',
+			this._onChange(true, true)
 		);
 
-		// color:
+		// colors:
 		this._addAttribute(
 			'color',
 			color,
+			'white',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'fillColor',
+			fillColor,
+			'lightgrey',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'borderColor',
+			borderColor,
 			'white',
 			this._onChange(true, false)
 		);
@@ -169,8 +161,29 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._onChange(true, false)
 		);
 
+		// default border width: 1px
+		this._addAttribute(
+			'borderWidth',
+			borderWidth,
+			util.to_unit([1, 0], 'pix', win, this._units)[0],
+			this._onChange(true, true)
+		);
+		// default padding: half of the letter height
+		this._addAttribute(
+			'padding',
+			padding,
+			this._letterHeight / 2.0,
+			this._onChange(true, true)
+		);
 
-		// estimate the bounding box (using TextMetrics):
+		this._addAttribute('editable', editable, false, this._onChange(true, true));
+			// this._setAttribute({
+			// 	name: 'vertices',
+			// 	value: vertices,
+			// 	assert: v => (v != null) &amp;&amp; (typeof v !== 'undefined') &amp;&amp; Array.isArray(v) )
+			// 	log);
+
+		// estimate the bounding box:
 		this._estimateBoundingBox();
 
 		if (this._autoLog)
@@ -182,22 +195,45 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Get the metrics estimated for the text and style.
+	 * Setter for the size attribute.
 	 *
-	 * Note: getTextMetrics does not require the PIXI representation of the stimulus to be instantiated,
-	 * unlike getSize().
-	 *
-	 * @name module:visual.TextStim#getTextMetrics
+	 * @name module:visual.TextBox#setSize
 	 * @public
+	 * @param {boolean} size - whether or not to wrap the text at the given width
+	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	getTextMetrics()
+	setSize(size, log)
 	{
-		if (typeof this._textMetrics === 'undefined')
+		// test with the size is undefined, or [undefined, undefined]:
+		let isSizeUndefined = (
+			(typeof size === 'undefined') || (size === null) ||
+			( Array.isArray(size) &amp;&amp; size.every( v => typeof v === 'undefined' || v === null) )
+		); 
+
+		if (isSizeUndefined)
 		{
-			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
+			size = TextBox._defaultSizeMap.get(this._units);
+
+			if (typeof size === 'undefined')
+			{
+				throw {
+					origin: 'TextBox.setSize',
+					context: 'when setting the size of TextBox: ' + this._name,
+					error: 'no default size for unit: ' + this._units
+				};
+			}
 		}
 
-		return this._textMetrics;
+		const hasChanged = this._setAttribute('size', size, log);
+
+		if (hasChanged)
+		{
+			this._needUpdate = true;
+			this._needPixiUpdate = true;
+
+			// immediately estimate the bounding box:
+			this._estimateBoundingBox();
+		}
 	}
 
 
@@ -205,19 +241,19 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the default letter height given the stimulus' units.
 	 *
-	 * @name module:visual.TextStim#_getDefaultLetterHeight
+	 * @name module:visual.TextBox#_getDefaultLetterHeight
 	 * @return {number} - the letter height corresponding to this stimulus' units.
 	 * @protected
 	 */
 	_getDefaultLetterHeight()
 	{
-		const height = TextStim._defaultLetterHeightMap.get(this._units);
+		const height = TextBox._defaultLetterHeightMap.get(this._units);
 
 		if (typeof height === 'undefined')
 		{
 			throw {
-				origin: 'TextStim._getDefaultLetterHeight',
-				context: 'when getting the default height of TextStim: ' + this._name,
+				origin: 'TextBox._getDefaultLetterHeight',
+				context: 'when getting the default height of TextBox: ' + this._name,
 				error: 'no default letter height for unit: ' + this._units
 			};
 		}
@@ -228,26 +264,62 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Get the default wrap width given the stimulus' units.
+	 * Get the TextInput options applied to the PIXI.TextInput.
 	 *
-	 * @name module:visual.TextStim#_getDefaultWrapWidth
-	 * @return {number} - the wrap width corresponding to this stimulus' units.
-	 * @protected
+	 * @name module:visual.TextBox#_getTextInputOptions
+	 * @private
 	 */
-	_getDefaultWrapWidth()
+	_getTextInputOptions()
 	{
-		const wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
+		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
+		const padding_px = Math.round(this._getLengthPix(this._padding));
+		const width_px = Math.round(this._getLengthPix(this._size[0]));
+		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
 
-		if (typeof wrapWidth === 'undefined')
-		{
-			throw {
-				origin: 'TextStim._getDefaultWrapWidth',
-				context: 'when getting the default wrap width of TextStim: ' + this._name,
-				error: 'no default wrap width for unit: ' + this._units
-			};
-		}
+		return {
+			input: {
+				fontFamily: this._font,
+				fontSize: letterHeight_px + 'px',
+				color: new Color(this._color).hex,
+				fontWeight: (this._bold) ? 'bold' : 'normal',
+				fontStyle: (this._italic) ? 'italic' : 'normal',
 
-		return wrapWidth;
+				padding: padding_px + 'px',
+				width: (width_px - 2 * padding_px) + 'px'
+			},
+			box: {
+				fill: new Color(this._fillColor).int,
+				rounded: 5,
+				stroke: {
+					color: new Color(this._borderColor).int,
+					width: borderWidth_px
+				}
+				/*default: {
+					fill: new Color(this._fillColor).int,
+					rounded: 5,
+					stroke: {
+						color: new Color(this._borderColor).int,
+						width: borderWidth_px
+					}
+				},
+				focused: {
+					fill: new Color(this._fillColor).int,
+					rounded: 5,
+					stroke: {
+						color: new Color(this._borderColor).int,
+						width: borderWidth_px
+					}
+				},
+				disabled: {
+					fill: new Color(this._fillColor).int,
+					rounded: 5,
+					stroke: {
+						color: new Color(this._borderColor).int,
+						width: borderWidth_px
+					}
+				}*/
+			}
+		};
 	}
 
 
@@ -255,29 +327,23 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.TextStim#_estimateBoundingBox
+	 * @name module:visual.TextBox#_estimateBoundingBox
 	 * @function
 	 * @override
 	 * @protected
 	 */
 	_estimateBoundingBox()
 	{
-		// size of the text, irrespective of the orientation:
-		const textMetrics = this.getTextMetrics();
-		const textSize =  util.to_unit(
-			[textMetrics.width, textMetrics.height],
-			'pix',
-			this._win,
-			this._units
-		);
+		// estimate the vertical size:
+		const boxHeight = this._letterHeight + 2 * this._padding + 2 * this._borderWidth;
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
-			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - anchor[1] * textSize[1],
-			textSize[0],
-			textSize[1]
+			this._pos[0] - anchor[0] * this._size[0],
+			this._pos[1] - anchor[1] * boxHeight,
+			this._size[0],
+			boxHeight
 		);
 
 		// TODO take the orientation into account
@@ -286,33 +352,12 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Get the PIXI Text Style applied to the PIXI.Text
-	 *
-	 * @name module:visual.TextStim#_getTextStyle
-	 * @private
-	 */
-	_getTextStyle()
-	{
-		return new PIXI.TextStyle({
-			fontFamily: this._font,
-			fontSize: Math.round(this._getLengthPix(this._height)),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
-			fill: this.getContrastedColor(new Color(this._color), this._contrast).hex,
-			align: this._alignHoriz,
-			wordWrap: (typeof this._wrapWidth !== 'undefined'),
-			wordWrapWidth: (typeof this._wrapWidth !== 'undefined') ? this._getHorLengthPix(this._wrapWidth) : 0
-		});
-	}
-
-
-
-	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.TextStim#_updateIfNeeded
-	 * @function
+	 * @name module:visual.TextBox#_updateIfNeeded
 	 * @private
+	 *
+	 * @todo take size into account
 	 */
 	_updateIfNeeded()
 	{
@@ -331,93 +376,81 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
-			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
+			this._pixi = new TextInput(this._getTextInputOptions());
+			if (this._editable)
+			{
+				this._pixi.placeholder = this._text;
+			}
+			else
+			{
+				this._pixi.text = this._text;
+			}
 		}
 
+		this._pixi.disabled = !this._editable;
+
 		const anchor = this._getAnchor();
-		[this._pixi.anchor.x, this._pixi.anchor.y] = anchor;
+		this._pixi.pivot.x = anchor[0] * this._pixi.width;
+		this._pixi.pivot.y = anchor[1] * this._pixi.height;
 
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
-
 		this._pixi.rotation = this._ori * Math.PI / 180;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = this._depth;
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
-
-		// update the size attributes:
-		this._size = [
-			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height))
-		];
-
-		// refine the estimate of the bounding box:
-		this._boundingBox = new PIXI.Rectangle(
-			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - anchor[1] * this._size[1],
-			this._size[0],
-			this._size[1]
-		);
 	}
 
 
-	
+
 	/**
-	 * Convert the alignment attributes into an anchor.
+	 * Convert the anchor attribute into numerical values.
 	 *
-	 * @name module:visual.TextStim#_getAnchor
+	 * @name module:visual.TextBox#_getAnchor
 	 * @function
-	 * @private
-	 * @return {number[]} - the anchor
+	 * @protected
+	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
 	 */
 	_getAnchor()
 	{
-		let anchor = [];
+		const anchor = [0.5, 0.5];
 
-		switch (this._alignHoriz)
+		if (this._anchor.indexOf('left') > -1)
 		{
-			case 'left':
-				anchor.push(0);
-				break;
-			case 'right':
-				anchor.push(1);
-				break;
-			default:
-			case 'center':
-				anchor.push(0.5);
+			anchor[0] = 0;
 		}
-		switch (this._alignVert)
+		else if (this._anchor.indexOf('right') > -1)
 		{
-			case 'top':
-				anchor.push(0);
-				break;
-			case 'bottom':
-				anchor.push(1);
-				break;
-			default:
-			case 'center':
-				anchor.push(0.5);
+			anchor[0] = 1;
+		}
+		if (this._anchor.indexOf('top') > -1)
+		{
+			anchor[1] = 0;
+		}
+		else if (this._anchor.indexOf('bottom') > -1)
+		{
+			anchor[1] = 1;
 		}
 
 		return anchor;
 	}
 
-}
 
+}
 
 
 /**
  * &lt;p>This map associates units to default letter height.&lt;/p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @name module:visual.TextBox#_defaultLetterHeightMap
  * @readonly
  * @private
  */
-TextStim._defaultLetterHeightMap = new Map([
+TextBox._defaultLetterHeightMap = new Map([
 	['cm', 1.0],
 	['deg', 1.0],
 	['degs', 1.0],
@@ -430,24 +463,23 @@ TextStim._defaultLetterHeightMap = new Map([
 ]);
 
 
-
 /**
- * &lt;p>This map associates units to default wrap width.&lt;/p>
+ * &lt;p>This map associates units to default sizes.&lt;/p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
+ * @name module:visual.TextBox#_defaultSizeMap
  * @readonly
  * @private
  */
-TextStim._defaultWrapWidthMap = new Map([
-	['cm', 15.0],
-	['deg', 15.0],
-	['degs', 15.0],
-	['degFlatPos', 15.0],
-	['degFlat', 15.0],
-	['norm', 1],
-	['height', 1],
-	['pix', 500],
-	['pixels', 500]
+TextBox._defaultSizeMap = new Map([
+	['cm', [15.0, -1]],
+	['deg', [15.0, -1]],
+	['degs', [15.0, -1]],
+	['degFlatPos', [15.0, -1]],
+	['degFlat', [15.0, -1]],
+	['norm', [1, -1]],
+	['height', [1, -1]],
+	['pix', [500, -1]],
+	['pixels', [500, -1]]
 ]);
 </code></pre>
         </article>

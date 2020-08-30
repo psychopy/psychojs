@@ -2,8 +2,8 @@
  * Experiment Handler
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -359,7 +359,7 @@ export class ExperimentHandler extends PsychObject
 
 	/**
 	 * Get the attribute names and values for the current trial of a given loop.
-	 * <p> Only only info relating to the trial execution are returned.</p>
+	 * <p> Only info relating to the trial execution are returned.</p>
 	 *
 	 * @name module:data.ExperimentHandler#_getLoopAttributes
 	 * @function

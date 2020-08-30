@@ -43,6 +43,7 @@
 
 
     <section>
+        <article>
 <p>PsychoJS is a JavaScript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the <a href="http://www.psychopy.org/">PsychoPy</a> Python library.
 It is also a git submodule: <a href="https://github.com/psychopy/psychojs">psychopy/psychojs</a></p>
 <h2>Motivation</h2>
@@ -55,7 +56,7 @@ It is also a git submodule: <a href="https://github.com/psychopy/psychojs">psych
 <p>Starting with PsychoPy version 3.0, <a href="http://www.psychopy.org/builder/builder.html">PsychoPy Builder</a> can automatically generate the javascript and html files. Many of the existing Builder experiments should &quot;just work&quot;, subject to the Components being currently supported by PsychoJS (see below).</p>
 <h3>JavaScript Code</h3>
 <p>We built the PsychoJS library to make the JavaScript experiment files look and behave in very much the same way as to the Builder-generated Python files. PsychoJS offers classes such as <code>Window</code> and <code>ImageStim</code>, with very similar attributes to their Python equivalents. Experiment designers familiar with the PsychoPy library should feel at home with PsychoJS, and can expect the same level of control they have with PsychoPy, from the the structure of the trials/loops all the way down to frame-by-frame updates.</p>
-<p>There are however notable differences between the the PsycPsychoJShoJs and PsychoPy libraries, most of which have to do with the way a web browser interprets and runs JavaScript, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJS introduces the concept of Scheduler. As the name indicate, Scheduler's offer a way to organise various PsychoJS along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).</p>
+<p>There are however notable differences between the the PsychoJS and PsychoPy libraries, most of which have to do with the way a web browser interprets and runs JavaScript, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJS introduces the concept of Scheduler. As the name indicate, Scheduler's offer a way to organise various PsychoJS along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).</p>
 <p>Under the hood PsychoJS relies on <a href="http://www.pixijs.com">PixiJs</a> to present stimuli and collect responses. PixiJs is a multi-platform, accelerated, 2-D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considerably improving the rendering performance.</p>
 <h3>Hosting Experiments</h3>
 <p>A convenient way to make experiment available to participants is to host them on <a href="https://www.pavlovia.org">pavlovia.org</a>, an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.org.</p>
@@ -63,12 +64,14 @@ It is also a git submodule: <a href="https://github.com/psychopy/psychojs">psych
 <p>PsychoJS currently supports the following Components:</p>
 <h3>Stimuli:</h3>
 <ul>
+<li>Form</li>
 <li>ImageStim</li>
 <li>Rect</li>
 <li>ShapeStim (Polygon)</li>
 <li>Slider</li>
 <li>Sound (tones and tracks)</li>
 <li>TextStim</li>
+<li>TextBox</li>
 </ul>
 <h3>Events:</h3>
 <ul>
@@ -78,8 +81,23 @@ It is also a git submodule: <a href="https://github.com/psychopy/psychojs">psych
 <p>We are constantly adding new Components and are regularly updating this list.</p>
 <h2>API</h2>
 <p>The full documentation of the PsychoJS API is <a href="https://psychopy.github.io/psychojs/">here</a>.</p>
-<h2>Authors</h2>
-<p>The PsychoJS library is written and maintained by <a href="http://www.ilixa.com">Ilixa Ltd.</a>. The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the <a href="https://www.nottingham.ac.uk">University of Nottingham</a>. Both efforts are generously supported by the <a href="https://wellcome.ac.uk">Wellcome Trust</a> and the <a href="https://chanzuckerberg.com/">Chan Zuckerberg Initiative</a>.</p>
+<h2>Maintainers</h2>
+<p>Alain Pitiot - <a href="https://github.com/apitiot">@apitiot</a></p>
+<h2>Contributors</h2>
+<p>The PsychoJS library was initially written by <a href="http://www.ilixa.com">Ilixa</a> with support from the <a href="https://wellcome.ac.uk">Wellcome Trust</a>.
+It is now a collaborative effort, supported by the <a href="https://chanzuckerberg.com/">Chan Zuckerberg Initiative</a> (2020-2021) and  <a href="https://opensciencetools.org/">Open Science Tools</a> (2020-):</p>
+<ul>
+<li>Alain Pitiot - <a href="https://github.com/apitiot">@apitiot</a></li>
+<li>Sotiri Bakagiannis - <a href="https://github.com/thewhodidthis">@thewhodidthis</a></li>
+<li>Hiroyuki Sogo - <a href="https://github.com/hsogo">@hsogo</a></li>
+<li>Sijia Zhao - <a href="https://github.com/sijiazhao">@sijiazhao</a></li>
+</ul>
+<p>The PsychoPy Builder's javascript code generator is built and maintained by the creators of PsychoPy at the <a href="https://www.nottingham.ac.uk">University of Nottingham</a>, with support from the <a href="https://wellcome.ac.uk">Wellcome Trust</a> (2018-2020), from the <a href="https://chanzuckerberg.com/">Chan Zuckerberg Initiative</a> (2020-2021), and from <a href="https://opensciencetools.org/">Open Science Tools</a> (2020-):</p>
+<ul>
+<li>Jonathan Peirce - <a href="https://github.com/peircej">@peircej</a></li>
+<li>David Bridges - <a href="https://github.com/dvbridges">@dvbridges</a></li>
+<li>Todd Parsons <a href="https://github.com/TEParsons">@TEParsons</a></li>
+</ul>
 <h2>License</h2>
 <p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details.</p></article>
     </section>
@@ -92,13 +110,13 @@ It is also a git submodule: <a href="https://github.com/psychopy/psychojs">psych
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 20 2020 12:03:43 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

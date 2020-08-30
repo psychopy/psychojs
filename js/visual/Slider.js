@@ -2,8 +2,8 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -11,6 +11,7 @@
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
+import {WindowMixin} from '../core/WindowMixin';
 import {Clock} from '../util/Clock';
 import * as util from '../util/Util';
 import {PsychoJS} from "../core/PsychoJS";
@@ -25,7 +26,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * @mixes module:util.ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
  * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
  * @param {number} [options.ori = 0.0] - the orientation (in degrees)
@@ -49,52 +50,130 @@ import {PsychoJS} from "../core/PsychoJS";
  * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
  * Slider's units: 14 for 'pix', 0.03 otherwise
  *
+ * @param {boolean} [options.compact= false] - whether or not the slider is compact, i.e. whether all graphical
+ * elements (e.g. labels) fit within its size
+ *
+ * @param {PIXI.Graphics} options.clipMask - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
  *   frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  *
  * @todo check that parameters are valid, e.g. ticks are an array of numbers, etc.
  * @todo readOnly
- * @todo style "slider"
  * @todo complete setters, for instance setTicks should change this._isCategorical
  * @todo consider using a proper UI delegate architecture (a la Java Swing, for instance).
  */
-export class Slider extends util.mix(VisualStim).with(ColorMixin)
+export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({
-								name,
-								win,
-								pos,
-								size,
-								ori,
-								units = 'height',
-
-								color = new Color('LightGray'),
-								contrast = 1.0,
-								opacity,
-
-								style = [Slider.Style.RATING],
-								ticks = [1, 2, 3, 4, 5],
-								labels = [],
-								labelHeight,
-								granularity = 0,
-								flip = false,
-								readOnly = false,
-
-								fontFamily = 'Helvetica',
-								bold = true,
-								italic = false,
-								fontSize,
-
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, pos, size, ori, units, color, contrast, opacity, style, ticks, labels, labelHeight, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
 	{
-		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
+		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
 
 		this._needMarkerUpdate = false;
 
-		this._addAttributes(Slider, ticks, labels, labelHeight, granularity, flip, color, contrast, fontFamily, bold, italic, fontSize, style, readOnly);
+
+		// callback to deal with input sanitising:
+		const onChange = (withPixi = false, withBoundingBox = false, withSanitize = false) =>
+		{
+			const visualOnChange = this._onChange(withPixi, withBoundingBox);
+			return () =>
+			{
+				visualOnChange();
+				if (withSanitize)
+				{
+					this._sanitizeAttributes();
+				}
+			};
+		};
+
+		this._addAttribute(
+			'style',
+			style,
+			[Slider.Style.RATING],
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'ticks',
+			ticks,
+			[1, 2, 3, 4, 5],
+			onChange(true, false, true)
+		);
+		this._addAttribute(
+			'labels',
+			labels,
+			[],
+			onChange(true, true, true)
+		);
+		this._addAttribute(
+			'granularity',
+			granularity,
+			0,
+			this._onChange(false, false)
+		);
+		this._addAttribute(
+			'readOnly',
+			readOnly,
+			false
+		);
+		this._addAttribute(
+			'compact',
+			compact,
+			false,
+			this._onChange(true, true)
+		);
+
+		// font:
+		this._addAttribute(
+			'font',
+			font,
+			'Helvetica',
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'fontSize',
+			fontSize,
+			(this._units === 'pix') ? 14 : 0.03,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'bold',
+			bold,
+			true,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'italic',
+			italic,
+			false,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'labelHeight',
+			labelHeight,
+			undefined,
+			this._onChange(true, true)
+		);
+		this._addAttribute(
+			'flip',
+			flip,
+			false,
+			this._onChange(true, true)
+		);
+
+		// color:
+		this._addAttribute(
+			'color',
+			color,
+			'lightgray',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'contrast',
+			contrast,
+			1.0,
+			this._onChange(true, false)
+		);
+
 
 		// slider rating (which might be different from the visible marker rating):
 		this._addAttribute('rating', undefined);
@@ -108,16 +187,21 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// various graphical components:
 		this._addAttribute('lineAspectRatio', 0.01);
 
-		this._responseClock = new Clock();
+		// check for attribute conflicts, missing values, etc.:
+		this._sanitizeAttributes();
 
-		// determine whether the slider is categorical:
-		this._isCategorical = (this._ticks.length === 0);
+		// estimate the bounding box:
+		this._estimateBoundingBox();
+
+		// the internal response clock, used to time the marker change events:
+		this._responseClock = new Clock();
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
+
 
 
 	/**
@@ -130,35 +214,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	{
 		super.refresh();
 
-		this._needVertexUpdate = true;
+		this._needMarkerUpdate = true;
 	}
 
-
-	/**
-	 * Determine whether an object is inside the bounding box of the slider.
-	 *
-	 * @name module:visual.Slider#contains
-	 * @public
-	 * @param {Object} object - the object
-	 * @param {string} units - the units
-	 * @return {boolean} whether or not the object is inside the bounding box of the slider
-	 *
-	 * @todo this is currently not implemented and always returns false
-	 */
-	contains(object, units)
-	{
-		// get position of object:
-		let objectPos_px = util.getPositionFromObject(object, units);
-		if (typeof objectPos_px === 'undefined')
-		{
-			throw {
-				origin: 'Slider.contains', context: `when determining whether Slider: ${this._name} contains
-			object: ${util.toString(object)}`, error: 'unable to determine the position of the object'
-			};
-		}
-
-		return false;
-	}
 
 
 	/**
@@ -177,7 +235,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		this._responseClock.reset();
 		this.status = PsychoJS.Status.NOT_STARTED;
 
-		this._needMarkerUpdate = true;
+		this._needPixiUpdate = true;
 		this._needUpdate = true;
 
 		// the marker should be invisible when markerPos is undefined:
@@ -186,6 +244,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			this._marker.alpha = 0;
 		}
 	}
+
 
 
 	/**
@@ -200,13 +259,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const historyLength = this._history.length;
 		if (historyLength > 0)
 		{
-			return this._history[historyLength - 1]['rating'];
+			return this._history[historyLength - 1].rating;
 		}
 		else
 		{
 			return undefined;
 		}
 	}
+
 
 
 	/**
@@ -221,7 +281,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const historyLength = this._history.length;
 		if (historyLength > 0)
 		{
-			return this._history[historyLength - 1]['responseTime'];
+			return this._history[historyLength - 1].responseTime;
 		}
 		else
 		{
@@ -229,73 +289,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
-
-	/**
-	 * Setter for the font size.
-	 *
-	 * <p>The font size depends on the Slider's units: 14 for 'pix' and 0.03 otherwise.</p>
-	 *
-	 * @name module:visual.Slider#setFontSize
-	 * @public
-	 * @param {number} [fontSize] - the font size
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setFontSize(fontSize, log = false)
-	{
-		if (typeof fontSize === 'undefined')
-		{
-			fontSize = (this._units === 'pix') ? 14 : 0.03;
-		}
-
-		const hasChanged = this._setAttribute('fontSize', fontSize, log);
-
-		if (hasChanged)
-		{
-			this._needUpdate = true;
-			this._needVertexUpdate = true;
-		}
-	}
-
-	/**
-	 * Setter for the bold attribute.
-	 *
-	 * @name module:visual.Slider#setBold
-	 * @public
-	 * @param {boolean} [bold= true] - whether or not the font of the labels is bold
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setBold(bold = true, log = false)
-	{
-		const hasChanged = this._setAttribute('bold', bold, log);
-
-		if (hasChanged)
-		{
-			this._fontWeight = (bold) ? 'bold' : 'normal';
-			this._needUpdate = true;
-			this._needVertexUpdate = true;
-		}
-	}
-
-
-	/**
-	 * Setter for the italic attribute.
-	 *
-	 * @name module:visual.Slider#setItalic
-	 * @public
-	 * @param {boolean} [italic= false] - whether or not the font of the labels is italic
-	 * @param {boolean} [log= false] - whether of not to log
-	 */
-	setItalic(italic = false, log = false)
-	{
-		const hasChanged = this._setAttribute('italic', italic, log);
-
-		if (hasChanged)
-		{
-			this._fontStyle = (italic) ? 'italic' : 'normal';
-			this._needUpdate = true;
-			this._needVertexUpdate = true;
-		}
-	}
 
 
 	/**
@@ -330,6 +323,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
 	/**
 	 * Setter for the markerPos attribute.
 	 *
@@ -356,6 +350,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
 	/**
 	 * Setter for the rating attribute.
 	 *
@@ -379,12 +374,181 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @note this method calculates the position of the labels, since that is necessary to the estimation of
+	 * the bounding box.
+	 *
+	 * @name module:visual.Slider#_estimateBoundingBox
+	 * @function
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		// setup the slider's style (taking into account the Window dimension, etc.):
+		this._setupStyle();
+		
+		// calculate various values in pixel units:
+		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
+		this._fontSize_px = this._getLengthPix(this._fontSize);
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
+		const tickPositions = this._ratingToPos(this._ticks);
+		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		const size_px = util.to_px(this._size, this._units, this._win);
+
+		// left, top, right, bottom limits:
+		const limits_px = [
+			Number.POSITIVE_INFINITY,
+			Number.POSITIVE_INFINITY,
+			Number.NEGATIVE_INFINITY,
+			Number.NEGATIVE_INFINITY
+		];
+
+		// estimate the position of the labels:
+		this._labelPositions_px = new Array(this._labels.length);
+		const labelTextStyle = this._getTextStyle();
+		let prevLabelBounds = null;
+		let prevNonOverlapOffset = 0;
+
+		const tolerance = 10;
+
+		for (let l = 0; l < this._labels.length; ++l)
+		{
+			const tickPositionIndex = Math.round( l / (this._labels.length - 1) * (this._ticks.length - 1) );
+			this._labelPositions_px[l] = this._tickPositions_px[tickPositionIndex];
+			const labelBounds = PIXI.TextMetrics.measureText(this._labels[l], labelTextStyle);
+
+			// horizontal slider:
+			if (this._isHorizontal())
+			{
+				if (this._flip)
+				{
+					this._labelPositions_px[l][1] -= labelBounds.height + this._tickSize_px[1];
+				}
+				else
+				{
+					this._labelPositions_px[l][1] += this._tickSize_px[1];
+				}
+
+				if (this._style.indexOf(Slider.Style.LABELS45) === -1)
+				{
+					this._labelPositions_px[l][0] -= labelBounds.width / 2;
+					if (this._compact)
+					{
+						this._labelPositions_px[l][0] = Math.min(size_px[0] / 2 - labelBounds.width, Math.max(-size_px[0] / 2, this._labelPositions_px[l][0]));
+					}
+
+					// ensure that that labels are not overlapping:
+					if (prevLabelBounds &&
+						(this._labelPositions_px[l - 1][0] + prevLabelBounds.width + tolerance >= this._labelPositions_px[l][0]))
+					{
+						if (prevNonOverlapOffset === 0)
+						{
+							prevNonOverlapOffset = prevLabelBounds.height;
+							this._labelPositions_px[l][1] += prevNonOverlapOffset;
+						}
+						else
+						{
+							prevNonOverlapOffset = 0;
+						}
+					}
+					prevLabelBounds = labelBounds;
+				}
+			}
+			// vertical slider:
+			else
+			{
+				this._labelPositions_px[l][1] -= labelBounds.height / 2;
+				if (this._compact)
+				{
+					this._labelPositions_px[l][1] = Math.min(size_px[1] / 2 - labelBounds.width, Math.max(-size_px[1] / 2, this._labelPositions_px[l][1]));
+				}
+				if (this._flip)
+				{
+					this._labelPositions_px[l][0] += this._tickSize_px[0] * 2;
+				}
+				else if (this._labelOri === 0)
+				{
+					this._labelPositions_px[l][0] -= labelBounds.width + this._tickSize_px[0] * 2;
+				}
+				else
+				{
+					this._labelPositions_px[l][0] -= this._tickSize_px[0];
+				}
+			}
+
+			// update limits:
+			limits_px[0] = Math.min(limits_px[0], this._labelPositions_px[l][0]);
+			limits_px[1] = Math.min(limits_px[1], this._labelPositions_px[l][1]);
+			limits_px[2] = Math.max(limits_px[2], this._labelPositions_px[l][0] + labelBounds.width);
+			limits_px[3] = Math.max(limits_px[3], this._labelPositions_px[l][1] + labelBounds.height);
+		}
+
+		// adjust the limits by taking into account the ticks:
+		if (this._isHorizontal())
+		{
+			limits_px[1] -= this._tickSize_px[1] * 2;
+		}
+		else
+		{
+			// TODO vertical
+		}
+
+		// calculate the bounding box:
+		const position = this._getPosition();
+		this._boundingBox = new PIXI.Rectangle(
+			position[0] + this._getLengthUnits(limits_px[0]),
+			position[1] + this._getLengthUnits(limits_px[1]),
+			this._getLengthUnits(limits_px[2] - limits_px[0]),
+			this._getLengthUnits(limits_px[3] - limits_px[1])
+		);
+	}
+
+
+
+	/**
+	 * Sanitize the slider attributes: check for attribute conflicts, missing values, etc.
+	 *
+	 * @name module:visual.Slider#_sanitizeAttributes
+	 * @function
+	 * @protected
+	 */
+	_sanitizeAttributes()
+	{
+		// convert potential string styles into Symbols:
+		this._style.forEach( (style, index) =>
+		{
+			if (typeof style === 'string')
+			{
+				this._style[index] = Symbol.for(style.toUpperCase());
+			}
+		});
+
+		// TODO: only two ticks for SLIDER type, non-empty ticks, that RADIO is also categorical, etc.
+
+		// deal with categorical sliders:
+		this._isCategorical = (this._ticks.length === 0);
+		if (this._isCategorical)
+		{
+			this._ticks = [...Array(this._labels.length)].map( (_, i) => i );
+			this._granularity = 1.0;
+		}
+
+	}
+
+
+
 	/**
 	 * Set the current rating.
 	 *
 	 * <p>Setting the rating does also change the visible position of the marker.</p>
 	 *
 	 * @name module:visual.Slider#_recordRating
+	 * @function
 	 * @private
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
@@ -427,20 +591,47 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		}
 		this._needUpdate = false;
 
-		this._buildSlider();
+		this._setupSlider();
 		this._updateMarker();
 
-		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
-		this._pixi.scale.y = this._flipVert ? 1 : -1;
+		this._pixi.scale.x = 1;
+		this._pixi.scale.y = -1;
 
 		this._pixi.rotation = this._ori * Math.PI / 180;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = this._getPosition();
 
 		this._pixi.alpha = this._opacity;
 	}
 
 
 	/**
+	 * Estimate the position of the slider, taking the compactness into account.
+	 *
+	 * @return {number[]} - the position of the slider
+	 * @private
+	 */
+	_getPosition()
+	{
+		const position = util.to_pixiPoint(this.pos, this.units, this.win, true);
+		if (this._compact &&
+			(this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1))
+		{
+			if (this._isHorizontal())
+			{
+				position.y -= this._getLengthPix(this._tickSize[1]) * (this._flip ? -1 : 1);
+			}
+			else
+			{
+				position.x += this._getLengthPix(this._tickSize[0]) * (this._flip ? -1 : 1);
+			}
+		}
+
+		return position;
+	}
+
+
+
+/**
 	 * Update the position of the marker if necessary.
 	 *
 	 * @name module:visual.Slider#_updateMarker
@@ -459,7 +650,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			if (typeof this._markerPos !== 'undefined')
 			{
 				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
-				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win);
+				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
 				this._marker.alpha = 1;
 			}
 			else
@@ -470,190 +661,180 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
 	/**
 	 * Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
 	 *
-	 * @note: we use _needVertexUpdate as an indicator tha elements must be re-created.
-	 *
-	 * @name module:visual.Slider#_buildSlider
+	 * @name module:visual.Slider#_setupSlider
+	 * @function
 	 * @private
 	 */
-	_buildSlider()
+	_setupSlider()
 	{
-		if (!this._needVertexUpdate)
+		if (!this._needPixiUpdate)
 		{
 			return;
 		}
-		this._needVertexUpdate = false;
+		this._needPixiUpdate = false;
 
-		this._applyStyle();
+		this._setupStyle();
 
 
+		// calculate various values in pixel units:
+		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
+		this._fontSize_px = this._getLengthPix(this._fontSize);
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
+		const tickPositions = this._ratingToPos(this._ticks);
+		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+
+
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.destroy(true);
+		}
 		this._pixi = new PIXI.Container();
 		this._pixi.interactive = true;
+		// apply the clip mask:
+		this._pixi.mask = this._clipMask;
 
 		this._body = new PIXI.Graphics();
 		this._body.interactive = true;
 		this._pixi.addChild(this._body);
 
 
-		// (*) central bar:
-		const barSize_px = util.to_px(this._barSize, this._units, this._win).map(v => Math.max(1, v));
+		// central bar:
+		this._setupBar();
+
+		// ticks:
+		this._setupTicks();
+
+		// labels:
+		this._setupLabels();
+
+		// markers:
+		this._setupMarker();
+	}
+
+
+
+	/**
+	 * Setup the central bar.
+	 *
+	 * @name module:visual.Slider#_setupBar
+	 * @function
+	 * @private
+	 */
+	_setupBar()
+	{
 		if (this._barLineWidth_px > 0)
 		{
-			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, this._opacity, 0.5);
+			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, 1, 0.5);
 			if (typeof this._barFillColor !== 'undefined')
 			{
-				this._body.beginFill(this._barFillColor.int, this._opacity);
+				this._body.beginFill(this._barFillColor.int, 1);
 			}
-			this._body.drawRect(-barSize_px[0] / 2, -barSize_px[1] / 2, barSize_px[0], barSize_px[1]);
+			this._body.drawRect(
+				Math.round(-this._barSize_px[0] / 2),
+				Math.round(-this._barSize_px[1] / 2),
+				Math.round(this._barSize_px[0]),
+				Math.round(this._barSize_px[1])
+			);
 			if (typeof this._barFillColor !== 'undefined')
 			{
 				this._body.endFill();
 			}
 		}
-
-		// (*) ticks:
-		if (this._isCategorical)
-		{
-			this._ticks = [...Array(this._labels.length)].map((_, i) => i);
-			this._granularity = 1.0;
-		}
-		const tickPositions = this._ratingToPos(this._ticks);
-		const tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
-		this._body.lineStyle(this._barLineWidth_px * 2, this._tickColor.int, this._opacity, 0.5);
-		const tickSize_px = util.to_px(this._tickSize, this._units, this._win);
-		for (let tickPosition_px of tickPositions_px)
-		{
-			if (this._tickType === Slider.Shape.LINE)
-			{
-				this._body.moveTo(tickPosition_px[0] - tickSize_px[0] / 2, tickPosition_px[1] - tickSize_px[1] / 2);
-				this._body.lineTo(tickPosition_px[0] + tickSize_px[0] / 2, tickPosition_px[1] + tickSize_px[1] / 2);
-			}
-			else if (this._tickType === Slider.Shape.DISC)
-			{
-				this._body.beginFill(this._tickColor.int, this._opacity);
-				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], Math.max(tickSize_px[0], tickSize_px[1]));
-				this._body.endFill();
-			}
-		}
+	}
 
 
-		// (*) transparent rectangle necessary to capture pointer events
-		// outside of marker and labels:
+
+	/**
+	 * Setup the marker, and the associated mouse events.
+	 *
+	 * @name module:visual.Slider#_setupMarker
+	 * @function
+	 * @private
+	 */
+	_setupMarker()
+	{
+		// transparent rectangle necessary to capture pointer events outside of marker and labels:
 		const eventCaptureRectangle = new PIXI.Graphics();
 		eventCaptureRectangle.beginFill(0, 0);
-		eventCaptureRectangle.drawRect(-barSize_px[0] / 2 - tickSize_px[0] / 2, -barSize_px[1] / 2 - tickSize_px[1] / 2,
-			barSize_px[0] + tickSize_px[0], barSize_px[1] + tickSize_px[1]);
+		eventCaptureRectangle.drawRect(
+			-this._barSize_px[0] / 2 - this._tickSize_px[0] / 2,
+			-this._barSize_px[1] / 2 - this._tickSize_px[1] / 2,
+			this._barSize_px[0] + this._tickSize_px[0],
+			this._barSize_px[1] + this._tickSize_px[1]
+		);
 		eventCaptureRectangle.endFill();
 		this._pixi.addChild(eventCaptureRectangle);
 
-
-		// (*) labels:
-		const labelPositions_px = [...Array(this._labels.length)].map(
-			(_, i) => tickPositions_px[Math.round(i / (this._labels.length - 1) * (this._ticks.length - 1))]);
-
-		const fontSize_px = util.to_px([this._fontSize, this._fontSize], this._units, this._win);
-		for (let l = 0; l < labelPositions_px.length; ++l)
-		{
-			const labelText = new PIXI.Text(this._labels[l], {
-				fontFamily: this._fontFamily,
-				fontWeight: this._fontWeight,
-				fontStyle: this._fontStyle,
-				fontSize: Math.round(fontSize_px[0]),
-				fill: this._labelColor.hex,
-				align: this._labelAlign
-			});
-
-			const labelBounds = labelText.getBounds(true);
-			labelText.position.x = labelPositions_px[l][0];
-			labelText.position.y = labelPositions_px[l][1];
-			labelText.anchor.x = this._labelAnchor.x;
-			labelText.anchor.y = this._labelAnchor.y;
-
-			if (this._isHorizontal())
-			{
-				if (this._flip)
-				{
-					labelText.position.y -= labelBounds.height + tickSize_px[1];
-				}
-				else
-				{
-					labelText.position.y += tickSize_px[1];
-				}
-			}
-			else
-			{
-				if (this._flip)
-				{
-					labelText.position.x += tickSize_px[0];
-				}
-				else if (this._labelOri === 0)
-				{
-					labelText.position.x -= labelBounds.width + tickSize_px[0];
-				}
-				else
-				{
-					labelText.position.x -= tickSize_px[0];
-				}
-			}
-
-			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
-			labelText.alpha = this._opacity;
-			this._pixi.addChild(labelText);
-		}
-
-
-		// (*) marker:
-		const markerSize_px = Math.max(...util.to_px(this._markerSize, this._units, this._win));
+		// marker:
 		this._marker = new PIXI.Graphics();
 		this._marker.alpha = 0; // invisible until markerPos is defined
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
+		const halfMarkerSize_px = Math.round(Math.max(...this._markerSize_px) / 2);
 		if (this._markerType === Slider.Shape.DISC)
 		{
-			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
-			this._marker.beginFill(this._markerColor.int, this._opacity);
-			this._marker.drawCircle(0, 0, markerSize_px / 2);
+			this._marker.lineStyle(1, this._markerColor.int, 1, 0.5);
+			this._marker.beginFill(this._markerColor.int, 1);
+			this._marker.drawCircle(0, 0, halfMarkerSize_px);
 			this._marker.endFill();
 		}
 		else if (this._markerType === Slider.Shape.TRIANGLE)
 		{
-			this._marker.lineStyle(1, this._markerColor.int, this._opacity, 0.5);
-			this._marker.beginFill(this._markerColor.int, this._opacity);
+			this._marker.lineStyle(1, this._markerColor.int, 1, 0.5);
+			this._marker.beginFill(this._markerColor.int, 1);
 			this._marker.moveTo(0, 0);
 			if (this._isHorizontal())
 			{
 				if (this._flip)
 				{
-					this._marker.lineTo(markerSize_px / 2, markerSize_px / 2);
-					this._marker.lineTo(-markerSize_px / 2, markerSize_px / 2);
+					this._marker.lineTo(halfMarkerSize_px, halfMarkerSize_px);
+					this._marker.lineTo(-halfMarkerSize_px, halfMarkerSize_px);
 				}
 				else
 				{
-					this._marker.lineTo(markerSize_px / 2, -markerSize_px / 2);
-					this._marker.lineTo(-markerSize_px / 2, -markerSize_px / 2);
+					this._marker.lineTo(halfMarkerSize_px, -halfMarkerSize_px);
+					this._marker.lineTo(-halfMarkerSize_px, -halfMarkerSize_px);
 				}
 			}
 			else
 			{
 				if (this._flip)
 				{
-					this._marker.lineTo(-markerSize_px / 2, markerSize_px / 2);
-					this._marker.lineTo(-markerSize_px / 2, -markerSize_px / 2);
+					this._marker.lineTo(-halfMarkerSize_px, halfMarkerSize_px);
+					this._marker.lineTo(-halfMarkerSize_px, -halfMarkerSize_px);
 				}
 				else
 				{
-					this._marker.lineTo(markerSize_px / 2, markerSize_px / 2);
-					this._marker.lineTo(markerSize_px / 2, -markerSize_px / 2);
+					this._marker.lineTo(halfMarkerSize_px, halfMarkerSize_px);
+					this._marker.lineTo(halfMarkerSize_px, -halfMarkerSize_px);
 				}
 			}
 			this._marker.endFill();
 		}
+		else if (this._markerType === Slider.Shape.BOX)
+		{
+			this._marker.lineStyle(1, this.getContrastedColor(this._markerColor, 0.5).int, 1, 0.5);
+			this._marker.beginFill(this._markerColor.int, 1);
+			this._marker.drawRect(
+				Math.round(-this._markerSize_px[0] / 2),
+				Math.round(-this._markerSize_px[1] / 2),
+				this._markerSize_px[0],
+				this._markerSize_px[1]
+			);
+			this._marker.endFill();
+
+			// this._marker.lineStyle(1, new Color('white').int, 1, 0.5);
+			// this._marker.drawCircle(0, 0, this._markerSize_px[0] / 3);
+		}
 
 
-		// (*) marker mouse events:
+		// marker mouse events:
 		const self = this;
 		self._markerDragging = false;
 
@@ -750,8 +931,94 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 
 			event.stopPropagation();
 		};
-
 	}
+
+
+
+	/**
+	 * Setup the ticks.
+	 *
+	 * @name module:visual.Slider#_setupTicks
+	 * @function
+	 * @private
+	 */
+	_setupTicks()
+	{
+		// Note: no ticks for SLIDER style
+		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+		{
+			return;
+		}
+
+		const maxTickSize = Math.max(this._tickSize_px[0], this._tickSize_px[1]);
+
+		this._body.lineStyle(this._barLineWidth_px * 2, this._tickColor.int, 1, 0.5);
+
+		for (let tickPosition_px of this._tickPositions_px)
+		{
+			if (this._tickType === Slider.Shape.LINE)
+			{
+				this._body.moveTo(tickPosition_px[0] - this._tickSize_px[0] / 2, tickPosition_px[1] - this._tickSize_px[1] / 2);
+				this._body.lineTo(tickPosition_px[0] + this._tickSize_px[0] / 2, tickPosition_px[1] + this._tickSize_px[1] / 2);
+			}
+			else if (this._tickType === Slider.Shape.DISC)
+			{
+				this._body.beginFill(this._tickColor.int, 1);
+				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize);
+				this._body.endFill();
+			}
+		}
+	}
+
+
+
+	/**
+	 * Get the PIXI Text Style applied to the PIXI.Text labels.
+	 *
+	 * @name module:visual.Slider#_getTextStyle
+	 * @function
+	 * @private
+	 */
+	_getTextStyle()
+	{
+		this._fontSize_px = this._getLengthPix(this._fontSize);
+		
+		return new PIXI.TextStyle({
+			fontFamily: this._font,
+			fontSize: Math.round(this._fontSize_px),
+			fontWeight: (this._bold) ? 'bold' : 'normal',
+			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fill: this.getContrastedColor(this._labelColor, this._contrast).hex,
+			align: 'center',
+		});
+	}
+
+
+
+	/**
+	 * Setup the labels.
+	 *
+	 * @name module:visual.Slider#_setupTicks
+	 * @function
+	 * @private
+	 */
+	_setupLabels()
+	{
+		const labelTextStyle = this._getTextStyle();
+
+		for (let l = 0; l < this._labels.length; ++l)
+		{
+			const labelText = new PIXI.Text(this._labels[l], labelTextStyle);
+			labelText.position.x = this._labelPositions_px[l][0];
+			labelText.position.y = this._labelPositions_px[l][1];
+			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
+			labelText.anchor = this._labelAnchor;
+			labelText.alpha = 1;
+
+			this._pixi.addChild(labelText);
+		}
+	}
+
 
 
 	/**
@@ -759,40 +1026,40 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * @note: We are mirroring PsychoPy here, rather than using a skin approach.
 	 *
-	 * @name module:visual.Slider#_applyStyle
+	 * @name module:visual.Slider#_setupStyle
+	 * @function
 	 * @private
 	 */
-	_applyStyle()
+	_setupStyle()
 	{
-
 		// default style:
 		if (this._isHorizontal())
 		{
 			this._barSize = [this._size[0], 0];
 			this._tickSize = [0, this._size[1]];
-			this._labelAnchor = new PIXI.Point(0.5, 0);
+			this._labelAnchor = new PIXI.Point(0, 0);
 		}
 		else
 		{
 			this._barSize = [0, this._size[1]];
 			this._tickSize = [this._size[0], 0];
-			this._labelAnchor = new PIXI.Point(0, 0.5);
+			this._labelAnchor = new PIXI.Point(0, 0); // 0, 0.5
 		}
 
 		this._barLineWidth_px = 1;
-		this._barLineColor = this._color; //new Color('lightgray');
+		this._barLineColor = new Color(this._color); //new Color('lightgray');
 		this._barFillColor = undefined; //new Color('darkgray');
 
 		this._tickType = Slider.Shape.LINE;
-		this._tickColor = this._color;
+		this._tickColor = new Color(this._color);
 
+		// this._markerColor = this.getContrastedColor(this._color, 0.3);
 		this._markerColor = new Color('red');
 		this._markerType = Slider.Shape.DISC;
 		this._markerSize = this._tickSize;
 
-		this._labelColor = this._color;
+		this._labelColor = new Color(this._color);
 
-		this._labelAlign = 'center';
 		this._labelOri = 0;
 
 
@@ -812,8 +1079,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// slider:
 		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 		{
-			this.psychoJS.logger.warn('"slider" style not implemented!');
-			//TODO
+			this._markerType = Slider.Shape.BOX;
+			this._markerSize = (this._isHorizontal()) ?
+				[this._size[0] / (this._ticks[1] - this._ticks[0]), this._size[1]] :
+				[this._size[0], this._size[1] / (this._ticks[1] - this._ticks[0])];
+
+			this._barSize = [this._size[0], this._size[1]];
+			this._barFillColor = this.getContrastedColor(new Color(this.color), 0.5);
 		}
 
 		// whiteOnBlack:
@@ -829,17 +1101,15 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		// labels45:
 		if (this._style.indexOf(Slider.Style.LABELS45) > -1)
 		{
+			this._labelOri = -45;
 			if (this._flip)
 			{
 				this._labelAnchor = new PIXI.Point(0, 0.5);
-				this._labelAlign = 'left';
 			}
 			else
 			{
-				this._labelAnchor = new PIXI.Point(1, 0.5);
-				this._labelAlign = 'right';
+				this._labelAnchor = new PIXI.Point(1, 0);
 			}
-			this._labelOri = -45;
 		}
 
 		// radio:
@@ -848,17 +1118,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 			this._barLineWidth_px = 0;
 			this._tickType = Slider.Shape.DISC;
 
-			this._markerColor = this.getContrastedColor(this._tickColor, 0.5);
-			this._markerSize.x *= 0.7;
-			this._markerSize.y *= 0.7;
+			this._markerSize = this._markerSize.map(s => s * 0.7);
 		}
 	}
+
 
 
 	/**
 	 * Convert an array of ratings into an array of [x,y] positions (in Slider units, with 0 at the center of the Slider)
 	 *
 	 * @name module:visual.Slider#_ratingToPos
+	 * @function
 	 * @private
 	 * @param {number[]} ratings - the array of ratings
 	 * @returns {Array.<Array.<number>>} the positions corresponding to the ratings (in Slider units,
@@ -869,20 +1139,54 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const range = this._ticks[this._ticks.length - 1] - this._ticks[0];
 		if (this._isHorizontal())
 		{
-			return ratings.map(v => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
+			// in compact mode the circular markers of RADIO sliders must fit within the width:
+			if (this._compact && this._style.indexOf(Slider.Style.RADIO) > -1)
+			{
+				return ratings.map(v => [
+					((v - this._ticks[0]) / range) * (this._size[0] - this._tickSize[1]*2) -
+					(this._size[0] / 2) + this._tickSize[1],
+						0]);
+			}
+			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+			{
+				return ratings.map(v => [
+					(1.0 - ((v - this._ticks[0]) / range - 0.5)) * (this._size[0] - this._markerSize[0]),
+					0]);
+			}
+			else
+			{
+				return ratings.map(v => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
+			}
 		}
 		else
 		{
-			return ratings.map(v => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
+			// in compact mode the circular markers of RADIO sliders must fit within the height:
+			if (this._compact && this._style.indexOf(Slider.Style.RADIO) > -1)
+			{
+				return ratings.map(v => [0,
+					((v - this._ticks[0]) / range) * (this._size[1] - this._tickSize[0]*2) -
+					(this._size[1] / 2) + this._tickSize[0]]);
+			}
+			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+			{
+				return ratings.map(v => [
+					0,
+					((v - this._ticks[0]) / range - 0.5) * (this._size[1] - this._markerSize[1])]);
+			}
+			else
+			{
+				return ratings.map(v => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
+			}
 		}
-		// return ratings.map( v => [0, ((v-this._ticks[0])/range-0.5) * this._size[1]]);
 	}
+
 
 
 	/**
 	 * Convert a [x,y] position, in pixel units, relative to the slider, into a rating.
 	 *
 	 * @name module:visual.Slider#_posToRating
+	 * @function
 	 * @private
 	 * @param {number[]} pos_px - the [x,y] position, in pixel units, relative to the slider.
 	 * @returns {number} the corresponding rating.
@@ -893,15 +1197,29 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 		const size_px = util.to_px(this._size, this._units, this._win);
 		if (this._isHorizontal())
 		{
-			return (pos_px[0] / size_px[0] + 0.5) * range + this._ticks[0];
-		}// return ((pos_px[0]-this._pixi.position.x) / size_px[0] + 0.5) * range + this._ticks[0];
+			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+			{
+				return (1.0 - (pos_px[0] / size_px[0] + 0.5)) * range;
+			}
+			else
+			{
+				return (pos_px[0] / size_px[0] + 0.5) * range + this._ticks[0];
+			}
+		}
 		else
 		{
-			return (1.0 - (pos_px[1] / size_px[1] + 0.5)) * range + this._ticks[0];
+			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+			{
+				const markerSize_px = util.to_px(this._markerSize, this._units, this._win);
+				return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range;
+			}
+			else
+			{
+				return (1.0 - (pos_px[1] / size_px[1] + 0.5)) * range + this._ticks[0];
+			}
 		}
-		// return (pos_px[1] / size_px[1] + 0.5) * range + this._ticks[0];
-		// return ((pos_px[1]-this._pixi.position.y) / size_px[1] + 0.5) * range + this._ticks[0];
 	}
+
 
 
 	/**
@@ -910,6 +1228,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	 * <p>The slider is horizontal is its x-axis size is larger than its y-axis size.</p>
 	 *
 	 * @name module:visual.Slider#_isHorizontal
+	 * @function
 	 * @private
 	 * @returns {boolean} whether or not the slider is horizontal
 	 */
@@ -919,10 +1238,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+
 	/**
 	 * Calculate the rating once granularity has been taken into account.
 	 *
 	 * @name module:visual.Slider#_granularise
+	 * @function
 	 * @private
 	 * @param {number} rating - the input rating
 	 * @returns {number} the new rating with granularity applied
@@ -972,9 +1293,9 @@ Slider.Shape = {
  */
 Slider.Style = {
 	RATING: Symbol.for('RATING'),
-	TRIANGLE_MARKER: Symbol.for('TRIANGLE_MARKER'),
+	TRIANGLE_MARKER: Symbol.for('TRIANGLEMARKER'),
 	SLIDER: Symbol.for('SLIDER'),
-	WHITE_ON_BLACK: Symbol.for('WHITE_ON_BLACK'),
+	WHITE_ON_BLACK: Symbol.for('WHITEONBLACK'),
 	LABELS45: Symbol.for('LABELS45'),
 	RADIO: Symbol.for('RADIO')
 };
