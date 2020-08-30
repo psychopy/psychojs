@@ -340,7 +340,13 @@ export class MovieStim extends VisualStim
 
 			if (typeof this._pixi !== 'undefined')
 			{
-				this._pixi.destroy(true);
+				// Leave original video in place
+				// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
+				this._pixi.destroy({
+					children: true,
+					texture: true,
+					baseTexture: false
+				});
 			}
 			this._pixi = undefined;
 
