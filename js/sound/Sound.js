@@ -156,7 +156,7 @@ export class Sound extends PsychObject
 	{
 		if (sound instanceof Sound)
 		{
-			this._setAttribute('value', sound.value);
+			this._setAttribute('value', sound.value, log);
 
 			if (typeof this._player !== 'undefined')
 			{
