@@ -307,10 +307,10 @@ export class MovieStim extends VisualStim
 		if (typeof size !== 'undefined')
 		{
 			this._boundingBox = new PIXI.Rectangle(
-				this._pos[0] - this._size[0] / 2,
-				this._pos[1] - this._size[1] / 2,
-				this._size[0],
-				this._size[1]
+				this._pos[0] - size[0] / 2,
+				this._pos[1] - size[1] / 2,
+				size[0],
+				size[1]
 			);
 		}
 
