@@ -626,7 +626,7 @@ export class GUI
 	{
 		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
-			$("#buttonOk").button("option", "disabled", false);
+			$("#buttonOk").button("option", "disabled", false).focus();
 		}
 		else
 		{
