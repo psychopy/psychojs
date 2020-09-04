@@ -165,6 +165,49 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 
+	/**
+	 * Clears the current text value.
+	 *
+	 * @name module:visual.TextBox#reset
+	 * @public
+	 */
+	reset()
+	{
+		this.setInputText();
+	}
+
+
+	/**
+	 * For tweaking the underlying input value.
+	 *
+	 * @name module:visual.TextBox#setInputText
+	 * @public
+	 * @param {string} text
+	 */
+	setInputText(text = '')
+	{
+		if (typeof this._pixi !== 'undefined')
+		{
+			this._pixi.text = text;
+		}
+	}
+
+
+	/**
+	 * For accessing the underlying input value.
+	 *
+	 * @name module:visual.TextBox#getInputText
+	 * @public
+	 * @return {string} - the current text value of the underlying input element.
+	 */
+	getInputText()
+	{
+		if (typeof this._pixi !== 'undefined')
+		{
+			return this._pixi.text;
+		}
+	}
+
 
 	/**
 	 * Setter for the size attribute.
