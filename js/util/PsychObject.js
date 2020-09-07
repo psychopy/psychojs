@@ -336,7 +336,7 @@ export class PsychObject extends EventEmitter
 		// The following check comes in handy when figuring out a `hasChanged` predicate
 		// in a `ShapeStim.setPos()` call for example. Objects that belong to us, such as
 		// colors, feature a `toString()` method of their own. The types of input that
-		// `util.toString()` might try, but fail to stringify in a meaningful way are assigned
+		// `Util.toString()` might try, but fail to stringify in a meaningful way are assigned
 		// an 'Object (circular)' string representation. For being opaque as to their raw
 		// value, those types of input are excluded below.
 		return prev !== 'Object (circular)' && next !== 'Object (circular)' && prev !== next;
