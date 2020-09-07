@@ -467,12 +467,6 @@ export class TrialHandler extends PsychObject
 					{
 						let value = row[l];
 
-						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string' && !isNaN(value))
-						{
-							value = Number.parseFloat(value);
-						}
-
 						// Look for string encoded arrays in the form of '[1, 2]'
 						const arrayMaybe = util.turnSquareBracketsIntoArrays(value);
 
@@ -480,8 +474,15 @@ export class TrialHandler extends PsychObject
 						{
 							// Keep the first match if more than one are found. If the
 							// input string looked like '[1, 2][3, 4]' for example,
-							// the resulting value would be [1, 2]
+							// the resulting value would be [1, 2]. When `arrayMaybe` is
+							// empty, value turns `undefined`.
 							value = arrayMaybe[0];
+						}
+
+						// if value is a numerical string, convert it to a number:
+						if (typeof value === 'string' && !isNaN(value))
+						{
+							value = Number.parseFloat(value);
 						}
 
 						trial[fields[l]] = value;
