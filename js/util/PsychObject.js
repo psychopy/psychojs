@@ -324,7 +324,7 @@ export class PsychObject extends EventEmitter
 		{
 			// Not that any of the following lines should throw, but evaluating
 			// `this._vertices.map` on `ShapeStim._getVertices_px()` seems to
-			return;
+			return false;
 		}
 
 		// Need check for equality differently for each type of attribute somehow,
@@ -333,9 +333,12 @@ export class PsychObject extends EventEmitter
 		const prev = toString(previousAttributeValue);
 		const next = toString(attributeValue);
 
-		// Objects that belong to us such as colors feature a `toString()`
-		// method, exclude others that don't, important in turn when figuring
-		// out a `hasChanged` in a `ShapeStim.setPos()` for example
+		// The following check comes in handy when figuring out a `hasChanged` predicate
+		// in a `ShapeStim.setPos()` call for example. Objects that belong to us, such as
+		// colors, feature a `toString()` method of their own. The types of input that
+		// `util.toString()` might try, but fail to stringify in a meaningful way are assigned
+		// an 'Object (circular)' string representation. For being opaque as to their raw
+		// value, those types of input are excluded below.
 		return prev !== 'Object (circular)' && next !== 'Object (circular)' && prev !== next;
 	}
 
