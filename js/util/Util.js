@@ -966,7 +966,7 @@ export function offerDataForDownload(filename, data, type)
  * @param {string} input - string containing lists in square brackets
  * @returns {array} an array of arrays found
  */
-function turnSquareBracketsIntoArrays(input)
+export function turnSquareBracketsIntoArrays(input)
 {
 	// Only interested in strings
 	// https://stackoverflow.com/questions/4059147
