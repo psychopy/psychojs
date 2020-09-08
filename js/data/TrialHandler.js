@@ -475,7 +475,7 @@ export class TrialHandler extends PsychObject
 							// Keep the first match if more than one are found. If the
 							// input string looked like '[1, 2][3, 4]' for example,
 							// the resulting `value` would be [1, 2]. When `arrayMaybe` is
-							// empty, value turns `undefined`. At this point that might
+							// empty, `value` turns `undefined`. At this point that might
 							// only happen if `value` is an empty array to begin with.
 							value = arrayMaybe[0];
 						}
