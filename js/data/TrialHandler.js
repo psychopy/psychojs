@@ -467,17 +467,23 @@ export class TrialHandler extends PsychObject
 					{
 						let value = row[l];
 
+						// Look for string encoded arrays in the form of '[1, 2]'
+						const arrayMaybe = util.turnSquareBracketsIntoArrays(value);
+
+						if (Array.isArray(arrayMaybe))
+						{
+							// Keep the first match if more than one are found. If the
+							// input string looked like '[1, 2][3, 4]' for example,
+							// the resulting `value` would be [1, 2]. When `arrayMaybe` is
+							// empty, `value` turns `undefined`. At this point that might
+							// only happen if `value` is an empty array to begin with.
+							value = arrayMaybe[0];
+						}
+
 						// if value is a numerical string, convert it to a number:
 						if (typeof value === 'string' && !isNaN(value))
 						{
 							value = Number.parseFloat(value);
-						}
-
-						const [arrayMaybe] = util.turnSquareBracketsIntoArrays(value);
-
-						if (Array.isArray(arrayMaybe))
-						{
-							value = arrayMaybe;
 						}
 
 						trial[fields[l]] = value;
