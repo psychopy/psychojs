@@ -354,7 +354,7 @@ export class MovieStim extends VisualStim
 			}
 
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.fromVideo(this._movie);
+			this._texture = PIXI.Texture.from(this._movie);
 			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
