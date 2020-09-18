@@ -219,7 +219,20 @@ export class MovieStim extends VisualStim
 	play(log = false)
 	{
 		this.status = PsychoJS.Status.STARTED;
-		this._movie.play();
+
+		// As found on https://goo.gl/LdLk22
+		const playPromise = this._movie.play();
+
+		if (playPromise !== undefined)
+		{
+			playPromise.catch((error) => {
+				throw {
+					origin: 'MovieStim.play',
+					context: `when attempting to play MovieStim: ${this._name}`,
+					error
+				};
+			});
+		}
 	}
 
 
