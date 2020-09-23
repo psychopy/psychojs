@@ -821,7 +821,7 @@ export function selectFromArray(array, selection)
 	// and return that entry:
 	if (isInt(selection))
 	{
-		return array[parseInt(selection)];
+		return [array[parseInt(selection)]];
 	}// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
