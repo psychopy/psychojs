@@ -624,7 +624,7 @@ export class GUI
 	 */
 	_updateOkButtonStatus()
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length))
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
 			$("#buttonOk").button("option", "disabled", false).focus();
 		}
