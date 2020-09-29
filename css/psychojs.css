@@ -138,6 +138,11 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
+/* Using double colons is the MDN recommended way */
+#root.is-ready::after {
+  display: none;
+}
+
 /* Initialisation message for IE11 */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   #root:after {
