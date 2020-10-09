@@ -294,7 +294,7 @@ export class PsychoJS
 	 *
 	 * @todo: close session on window or tab close
 	 */
-	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = []} = {})
+	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo = {}, resources = []} = {})
 	{
 		this.logger.debug();
 
