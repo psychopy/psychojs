@@ -825,7 +825,8 @@ export function selectFromArray(array, selection)
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
 	{
-		return array.filter((e, i) => (selection.includes(i)));
+		// Pick out `array` items matching indices contained in `selection` in order
+		return selection.map(i => array[i]);
 	}// if selection is a string, we decode it:
 	else if (typeof selection === 'string')
 	{
