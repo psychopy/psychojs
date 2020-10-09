@@ -281,8 +281,7 @@ export function toNumerical(obj)
 	}
 	catch (error)
 	{
-		// this._gui.dialog({ error: { ...response, error } });
-		this._gui.dialog({ error: Object.assign(response, { error }) });
+		throw Object.assign(response, { error });
 	}
 
 }
