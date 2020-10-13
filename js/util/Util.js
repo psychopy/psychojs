@@ -265,7 +265,7 @@ export function toNumerical(obj)
 
 			if (Number.isNaN(n))
 			{
-				throw `unable to convert ${e} to a number`;
+				throw `unable to convert ${input} to a number`;
 			}
 
 			return n;
