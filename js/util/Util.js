@@ -224,7 +224,7 @@ export function detectBrowser()
  * <ul>
  *   <li>number -> number, e.g. 2 -> 2</li>
  *   <li>[number] -> [number], e.g. [1,2,3] -> [1,2,3]</li>
- *   <li>numeral string -> number, e.g. "8" -> 8</li>
+ *   <li>numeral string -> [number], e.g. "8" -> [8]</li>
  *   <li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]</li>
  * </ul>
  *
