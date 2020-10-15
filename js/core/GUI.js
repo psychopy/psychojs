@@ -267,6 +267,9 @@ export class GUI
 								self._dialogComponent.button = 'OK';
 								$("#expDialog").dialog('close');
 
+								// Tackle browser demands on having user action initiate audio context
+								Tone.start();
+
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
 							}
