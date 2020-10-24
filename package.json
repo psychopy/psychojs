@@ -17,8 +17,7 @@
     "lint": "npm run lint:js && npm run lint:css",
     "lint:css": "stylelint index.css",
     "lint:js": "jshint rollup.config.js test.cjs js",
-    "start": "npm run build",
-    "test": "node test.cjs"
+    "start": "npm run build"
   },
   "babel": {
     "presets": [
