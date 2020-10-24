@@ -116,7 +116,7 @@ function findName(id, contents) {
 function appender() {
 	return {
 		outputOptions(options) {
-			const [ last ] = orderOfAppearance.slice(-1);
+			const last = [ ...orderOfAppearance ].pop();
 
 			if (options.file.includes(last)) {
 				options.footer = `
