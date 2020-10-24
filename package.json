@@ -1,0 +1,80 @@
+{
+  "name": "psychojs",
+  "version": "2020.1.0",
+  "private": true,
+  "description": "Helps run in-browser neuroscience, psychology, and psychophysics experiments",
+  "license": "MIT",
+  "author": {
+    "name": "Alain Pitiot"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:js && npm run build:css && npm run build:docs",
+    "build:css": "postcss -o dist/psychojs.css index.css",
+    "build:docs": "jsdoc js -r -d docs",
+    "build:js": "rollup -c",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:css": "stylelint index.css",
+    "lint:js": "jshint rollup.config.js test.cjs js",
+    "start": "npm run build",
+    "test": "node test.cjs"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "modules": false,
+          "targets": {
+            "ie": 11
+          },
+          "spec": true,
+          "forceAllTransforms": true,
+          "debug": true
+        }
+      ]
+    ]
+  },
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "rules": {
+      "no-descending-specificity": [
+        true,
+        {
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@rollup/plugin-babel": "^5.2.1",
+    "cssnano": "^4.1.10",
+    "jsdoc": "^3.6.6",
+    "jshint": "^2.12.0",
+    "postcss": "^8.1.3",
+    "postcss-cli": "^8.1.0",
+    "postcss-preset-env": "^6.7.0",
+    "rollup": "^2.32.1",
+    "stylelint": "^13.7.2",
+    "stylelint-config-standard": "^20.0.0",
+    "terser": "^5.3.8"
+  },
+  "jshintConfig": {
+    "esversion": 8
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-preset-env": {},
+      "cssnano": {
+        "autoprefixer": false
+      }
+    }
+  }
+}
