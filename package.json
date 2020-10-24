@@ -16,7 +16,7 @@
     "build:js": "rollup -c",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:css": "stylelint index.css",
-    "lint:js": "jshint rollup.config.js test.cjs js",
+    "lint:js": "jshint rollup.config.js js",
     "start": "npm run build"
   },
   "babel": {
