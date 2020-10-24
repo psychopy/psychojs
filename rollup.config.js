@@ -34,8 +34,6 @@ const orderOfAppearance = [ 'util', 'data', 'core', 'visual', 'sound' ];
 const components = fs.readdirSync(source)
 	// Drop hidden elements
 	.filter(item => !item.startsWith('.'))
-	// Drop main or just keep out of 'js' folder?
-	.filter(item => item !== 'index.js')
 	// Put in order
 	.sort((a, b) => orderOfAppearance.indexOf(a) - orderOfAppearance.indexOf(b))
 	// Prepare an output object for each component module
