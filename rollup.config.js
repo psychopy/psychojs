@@ -28,7 +28,7 @@ catch (error)
 }
 
 // For sorting legacy/IE11 bundle components
-const orderOfAppearance = [ 'util', 'data', 'core', 'visual', 'sound' ]
+const orderOfAppearance = [ 'util', 'data', 'core', 'visual', 'sound' ];
 
 // List source directory contents
 const components = fs.readdirSync(source)
