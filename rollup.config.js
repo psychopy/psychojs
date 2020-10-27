@@ -19,8 +19,9 @@ const source = './js';
 // Start fresh by removing the 'dist' folder
 try
 {
-	// Node.js recursive removal is experimental
-	fs.rmdirSync(destination, { recursive: true });
+	// Node.js recursive removal is experimental, at some point
+	// replace with `fs.rmdirSync(destination, { recursive: true });`
+	rmdir(destination);
 }
 catch (error)
 {
@@ -142,4 +143,27 @@ Scheduler = util.Scheduler;`;
 			delete bundle[id];
 		}
 	};
+}
+
+// Custom synchronous rimraf
+function rmdir(dir) {
+	// Forget about throwing if `dir` missing
+	if (fs.existsSync(dir)) {
+		const contents = fs.readdirSync(dir);
+
+		for (const item of contents) {
+			const target = path.join(dir, item);
+			const stat = fs.statSync(target);
+
+			if (stat.isDirectory()) {
+				// Run again
+				rmdir(target);
+			} else {
+				// Delete file
+				fs.unlinkSync(target);
+			}
+		}
+
+		fs.rmdirSync(dir);
+	}
 }
