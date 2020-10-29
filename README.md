@@ -37,13 +37,14 @@ PsychoJS currently supports the following Components:
 
 ### Stimuli:
 * Form
-* ImageStim
+* Image
 * Rect
-* ShapeStim (Polygon)
+* Shape (Polygon)
 * Slider
 * Sound (tones and tracks)
-* TextStim
+* Text
 * TextBox
+* Video
 
 ### Events:
 * Keyboard
