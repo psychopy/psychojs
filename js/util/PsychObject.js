@@ -338,8 +338,8 @@ export class PsychObject extends EventEmitter
 		// colors, feature a `toString()` method of their own. The types of input that
 		// `Util.toString()` might try, but fail to stringify in a meaningful way are assigned
 		// an 'Object (circular)' string representation. For being opaque as to their raw
-		// value, those types of input are excluded below.
-		return prev !== 'Object (circular)' && next !== 'Object (circular)' && prev !== next;
+		// value, those types of input are liable to produce PIXI updates.
+		return prev === 'Object (circular)' || next === 'Object (circular)' || prev !== next;
 	}
 
 
