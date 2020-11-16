@@ -237,6 +237,7 @@ export class GUI
 					modal: true,
 					closeOnEscape: false,
 					resizable: false,
+					draggable: false,
 
 					buttons: [
 						{
