@@ -452,6 +452,8 @@ export class GUI
 			autoOpen: true,
 			modal: true,
 			closeOnEscape: false,
+			resizable: false,
+			draggable: false,
 
 			buttons: (!showOK) ? [] : [{
 				id: "buttonOk",
