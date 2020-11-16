@@ -40,7 +40,7 @@ import * as util from '../util/Util';
  *
  * @param {boolean} [options.multiline= false] - whether or not a textarea is used
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [options.lipVert= false] - whether or not to flip the text vertically
+ * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
