@@ -165,6 +165,9 @@ export class PsychoJS
 
 		this.logger.info('[PsychoJS] Initialised.');
 		this.logger.info('[PsychoJS] @version 2020.2');
+
+		// Hide #root::after
+		$('#root').addClass('is-ready');
 	}
 
 

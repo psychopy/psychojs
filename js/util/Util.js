@@ -259,22 +259,26 @@ export function toNumerical(obj)
 			return obj;
 		}
 
+		const convertToNumber = (input) =>
+		{
+			const n = Number.parseFloat(input);
+
+			if (Number.isNaN(n))
+			{
+				throw `unable to convert ${input} to a number`;
+			}
+
+			return n;
+		}
+
 		if (typeof obj === 'string')
 		{
-			obj = [obj];
+			return convertToNumber(obj);
 		}
 
 		if (Array.isArray(obj))
 		{
-			return obj.map(e =>
-			{
-				let n = Number.parseFloat(e);
-				if (Number.isNaN(n))
-				{
-					throw `unable to convert ${e} to a number`;
-				}
-				return n;
-			});
+			return obj.map(convertToNumber);
 		}
 
 		throw 'unable to convert the object to a number';
@@ -820,7 +824,7 @@ export function selectFromArray(array, selection)
 	// and return that entry:
 	if (isInt(selection))
 	{
-		return array[parseInt(selection)];
+		return [array[parseInt(selection)]];
 	}// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
