@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "postcss -o dist/psychojs.css src/index.css",
-    "build:docs": "jsdoc js -r -d docs",
+    "build:docs": "jsdoc src -r -d docs",
     "build:js": "rollup -c",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:css": "stylelint src/**/*.css",
