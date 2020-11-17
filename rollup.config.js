@@ -1,6 +1,7 @@
 // ES native imports courtesy of using type module in 'package.json'
 import path from 'path';
 import fs from 'fs';
+import { minify } from 'terser';
 import babel from '@rollup/plugin-babel';
 
 // Manually set default version here for easier
@@ -13,28 +14,50 @@ const sourcemap = false;
 
 // Might be 'build' or similar
 const destination = './dist';
-// Could be 'src' or 'lib'
-const source = './js';
 
-// Start fresh by removing the 'dist' folder
-try
-{
-	// Node.js recursive removal is experimental, at some point
-	// replace with `fs.rmdirSync(destination, { recursive: true });`
-	rmdir(destination);
-}
-catch (error)
-{
+// Could be 'src' or 'lib'
+const source = './src';
+
+// Start fresh
+try {
+	if (fs.existsSync(destination)) {
+		// Clear out JS files before rebuilding
+		const contents = fs.readdirSync(destination).filter(item => item.endsWith('js'));
+
+		for (const item of contents) {
+			const target = path.join(destination, item);
+			const stat = fs.statSync(target);
+
+			// Delete
+			fs.unlinkSync(target);
+		}
+	} else {
+		// Create 'dist' if missing
+		fs.mkdirSync(destination);
+	}
+} catch (error) {
 	console.error(error);
 }
 
 // For sorting legacy/IE11 bundle components
 const orderOfAppearance = [ 'util', 'data', 'core', 'visual', 'sound' ];
+const last = [ ...orderOfAppearance ].pop();
+const footer = `
+// Add a few top level variables for convenience, this makes it
+// possible to eg. use "return Scheduler.Event.NEXT;" instead of "util.Scheduler.Event.NEXT;"
+PsychoJS = core.PsychoJS;
+TrialHandler = data.TrialHandler;
+Scheduler = util.Scheduler;`;
 
 // List source directory contents
 const components = fs.readdirSync(source)
-	// Drop hidden elements
-	.filter(item => !item.startsWith('.'))
+	// Need subdirectories only
+	.filter((item) => {
+		const target = path.join(source, item);
+		const stat = fs.statSync(target);
+
+		return stat.isDirectory();
+	})
 	// Put in order
 	.sort((a, b) => orderOfAppearance.indexOf(a) - orderOfAppearance.indexOf(b))
 	// Prepare an output object for each component module
@@ -82,7 +105,17 @@ const components = fs.readdirSync(source)
 					},
 					sourcemap,
 					plugins: [
-						appender()
+						appender({
+							target: `${destination}/psychojs-${version}.js`,
+							// Mirrors rollup's 'outputOptions' hook
+							outputOptions: (options) => {
+								if (options.file.includes(last)) {
+									options.footer = footer;
+								}
+
+								return options;
+							}
+						})
 					]
 				}
 			],
@@ -91,6 +124,9 @@ const components = fs.readdirSync(source)
 					babelHelpers: 'bundled',
 					exclude: 'node_modules/**',
 					include: `${destination}/*.iife.js`
+				}),
+				minifier({
+					sourceMap: false
 				})
 			]
 		})
@@ -111,29 +147,35 @@ function findName(id, contents) {
 	return id.split(path.sep).find(item => contents.includes(item));
 }
 
-// Custom plugin for cancatenating IIFE's sans cat(1)
-function appender() {
+// Minimal terser plugin
+function minifier(options) {
 	return {
-		outputOptions(options) {
-			const last = [ ...orderOfAppearance ].pop();
+		name: 'minifier',
+		async renderChunk(code) {
+			try {
+				// Includes code and map keys
+				const result = await minify(code, options);
 
-			if (options.file.includes(last)) {
-				options.footer = `
-// Add a few top level variables for convenience, this makes it
-// possible to eg. use "return Scheduler.Event.NEXT;" instead of "util.Scheduler.Event.NEXT;"
-PsychoJS = core.PsychoJS;
-TrialHandler = data.TrialHandler;
-Scheduler = util.Scheduler;`;
+				return result;
+			} catch (error) {
+				throw error;
 			}
+		}
+	};
+}
 
-			return options;
-		},
-		generateBundle(options, bundle) {
+// Custom plugin for cancatenating IIFE's sans cat(1)
+function appender({ target = '', outputOptions = () => {} } = {}) {
+	return {
+		name: 'appender',
+		outputOptions: (options) => outputOptions(options),
+		async generateBundle(options, bundle) {
 			const { file } = options;
 			const id = file.split('/').pop();
 			const { code } = bundle[id];
 
-			fs.appendFile(`${destination}/psychojs-${version}.js`, code, (error) => {
+			// Should be expected to throw if `target` missing
+			fs.appendFile(target, code, (error) => {
 				if (error) {
 					throw error;
 				}
@@ -143,27 +185,4 @@ Scheduler = util.Scheduler;`;
 			delete bundle[id];
 		}
 	};
-}
-
-// Custom synchronous rimraf
-function rmdir(dir) {
-	// Forget about throwing if `dir` missing
-	if (fs.existsSync(dir)) {
-		const contents = fs.readdirSync(dir);
-
-		for (const item of contents) {
-			const target = path.join(dir, item);
-			const stat = fs.statSync(target);
-
-			if (stat.isDirectory()) {
-				// Run again
-				rmdir(target);
-			} else {
-				// Delete file
-				fs.unlinkSync(target);
-			}
-		}
-
-		fs.rmdirSync(dir);
-	}
 }
