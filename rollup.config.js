@@ -126,7 +126,13 @@ const components = fs.readdirSync(source)
 					include: `${destination}/*.iife.js`
 				}),
 				minifier({
-					sourceMap: false
+					compress: false,
+					mangle: false,
+					output: {
+						beautify: true
+					},
+					sourceMap: false,
+					toplevel: false
 				})
 			]
 		})
