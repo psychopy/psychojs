@@ -49,6 +49,23 @@ PsychoJS = core.PsychoJS;
 TrialHandler = data.TrialHandler;
 Scheduler = util.Scheduler;`;
 
+const plugins = [
+	babel({
+		babelHelpers: 'bundled',
+		exclude: 'node_modules/**',
+		include: `${destination}/*.iife.js`
+	}),
+	minifier({
+		compress: false,
+		mangle: false,
+		output: {
+			beautify: true
+		},
+		sourceMap: false,
+		toplevel: false
+	})
+];
+
 // List source directory contents
 const components = fs.readdirSync(source)
 	// Need subdirectories only
@@ -119,26 +136,23 @@ const components = fs.readdirSync(source)
 					]
 				}
 			],
-			plugins: [
-				babel({
-					babelHelpers: 'bundled',
-					exclude: 'node_modules/**',
-					include: `${destination}/*.iife.js`
-				}),
-				minifier({
-					compress: false,
-					mangle: false,
-					output: {
-						beautify: true
-					},
-					sourceMap: false,
-					toplevel: false
-				})
-			]
+			plugins
 		})
 	);
 
-export default [ ...components ];
+export default [
+	...components,
+	{
+		// Add a UMD build for Thomas
+		input: `${source}/index.js`,
+		output: {
+			file: `${destination}/psychojs-${version}.umd.js`,
+			format: 'umd',
+			name: 'psychojs'
+		},
+		plugins
+	}
+];
 
 // https://rollupjs.org/guide/en/#onwarn
 function onwarn(message) {
