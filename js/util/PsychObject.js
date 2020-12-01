@@ -319,7 +319,27 @@ export class PsychObject extends EventEmitter
 		const previousAttributeValue = this['_' + attributeName];
 		this['_' + attributeName] = attributeValue;
 
-		return (typeof previousAttributeValue !== 'undefined' && attributeValue !== previousAttributeValue);
+		// Things seem OK without this check except for 'vertices'
+		if (typeof previousAttributeValue === 'undefined')
+		{
+			// Not that any of the following lines should throw, but evaluating
+			// `this._vertices.map` on `ShapeStim._getVertices_px()` seems to
+			return false;
+		}
+
+		// Need check for equality differently for each type of attribute somehow,
+		// Lodash has an example of what an all encompassing solution looks like below,
+		// https://github.com/lodash/lodash/blob/master/.internal/baseIsEqualDeep.js
+		const prev = toString(previousAttributeValue);
+		const next = toString(attributeValue);
+
+		// The following check comes in handy when figuring out a `hasChanged` predicate
+		// in a `ShapeStim.setPos()` call for example. Objects that belong to us, such as
+		// colors, feature a `toString()` method of their own. The types of input that
+		// `Util.toString()` might try, but fail to stringify in a meaningful way are assigned
+		// an 'Object (circular)' string representation. For being opaque as to their raw
+		// value, those types of input are liable to produce PIXI updates.
+		return prev === 'Object (circular)' || next === 'Object (circular)' || prev !== next;
 	}
 
 
