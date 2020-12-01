@@ -2,8 +2,8 @@
  * Window responsible for displaying the experiment stimuli
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -127,13 +127,10 @@ export class Window extends PsychObject
 		if (typeof this._renderer.gl !== 'undefined')
 		{
 			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
-			this._renderer.destroy();
 			extension.loseContext();
 		}
-		else
-		{
-			this._renderer.destroy();
-		}
+
+		this._renderer.destroy();
 
 		window.removeEventListener('resize', this._resizeCallback);
 		window.removeEventListener('orientationchange', this._resizeCallback);
@@ -428,7 +425,9 @@ export class Window extends PsychObject
 		this._size[1] = window.innerHeight;
 
 		// create a PIXI renderer and add it to the document:
-		this._renderer = PIXI.autoDetectRenderer(this._size[0], this._size[1], {
+		this._renderer = PIXI.autoDetectRenderer({
+			width: this._size[0],
+			height: this._size[1],
 			backgroundColor: this.color.int,
 			resolution: window.devicePixelRatio
 		});

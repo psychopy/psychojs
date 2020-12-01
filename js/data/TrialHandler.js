@@ -3,8 +3,9 @@
  * Trial Handler
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @author Hiroyuki Sogo & Sotiri Bakagiannis  - better support for BOM and accented characters
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -102,13 +103,16 @@ export class TrialHandler extends PsychObject
 		this.ran = 0;
 		this.order = -1;
 
+		// array of current snapshots:
+		this._snapshots = [];
+
 
 		// setup the trial sequence:
 		this._prepareSequence();
 
 		this._experimentHandler = null;
 		this.thisTrial = null;
-		this.finished = false;
+		this._finished = false;
 	}
 
 
@@ -132,7 +136,8 @@ export class TrialHandler extends PsychObject
 				// check for the last trial:
 				if (this.nRemaining === 0)
 				{
-					this.finished = true;
+					// this only indicated that the scheduling is done, not that the loop is finished
+					// this.finished = true;
 				}
 
 				// start a new repetition:
@@ -224,13 +229,31 @@ export class TrialHandler extends PsychObject
 			thisN: this.thisN,
 			thisIndex: this.thisIndex,
 			ran: this.ran,
-			finished: this.finished,
+			finished: this._finished,
 
 			getCurrentTrial: () => this.getTrial(currentIndex),
-			getTrial: (index = 0) => this.getTrial(index)
+			getTrial: (index = 0) => this.getTrial(index),
 		};
 
+		this._snapshots.push(snapshot);
+
 		return snapshot;
+	}
+
+
+	/**
+	 * Setter for the finished attribute.
+	 *
+	 * @param {boolean} isFinished - whether or not the loop is finished.
+	 */
+	set finished(isFinished)
+	{
+		this._finished = isFinished;
+		
+		this._snapshots.forEach( snapshot =>
+		{
+			snapshot.finished = isFinished;
+		});
 	}
 
 
@@ -405,8 +428,14 @@ export class TrialHandler extends PsychObject
 			{
 				// (*) read conditions from resource:
 				const resourceValue = serverManager.getResource(resourceName);
-				const workbook = XLSX.read(new Uint8Array(resourceValue), {type: "array"});
-				// const workbook = XLSX.read(resourceValue, { type: "buffer" }); // would work for ascii .csv
+
+				// Conditionally use a `TextDecoder` to reprocess .csv type input,
+				// which is then read in as a string
+				const decodedResourceMaybe = new Uint8Array(resourceValue);
+				// Could be set to 'buffer' for ASCII .csv
+				const type = resourceExtension === 'csv' ? 'string' : 'array';
+				const decodedResource = type === 'string' ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
+				const workbook = XLSX.read(decodedResource, { type });
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
@@ -437,6 +466,19 @@ export class TrialHandler extends PsychObject
 					for (let l = 0; l < fields.length; ++l)
 					{
 						let value = row[l];
+
+						// Look for string encoded arrays in the form of '[1, 2]'
+						const arrayMaybe = util.turnSquareBracketsIntoArrays(value);
+
+						if (Array.isArray(arrayMaybe))
+						{
+							// Keep the first match if more than one are found. If the
+							// input string looked like '[1, 2][3, 4]' for example,
+							// the resulting `value` would be [1, 2]. When `arrayMaybe` is
+							// empty, `value` turns `undefined`. At this point that might
+							// only happen if `value` is an empty array to begin with.
+							value = arrayMaybe[0];
+						}
 
 						// if value is a numerical string, convert it to a number:
 						if (typeof value === 'string' && !isNaN(value))
@@ -476,13 +518,18 @@ export class TrialHandler extends PsychObject
 	 */
 	_prepareTrialList(trialList)
 	{
-		const response = {origin: 'TrialHandler._prepareTrialList', context: 'when preparing the trial list'};
+		const response = {
+			origin: 'TrialHandler._prepareTrialList',
+			context: 'when preparing the trial list'
+		};
 
 		// we treat undefined trialList as a list with a single empty entry:
 		if (typeof trialList === 'undefined')
 		{
 			this.trialList = [undefined];
-		}// if trialList is an array, we make sure it is not empty:
+		}
+
+		// if trialList is an array, we make sure it is not empty:
 		else if (Array.isArray(trialList))
 		{
 			if (trialList.length === 0)
@@ -495,12 +542,13 @@ export class TrialHandler extends PsychObject
 		else if (typeof trialList === 'string')
 		{
 			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
-		}// unknown type:
+		}
+
+		// unknown type:
 		else
 		{
 			throw Object.assign(response, {
-				error: 'unable to prepare trial list:' +
-					' unknown type: ' + (typeof trialList)
+				error: 'unable to prepare trial list: unknown type: ' + (typeof trialList)
 			});
 		}
 	}

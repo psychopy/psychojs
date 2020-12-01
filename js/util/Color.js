@@ -2,8 +2,8 @@
  * Color management.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -35,7 +35,10 @@ export class Color
 
 	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB)
 	{
-		const response = {origin: 'Color', context: 'when defining a color'};
+		const response = {
+			origin: 'Color',
+			context: 'when defining a color'
+		};
 
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
 		// note: we expect the color space to be RGB
@@ -44,9 +47,7 @@ export class Color
 			if (colorspace !== Color.COLOR_SPACE.RGB)
 			{
 				throw Object.assign(response, {
-					error: 'the colorspace must be RGB for' +
-						' a' +
-						' named color'
+					error: 'the colorspace must be RGB for a named color'
 				});
 			}
 
@@ -125,7 +126,11 @@ export class Color
 				default:
 					throw Object.assign(response, {error: 'unknown colorspace: ' + colorspace});
 			}
+		}
 
+		else if (obj instanceof Color)
+		{
+			this._rgb = obj._rgb.slice();
 		}
 	}
 
@@ -416,7 +421,7 @@ export class Color
 	 */
 	static _rgbToHex(rgb)
 	{
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToHex(rgb255);
 	}
 
@@ -435,7 +440,7 @@ export class Color
 	 */
 	static _rgbToInt(rgb)
 	{
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToInt(rgb255);
 	}
 

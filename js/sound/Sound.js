@@ -3,8 +3,8 @@
  * Sound stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -168,7 +168,7 @@ export class Sound extends PsychObject
 	 *
 	 * @public
 	 * @param {number} [secs=0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
-	 * @param {boolean} [log=true] - whether of not to log
+	 * @param {boolean} [log=true] - whether or not to log
 	 */
 	setSecs(secs = 0.5, log = true)
 	{

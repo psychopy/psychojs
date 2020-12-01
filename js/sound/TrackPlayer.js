@@ -2,8 +2,8 @@
  * Track Player.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -95,6 +95,24 @@ export class TrackPlayer extends SoundPlayer
 	getDuration()
 	{
 		return this._howl.duration();
+	}
+
+
+	/**
+	 * Set the duration of the default sprite.
+	 *
+	 * @name module:sound.TrackPlayer#setDuration
+	 * @function
+	 * @public
+	 * @param {number} duration_s - the duration of the track in seconds
+	 */
+	setDuration(duration_s)
+	{
+		if (typeof this._howl !== 'undefined')
+		{
+			// Unfortunately Howler.js provides duration setting method
+			this._howl._duration = duration_s;
+		}
 	}
 
 

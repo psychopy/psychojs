@@ -2,8 +2,9 @@
  * Graphic User Interface
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @author Sijia Zhao - fine-grained resource loading
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -623,9 +624,9 @@ export class GUI
 	 */
 	_updateOkButtonStatus()
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length))
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
-			$("#buttonOk").button("option", "disabled", false);
+			$("#buttonOk").button("option", "disabled", false).focus();
 		}
 		else
 		{

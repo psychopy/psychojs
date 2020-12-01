@@ -2,8 +2,8 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -130,7 +130,7 @@ export class TonePlayer extends SoundPlayer
 	 * @name module:sound.TonePlayer#setDuration
 	 * @function
 	 * @public
-	 * @param {Integer} duration_s - dthe uration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
+	 * @param {number} duration_s - the duration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
 	 */
 	setDuration(duration_s)
 	{
@@ -266,7 +266,7 @@ export class TonePlayer extends SoundPlayer
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			// trigger the release of the sound, immediately:
-			this._synth.triggerRelease();
+			this._synth.triggerRelease(this._note);
 
 			// clear the repeat event if need be:
 			if (this._toneId)

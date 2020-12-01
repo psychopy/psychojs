@@ -2,8 +2,8 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2020.5
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2020.2
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -49,7 +49,7 @@ export class KeyPress
  * @param {boolean} [options.waitForStart= false] - whether or not to wait for a call to module:core.Keyboard#start
  * before recording keyboard events
  * @param {Clock} [options.clock= undefined] - an optional clock
- * @param {boolean} options.autoLog - whether or not to log
+ * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class Keyboard extends PsychObject
 {
