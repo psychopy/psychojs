@@ -38,15 +38,16 @@ import * as util from '../util/Util';
  * @param {boolean} [options.italic= false] - whether or not the text is italic
  * @param {string} [options.anchor = 'left'] - horizontal alignment
  *
+ * @param {boolean} [options.multiline= false] - whether or not a textarea is used
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [options.lipVert= false] - whether or not to flip the text vertically
+ * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, multiline, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
 
@@ -148,6 +149,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._onChange(true, true)
 		);
 
+		this._addAttribute('multiline', multiline, false, this._onChange(true, true));
 		this._addAttribute('editable', editable, false, this._onChange(true, true));
 			// this._setAttribute({
 			// 	name: 'vertices',
@@ -294,6 +296,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const padding_px = Math.round(this._getLengthPix(this._padding));
 		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
+		const height_px = Math.round(this._getLengthPix(this._size[1]));
+		const multiline = this._multiline;
 
 		return {
 			input: {
@@ -304,6 +308,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				fontStyle: (this._italic) ? 'italic' : 'normal',
 
 				padding: padding_px + 'px',
+				multiline,
+				height: multiline ? (height_px - 2 * padding_px) + 'px' : undefined,
 				width: (width_px - 2 * padding_px) + 'px'
 			},
 			box: {
@@ -396,6 +402,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			this._pixi = new TextInput(this._getTextInputOptions());
+			if (this._multiline)
+			{
+				this._pixi._multiline = this._multiline;
+			}
 			if (this._editable)
 			{
 				this._pixi.placeholder = this._text;
