@@ -61,7 +61,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * @todo check that parameters are valid, e.g. ticks are an array of numbers, etc.
  * @todo readOnly
  * @todo complete setters, for instance setTicks should change this._isCategorical
- * @todo consider using a proper UI delegate architecture (a la Java Swing, for instance).
+ * @todo flesh out the skin approach
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
@@ -71,6 +71,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._needMarkerUpdate = false;
 
+		// slider skin:
+		this._skin = {};
+		Object.assign(this._skin, Slider.Skin);
 
 		// callback to deal with input sanitising:
 		const onChange = (withPixi = false, withBoundingBox = false, withSanitize = false) =>
@@ -78,11 +81,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			const visualOnChange = this._onChange(withPixi, withBoundingBox);
 			return () =>
 			{
-				visualOnChange();
 				if (withSanitize)
 				{
 					this._sanitizeAttributes();
 				}
+
+				visualOnChange();
 			};
 		};
 
@@ -96,7 +100,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			'ticks',
 			ticks,
 			[1, 2, 3, 4, 5],
-			onChange(true, false, true)
+			onChange(true, true, true)
 		);
 		this._addAttribute(
 			'labels',
@@ -396,17 +400,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._fontSize_px = this._getLengthPix(this._fontSize);
 		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
 		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
-		const tickPositions = this._ratingToPos(this._ticks);
-		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		const pos_px = util.to_px(this._pos, this._units, this._win);
 		const size_px = util.to_px(this._size, this._units, this._win);
 
+		// calculate the position of the ticks:
+		const tickPositions = this._ratingToPos(this._ticks);
+		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+
 		// left, top, right, bottom limits:
-		const limits_px = [
-			Number.POSITIVE_INFINITY,
-			Number.POSITIVE_INFINITY,
-			Number.NEGATIVE_INFINITY,
-			Number.NEGATIVE_INFINITY
-		];
+		const limits_px = [0, 0, size_px[0], size_px[1]];
+		// Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY
 
 		// estimate the position of the labels:
 		this._labelPositions_px = new Array(this._labels.length);
@@ -498,11 +501,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// TODO vertical
 		}
 
-		// calculate the bounding box:
-		const position = this._getPosition();
+		// calculate the bounding box, in the Slider's coordinates:
+		const position_px = this._getPosition_px();
 		this._boundingBox = new PIXI.Rectangle(
-			position[0] + this._getLengthUnits(limits_px[0]),
-			position[1] + this._getLengthUnits(limits_px[1]),
+			this._getLengthUnits(position_px.x + limits_px[0]),
+			this._getLengthUnits(position_px.y + limits_px[1]),
 			this._getLengthUnits(limits_px[2] - limits_px[0]),
 			this._getLengthUnits(limits_px[3] - limits_px[1])
 		);
@@ -547,14 +550,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * <p>Setting the rating does also change the visible position of the marker.</p>
 	 *
-	 * @name module:visual.Slider#_recordRating
+	 * @name module:visual.Slider#recordRating
 	 * @function
-	 * @private
+	 * @public
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	_recordRating(rating, responseTime = undefined, log = false)
+	recordRating(rating, responseTime = undefined, log = false)
 	{
 		// get response time:
 		if (typeof responseTime === 'undefined')
@@ -598,7 +601,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.scale.y = -1;
 
 		this._pixi.rotation = this._ori * Math.PI / 180;
-		this._pixi.position = this._getPosition();
+		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
 	}
@@ -607,10 +610,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Estimate the position of the slider, taking the compactness into account.
 	 *
-	 * @return {number[]} - the position of the slider
+	 * @name module:visual.Slider#_getPosition_px
+	 * @return {number[]} - the position of the slider, in pixels
 	 * @private
 	 */
-	_getPosition()
+	_getPosition_px()
 	{
 		const position = util.to_pixiPoint(this.pos, this.units, this.win, true);
 		if (this._compact &&
@@ -631,7 +635,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 
 
-/**
+	/**
 	 * Update the position of the marker if necessary.
 	 *
 	 * @name module:visual.Slider#_updateMarker
@@ -703,6 +707,26 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.addChild(this._body);
 
 
+		// ensure that pointer events will be captured along the slider body, even outside of
+		// marker and labels:
+		if (this._tickType === Slider.Shape.DISC)
+		{
+			const maxTickSize_px = Math.max(this._tickSize_px[0], this._tickSize_px[1]);
+			this._body.hitArea = new PIXI.Rectangle(
+				-this._barSize_px[0] / 2 - maxTickSize_px,
+				-this._barSize_px[1] / 2 - maxTickSize_px,
+				this._barSize_px[0] + maxTickSize_px * 2,
+				this._barSize_px[1] + maxTickSize_px * 2);
+		}
+		else
+		{
+			this._body.hitArea = new PIXI.Rectangle(
+				-this._barSize_px[0] / 2 - this._tickSize_px[0] / 2,
+				-this._barSize_px[1] / 2 - this._tickSize_px[1] / 2,
+				this._barSize_px[0] + this._tickSize_px[0],
+				this._barSize_px[1] + this._tickSize_px[1]);
+		}
+
 		// central bar:
 		this._setupBar();
 
@@ -758,6 +782,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_setupMarker()
 	{
+/*	this is now deprecated and replaced by _body.hitArea
 		// transparent rectangle necessary to capture pointer events outside of marker and labels:
 		const eventCaptureRectangle = new PIXI.Graphics();
 		eventCaptureRectangle.beginFill(0, 0);
@@ -769,6 +794,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		);
 		eventCaptureRectangle.endFill();
 		this._pixi.addChild(eventCaptureRectangle);
+*/
 
 		// marker:
 		this._marker = new PIXI.Graphics();
@@ -865,7 +891,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self._recordRating(rating);
+				self.recordRating(rating);
 
 				event.stopPropagation();
 			}
@@ -878,7 +904,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			{
 				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
 				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self._recordRating(rating);
+				self.recordRating(rating);
 
 				self._markerDragging = false;
 
@@ -927,7 +953,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
 			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-			self._recordRating(rating);
+			self.recordRating(rating);
 
 			event.stopPropagation();
 		};
@@ -1032,6 +1058,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_setupStyle()
 	{
+		const isWhiteOnBlack = (this._style.indexOf(Slider.Style.WHITE_ON_BLACK) > -1);
+		const skin = (isWhiteOnBlack) ? this._skin.WHITE_ON_BLACK : this._skin.STANDARD;
+
 		// default style:
 		if (this._isHorizontal())
 		{
@@ -1043,22 +1072,22 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			this._barSize = [0, this._size[1]];
 			this._tickSize = [this._size[0], 0];
-			this._labelAnchor = new PIXI.Point(0, 0); // 0, 0.5
+			this._labelAnchor = new PIXI.Point(0, 0);
 		}
 
 		this._barLineWidth_px = 1;
-		this._barLineColor = new Color(this._color); //new Color('lightgray');
-		this._barFillColor = undefined; //new Color('darkgray');
+		this._barLineColor = (!skin.BAR_LINE_COLOR) ? new Color(this._color) : skin.BAR_LINE_COLOR;
+		this._barFillColor = undefined;
 
 		this._tickType = Slider.Shape.LINE;
-		this._tickColor = new Color(this._color);
+		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._color) : skin.TICK_COLOR;
 
 		// this._markerColor = this.getContrastedColor(this._color, 0.3);
-		this._markerColor = new Color('red');
+		this._markerColor = skin.MARKER_COLOR;
 		this._markerType = Slider.Shape.DISC;
-		this._markerSize = this._tickSize;
+		this._markerSize = (!this._skin.MARKER_SIZE) ? this._tickSize : this._skin.MARKER_SIZE;
 
-		this._labelColor = new Color(this._color);
+		this._labelColor = (!skin.LABEL_COLOR) ? new Color(this._color) : skin.LABEL_COLOR;
 
 		this._labelOri = 0;
 
@@ -1073,30 +1102,36 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		if (this._style.indexOf(Slider.Style.TRIANGLE_MARKER) > -1)
 		{
 			this._markerType = Slider.Shape.TRIANGLE;
+			if (!this._skin.MARKER_SIZE)
+			{
 			this._markerSize = this._markerSize.map(s => s * 2);
+		}
 		}
 
 		// slider:
 		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 		{
 			this._markerType = Slider.Shape.BOX;
+			if (!this._skin.MARKER_SIZE)
+			{
 			this._markerSize = (this._isHorizontal()) ?
-				[this._size[0] / (this._ticks[1] - this._ticks[0]), this._size[1]] :
-				[this._size[0], this._size[1] / (this._ticks[1] - this._ticks[0])];
-
+					[this._size[0] / (this._ticks[this._ticks.length - 1] - this._ticks[0]), this._size[1]] :
+					[this._size[0], this._size[1] / (this._ticks[this._ticks.length - 1] - this._ticks[0])];
+			}
 			this._barSize = [this._size[0], this._size[1]];
 			this._barFillColor = this.getContrastedColor(new Color(this.color), 0.5);
 		}
 
+		/*
 		// whiteOnBlack:
-		if (this._style.indexOf(Slider.Style.WHITE_ON_BLACK) > -1)
+		if (isWhiteOnBlack)
 		{
-			this._barLineColor = new Color('black');
-			// this._barFillColor = new Color('black');
-			this._tickColor = new Color('black');
-			this._markerColor = new Color('white');
-			this._labelColor = new Color('black');
+			this._barLineColor = skin.BAR_LINE_COLOR;
+			this._tickColor = skin.TICK_COLOR;
+			this._markerColor = skin.MARKER_COLOR;
+			this._labelColor = skin.LABEL_COLOR;
 		}
+		*/
 
 		// labels45:
 		if (this._style.indexOf(Slider.Style.LABELS45) > -1)
@@ -1118,8 +1153,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._barLineWidth_px = 0;
 			this._tickType = Slider.Shape.DISC;
 
+			if (!this._skin.MARKER_SIZE)
+			{
 			this._markerSize = this._markerSize.map(s => s * 0.7);
 		}
+	}
 	}
 
 
@@ -1150,7 +1188,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
 				return ratings.map(v => [
-					(1.0 - ((v - this._ticks[0]) / range - 0.5)) * (this._size[0] - this._markerSize[0]),
+					((v - this._ticks[0]) / range - 0.5) * (this._size[0] - this._markerSize[0]),
 					0]);
 			}
 			else
@@ -1195,11 +1233,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	{
 		const range = this._ticks[this._ticks.length - 1] - this._ticks[0];
 		const size_px = util.to_px(this._size, this._units, this._win);
+		const markerSize_px = util.to_px(this._markerSize, this._units, this._win);
+
 		if (this._isHorizontal())
 		{
 			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return (1.0 - (pos_px[0] / size_px[0] + 0.5)) * range;
+				return (pos_px[0] / (size_px[0] - markerSize_px[0]) + 0.5) * range + this._ticks[0];
 			}
 			else
 			{
@@ -1210,8 +1250,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				const markerSize_px = util.to_px(this._markerSize, this._units, this._win);
-				return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range;
+				return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range + this._ticks[0];
 			}
 			else
 			{
@@ -1298,4 +1337,31 @@ Slider.Style = {
 	WHITE_ON_BLACK: Symbol.for('WHITEONBLACK'),
 	LABELS45: Symbol.for('LABELS45'),
 	RADIO: Symbol.for('RADIO')
+};
+
+
+/**
+ * Skin.
+ *
+ * @name module:visual.Slider#Skin
+ * @enum {any}
+ * @readonly
+ * @public
+ *
+ * @note a null value indicates that the value is calculated when the style is setup, rather than simply assigned.
+ */
+Slider.Skin = {
+	MARKER_SIZE: null,
+	STANDARD: {
+		MARKER_COLOR: new Color('red'),
+		BAR_LINE_COLOR: null,
+		TICK_COLOR: null,
+		LABEL_COLOR: null
+	},
+	WHITE_ON_BLACK: {
+		MARKER_COLOR: new Color('white'),
+		BAR_LINE_COLOR: new Color('black'),
+		TICK_COLOR: new Color('black'),
+		LABEL_COLOR: new Color('black')
+	}
 };

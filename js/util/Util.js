@@ -269,7 +269,7 @@ export function toNumerical(obj)
 			}
 
 			return n;
-		}
+		};
 
 		if (typeof obj === 'string')
 		{

@@ -330,8 +330,8 @@ export class PsychObject extends EventEmitter
 		// Need check for equality differently for each type of attribute somehow,
 		// Lodash has an example of what an all encompassing solution looks like below,
 		// https://github.com/lodash/lodash/blob/master/.internal/baseIsEqualDeep.js
-		const prev = toString(previousAttributeValue);
-		const next = toString(attributeValue);
+		const prev = util.toString(previousAttributeValue);
+		const next = util.toString(attributeValue);
 
 		// The following check comes in handy when figuring out a `hasChanged` predicate
 		// in a `ShapeStim.setPos()` call for example. Objects that belong to us, such as
