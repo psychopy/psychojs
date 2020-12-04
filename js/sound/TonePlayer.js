@@ -339,8 +339,14 @@ export class TonePlayer extends SoundPlayer
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
-			this._volumeNode.toDestination();
-
+			if (typeof this._volumeNode.toDestination === 'function')
+			{
+				this._volumeNode.toDestination();
+			}
+			else
+			{
+				this._volumeNode.toMaster();
+			}
 		}
 		else
 		{
