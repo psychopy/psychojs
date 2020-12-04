@@ -562,7 +562,7 @@ Color.COLOR_SPACE = {
  * Named colors.
  *
  * @name module:util.Color#NAMED_COLORS
- * @enum {Symbol}
+ * @enum {string}
  * @readonly
  * @public
  */

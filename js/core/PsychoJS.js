@@ -599,7 +599,11 @@ export class PsychoJS
 			{
 				this._config = {
 					environment: ExperimentHandler.Environment.LOCAL,
-					experiment: {name, saveFormat: ExperimentHandler.SaveFormat.CSV}
+					experiment: {
+						name,
+						saveFormat: ExperimentHandler.SaveFormat.CSV,
+						saveIncompleteResults: true
+					}
 				};
 			}
 

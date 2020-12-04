@@ -43,27 +43,23 @@ export class Logger
 
 		// server logger:
 		this._serverLogs = [];
-
-		/**
-		 * DEPRECATED: we are using our own approach.
-		 *
-			// pavlovia.org server logger:
-			this.serverLogger = log4javascript.getLogger('pavlovia.org');
-			const serverAppender = new log4javascript.AjaxAppender('https://pavlovia.org/server?command=log');
-			serverAppender.setTimerInterval(1000); //1000*60*60); // 1h
-			serverAppender.setThreshold(threshold);
-			//serverAppender.setBatchSize(5);
-			//serverAppender.setSendAllOnUnload(true);
-			//serverAppender.setFailCallback();
-
-			const jsonLayout = new log4javascript.JsonLayout([false, false]);
-			serverAppender.setLayout(jsonLayout);
-
-			this.serverLogger.addAppender(serverAppender);
-			this.serverLogger.setLevel(threshold);
-		 *
-		 */
+		this._serverLevel = Logger.ServerLevel.WARNING;
 	}
+
+
+
+	/**
+	 * Change the logging level.
+	 *
+	 * @name module:core.Logger#setLevel
+	 * @public
+	 * @param {module:core.Logger.ServerLevel} serverLevel - the new logging level
+	 */
+	setLevel(serverLevel)
+	{
+		this._serverLevel = serverLevel;
+	}
+
 
 
 	/**
@@ -81,6 +77,7 @@ export class Logger
 	}
 
 
+
 	/**
 	 * Log a server message at the DATA level.
 	 *
@@ -94,6 +91,7 @@ export class Logger
 	{
 		this.log(msg, Logger.ServerLevel.DATA, time, obj);
 	}
+
 
 
 	/**
@@ -123,11 +121,12 @@ export class Logger
 	}
 
 
+
 	/**
 	 * Flush all server logs to the server.
 	 *
-	 * <p>Note: the logs are compressed using Pako's zlib algorithm. See https://github.com/nodeca/pako
-	 * for details.</p>
+	 * <p>Note: the logs are compressed using Pako's zlib algorithm.
+	 * See https://github.com/nodeca/pako for details.</p>
 	 *
 	 * @name module:core.Logger#flush
 	 * @public
@@ -141,20 +140,28 @@ export class Logger
 
 		this._psychoJS.logger.info('[PsychoJS] Flush server logs.');
 
+		// server level value:
+		const serverLevelValue = this._getValue(this._serverLevel);
+
 		// prepare formatted logs:
 		let formattedLogs = '';
 		for (const log of this._serverLogs)
 		{
-			let formattedLog = util.toString(log.time) +
-				'\t' + Symbol.keyFor(log.level) +
-				'\t' + log.msg;
-			if (log.obj !== 'undefined')
+			// we add the log message only if its level is >= _serverLevel
+			const levelValue = this._getValue(log.level);
+			if (levelValue >= serverLevelValue)
 			{
-				formattedLog += '\t' + log.obj;
-			}
-			formattedLog += '\n';
+				let formattedLog = util.toString(log.time) +
+					'\t' + Symbol.keyFor(log.level) +
+					'\t' + log.msg;
+				if (log.obj !== 'undefined')
+				{
+					formattedLog += '\t' + log.obj;
+				}
+				formattedLog += '\n';
 
-			formattedLogs += formattedLog;
+				formattedLogs += formattedLog;
+			}
 		}
 
 		// send logs to the server or display them in the console:
@@ -190,6 +197,7 @@ export class Logger
 			this._psychoJS.logger.debug('\n' + formattedLogs);
 		}
 	}
+
 
 
 	/**
@@ -264,7 +272,23 @@ export class Logger
 		return customLayout;
 	}
 
+
+
+	/**
+	 * Get the integer value associated with a logging level.
+	 *
+	 * @name module:core.Logger#_getValue
+	 * @protected
+	 * @param {module:core.Logger.ServerLevel} level - the logging level
+	 * @return {number} - the value associated with the logging level, or 30 is the logging level is unknown.
+	 */
+	_getValue(level)
+	{
+		const levelAsString = Symbol.keyFor(level);
+		return (levelAsString in Logger._ServerLevelValue) ? Logger._ServerLevelValue[levelAsString] : 30;
+	}
 }
+
 
 
 /**
@@ -286,4 +310,26 @@ Logger.ServerLevel = {
 	INFO: Symbol.for('INFO'),
 	DEBUG: Symbol.for('DEBUG'),
 	NOTSET: Symbol.for('NOTSET')
+};
+
+
+/**
+ * Server logging level values.
+ *
+ * <p>We use those values to determine whether a log is to be sent to the server or not.</p>
+ *
+ * @name module:core.Logger#_ServerLevelValue
+ * @enum {number}
+ * @readonly
+ * @protected
+ */
+Logger._ServerLevelValue = {
+	'CRITICAL': 50,
+	'ERROR': 40,
+	'WARNING': 30,
+	'DATA': 25,
+	'EXP': 22,
+	'INFO': 20,
+	'DEBUG': 10,
+	'NOTSET': 0
 };
