@@ -115,6 +115,12 @@ export class MovieStim extends VisualStim
 			1.0,
 			this._onChange(false, false)
 		);
+		this._addAttribute(
+			'loop',
+			loop,
+			false,
+			this._onChange(false, false)
+		);
 
 
 		// estimate the bounding box:
