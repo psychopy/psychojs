@@ -485,8 +485,11 @@ export class PsychoJS
 			});
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
-				await this._experiment.save();
-				await this._logger.flush();
+				if (!this._serverMsg.has('__noOutput'))
+				{
+					await this._experiment.save();
+					await this._logger.flush();
+				}
 			}
 
 			// close the session:
