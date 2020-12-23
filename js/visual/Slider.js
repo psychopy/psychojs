@@ -423,7 +423,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			const tickPositionIndex = Math.round( l / (this._labels.length - 1) * (this._ticks.length - 1) );
 			this._labelPositions_px[l] = this._tickPositions_px[tickPositionIndex];
-			const labelBounds = PIXI.TextMetrics.measureText(this._labels[l], labelTextStyle);
+			const labelBounds = PIXI.TextMetrics.measureText(this._labels[l].toString(), labelTextStyle);
 
 			// horizontal slider:
 			if (this._isHorizontal())
