@@ -311,6 +311,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 
 		// destroy the previous PIXI polygon and create a new one:
 		this._pixiPolygon_px = new PIXI.Polygon(coords_px);
+		this._pixiPolygon_px.closeStroke = this._closeShape;
 		return this._pixiPolygon_px;
 	}
 
