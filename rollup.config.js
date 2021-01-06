@@ -145,6 +145,7 @@ export default [
 	{
 		// Add a UMD build for Thomas
 		input: `${source}/index.js`,
+		onwarn,
 		output: {
 			file: `${destination}/psychojs-${version}.umd.js`,
 			format: 'umd',
