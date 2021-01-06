@@ -157,12 +157,12 @@ export default [
 
 // https://rollupjs.org/guide/en/#onwarn
 function onwarn(message, warn) {
-	// Skip circular dependecy warnings
+	// Skip circular dependency warnings
 	if (message.code === 'CIRCULAR_DEPENDENCY') {
 		return;
 	}
 
-	warn(warning);
+	warn(message);
 }
 
 // Helper for extracting module name from contents array by rollup id (path to file)
