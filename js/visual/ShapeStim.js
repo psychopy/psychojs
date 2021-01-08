@@ -262,7 +262,8 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
 			if (typeof this._fillColor !== 'undefined' && this._fillColor !== null)
 			{
-				this._pixi.beginFill(this._fillColor.int, this._opacity);
+				const contrastedColor = this.getContrastedColor(new Color(this._fillColor), this._contrast);
+				this._pixi.beginFill(contrastedColor.int, this._opacity);
 			}
 			this._pixi.drawPolygon(this._pixiPolygon_px);
 			if (typeof this._fillColor !== 'undefined' && this._fillColor !== null)
