@@ -594,6 +594,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 		this._needUpdate = false;
 
+		this._estimateBoundingBox();
 		this._setupSlider();
 		this._updateMarker();
 
