@@ -486,6 +486,12 @@ export class TrialHandler extends PsychObject
 							value = Number.parseFloat(value);
 						}
 
+						// Parse doubly escaped line feeds
+						if (typeof value === 'string')
+						{
+							value = value.replace(/(\\n)/g, '\n');
+						}
+
 						trial[fields[l]] = value;
 					}
 					trialList[r] = trial;
