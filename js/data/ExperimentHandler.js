@@ -76,7 +76,7 @@ export class ExperimentHandler extends PsychObject
 	{
 		super(psychoJS, name);
 
-		this._addAttributes(ExperimentHandler, extraInfo);
+		this._addAttribute('extraInfo', extraInfo);
 
 		// loop handlers:
 		this._loops = [];

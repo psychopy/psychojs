@@ -72,7 +72,16 @@ export class Sound extends PsychObject
 		// the SoundPlayer, e.g. TonePlayer:
 		this._player = undefined;
 
-		this._addAttributes(Sound, win, value, octave, secs, startTime, stopTime, stereo, volume, loops, /*hamming,*/ autoLog);
+		this._addAttribute('win', win);
+		this._addAttribute('value', value);
+		this._addAttribute('octave', octave);
+		this._addAttribute('secs', secs);
+		this._addAttribute('startTime', startTime);
+		this._addAttribute('stopTime', stopTime);
+		this._addAttribute('stereo', stereo);
+		this._addAttribute('volume', volume);
+		this._addAttribute('loops', loops);
+		this._addAttribute('autoLog', autoLog);
 
 		// identify an appropriate player:
 		this._getPlayer();

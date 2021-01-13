@@ -45,7 +45,10 @@ export class Mouse extends PsychObject
 
 		const units = win.units;
 		const visible = 1;
-		this._addAttributes(Mouse, win, units, visible, autoLog);
+		this._addAttribute('win', win);
+		this._addAttribute('units', units);
+		this._addAttribute('visible', visible);
+		this._addAttribute('autoLog', autoLog);
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
