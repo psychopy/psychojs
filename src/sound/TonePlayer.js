@@ -266,7 +266,7 @@ export class TonePlayer extends SoundPlayer
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			// trigger the release of the sound, immediately:
-			this._synth.triggerRelease(this._note);
+			this._synth.triggerRelease();
 
 			// clear the repeat event if need be:
 			if (this._toneId)
@@ -339,8 +339,14 @@ export class TonePlayer extends SoundPlayer
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
-			this._volumeNode.toMaster();
-
+			if (typeof this._volumeNode.toDestination === 'function')
+			{
+				this._volumeNode.toDestination();
+			}
+			else
+			{
+				this._volumeNode.toMaster();
+			}
 		}
 		else
 		{

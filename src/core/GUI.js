@@ -237,6 +237,7 @@ export class GUI
 					modal: true,
 					closeOnEscape: false,
 					resizable: false,
+					draggable: false,
 
 					buttons: [
 						{
@@ -266,6 +267,9 @@ export class GUI
 
 								self._dialogComponent.button = 'OK';
 								$("#expDialog").dialog('close');
+
+								// Tackle browser demands on having user action initiate audio context
+								Tone.start();
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
@@ -390,6 +394,12 @@ export class GUI
 				}
 				else
 				{
+					// limit the size of the error:
+					if (error.length >= 1000)
+					{
+						error = error.substring(1, 1000);
+					}
+
 					stackCode += '<li><b>' + error + '</b></li>';
 					break;
 				}
@@ -451,6 +461,8 @@ export class GUI
 			autoOpen: true,
 			modal: true,
 			closeOnEscape: false,
+			resizable: false,
+			draggable: false,
 
 			buttons: (!showOK) ? [] : [{
 				id: "buttonOk",
@@ -619,14 +631,22 @@ export class GUI
 	 * Update the status of the OK button.
 	 *
 	 * @name module:core.GUI#_updateOkButtonStatus
+	 * @param [changeFocus = false] - whether or not to change the focus to the OK button
 	 * @function
 	 * @private
 	 */
-	_updateOkButtonStatus()
+	_updateOkButtonStatus(changeFocus = true)
 	{
 		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
+			if (changeFocus)
+		{
 			$("#buttonOk").button("option", "disabled", false).focus();
+		}
+		else
+		{
+				$("#buttonOk").button("option", "disabled", false);
+			}
 		}
 		else
 		{
@@ -720,7 +740,7 @@ export class GUI
 			gui._setRequiredKeys.delete(event.target);
 		}
 
-		gui._updateOkButtonStatus();
+		gui._updateOkButtonStatus(false);
 	}
 
 

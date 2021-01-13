@@ -269,7 +269,7 @@ export function toNumerical(obj)
 			}
 
 			return n;
-		}
+		};
 
 		if (typeof obj === 'string')
 		{
@@ -981,20 +981,23 @@ export function turnSquareBracketsIntoArrays(input)
 
 	// Matches content within square brackets (using literal
 	// form is MDN's advice for patterns unlikely to change)
-	const regexp = /\[(.*?)\]/g;
-	// Find all matches (iterator)
-	const matchesFound = input.matchAll(regexp);
-	// Remap results
-	const matches = Array.from(matchesFound, (data) =>
-		{
-			// Out of all the information for each match, focus
-			// on substrings inside of square brackets
-			const [_, arrayLikeContent = ''] = data;
+	const matchesMaybe = input.match(/\[(.*?)\]/g);
 
+	// Pass through if no array-like matches found
+	if (matchesMaybe === null)
+	{
+		return input;
+	}
+
+	// Reformat content for each match
+	const matches = matchesMaybe.map((data) =>
+		{
+			// Remove the square brackets
+			const arrayLikeContent = data.replace(/[\[\]]+/g, '');
 			// Eat up space after comma
 			const commaSplitValues = arrayLikeContent.split(/[, ]+/);
 			// Type cast numeric values
-			const output = commaSplitValues.map((value) =>
+			const result = commaSplitValues.map((value) =>
 				{
 					// Leave empty strings untouched
 					const numberMaybe = value && Number(value);
@@ -1003,12 +1006,11 @@ export function turnSquareBracketsIntoArrays(input)
 				}
 			);
 
-			return output;
+			return result;
 		}
 	);
 
-	// Pass through if no array-like matches
-	return matches.length ? matches : input;
+	return matches;
 }
 
 

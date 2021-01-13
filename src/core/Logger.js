@@ -9,8 +9,8 @@
 
 
 import * as util from '../util/Util';
-import {MonotonicClock} from '../util/Clock';
-import {ExperimentHandler} from '../data/ExperimentHandler';
+import {MonotonicClock} from '../util';
+import {ExperimentHandler} from '../data';
 
 
 /**
@@ -43,27 +43,46 @@ export class Logger
 
 		// server logger:
 		this._serverLogs = [];
+		this._serverLevel = Logger.ServerLevel.WARNING;
+		this._serverLevelValue = this._getValue(this._serverLevel);
 
-		/**
-		 * DEPRECATED: we are using our own approach.
-		 *
-			// pavlovia.org server logger:
-			this.serverLogger = log4javascript.getLogger('pavlovia.org');
-			const serverAppender = new log4javascript.AjaxAppender('https://pavlovia.org/server?command=log');
-			serverAppender.setTimerInterval(1000); //1000*60*60); // 1h
-			serverAppender.setThreshold(threshold);
-			//serverAppender.setBatchSize(5);
-			//serverAppender.setSendAllOnUnload(true);
-			//serverAppender.setFailCallback();
-
-			const jsonLayout = new log4javascript.JsonLayout([false, false]);
-			serverAppender.setLayout(jsonLayout);
-
-			this.serverLogger.addAppender(serverAppender);
-			this.serverLogger.setLevel(threshold);
-		 *
-		 */
+		// throttling of server logs
+		this._throttling = {
+			// period of time (in seconds) over which we consider the number of logged messages:
+			window: 1,
+			// threshold (i.e. number of messages over the throttling window) at which point
+			// we start throttling:
+			threshold: 20,
+			// throttling factor: 10 -> only 1 in 10 messages is logged
+			factor: 10,
+			// minimum duration (in seconds) of throttling
+			minimumDuration: 2,
+			// time at which throttling started:
+			startOfThrottling: 0,
+			// whether or not we are currently throttling:
+			isThrottling: false,
+			// throttling message index:
+			index: 0,
+			// whether or not the designer has already been warned:
+			designerWasWarned: false
+		};
 	}
+
+
+
+	/**
+	 * Change the logging level.
+	 *
+	 * @name module:core.Logger#setLevel
+	 * @public
+	 * @param {module:core.Logger.ServerLevel} serverLevel - the new logging level
+	 */
+	setLevel(serverLevel)
+	{
+		this._serverLevel = serverLevel;
+		this._serverLevelValue = this._getValue(this._serverLevel);
+	}
+
 
 
 	/**
@@ -81,6 +100,7 @@ export class Logger
 	}
 
 
+
 	/**
 	 * Log a server message at the DATA level.
 	 *
@@ -96,6 +116,7 @@ export class Logger
 	}
 
 
+
 	/**
 	 * Log a server message.
 	 *
@@ -108,10 +129,25 @@ export class Logger
 	 */
 	log(msg, level, time, obj)
 	{
+		// only log if the level is higher or equal to the previously defined server level:
+		const levelValue = this._getValue(level);
+		if (levelValue < this._serverLevelValue)
+		{
+			return;
+		}
+
 		if (typeof time === 'undefined')
 		{
 			time = MonotonicClock.getReferenceTime();
 		}
+
+		/* [coming soon]
+		// check whether we need to throttle:
+		if (this._throttle(time))
+		{
+			return;
+		}
+	 */
 
 		this._serverLogs.push({
 			msg,
@@ -119,15 +155,89 @@ export class Logger
 			time,
 			obj: util.toString(obj)
 		});
-
 	}
+
+
+
+	/**
+	 * Check whether or not a log messages must be throttled.
+	 *
+	 * @name module:core.Logger#_throttle
+	 * @protected
+	 *
+	 * @param {number} time - the time of the latest log message
+	 * @return {boolean} whether or not to log the message
+	 */
+	_throttle(time)
+	{
+		// if more messages than this._throttling.threshold have been logged between
+		// time and the start of the throttling window, we need to throttle:
+		if (this._serverLogs.length > this._throttling.threshold)
+		{
+			const timeAtStartThrottlingWindow = this._serverLogs[this._serverLogs.length - 1 - this._throttling.threshold].time;
+			if (time - timeAtStartThrottlingWindow < this._throttling.window)
+			{
+				// warn the designer if we are not already throttling:
+				if (!this._throttling.isThrottling)
+				{
+					const msg = `<p>[time= ${time.toFixed(3)}] More than ${this._throttling.threshold} messages were logged in the past ${this._throttling.window}s.</p>` +
+						`<p>We are now throttling: only 1 in ${this._throttling.factor} messages will be logged.</p>` +
+						`<p>You may want to change your experiment's logging level. Please see <a href="https://www.psychopy.org/api/logging.html">psychopy.org/api/logging.html</a> for details.</p>`;
+
+					// console warning:
+					this._psychoJS.logger.warn(msg);
+
+					// in PILOTING mode and locally, we also warn the experimenter with a dialog box,
+					// but only once:
+					if (!this._throttling.designerWasWarned &&
+						(this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL ||
+							this._psychoJS.config.experiment.status === 'PILOTING'))
+					{
+						this._throttling.designerWasWarned = true;
+
+						this._psychoJS.gui.dialog({
+							warning: msg,
+							showOK: true
+						});
+					}
+
+					this._throttling.isThrottling = true;
+					this._throttling.startOfThrottling = time;
+					this._throttling.index = 0;
+				}
+
+				++ this._throttling.index;
+				if (this._throttling.index < this._throttling.factor)
+				{
+					// no logging
+					return true;
+				}
+				else
+				{
+					this._throttling.index = 0;
+				}
+			}
+			else
+			{
+				if (this._throttling.isThrottling &&
+					(time - this._throttling.startOfThrottling) > this._throttling.minimumDuration)
+				{
+					this._psychoJS.logger.info(`[time= ${time.toFixed(3)}] Log messages are not throttled any longer.`);
+					this._throttling.isThrottling = false;
+				}
+			}
+		}
+
+		return false;
+	}
+
 
 
 	/**
 	 * Flush all server logs to the server.
 	 *
-	 * <p>Note: the logs are compressed using Pako's zlib algorithm. See https://github.com/nodeca/pako
-	 * for details.</p>
+	 * <p>Note: the logs are compressed using Pako's zlib algorithm.
+	 * See https://github.com/nodeca/pako for details.</p>
 	 *
 	 * @name module:core.Logger#flush
 	 * @public
@@ -141,7 +251,7 @@ export class Logger
 
 		this._psychoJS.logger.info('[PsychoJS] Flush server logs.');
 
-		// prepare formatted logs:
+		// prepare the formatted logs:
 		let formattedLogs = '';
 		for (const log of this._serverLogs)
 		{
@@ -190,6 +300,7 @@ export class Logger
 			this._psychoJS.logger.debug('\n' + formattedLogs);
 		}
 	}
+
 
 
 	/**
@@ -264,7 +375,23 @@ export class Logger
 		return customLayout;
 	}
 
+
+
+	/**
+	 * Get the integer value associated with a logging level.
+	 *
+	 * @name module:core.Logger#_getValue
+	 * @protected
+	 * @param {module:core.Logger.ServerLevel} level - the logging level
+	 * @return {number} - the value associated with the logging level, or 30 is the logging level is unknown.
+	 */
+	_getValue(level)
+	{
+		const levelAsString = Symbol.keyFor(level);
+		return (levelAsString in Logger._ServerLevelValue) ? Logger._ServerLevelValue[levelAsString] : 30;
+	}
 }
+
 
 
 /**
@@ -286,4 +413,26 @@ Logger.ServerLevel = {
 	INFO: Symbol.for('INFO'),
 	DEBUG: Symbol.for('DEBUG'),
 	NOTSET: Symbol.for('NOTSET')
+};
+
+
+/**
+ * Server logging level values.
+ *
+ * <p>We use those values to determine whether a log is to be sent to the server or not.</p>
+ *
+ * @name module:core.Logger#_ServerLevelValue
+ * @enum {number}
+ * @readonly
+ * @protected
+ */
+Logger._ServerLevelValue = {
+	'CRITICAL': 50,
+	'ERROR': 40,
+	'WARNING': 30,
+	'DATA': 25,
+	'EXP': 22,
+	'INFO': 20,
+	'DEBUG': 10,
+	'NOTSET': 0
 };

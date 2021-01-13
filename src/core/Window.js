@@ -7,9 +7,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Color} from '../util/Color';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
+import {Color} from '../util';
+import {PsychObject} from '../util';
+import {MonotonicClock} from '../util';
 import {Logger} from "./Logger";
 
 /**
@@ -425,7 +425,9 @@ export class Window extends PsychObject
 		this._size[1] = window.innerHeight;
 
 		// create a PIXI renderer and add it to the document:
-		this._renderer = PIXI.autoDetectRenderer(this._size[0], this._size[1], {
+		this._renderer = PIXI.autoDetectRenderer({
+			width: this._size[0],
+			height: this._size[1],
 			backgroundColor: this.color.int,
 			resolution: window.devicePixelRatio
 		});

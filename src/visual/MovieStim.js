@@ -115,6 +115,12 @@ export class MovieStim extends VisualStim
 			1.0,
 			this._onChange(false, false)
 		);
+		this._addAttribute(
+			'loop',
+			loop,
+			false,
+			this._onChange(false, false)
+		);
 
 
 		// estimate the bounding box:
@@ -172,20 +178,17 @@ export class MovieStim extends VisualStim
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
 			}
 
-			const clone = movie.cloneNode();
-
-			this._setAttribute('movie', clone, log);
-
-			const onended = () =>
+			// Make sure just one listener attached across instances
+			// https://stackoverflow.com/questions/11455515
+			if (!movie.onended)
 			{
-				// Change stimulus status when movie done playing
-				this.status = PsychoJS.Status.FINISHED;
-				// Equivalent to giving the listener below an option of `{ once: true }`
-				this._movie.removeEventListener('ended', onended);
-			};
+				movie.onended = () =>
+				{
+					this.status = PsychoJS.Status.FINISHED;
+				};
+			}
 
-			this._movie.addEventListener('ended', onended);
-
+			this._setAttribute('movie', movie, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
@@ -370,7 +373,7 @@ export class MovieStim extends VisualStim
 			}
 
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.fromVideo(this._movie);
+			this._texture = PIXI.Texture.from(this._movie);
 			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
