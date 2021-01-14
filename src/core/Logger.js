@@ -9,8 +9,8 @@
 
 
 import * as util from '../util/Util';
-import {MonotonicClock} from '../util';
-import {ExperimentHandler} from '../data';
+import {MonotonicClock} from '../util/Clock';
+import {ExperimentHandler} from '../data/ExperimentHandler';
 
 
 /**

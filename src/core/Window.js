@@ -7,9 +7,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Color} from '../util';
-import {PsychObject} from '../util';
-import {MonotonicClock} from '../util';
+import {Color} from '../util/Color';
+import {PsychObject} from '../util/PsychObject';
+import {MonotonicClock} from '../util/Clock';
 import {Logger} from "./Logger";
 
 /**
