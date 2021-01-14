@@ -2,128 +2,128 @@
 label,
 input,
 select {
-	display: block;
-	padding-bottom: 0.5em;
+  display: block;
+  padding-bottom: 0.5em;
 }
 
 input.text,
 select.text {
-	margin-bottom: 1em;
-	padding: 0.5em;
-	width: 95%;
+  margin-bottom: 1em;
+  padding: 0.5em;
+  width: 95%;
 }
 
 fieldset {
-	border: 0;
-	margin-top: 1em;
-	padding: 0;
+  border: 0;
+  margin-top: 1em;
+  padding: 0;
 }
 
 a,
 a:active,
 a:focus,
 a:visited {
-	color: #007eb7;
-	outline: 0;
+  color: #007eb7;
+  outline: 0;
 }
 
 a:hover {
-	color: #000;
+  color: #000;
 }
 
 .progress {
-	padding: 0.5em 0;
+  padding: 0.5em 0;
 }
 
 .logo {
-	display: block;
-	margin: 0 auto 1em;
-	max-width: 100%;
+  display: block;
+  margin: 0 auto 1em;
+  max-width: 100%;
 }
 
 /* Don't display close button in the top right corner of the box */
 .no-close .ui-dialog-titlebar-close {
-	display: none;
+  display: none;
 }
 
 .ui-dialog-content {
-	margin-top: 1em;
+  margin-top: 1em;
 }
 
 @media only screen and (max-width: 1080px) {
-	.ui-widget {
-		transform: scale(2);
-	}
+  .ui-widget {
+    transform: scale(2);
+  }
 
-	.ui-widget .ui-progressbar {
-		transform: scale(1);
-	}
+  .ui-widget .ui-progressbar {
+    transform: scale(1);
+  }
 
-	.ui-dialog-titlebar .ui-button {
-		margin-right: 1em;
-	}
+  .ui-dialog-titlebar .ui-button {
+    margin-right: 1em;
+  }
 
-	.ui-dialog-titlebar .ui-dialog-titlebar-close {
-		transform: scale(1);
-	}
+  .ui-dialog-titlebar .ui-dialog-titlebar-close {
+    transform: scale(1);
+  }
 
-	.ui-dialog .ui-dialog-buttonpane {
-		padding-top: 1em;
-	}
+  .ui-dialog .ui-dialog-buttonpane {
+    padding-top: 1em;
+  }
 
-	.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
-		transform: scale(1);
-	}
+  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
+    transform: scale(1);
+  }
 
-	.ui-dialog .ui-dialog-titlebar {
-		padding: 1em 2em;
-	}
+  .ui-dialog .ui-dialog-titlebar {
+    padding: 1em 2em;
+  }
 }
 
 @media only screen and (max-width: 1080px) and (orientation: landscape) {
-	.ui-widget {
-		transform: scale(1.5);
-	}
+  .ui-widget {
+    transform: scale(1.5);
+  }
 
-	.ui-widget .ui-progressbar {
-		transform: scale(1);
-	}
+  .ui-widget .ui-progressbar {
+    transform: scale(1);
+  }
 
-	.ui-dialog-titlebar .ui-button {
-		margin-right: 1em;
-	}
+  .ui-dialog-titlebar .ui-button {
+    margin-right: 1em;
+  }
 
-	.ui-dialog-titlebar .ui-dialog-titlebar-close {
-		transform: scale(1);
-	}
+  .ui-dialog-titlebar .ui-dialog-titlebar-close {
+    transform: scale(1);
+  }
 
-	.ui-dialog .ui-dialog-buttonpane {
-		padding-top: 1em;
-	}
+  .ui-dialog .ui-dialog-buttonpane {
+    padding-top: 1em;
+  }
 
-	.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
-		transform: scale(1);
-	}
+  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
+    transform: scale(1);
+  }
 
-	.ui-dialog .ui-dialog-titlebar {
-		padding: 1em 2em;
-	}
+  .ui-dialog .ui-dialog-titlebar {
+    padding: 1em 2em;
+  }
 }
 
 /* Initialisation message (which will disappear behind the canvas) */
 #root::after {
-	content: "initialising the experiment...";
-	left: 50%;
-	position: fixed;
-	top: 50%;
-	transform: translate(-50%, -50%);
+  content: "initialising the experiment...";
+  left: 50%;
+  position: fixed;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Initialisation message for IE11 */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	#root::after {
-		font-weight: bold;
-		color: #a05000;
-		content: "initialising the experiment... | Internet Explorer / Edge [beta]";
-	}
+  #root::after {
+    font-weight: bold;
+    color: #a05000;
+    content: "initialising the experiment... | Internet Explorer / Edge [beta]";
+  }
 }
