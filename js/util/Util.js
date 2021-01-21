@@ -278,9 +278,9 @@ export function toNumerical(obj)
 
 		const arrayMaybe = turnSquareBracketsIntoArrays(obj);
 
-		if (Array.isArray(arrayMaybe) && arrayMaybe.length)
+		if (Array.isArray(arrayMaybe))
 		{
-			return arrayMaybe.map(v => v.map(convertToNumber));
+			return arrayMaybe.map(convertToNumber);
 		}
 
 		if (typeof obj === 'string')
@@ -975,9 +975,10 @@ export function offerDataForDownload(filename, data, type)
  * @function
  * @public
  * @param {string} input - string containing lists in square brackets
+ * @param {string} max - how many matches to return, unwrap resulting array if less than two
  * @returns {array} an array of arrays found
  */
-export function turnSquareBracketsIntoArrays(input)
+export function turnSquareBracketsIntoArrays(input, max = 1)
 {
 	// Only interested in strings
 	// https://stackoverflow.com/questions/4059147
@@ -1006,6 +1007,11 @@ export function turnSquareBracketsIntoArrays(input)
 				.split(/[, ]+/);
 		}
 	);
+
+	if (max < 2)
+	{
+		return matches[0];
+	}
 
 	return matches;
 }
