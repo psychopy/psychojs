@@ -261,7 +261,7 @@ export function toNumerical(obj)
 
 		const convertToNumber = (input) =>
 		{
-			const n = Number.parseFloat(input);
+			const n = Number(input);
 
 			if (Number.isNaN(n))
 			{
@@ -271,14 +271,21 @@ export function toNumerical(obj)
 			return n;
 		};
 
-		if (typeof obj === 'string')
-		{
-			return convertToNumber(obj);
-		}
-
 		if (Array.isArray(obj))
 		{
 			return obj.map(convertToNumber);
+		}
+
+		const arrayMaybe = turnSquareBracketsIntoArrays(obj);
+
+		if (Array.isArray(arrayMaybe) && arrayMaybe.length)
+		{
+			return arrayMaybe.map(v => v.map(convertToNumber));
+		}
+
+		if (typeof obj === 'string')
+		{
+			return convertToNumber(obj);
 		}
 
 		throw 'unable to convert the object to a number';
@@ -976,37 +983,27 @@ export function turnSquareBracketsIntoArrays(input)
 	// https://stackoverflow.com/questions/4059147
 	if (String(input) !== input)
 	{
-		return input;
+		return;
 	}
 
 	// Matches content within square brackets (using literal
 	// form is MDN's advice for patterns unlikely to change)
 	const matchesMaybe = input.match(/\[(.*?)\]/g);
 
-	// Pass through if no array-like matches found
+	// Exit if no array-like matches found
 	if (matchesMaybe === null)
 	{
-		return input;
+		return;
 	}
 
 	// Reformat content for each match
 	const matches = matchesMaybe.map((data) =>
 		{
-			// Remove the square brackets
-			const arrayLikeContent = data.replace(/[\[\]]+/g, '');
-			// Eat up space after comma
-			const commaSplitValues = arrayLikeContent.split(/[, ]+/);
-			// Type cast numeric values
-			const result = commaSplitValues.map((value) =>
-				{
-					// Leave empty strings untouched
-					const numberMaybe = value && Number(value);
-
-					return Number.isNaN(numberMaybe) ? value : numberMaybe;
-				}
-			);
-
-			return result;
+			return data
+				// Remove the square brackets
+				.replace(/[\[\]]+/g, '')
+				// Eat up space after comma
+				.split(/[, ]+/);
 		}
 	);
 
