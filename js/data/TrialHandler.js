@@ -470,7 +470,7 @@ export class TrialHandler extends PsychObject
 						// Look for string encoded arrays in the form of '[1, 2]'
 						const arrayMaybe = util.turnSquareBracketsIntoArrays(value);
 
-						if (Array.isArray(arrayMaybe))
+						if (Array.isArray(arrayMaybe) && arrayMaybe.length)
 						{
 							// Keep the first match if more than one are found. If the
 							// input string looked like '[1, 2][3, 4]' for example,
