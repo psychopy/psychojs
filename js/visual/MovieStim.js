@@ -363,6 +363,9 @@ export class MovieStim extends VisualStim
 					texture: true,
 					baseTexture: false
 				});
+
+				// Avoid warnings about overlapping ids, texture destroyed anyways
+				PIXI.utils.clearTextureCache();
 			}
 			this._pixi = undefined;
 
@@ -374,7 +377,7 @@ export class MovieStim extends VisualStim
 
 			// create a PixiJS video sprite:
 			this._texture = PIXI.Texture.from(this._movie);
-			this._pixi = new PIXI.Sprite(this._texture);
+			this._pixi = PIXI.Sprite.from(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
 			// we arrange for repeated calls to _updateIfNeeded until we have a width:
