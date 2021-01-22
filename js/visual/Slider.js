@@ -65,7 +65,7 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, contrast, opacity, style, ticks, labels, labelHeight, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, ori, units, color, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
 
@@ -149,12 +149,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			'italic',
 			italic,
 			false,
-			this._onChange(true, true)
-		);
-		this._addAttribute(
-			'labelHeight',
-			labelHeight,
-			undefined,
 			this._onChange(true, true)
 		);
 		this._addAttribute(
