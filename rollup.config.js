@@ -3,10 +3,11 @@ import path from 'path';
 import fs from 'fs';
 import { minify } from 'terser';
 import babel from '@rollup/plugin-babel';
+import pkg from './package.json';
 
 // Manually set default version here for easier
 // diffing when comparing to original build script output
-const { VERSION: version = '2020.2' } = process.env;
+const { VERSION: version = pkg.version } = process.env;
 
 // Enabled in the original, even though
 // source maps missing for sample provided
