@@ -389,8 +389,7 @@ export class PsychoJS
 		}
 		catch (error)
 		{
-			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({error: Object.assign(response, {error})});
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -417,8 +416,7 @@ export class PsychoJS
 		}
 		catch (error)
 		{
-			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({error: Object.assign(response, {error})});
+			throw Object.assign(response, { error });
 		}
 	}
 
@@ -479,10 +477,13 @@ export class PsychoJS
 			}
 
 			// save the results and the logs of the experiment:
-			this.gui.dialog({
-				warning: 'Closing the session. Please wait a few moments.',
-				showOK: false
-			});
+			if ($.ui)
+			{
+				this.gui.dialog({
+					warning: 'Closing the session. Please wait a few moments.',
+					showOK: false
+				});
+			}
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
 				if (!this._serverMsg.has('__noOutput'))
@@ -502,39 +503,47 @@ export class PsychoJS
 			let text = 'Thank you for your patience.<br/><br/>';
 			text += (typeof message !== 'undefined') ? message : 'Goodbye!';
 			const self = this;
-			this._gui.dialog({
-				message: text,
-				onOK: () =>
+			const onOK = () =>
+			{
+				// close the window:
+				self._window.close();
+
+				// remove everything from the browser window:
+				while (document.body.hasChildNodes())
 				{
-					// close the window:
-					self._window.close();
-
-					// remove everything from the browser window:
-					while (document.body.hasChildNodes())
-					{
-						document.body.removeChild(document.body.lastChild);
-					}
-
-					// return from fullscreen if we were there:
-					this._window.closeFullScreen();
-
-					// redirect if redirection URLs have been provided:
-					if (isCompleted && typeof self._completionUrl !== 'undefined')
-					{
-						window.location = self._completionUrl;
-					}
-					else if (!isCompleted && typeof self._cancellationUrl !== 'undefined')
-					{
-						window.location = self._cancellationUrl;
-					}
+					document.body.removeChild(document.body.lastChild);
 				}
-			});
+
+				// return from fullscreen if we were there:
+				this._window.closeFullScreen();
+
+				// redirect if redirection URLs have been provided:
+				if (isCompleted && typeof self._completionUrl !== 'undefined')
+				{
+					window.location = self._completionUrl;
+				}
+				else if (!isCompleted && typeof self._cancellationUrl !== 'undefined')
+				{
+					window.location = self._cancellationUrl;
+				}
+			}
+			if ($.ui === undefined)
+			{
+				onOK();
+			}
+			else
+			{
+				this._gui.dialog({
+					message: text,
+					onOK
+				});
+			}
 
 		}
 		catch (error)
 		{
 			console.error(error);
-			this._gui.dialog({error});
+			throw Object.assign({ error });
 		}
 	}
 
@@ -684,7 +693,10 @@ export class PsychoJS
 		window.onerror = function (message, source, lineno, colno, error)
 		{
 			console.error(error);
-			self._gui.dialog({"error": error});
+			if ($.ui)
+			{
+				self._gui.dialog({"error": error});
+			}
 			return true;
 		};
 
