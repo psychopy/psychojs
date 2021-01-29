@@ -229,85 +229,95 @@ export class GUI
 				self._dialogComponent.button = 'Cancel';
 				self._estimateDialogScalingFactor();
 				const dialogSize = self._getDialogSize();
-				$("#expDialog").dialog({
-					width: dialogSize[0],
-					maxHeight: dialogSize[1],
+				if ($.ui)
+				{
+					$("#expDialog").dialog({
+						width: dialogSize[0],
+						maxHeight: dialogSize[1],
 
-					autoOpen: true,
-					modal: true,
-					closeOnEscape: false,
-					resizable: false,
-					draggable: false,
+						autoOpen: true,
+						modal: true,
+						closeOnEscape: false,
+						resizable: false,
+						draggable: false,
 
-					buttons: [
-						{
-							id: "buttonCancel",
-							text: "Cancel",
-							click: function ()
+						buttons: [
 							{
-								self._dialogComponent.button = 'Cancel';
-								$("#expDialog").dialog('close');
-							}
-						},
-						{
-							id: "buttonOk",
-							text: "Ok",
-							click: function ()
-							{
-
-								// update dictionary:
-								for (const key in dictionary)
+								id: "buttonCancel",
+								text: "Cancel",
+								click: function ()
 								{
-									const input = document.getElementById(CSS.escape(key) + "_id");
-									if (input)
-									{
-										dictionary[key] = input.value;
-									}
+									self._dialogComponent.button = 'Cancel';
+									$("#expDialog").dialog('close');
 								}
+							},
+							{
+								id: "buttonOk",
+								text: "Ok",
+								click: function ()
+								{
 
-								self._dialogComponent.button = 'OK';
-								$("#expDialog").dialog('close');
+									// update dictionary:
+									for (const key in dictionary)
+									{
+										const input = document.getElementById(CSS.escape(key) + "_id");
+										if (input)
+										{
+											dictionary[key] = input.value;
+										}
+									}
 
-								// Tackle browser demands on having user action initiate audio context
-								Tone.start();
+									self._dialogComponent.button = 'OK';
+									$("#expDialog").dialog('close');
 
-								// switch to full screen if requested:
-								self._psychoJS.window.adjustScreenSize();
+									// Tackle browser demands on having user action initiate audio context
+									Tone.start();
+
+									// switch to full screen if requested:
+									self._psychoJS.window.adjustScreenSize();
+								}
 							}
+						],
+
+						// open the dialog in the middle of the screen:
+						open: self._onDialogOpen('#expDialog'),
+
+						// close is called by both buttons and when the user clicks on the cross:
+						close: function ()
+						{
+							//$.unblockUI();
+							$(this).dialog('destroy').remove();
+							self._dialogComponent.status = PsychoJS.Status.FINISHED;
 						}
-					],
 
-					// open the dialog in the middle of the screen:
-					open: self._onDialogOpen('#expDialog'),
-
-					// close is called by both buttons and when the user clicks on the cross:
-					close: function ()
-					{
-						//$.unblockUI();
-						$(this).dialog('destroy').remove();
-						self._dialogComponent.status = PsychoJS.Status.FINISHED;
-					}
-
-				})
-				// change colour of title bar
-					.prev(".ui-dialog-titlebar").css("background", "green");
+					})
+					// change colour of title bar
+						.prev(".ui-dialog-titlebar").css("background", "green");
 
 
-				// update the OK button status:
-				self._updateOkButtonStatus();
+					// update the OK button status:
+					self._updateOkButtonStatus();
 
 
-				// when the browser window is resize, we redimension and reposition the dialog:
-				self._dialogResize('#expDialog');
+					// when the browser window is resize, we redimension and reposition the dialog:
+					self._dialogResize('#expDialog');
 
 
-				// block UI until user has pressed dialog button:
-				// note: block UI does not allow for text to be entered in the dialog form boxes, alas!
-				//$.blockUI({ message: "", baseZ: 1});
+					// block UI until user has pressed dialog button:
+					// note: block UI does not allow for text to be entered in the dialog form boxes, alas!
+					//$.blockUI({ message: "", baseZ: 1});
 
-				// show dialog box:
-				$("#progressbar").progressbar({value: self._progressBarCurrentIncrement});
-				$("#progressbar").progressbar("option", "max", self._progressBarMax);
+					// show dialog box:
+					$("#progressbar").progressbar({value: self._progressBarCurrentIncrement});
+					$("#progressbar").progressbar("option", "max", self._progressBarMax);
+				}
+				else
+				{
+					Tone.start();
+					self._psychoJS.window.adjustScreenSize();
+					self._dialogComponent.button = 'OK';
+					self._dialogComponent.status = PsychoJS.Status.FINISHED;
+				}
 			}
 
 			if (self._dialogComponent.status === PsychoJS.Status.FINISHED)
@@ -348,7 +358,9 @@ export class GUI
 					 onOK
 				 } = {})
 	{
-
+		if ($.ui === undefined) {
+			return onOK && onOK();
+		}
 		// close the previously opened dialog box, if there is one:
 		const expDialog = $("#expDialog");
 		if (expDialog.length)
@@ -585,7 +597,11 @@ export class GUI
 		{
 			// for each resource, we have a 'downloading resource' and a 'resource downloaded' message:
 			this._progressBarMax = signal.count * 2;
-			$("#progressbar").progressbar("option", "max", this._progressBarMax);
+
+			if ($.ui)
+			{
+				$("#progressbar").progressbar("option", "max", this._progressBarMax);
+			}
 
 			this._progressBarCurrentIncrement = 0;
 			$("#progressMsg").text('all resources registered.');
@@ -616,7 +632,10 @@ export class GUI
 			// else
 			// $("#progressMsg").text(signal.resource + ': downloading...');
 
-			$("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
+			if ($.ui)
+			{
+				$("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
+			}
 		}
 
 		// unknown message: we just display it
@@ -637,6 +656,10 @@ export class GUI
 	 */
 	_updateOkButtonStatus(changeFocus = true)
 	{
+		if ($.ui === undefined)
+		{
+			return;
+		}
 		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length))
 		{
 			if (changeFocus)
