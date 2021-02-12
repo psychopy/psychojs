@@ -235,9 +235,6 @@ export class GUI
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
-                
-                // clear accumulated events
-                self._psychoJS.eventManager.clearEvents(undefined);
 							}
 						},
 						{
