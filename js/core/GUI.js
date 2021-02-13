@@ -285,7 +285,13 @@ export class GUI
 					{
 						//$.unblockUI();
 						$(this).dialog('destroy').remove();
-						self._dialogComponent.status = PsychoJS.Status.FINISHED;
+            
+            // if fullscreen requested, wait for completion of fullscreen transition before proceeding 
+            if (self._psychoJS._window.fullscr) {
+              setTimeout(() => self._dialogComponent.status = PsychoJS.Status.FINISHED, 2000);
+            } else {
+              self._dialogComponent.status = PsychoJS.Status.FINISHED;
+            }
 					}
 
 				})
