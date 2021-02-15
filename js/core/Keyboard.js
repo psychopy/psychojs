@@ -70,7 +70,10 @@ export class Keyboard extends PsychObject
 			clock = new Clock();
 		} //this._psychoJS.monotonicClock;
 
-		this._addAttributes(Keyboard, bufferSize, waitForStart, clock, autoLog);
+		this._addAttribute('bufferSize', bufferSize);
+		this._addAttribute('waitForStart', waitForStart);
+		this._addAttribute('clock', clock);
+		this._addAttribute('autoLog', autoLog);
 		// start recording key events if need be:
 		this._addAttribute('status', (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
 

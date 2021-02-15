@@ -46,7 +46,7 @@ export class ServerManager extends PsychObject
 		this._resources = new Map();
 		this._nbResources = -1;
 
-		this._addAttributes(ServerManager, autoLog);
+		this._addAttribute('autoLog', autoLog);
 		this._addAttribute('status', ServerManager.Status.READY);
 	}
 

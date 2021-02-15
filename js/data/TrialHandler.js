@@ -75,7 +75,13 @@ export class TrialHandler extends PsychObject
 	{
 		super(psychoJS);
 
-		this._addAttributes(TrialHandler, trialList, nReps, method, extraInfo, seed, name, autoLog);
+		this._addAttribute('trialList', trialList);
+		this._addAttribute('nReps', nReps);
+		this._addAttribute('method', method);
+		this._addAttribute('extraInfo', extraInfo);
+		this._addAttribute('seed', seed);
+		this._addAttribute('name', name);
+		this._addAttribute('autoLog', autoLog);
 
 		this._prepareTrialList(trialList);
 

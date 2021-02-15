@@ -62,7 +62,11 @@ export class Window extends PsychObject
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttributes(Window, fullscr, color, units, waitBlanking, autoLog);
+		this._addAttribute('fullscr', fullscr);
+		this._addAttribute('color', color);
+		this._addAttribute('units', units);
+		this._addAttribute('waitBlanking', waitBlanking);
+		this._addAttribute('autoLog', autoLog);
 		this._addAttribute('size', []);
 
 

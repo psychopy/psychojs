@@ -344,47 +344,6 @@ export class PsychObject extends EventEmitter
 
 
 	/**
-	 * Add attributes to this instance (e.g. define setters and getters) and affect values to them.
-	 *
-	 * <p>Notes:
-	 * <ul>
-	 * <li> If the object already has a set<attributeName> method, we do not redefine it,
-	 * and the setter for this attribute calls that method instead of _setAttribute.</li>
-	 * <li> _addAttributes is typically called in the constructor of an object, after
-	 * the call to super (see module:visual.ImageStim for an illustration).</li>
-	 * </ul></p>
-	 *
-	 * @protected
-	 * @param {Object} cls - the class object of the subclass of PsychoObject whose attributes we will set
-	 * @param {...*} [args] - the values for the attributes (this also determines which attributes will be set)
-	 *
-	 */
-	_addAttributes(cls, ...args)
-	{
-		// (*) look for the line in the subclass constructor where addAttributes is called
-		// and extract its arguments:
-		const callLine = cls.toString().match(/this.*\._addAttributes\(.*\;/)[0];
-		const startIndex = callLine.indexOf('._addAttributes(') + 16;
-		const endIndex = callLine.indexOf(');');
-		const callArgs = callLine.substr(startIndex, endIndex - startIndex).split(',').map((s) => s.trim());
-
-
-		// (*) add (argument name, argument value) pairs to the attribute map:
-		const attributeMap = new Map();
-		for (let i = 1; i < callArgs.length; ++i)
-		{
-			attributeMap.set(callArgs[i], args[i - 1]);
-		}
-
-		// (*) set the value, define the get/set<attributeName> properties and define the getter and setter:
-		for (let [name, value] of attributeMap.entries())
-		{
-			this._addAttribute(name, value);
-		}
-	}
-
-
-	/**
 	 * Add an attribute to this instance (e.g. define setters and getters) and affect a value to it.
 	 *
 	 * @protected

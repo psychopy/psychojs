@@ -37,7 +37,12 @@ export class TonePlayer extends SoundPlayer
 	{
 		super(psychoJS);
 
-		this._addAttributes(TonePlayer, note, duration_s, volume, loops, soundLibrary, autoLog);
+		this._addAttribute('note', note);
+		this._addAttribute('duration_s', duration_s);
+		this._addAttribute('volume', volume);
+		this._addAttribute('loops', loops);
+		this._addAttribute('soundLibrary', soundLibrary);
+		this._addAttribute('autoLog', autoLog);
 
 		// initialise the sound library:
 		this._initSoundLibrary();
