@@ -39,6 +39,7 @@ import * as util from '../util/Util';
  * @param {string} [options.anchor = 'left'] - horizontal alignment
  *
  * @param {boolean} [options.multiline= false] - whether or not a textarea is used
+ * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
@@ -47,7 +48,7 @@ import * as util from '../util/Util';
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, multiline, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, multiline, autofocus, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
 
@@ -151,6 +152,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		this._addAttribute('multiline', multiline, false, this._onChange(true, true));
 		this._addAttribute('editable', editable, false, this._onChange(true, true));
+		this._addAttribute('autofocus', autofocus, true, this._onChange(true, false));
 			// this._setAttribute({
 			// 	name: 'vertices',
 			// 	value: vertices,
@@ -402,6 +404,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			this._pixi = new TextInput(this._getTextInputOptions());
+			// check if other TextBox instances are already in focus
+			const { _drawList = [] } = this.psychoJS.window;
+			const otherTextBoxWithFocus = _drawList.some(item => item instanceof TextBox && item._pixi && item._pixi._hasFocus());
+			if (this._autofocus && !otherTextBoxWithFocus)
+			{
+				this._pixi._onSurrogateFocus();
+			}
 			if (this._multiline)
 			{
 				this._pixi._multiline = this._multiline;

@@ -182,14 +182,14 @@ export class TextInput extends PIXI.Container
 		return this._dom_input;
 	}
 
-	focus()
+	focus(options = { preventScroll: true })
 	{
 		if (this._substituted && !this.dom_visible)
 		{
 			this._setDOMInputVisible(true);
 		}
 
-		this._dom_input.focus();
+		this._dom_input.focus(options);
 
 	}
 
