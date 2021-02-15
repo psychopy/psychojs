@@ -363,9 +363,6 @@ export class MovieStim extends VisualStim
 					texture: true,
 					baseTexture: false
 				});
-
-				// Avoid warnings about overlapping ids, texture destroyed anyways
-				PIXI.utils.clearTextureCache();
 			}
 			this._pixi = undefined;
 

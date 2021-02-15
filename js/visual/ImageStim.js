@@ -260,8 +260,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 					texture: true,
 					baseTexture: false
 				});
-
-				PIXI.utils.clearTextureCache();
 			}
 			this._pixi = undefined;
 
