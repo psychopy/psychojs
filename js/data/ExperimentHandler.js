@@ -105,11 +105,6 @@ export class ExperimentHandler extends PsychObject
 		return (Object.keys(this._currentTrialData).length > 0);
 	}
 
-	isEntryEmtpy()
-	{
-		return (Object.keys(this._currentTrialData).length > 0);
-	}
-
 
 	/**
 	 * Add a loop.
