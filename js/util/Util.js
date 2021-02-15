@@ -261,7 +261,7 @@ export function toNumerical(obj)
 
 		const convertToNumber = (input) =>
 		{
-			const n = Number(input);
+			const n = Number.parseFloat(input);
 
 			if (Number.isNaN(n))
 			{
