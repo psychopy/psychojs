@@ -157,7 +157,7 @@ export class Scheduler
 			}
 
 			// store frame delta for `Window.getActualFrameRate()`
-			const lastTimestamp = self._lastTimestamp || timestamp;
+			const lastTimestamp = self._lastTimestamp === undefined ? timestamp : self._lastTimestamp;
 
 			self._lastDelta = timestamp - lastTimestamp;
 			self._lastTimestamp = timestamp;
