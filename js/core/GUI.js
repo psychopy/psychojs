@@ -112,125 +112,127 @@ export class GUI
 					logoUrl = self._psychoJS.config.experiment.license.institutionLogo;
 				}
 
-				// prepare jquery UI dialog box:
-				let htmlCode = '<div id="expDialog" title="' + title + '">';
-
-				// uncomment for older version of the library:
-				// htmlCode += '<p style="font-size: 0.8em; padding: 0.5em; margin-bottom: 0.5em; color: #FFAA00; border: 1px solid #FFAA00;">&#9888; This experiment uses a deprecated version of the PsychoJS library. Consider updating to a newer version (e.g. by updating PsychoPy and re-exporting the experiment).</p>'+
-
-				// logo:
-				if (typeof logoUrl === 'string')
-				{
-					htmlCode += '<img id="dialog-logo" class="logo" alt="logo" src="' + logoUrl + '">';
-				}
-
-				// information text:
-				if (typeof text === 'string' && text.length > 0)
-				{
-					htmlCode += '<p>' + text + '</p>';
-				}
-
-
-				// add a combobox or text areas for each entry in the dictionary:
-				htmlCode += '<form>';
-				for (const key in dictionary)
-				{
-					const value = dictionary[key];
-					const keyId = CSS.escape(key) + '_id';
-
-					// only create an input if the key is not in the URL:
-					let inUrl = false;
-					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach((urlValue, urlKey) =>
-					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
-						{
-							inUrl = true;
-							// break;
-						}
-					});
-
-					if (!inUrl)
-					{
-						htmlCode += '<label for="' + keyId + '">' + key + '</label>';
-
-						// if the field is required:
-						if (key.slice(-1) === '*')
-						{
-							self._requiredKeys.push(key);
-						}
-
-						// if value is an array, we create a select drop-down menu:
-						if (Array.isArray(value))
-						{
-							htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
-								' ui-corner-all">';
-
-							// if the field is required, we add an empty option and select it:
-							if (key.slice(-1) === '*')
-							{
-								htmlCode += '<option disabled selected>...</option>';
-							}
-
-							for (const option of value)
-							{
-								htmlCode += '<option>' + option + '</option>';
-							}
-
-							htmlCode += '</select>';
-							$('#' + keyId).selectmenu({classes: {}});
-						}
-
-						// otherwise we use a single string input:
-						else /*if (typeof value === 'string')*/
-						{
-							htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
-							htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
-						}
-					}
-				}
-				htmlCode += '</form>';
-
-
-				// add a progress bar:
-				htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
-				htmlCode += '<div id="progressbar"></div></div>';
-
-
-				// replace root by the html code:
-				const dialogElement = document.getElementById('root');
-				dialogElement.innerHTML = htmlCode;
-
-
-				// when the logo is loaded, we call _onDialogOpen again to reset the dimensions and position of
-				// the dialog box:
-				if (typeof logoUrl === 'string')
-				{
-					$("#dialog-logo").on('load', () =>
-					{
-						self._onDialogOpen('#expDialog')();
-					});
-				}
-
-
-				// setup change event handlers for all required keys:
-				for (const key of this._requiredKeys)
-				{
-					const keyId = CSS.escape(key) + '_id';
-					const input = document.getElementById(keyId);
-					if (input)
-					{
-						input.oninput = (event) => GUI._onKeyChange(self, event);
-					}
-				}
-
-				// init and open the dialog box:
-				self._dialogComponent.button = 'Cancel';
-				self._estimateDialogScalingFactor();
-				const dialogSize = self._getDialogSize();
+				// Bypass dialog box creation if jQuery UI unavailable
 				if ($.ui)
 				{
+					// prepare jquery UI dialog box:
+					let htmlCode = '<div id="expDialog" title="' + title + '">';
+
+					// uncomment for older version of the library:
+					// htmlCode += '<p style="font-size: 0.8em; padding: 0.5em; margin-bottom: 0.5em; color: #FFAA00; border: 1px solid #FFAA00;">&#9888; This experiment uses a deprecated version of the PsychoJS library. Consider updating to a newer version (e.g. by updating PsychoPy and re-exporting the experiment).</p>'+
+
+					// logo:
+					if (typeof logoUrl === 'string')
+					{
+						htmlCode += '<img id="dialog-logo" class="logo" alt="logo" src="' + logoUrl + '">';
+					}
+
+					// information text:
+					if (typeof text === 'string' && text.length > 0)
+					{
+						htmlCode += '<p>' + text + '</p>';
+					}
+
+
+					// add a combobox or text areas for each entry in the dictionary:
+					htmlCode += '<form>';
+					for (const key in dictionary)
+					{
+						const value = dictionary[key];
+						const keyId = CSS.escape(key) + '_id';
+
+						// only create an input if the key is not in the URL:
+						let inUrl = false;
+						const cleanedDictKey = key.trim().toLowerCase();
+						infoFromUrl.forEach((urlValue, urlKey) =>
+						{
+							const cleanedUrlKey = urlKey.trim().toLowerCase();
+							if (cleanedUrlKey === cleanedDictKey)
+							{
+								inUrl = true;
+								// break;
+							}
+						});
+
+						if (!inUrl)
+						{
+							htmlCode += '<label for="' + keyId + '">' + key + '</label>';
+
+							// if the field is required:
+							if (key.slice(-1) === '*')
+							{
+								self._requiredKeys.push(key);
+							}
+
+							// if value is an array, we create a select drop-down menu:
+							if (Array.isArray(value))
+							{
+								htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
+									' ui-corner-all">';
+
+								// if the field is required, we add an empty option and select it:
+								if (key.slice(-1) === '*')
+								{
+									htmlCode += '<option disabled selected>...</option>';
+								}
+
+								for (const option of value)
+								{
+									htmlCode += '<option>' + option + '</option>';
+								}
+
+								htmlCode += '</select>';
+								$('#' + keyId).selectmenu({classes: {}});
+							}
+
+							// otherwise we use a single string input:
+							else /*if (typeof value === 'string')*/
+							{
+								htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
+								htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+							}
+						}
+					}
+					htmlCode += '</form>';
+
+
+					// add a progress bar:
+					htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + '</div>';
+					htmlCode += '<div id="progressbar"></div></div>';
+
+
+					// replace root by the html code:
+					const dialogElement = document.getElementById('root');
+					dialogElement.innerHTML = htmlCode;
+
+
+					// when the logo is loaded, we call _onDialogOpen again to reset the dimensions and position of
+					// the dialog box:
+					if (typeof logoUrl === 'string')
+					{
+						$("#dialog-logo").on('load', () =>
+						{
+							self._onDialogOpen('#expDialog')();
+						});
+					}
+
+
+					// setup change event handlers for all required keys:
+					for (const key of this._requiredKeys)
+					{
+						const keyId = CSS.escape(key) + '_id';
+						const input = document.getElementById(keyId);
+						if (input)
+						{
+							input.oninput = (event) => GUI._onKeyChange(self, event);
+						}
+					}
+
+					// init and open the dialog box:
+					self._dialogComponent.button = 'Cancel';
+					self._estimateDialogScalingFactor();
+					const dialogSize = self._getDialogSize();
+
 					$("#expDialog").dialog({
 						width: dialogSize[0],
 						maxHeight: dialogSize[1],
