@@ -480,15 +480,12 @@ export class TrialHandler extends PsychObject
 							value = arrayMaybe[0];
 						}
 
-						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string' && !isNaN(value))
-						{
-							value = Number.parseFloat(value);
-						}
-
-						// Parse doubly escaped line feeds
 						if (typeof value === 'string')
 						{
+							// if value is a numerical string, convert it to a number:
+							value = Number.isNaN(value) ? value : Number.parseFloat(value);
+
+							// Parse doubly escaped line feeds
 							value = value.replace(/(\\n)/g, '\n');
 						}
 
