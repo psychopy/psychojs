@@ -672,7 +672,5 @@ TrialHandler.Method = {
 	/**
 	 * Same as above, but named to reflect PsychoPy boileplate.
 	 */
-	get FULLRANDOM() {
-		return this.FULL_RANDOM
-	}
+	FULLRANDOM: Symbol.for('FULL_RANDOM')
 };
