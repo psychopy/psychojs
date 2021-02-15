@@ -148,10 +148,7 @@ export class Window extends PsychObject
 	{
 		// gets updated frame by frame
 		const lastDelta = this.psychoJS.scheduler._lastDelta;
-		const fpsMaybe = 1000 / lastDelta;
-		// NB: calling `Number.isFinite()` might skip the implicit to number conversion, but
-		// would also need polyfilling for IE
-		const fps = isFinite(fpsMaybe) ? fpsMaybe : 60.0;
+		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
 
 		return fps;
 	}
