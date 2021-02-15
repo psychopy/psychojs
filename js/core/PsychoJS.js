@@ -139,8 +139,8 @@ export class PsychoJS
 		});
 
 		// to be loading `configURL` files in `_configure` calls from
-		const hostsMaybe = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
-		this._hosts = Array.from(hostsMaybe);
+		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		this._hosts = Array.from(hostsEvidently);
 
 		// GUI:
 		this._gui = new GUI(this);
