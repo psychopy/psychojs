@@ -969,14 +969,16 @@ export function offerDataForDownload(filename, data, type)
 
 
 /**
- * To overcome built-in JSON parsing limitations when it comes to eg. floats missing the naught prefix, turn substrings contained within square brackets into arrays type casting numeric looking values in the process.
+ * Convert a string representing a JSON array, e.g. "[1, 2]" into an array, e.g. ["1","2"].
+ * This approach overcomes the built-in JSON parsing limitations when it comes to eg. floats
+ * missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,4]".
  *
  * @name module:util.turnSquareBracketsIntoArrays
  * @function
  * @public
- * @param {string} input - string containing lists in square brackets
+ * @param {string} input - string potentially containing JSON arrays
  * @param {string} max - how many matches to return, unwrap resulting array if less than two
- * @returns {array} an array of arrays found
+ * @returns {array} an array if arrays were found, undefined otherwise
  */
 export function turnSquareBracketsIntoArrays(input, max = 1)
 {
