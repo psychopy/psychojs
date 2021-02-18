@@ -41,7 +41,12 @@ export class TrackPlayer extends SoundPlayer
 	{
 		super(psychoJS);
 
-		this._addAttributes(TrackPlayer, howl, startTime, stopTime, stereo, loops, volume);
+		this._addAttribute('howl', howl);
+		this._addAttribute('startTime', startTime);
+		this._addAttribute('stopTime', stopTime);
+		this._addAttribute('stereo', stereo);
+		this._addAttribute('loops', loops);
+		this._addAttribute('volume', volume);
 
 		this._currentLoopIndex = -1;
 	}

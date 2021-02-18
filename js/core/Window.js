@@ -41,7 +41,7 @@ export class Window extends PsychObject
 	 */
 	get monitorFramePeriod()
 	{
-		return this._monitorFramePeriod;
+		return 1.0 / this.getActualFrameRate();
 	}
 
 	constructor({
@@ -62,15 +62,16 @@ export class Window extends PsychObject
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttributes(Window, fullscr, color, units, waitBlanking, autoLog);
+		this._addAttribute('fullscr', fullscr);
+		this._addAttribute('color', color);
+		this._addAttribute('units', units);
+		this._addAttribute('waitBlanking', waitBlanking);
+		this._addAttribute('autoLog', autoLog);
 		this._addAttribute('size', []);
 
 
 		// setup PIXI:
 		this._setupPixi();
-
-		// monitor frame period:
-		this._monitorFramePeriod = 1.0 / this.getActualFrameRate();
 
 		this._frameCount = 0;
 
@@ -145,14 +146,15 @@ export class Window extends PsychObject
 	 * @name module:core.Window#getActualFrameRate
 	 * @function
 	 * @public
-	 * @return {number} always returns 60.0 at the moment
-	 *
-	 * @todo estimate the actual frame rate.
+	 * @return {number} rAF based delta time based approximation, 60.0 by default
 	 */
 	getActualFrameRate()
 	{
-		// TODO
-		return 60.0;
+		// gets updated frame by frame
+		const lastDelta = this.psychoJS.scheduler._lastDelta;
+		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
+
+		return fps;
 	}
 
 

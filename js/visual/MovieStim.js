@@ -373,8 +373,8 @@ export class MovieStim extends VisualStim
 			}
 
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.from(this._movie);
-			this._pixi = PIXI.Sprite.from(this._texture);
+			this._texture = PIXI.Texture.from(this._movie, { resourceOptions: { autoPlay: this.autoPlay } });
+			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
 			// we arrange for repeated calls to _updateIfNeeded until we have a width:
@@ -390,8 +390,7 @@ export class MovieStim extends VisualStim
 		this._movie.muted = this._noAudio;
 		this._movie.volume = this._volume;
 
-		// autoplay and loop:
-		this._texture.baseTexture.autoPlay = this.autoPlay;
+		// loop:
 		this._movie.loop = this._loop;
 
 		// opacity:

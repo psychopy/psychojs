@@ -137,7 +137,7 @@ export class Scheduler
 	start()
 	{
 		const self = this;
-		let update = () =>
+		let update = (timestamp) =>
 		{
 			// stop the animation if need be:
 			if (self._stopAtNextUpdate)
@@ -155,6 +155,12 @@ export class Scheduler
 				self._status = Scheduler.Status.STOPPED;
 				return;
 			}
+
+			// store frame delta for `Window.getActualFrameRate()`
+			const lastTimestamp = self._lastTimestamp === undefined ? timestamp : self._lastTimestamp;
+
+			self._lastDelta = timestamp - lastTimestamp;
+			self._lastTimestamp = timestamp;
 
 			// render the scene in the window:
 			self._psychoJS.window.render();

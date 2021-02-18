@@ -117,6 +117,7 @@ export class PsychoJS
 	constructor({
 								debug = true,
 								collectIP = false,
+								hosts = [],
 								topLevelStatus = true
 							} = {})
 	{
@@ -136,6 +137,10 @@ export class PsychoJS
 		this._serverManager = new ServerManager({
 			psychoJS: this
 		});
+
+		// to be loading `configURL` files in `_configure` calls from
+		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		this._hosts = Array.from(hostsEvidently);
 
 		// GUI:
 		this._gui = new GUI(this);
@@ -560,7 +565,9 @@ export class PsychoJS
 
 			// if the experiment is running from the pavlovia.org server, we read the configuration file:
 			const experimentUrl = window.location.href;
-			if (experimentUrl.indexOf('https://run.pavlovia.org/') === 0 || experimentUrl.indexOf('https://pavlovia.org/run/') === 0)
+			// go through each url in allow list
+			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
+			if (isHost)
 			{
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
 				this._config = serverResponse.config;
