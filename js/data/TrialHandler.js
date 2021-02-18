@@ -673,5 +673,10 @@ TrialHandler.Method = {
 	/**
 	 * Conditions are fully randomised across all repeats.
 	 */
-	FULL_RANDOM: Symbol.for('FULL_RANDOM')
+	FULL_RANDOM: Symbol.for('FULL_RANDOM'),
+
+	/**
+	 * Same as above, but named to reflect PsychoPy boileplate.
+	 */
+	FULLRANDOM: Symbol.for('FULL_RANDOM')
 };
