@@ -271,14 +271,21 @@ export function toNumerical(obj)
 			return n;
 		};
 
-		if (typeof obj === 'string')
-		{
-			return convertToNumber(obj);
-		}
-
 		if (Array.isArray(obj))
 		{
 			return obj.map(convertToNumber);
+		}
+
+		const arrayMaybe = turnSquareBracketsIntoArrays(obj);
+
+		if (Array.isArray(arrayMaybe))
+		{
+			return arrayMaybe.map(convertToNumber);
+		}
+
+		if (typeof obj === 'string')
+		{
+			return convertToNumber(obj);
 		}
 
 		throw 'unable to convert the object to a number';
@@ -962,53 +969,51 @@ export function offerDataForDownload(filename, data, type)
 
 
 /**
- * To overcome built-in JSON parsing limitations when it comes to eg. floats missing the naught prefix, turn substrings contained within square brackets into arrays type casting numeric looking values in the process.
+ * Convert a string representing a JSON array, e.g. "[1, 2]" into an array, e.g. ["1","2"].
+ * This approach overcomes the built-in JSON parsing limitations when it comes to eg. floats
+ * missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,4]".
  *
  * @name module:util.turnSquareBracketsIntoArrays
  * @function
  * @public
- * @param {string} input - string containing lists in square brackets
- * @returns {array} an array of arrays found
+ * @param {string} input - string potentially containing JSON arrays
+ * @param {string} max - how many matches to return, unwrap resulting array if less than two
+ * @returns {array} an array if arrays were found, undefined otherwise
  */
-export function turnSquareBracketsIntoArrays(input)
+export function turnSquareBracketsIntoArrays(input, max = 1)
 {
 	// Only interested in strings
 	// https://stackoverflow.com/questions/4059147
 	if (String(input) !== input)
 	{
-		return input;
+		return;
 	}
 
 	// Matches content within square brackets (using literal
 	// form is MDN's advice for patterns unlikely to change)
 	const matchesMaybe = input.match(/\[(.*?)\]/g);
 
-	// Pass through if no array-like matches found
+	// Exit if no array-like matches found
 	if (matchesMaybe === null)
 	{
-		return input;
+		return;
 	}
 
 	// Reformat content for each match
 	const matches = matchesMaybe.map((data) =>
 		{
-			// Remove the square brackets
-			const arrayLikeContent = data.replace(/[\[\]]+/g, '');
-			// Eat up space after comma
-			const commaSplitValues = arrayLikeContent.split(/[, ]+/);
-			// Type cast numeric values
-			const result = commaSplitValues.map((value) =>
-				{
-					// Leave empty strings untouched
-					const numberMaybe = value && Number(value);
-
-					return Number.isNaN(numberMaybe) ? value : numberMaybe;
-				}
-			);
-
-			return result;
+			return data
+				// Remove the square brackets
+				.replace(/[\[\]]+/g, '')
+				// Eat up space after comma
+				.split(/[, ]+/);
 		}
 	);
+
+	if (max < 2)
+	{
+		return matches[0];
+	}
 
 	return matches;
 }
