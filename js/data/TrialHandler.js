@@ -482,11 +482,18 @@ export class TrialHandler extends PsychObject
 
 						if (typeof value === 'string')
 						{
-							// Parse doubly escaped line feeds
-							value = value.replace(/(\\n)/g, '\n');
+							const numberMaybe = Number.parseFloat(value);
 
 							// if value is a numerical string, convert it to a number:
-							value = isNaN(value) ? value : Number.parseFloat(value);
+							if (!isNaN(numberMaybe) && numberMaybe.toString().length === value.length)
+							{
+								value = numberMaybe;
+							}
+							else
+							{
+								// Parse doubly escaped line feeds
+								value = value.replace(/(\n)/g, '\n');
+							}
 						}
 
 						trial[fields[l]] = value;
