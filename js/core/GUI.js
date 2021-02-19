@@ -161,7 +161,7 @@ export class GUI
 							// if the field is required:
 							if (key.slice(-1) === '*')
 							{
-								self._requiredKeys.push(key);
+								self._requiredKeys.push(keyId);
 							}
 
 							// if value is an array, we create a select drop-down menu:
@@ -219,9 +219,8 @@ export class GUI
 
 
 				// setup change event handlers for all required keys:
-				Object.keys(this._requiredKeys).forEach((key, keyIdx) =>
+				this._requiredKeys.forEach((keyId) =>
 					{
-						const keyId = 'form-input-' + keyIdx;
 						const input = document.getElementById(keyId);
 						if (input)
 						{
