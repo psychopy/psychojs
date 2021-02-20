@@ -133,63 +133,67 @@ export class GUI
 
 				// add a combobox or text areas for each entry in the dictionary:
 				htmlCode += '<form>';
-				for (const key in dictionary)
-				{
-					const value = dictionary[key];
-					const keyId = CSS.escape(key) + '_id';
 
-					// only create an input if the key is not in the URL:
-					let inUrl = false;
-					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach((urlValue, urlKey) =>
+				// These may include Symbols as opposed to when using a for...in loop,
+				// but only strings are allowed in PsychoPy
+				Object.keys(dictionary).forEach((key, keyIdx) =>
 					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
+						const value = dictionary[key];
+						const keyId = 'form-input-' + keyIdx;
+
+						// only create an input if the key is not in the URL:
+						let inUrl = false;
+						const cleanedDictKey = key.trim().toLowerCase();
+						infoFromUrl.forEach((urlValue, urlKey) =>
+							{
+								const cleanedUrlKey = urlKey.trim().toLowerCase();
+								if (cleanedUrlKey === cleanedDictKey)
+								{
+									inUrl = true;
+									// break;
+								}
+							});
+
+						if (!inUrl)
 						{
-							inUrl = true;
-							// break;
-						}
-					});
+							htmlCode += '<label for="' + keyId + '">' + key + '</label>';
 
-					if (!inUrl)
-					{
-						htmlCode += '<label for="' + keyId + '">' + key + '</label>';
-
-						// if the field is required:
-						if (key.slice(-1) === '*')
-						{
-							self._requiredKeys.push(key);
-						}
-
-						// if value is an array, we create a select drop-down menu:
-						if (Array.isArray(value))
-						{
-							htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
-								' ui-corner-all">';
-
-							// if the field is required, we add an empty option and select it:
+							// if the field is required:
 							if (key.slice(-1) === '*')
 							{
-								htmlCode += '<option disabled selected>...</option>';
+								self._requiredKeys.push(keyId);
 							}
 
-							for (const option of value)
+							// if value is an array, we create a select drop-down menu:
+							if (Array.isArray(value))
 							{
-								htmlCode += '<option>' + option + '</option>';
+								htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
+									' ui-corner-all">';
+
+								// if the field is required, we add an empty option and select it:
+								if (key.slice(-1) === '*')
+								{
+									htmlCode += '<option disabled selected>...</option>';
+								}
+
+								for (const option of value)
+								{
+									htmlCode += '<option>' + option + '</option>';
+								}
+
+								htmlCode += '</select>';
+								$('#' + keyId).selectmenu({classes: {}});
 							}
 
-							htmlCode += '</select>';
-							$('#' + keyId).selectmenu({classes: {}});
-						}
-
-						// otherwise we use a single string input:
-						else /*if (typeof value === 'string')*/
-						{
-							htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
-							htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+							// otherwise we use a single string input:
+							else /*if (typeof value === 'string')*/
+							{
+								htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
+								htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+							}
 						}
 					}
-				}
+				);
 				htmlCode += '</form>';
 
 
@@ -215,15 +219,15 @@ export class GUI
 
 
 				// setup change event handlers for all required keys:
-				for (const key of this._requiredKeys)
-				{
-					const keyId = CSS.escape(key) + '_id';
-					const input = document.getElementById(keyId);
-					if (input)
+				this._requiredKeys.forEach((keyId) =>
 					{
-						input.oninput = (event) => GUI._onKeyChange(self, event);
+						const input = document.getElementById(keyId);
+						if (input)
+						{
+							input.oninput = (event) => GUI._onKeyChange(self, event);
+						}
 					}
-				}
+				);
 
 				// init and open the dialog box:
 				self._dialogComponent.button = 'Cancel';
@@ -256,14 +260,16 @@ export class GUI
 							{
 
 								// update dictionary:
-								for (const key in dictionary)
-								{
-									const input = document.getElementById(CSS.escape(key) + "_id");
-									if (input)
+								Object.keys(dictionary).forEach((key, keyIdx) =>
 									{
-										dictionary[key] = input.value;
+										const input = document.getElementById('form-input-' + keyIdx);
+										if (input)
+										{
+											dictionary[key] = input.value;
+										}
 									}
-								}
+								);
+
 
 								self._dialogComponent.button = 'OK';
 								$("#expDialog").dialog('close');
