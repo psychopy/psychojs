@@ -485,10 +485,20 @@ export class TrialHandler extends PsychObject
 							value = arrayMaybe;
 						}
 
-						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string' && !isNaN(value))
+						if (typeof value === 'string')
 						{
-							value = Number.parseFloat(value);
+							const numberMaybe = Number.parseFloat(value);
+
+							// if value is a numerical string, convert it to a number:
+							if (!isNaN(numberMaybe) && numberMaybe.toString().length === value.length)
+							{
+								value = numberMaybe;
+							}
+							else
+							{
+								// Parse doubly escaped line feeds
+								value = value.replace(/(\n)/g, '\n');
+							}
 						}
 
 						trial[fields[l]] = value;
