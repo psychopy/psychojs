@@ -3,7 +3,7 @@
  * Sound stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
