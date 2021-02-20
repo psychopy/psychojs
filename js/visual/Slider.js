@@ -406,6 +406,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		// Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY
 
 		// estimate the position of the labels:
+		
 		this._labelPositions_px = new Array(this._labels.length);
 		const labelTextStyle = this._getTextStyle();
 		let prevLabelBounds = null;
