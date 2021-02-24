@@ -1094,3 +1094,40 @@ export function sum(inputMaybe = [])
 		// Add up each successive entry starting from naught
 		.reduce(add, 0);
 }
+
+
+/**
+ * Helps rotate a set of x, y coordinates around a certain origin.
+ *
+ * @name module:util.rotatePoint
+ * @function
+ * @public
+ * @param {number} angle - the new angle of rotation in degrees
+ * @param {array} origin - optionally, a new center of rotation
+ * @returns {function(): array} a function to perform the rotation with
+ */
+export function rotatePoint(angle, origin = [0, 0])
+{
+	// Use radians, precalculate as many things as possible
+	const rad = angle * Math.PI / 180;
+	const cos = Math.cos(rad);
+	const sin = Math.sin(rad);
+	const [px = 0, py = 0] = origin;
+
+	/**
+	 * Performs the actual rotation.
+	 *
+	 * @param {array} the coordinates to be transformed
+	 * @returns {array} the new coordinates after rotation
+	 */
+	return ([x1, y1]) =>
+	{
+		const dx = x1 - px;
+		const dy = y1 - py;
+
+		const x2 = (dx * cos) - (dy * sin);
+		const y2 = (dx * sin) + (dy * cos);
+
+		return [x2 + px, y2 + py];
+	}
+}
