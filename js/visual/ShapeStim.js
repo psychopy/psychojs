@@ -274,7 +274,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 
 		// set polygon position and rotation:
 		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
-		this._pixi.rotation = this.ori * Math.PI / 180.0;
 	}
 
 
@@ -337,10 +336,10 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		{
 			flip[1] = -1.0;
 		}
-
+		const rotate = rotatePoint(this.ori);
 		// handle size, flipping, and convert to pixel units:
 		this._vertices_px = this._vertices.map(v => util.to_px(
-			[v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]],
+			rotate([v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]]),
 			this._units,
 			this._win)
 		);
