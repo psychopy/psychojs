@@ -555,6 +555,12 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 					throw `${item.type} is not a valid type for item: ${item.itemText}`;
 				}
 
+				// Support the 'radio' type found on older versions of PsychoPy
+				if (item.type === 'RADIO')
+				{
+					item.type = 'CHOICE';
+				}
+
 				// convert item type to symbol:
 				item.type = Symbol.for(item.type);
 
@@ -1089,7 +1095,8 @@ Form.Types = {
 	RATING: Symbol.for('RATING'),
 	SLIDER: Symbol.for('SLIDER'),
 	FREE_TEXT: Symbol.for('FREE_TEXT'),
-	CHOICE: Symbol.for('CHOICE')
+	CHOICE: Symbol.for('CHOICE'),
+	RADIO: Symbol.for('CHOICE')
 };
 
 
