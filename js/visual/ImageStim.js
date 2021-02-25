@@ -255,11 +255,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 			if (typeof this._pixi !== 'undefined')
 			{
-				this._pixi.destroy({
-					children: true,
-					texture: true,
-					baseTexture: false
-				});
+				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
 
@@ -269,7 +265,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				return;
 			}
 
-			this._texture = PIXI.Texture.from(this._image);
+			const baseTexture = new PIXI.BaseTexture(this._image);
+
+			this._texture = new PIXI.Texture(baseTexture);
 			this._pixi = PIXI.Sprite.from(this._texture);
 
 			// add a mask if need be:
