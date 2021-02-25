@@ -3,7 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 2021.1.0
+ * @version 2021.1.1
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -169,7 +169,7 @@ export class PsychoJS
 		}
 
 		this.logger.info('[PsychoJS] Initialised.');
-		this.logger.info('[PsychoJS] @version 2021.1.0');
+		this.logger.info('[PsychoJS] @version 2021.1.1');
 
 		// Hide #root::after
 		$('#root').addClass('is-ready');

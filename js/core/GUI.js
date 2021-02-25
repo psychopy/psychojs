@@ -3,7 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sijia Zhao - fine-grained resource loading
- * @version 2021.1.0
+ * @version 2021.1.1
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

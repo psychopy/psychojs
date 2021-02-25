@@ -4,7 +4,7 @@
  *
  * @author Alain Pitiot
  * @author Hiroyuki Sogo & Sotiri Bakagiannis  - better support for BOM and accented characters
- * @version 2021.1.0
+ * @version 2021.1.1
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

@@ -2,15 +2,15 @@
  * Logger
  *
  * @author Alain Pitiot
- * @version 2021.1.0
+ * @version 2021.1.1
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
 import * as util from '../util/Util';
-import {MonotonicClock} from '../util';
-import {ExperimentHandler} from '../data';
+import {MonotonicClock} from '../util/Clock';
+import {ExperimentHandler} from '../data/ExperimentHandler';
 
 
 /**
