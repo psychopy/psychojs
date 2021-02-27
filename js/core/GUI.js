@@ -275,7 +275,7 @@ export class GUI
 								self._psychoJS.window.adjustScreenSize();
                 
                 // Clear events (and keypresses) accumulated during the dialog
-                self._psychoJS.eventManager.clearEvents(undefined)
+                self._psychoJS.eventManager.clearEvents();
 							}
 						}
 					],
