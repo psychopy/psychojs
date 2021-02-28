@@ -279,6 +279,9 @@ export class GUI
 
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
+                
+                // Clear events (and keypresses) accumulated during the dialog
+                self._psychoJS.eventManager.clearEvents();
 							}
 						}
 					],
