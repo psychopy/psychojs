@@ -132,7 +132,6 @@ export class GUI
 
 
 				// add a combobox or text areas for each entry in the dictionary:
-				htmlCode += '<form>';
 
 				// These may include Symbols as opposed to when using a for...in loop,
 				// but only strings are allowed in PsychoPy
@@ -194,7 +193,6 @@ export class GUI
 						}
 					}
 				);
-				htmlCode += '</form>';
 
 
 				// add a progress bar:
