@@ -1,33 +1,37 @@
 /**
  * Manager handling the keyboard and mouse/touch events.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2021.1.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-import { MonotonicClock, Clock } from '../util/Clock';
-import { PsychoJS } from './PsychoJS';
+import {MonotonicClock, Clock} from '../util/Clock';
+import {PsychoJS} from './PsychoJS';
 
 
 /**
  * @class
  * <p>This manager handles all participant interactions with the experiment, i.e. keyboard, mouse and touch events.</p>
- * 
+ *
  * @name module:core.EventManager
  * @class
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  */
-export class EventManager {
+export class EventManager
+{
 
-	constructor(psychoJS) {
+	constructor(psychoJS)
+	{
 		this._psychoJS = psychoJS;
 
 		// populate the reverse pyglet map:
 		for (const keyName in EventManager._pygletMap)
+		{
 			EventManager._reversePygletMap[EventManager._pygletMap[keyName]] = keyName;
+		}
 
 		// add key listeners:
 		this._keyBuffer = [];
@@ -53,9 +57,9 @@ export class EventManager {
 
 	/**
 	 * Get the list of keys pressed by the participant.
-	 * 
+	 *
 	 * <p>Note: The w3c [key-event viewer]{@link https://w3c.github.io/uievents/tools/key-event-viewer.html} can be used to see possible values for the items in the keyList given the user's keyboard and chosen layout. The "key" and "code" columns in the UI Events fields are the relevant values for the keyList argument.</p>
-	 * 
+	 *
 	 * @name module:core.EventManager#getKeys
 	 * @function
 	 * @public
@@ -65,36 +69,54 @@ export class EventManager {
 	 * @return {string[]} the list of keys that were pressed.
 	 */
 	getKeys({
-		keyList = null,
-		timeStamped = false
-	} = {}) {
+						keyList = null,
+						timeStamped = false
+					} = {})
+	{
 		if (keyList != null)
+		{
 			keyList = EventManager.pyglet2w3c(keyList);
+		}
 
 		let newBuffer = [];
 		let keys = [];
-		for (let i = 0; i < this._keyBuffer.length; ++i) {
+		for (let i = 0; i < this._keyBuffer.length; ++i)
+		{
 			const key = this._keyBuffer[i];
 			let keyId = null;
 
-			if (keyList != null) {
+			if (keyList != null)
+			{
 				let index = keyList.indexOf(key.code);
 				if (index < 0)
+				{
 					index = keyList.indexOf(EventManager._keycodeMap[key.keyCode]);
+				}
 				if (index >= 0)
+				{
 					keyId = EventManager._reversePygletMap[keyList[index]];
+				}
 			}
 			else
+			{
 				keyId = EventManager._reversePygletMap[key.code];
+			}
 
-			if (keyId != null) {
+			if (keyId != null)
+			{
 				if (timeStamped)
+				{
 					keys.push([keyId, key.timestamp]);
+				}
 				else
+				{
 					keys.push(keyId);
+				}
 			}
 			else
-				newBuffer.push(key); // keep key press in buffer
+			{
+				newBuffer.push(key);
+			} // keep key press in buffer
 		}
 
 		this._keyBuffer = newBuffer;
@@ -108,6 +130,7 @@ export class EventManager {
 	 * @property {Array.Clock} clocks - the clocks associated to the mouse buttons, reset whenever the button is pressed
 	 * @property {Array.number} times - the time elapsed since the last rest of the associated clock
 	 */
+
 	/**
 	 * @typedef EventManager.MouseInfo
 	 * @property {Array.number} pos - the position of the mouse [x, y]
@@ -117,94 +140,102 @@ export class EventManager {
 	 */
 	/**
 	 * Get the mouse info.
-	 * 
+	 *
 	 * @name module:core.EventManager#getMouseInfo
 	 * @function
 	 * @public
 	 * @return {EventManager.MouseInfo} the mouse info.
 	 */
-	getMouseInfo() {
+	getMouseInfo()
+	{
 		return this._mouseInfo;
 	}
-	
+
 
 	/**
 	 * Clear all events from the event buffer.
-	 * 
+	 *
 	 * @name module:core.EventManager#clearEvents
 	 * @function
 	 * @public
-	 * 
+	 *
 	 * @todo handle the attribs argument
 	 */
-	clearEvents(attribs) {
+	clearEvents(attribs)
+	{
 		this.clearKeys();
 	}
 
 
 	/**
 	 * Clear all keys from the key buffer.
-	 * 
+	 *
 	 * @name module:core.EventManager#clearKeys
 	 * @function
 	 * @public
 	 */
-	clearKeys() {
+	clearKeys()
+	{
 		this._keyBuffer = [];
 	}
 
 
 	/**
 	 * Start the move clock.
-	 * 
+	 *
 	 * @name module:core.EventManager#startMoveClock
 	 * @function
 	 * @public
-	 * 
+	 *
 	 * @todo not implemented
 	 */
-	startMoveClock() {
+	startMoveClock()
+	{
 	}
 
 
 	/**
 	 * Stop the move clock.
-	 * 
+	 *
 	 * @name module:core.EventManager#stopMoveClock
 	 * @function
 	 * @public
-	 * 
+	 *
 	 * @todo not implemented
 	 */
-	stopMoveClock() {
+	stopMoveClock()
+	{
 	}
 
 
 	/**
 	 * Reset the move clock.
-	 * 
+	 *
 	 * @name module:core.EventManager#resetMoveClock
 	 * @function
 	 * @public
-	 * 
+	 *
 	 * @todo not implemented
 	 */
-	resetMoveClock() {
+	resetMoveClock()
+	{
 	}
 
 
 	/**
 	 * Add various mouse listeners to the Pixi renderer of the {@link Window}.
-	 * 
+	 *
 	 * @name module:core.EventManager#addMouseListeners
 	 * @function
 	 * @public
 	 * @param {PIXI.Renderer} renderer - The Pixi renderer
 	 */
-	addMouseListeners(renderer) {
+	addMouseListeners(renderer)
+	{
 		const self = this;
 
-		renderer.view.addEventListener("pointerdown", (event) => {
+		renderer.view.addEventListener("pointerdown", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.buttons.pressed[event.button] = 1;
@@ -216,7 +247,8 @@ export class EventManager {
 		}, false);
 
 
-		renderer.view.addEventListener("touchstart", (event) => {
+		renderer.view.addEventListener("touchstart", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.buttons.pressed[0] = 1;
@@ -230,7 +262,8 @@ export class EventManager {
 		}, false);
 
 
-		renderer.view.addEventListener("pointerup", (event) => {
+		renderer.view.addEventListener("pointerup", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.buttons.pressed[event.button] = 0;
@@ -241,7 +274,8 @@ export class EventManager {
 		}, false);
 
 
-		renderer.view.addEventListener("touchend", (event) => {
+		renderer.view.addEventListener("touchend", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.buttons.pressed[0] = 0;
@@ -255,7 +289,8 @@ export class EventManager {
 		}, false);
 
 
-		renderer.view.addEventListener("pointermove", (event) => {
+		renderer.view.addEventListener("pointermove", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.moveClock.reset();
@@ -263,11 +298,12 @@ export class EventManager {
 		}, false);
 
 
-		renderer.view.addEventListener("touchmove", (event) => {
+		renderer.view.addEventListener("touchmove", (event) =>
+		{
 			event.preventDefault();
 
 			self._mouseInfo.moveClock.reset();
-			
+
 			// we use the first touch, discarding all others:
 			const touches = event.changedTouches;
 			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
@@ -275,19 +311,20 @@ export class EventManager {
 
 
 		// (*) wheel
-		renderer.view.addEventListener("wheel", event => {
+		renderer.view.addEventListener("wheel", event =>
+		{
 			self._mouseInfo.wheelRel[0] += event.deltaX;
 			self._mouseInfo.wheelRel[1] += event.deltaY;
-			
+
 			this._psychoJS.experimentLogger.data("Mouse: wheel shift=(" + event.deltaX + "," + event.deltaY + "), pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
-		
+
 	}
 
 
 	/**
 	 * Add key listeners to the document.
-	 * 
+	 *
 	 * @name module:core.EventManager#_addKeyListeners
 	 * @function
 	 * @private
@@ -307,7 +344,9 @@ export class EventManager {
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === 'undefined')
+			{
 				code = EventManager.keycode2w3c(event.keyCode);
+			}
 
 			self._keyBuffer.push({
 				code,
@@ -324,24 +363,29 @@ export class EventManager {
 	}
 
 
-
 	/**
 	 * Convert a keylist that uses pyglet key names to one that uses W3C KeyboardEvent.code values.
 	 * <p>This allows key lists that work in the builder environment to work in psychoJS web experiments.</p>
-	 * 
+	 *
 	 * @name module:core.EventManager#pyglet2w3c
 	 * @function
 	 * @public
 	 * @param {Array.string} pygletKeyList - the array of pyglet key names
 	 * @return {Array.string} the w3c keyList
 	 */
-	static pyglet2w3c(pygletKeyList) {
+	static pyglet2w3c(pygletKeyList)
+	{
 		let w3cKeyList = [];
-		for (let i = 0; i < pygletKeyList.length; i++) {
+		for (let i = 0; i < pygletKeyList.length; i++)
+		{
 			if (typeof EventManager._pygletMap[pygletKeyList[i]] === 'undefined')
+			{
 				w3cKeyList.push(pygletKeyList[i]);
+			}
 			else
+			{
 				w3cKeyList.push(EventManager._pygletMap[pygletKeyList[i]]);
+			}
 		}
 
 		return w3cKeyList;
@@ -358,11 +402,16 @@ export class EventManager {
 	 * @param {string} code - W3C Key Code
 	 * @returns {string} corresponding pyglet key
 	 */
-	static w3c2pyglet(code) {
+	static w3c2pyglet(code)
+	{
 		if (code in EventManager._reversePygletMap)
+		{
 			return EventManager._reversePygletMap[code];
+		}
 		else
+		{
 			return 'N/A';
+		}
 	}
 
 
@@ -377,7 +426,8 @@ export class EventManager {
 	 * @param {number} keycode - the keycode
 	 * @returns {string} corresponding W3C UI Event code
 	 */
-	static keycode2w3c(keycode) {
+	static keycode2w3c(keycode)
+	{
 		return EventManager._keycodeMap[keycode];
 	}
 }
@@ -390,7 +440,7 @@ export class EventManager {
  *
  * <p>Unfortunately, it is not very fine-grained: for instance, there is no difference between Alt Left and Alt
  * Right, or between Enter and Numpad Enter. Use at your own risk (or upgrade your browser...).</p>
- * 
+ *
  * @name module:core.EventManager#_keycodeMap
  * @readonly
  * @private
@@ -479,7 +529,7 @@ EventManager._keycodeMap = {
 /**
  * This map associates pyglet key names to the corresponding W3C KeyboardEvent codes values.
  * <p>More information can be found [here]{@link https://www.w3.org/TR/uievents-code}</p>
- * 
+ *
  * @name module:core.EventManager#_pygletMap
  * @readonly
  * @private
@@ -581,10 +631,10 @@ EventManager._pygletMap = {
 
 /**
  * <p>This map associates W3C KeyboardEvent.codes to the corresponding pyglet key names.
- * 
+ *
  * @name module:core.EventManager#_reversePygletMap
  * @readonly
- * @private 
+ * @private
  * @type {Object.<String,String>}
  */
 EventManager._reversePygletMap = {};
@@ -592,14 +642,16 @@ EventManager._reversePygletMap = {};
 
 /**
  * Utility class used by the experiment scripts to keep track of a clock and of the current status (whether or not we are currently checking the keyboard)
- * 
+ *
  * @name module:core.BuilderKeyResponse
  * @class
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  */
-export class BuilderKeyResponse {
-	constructor(psychoJS) {
+export class BuilderKeyResponse
+{
+	constructor(psychoJS)
+	{
 		this._psychoJS = psychoJS;
 
 		this.status = PsychoJS.Status.NOT_STARTED;

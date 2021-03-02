@@ -2,14 +2,14 @@
  * Polygonal Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2021.1.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { ShapeStim } from './ShapeStim';
-import { Color } from '../util/Color';
+import {ShapeStim} from './ShapeStim';
+import {Color} from '../util/Color';
 
 
 /**
@@ -39,36 +39,45 @@ import { Color } from '../util/Color';
  */
 export class Polygon extends ShapeStim
 {
-	constructor({
-								name,
-								win,
-								lineWidth = 1.5,
-								lineColor = new Color('white'),
-								fillColor,
-								opacity = 1.0,
-								edges = 3,
-								radius = 0.5,
-								pos = [0, 0],
-								size = 1.0,
-								ori = 0.0,
-								units,
-								contrast = 1.0,
-								depth = 0,
-								interpolate = true,
-								autoDraw,
-								autoLog
-							} = {})
+	constructor({name, win, lineWidth, lineColor, fillColor, opacity, edges, radius, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
 	{
-		super({ name, win, lineWidth, lineColor, fillColor, opacity, pos, ori, size, units, contrast, depth, interpolate, autoDraw, autoLog });
+		super({
+			name,
+			win,
+			lineWidth,
+			lineColor,
+			fillColor,
+			opacity,
+			pos,
+			ori,
+			size,
+			units,
+			contrast,
+			depth,
+			interpolate,
+			autoDraw,
+			autoLog
+		});
 
 		this._psychoJS.logger.debug('create a new Polygon with name: ', name);
 
-		this._addAttributes(Polygon, edges, radius);
+		this._addAttribute(
+			'edges',
+			edges,
+			3
+		);
+		this._addAttribute(
+			'radius',
+			radius,
+			0.5
+		);
 
 		this._updateVertices();
 
 		if (this._autoLog)
+		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
 	}
 
 
@@ -83,10 +92,12 @@ export class Polygon extends ShapeStim
 	 */
 	setRadius(radius, log = false)
 	{
-		this._psychoJS.logger.debug('set the radius of Polygon: ', this.name, 'to: ', radius);
+		const hasChanged = this._setAttribute('radius', radius, log);
 
-		this._setAttribute('radius', radius, log);
-		this._updateVertices();
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
 	}
 
 
@@ -101,11 +112,14 @@ export class Polygon extends ShapeStim
 	 */
 	setEdges(edges, log = false)
 	{
-		this._psychoJS.logger.debug('set the edges of Polygon: ', this.name, 'to: ', edges);
+		const hasChanged = this._setAttribute('edges', Math.round(edges), log);
 
-		this._setAttribute('edges', Math.round(edges), log);
-		this._updateVertices();
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
 	}
+
 
 
 	/**
@@ -121,7 +135,10 @@ export class Polygon extends ShapeStim
 		const angle = 2.0 * Math.PI / this._edges;
 		const vertices = [];
 		for (let v = 0; v < this._edges; ++v)
-			vertices.push([ Math.sin(v * angle) * this._radius, Math.cos(v * angle) * this._radius ]);
+		{
+			vertices.push([Math.sin(v * angle) * this._radius, Math.cos(v * angle) * this._radius]);
+		}
+
 		this.setVertices(vertices);
 	}
 

@@ -3,22 +3,21 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2021.1.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
-import { Scheduler } from '../util/Scheduler';
-import { ServerManager } from './ServerManager';
-import { ExperimentHandler } from '../data/ExperimentHandler';
-import { EventManager } from './EventManager';
-import { Window } from './Window';
-import { GUI } from './GUI';
-import { MonotonicClock } from '../util/Clock';
-import { Logger } from './Logger';
+import {Scheduler} from '../util/Scheduler';
+import {ServerManager} from './ServerManager';
+import {ExperimentHandler} from '../data/ExperimentHandler';
+import {EventManager} from './EventManager';
+import {Window} from './Window';
+import {GUI} from './GUI';
+import {MonotonicClock} from '../util/Clock';
+import {Logger} from './Logger';
 import * as util from '../util/Util';
-
 
 
 /**
@@ -34,25 +33,81 @@ export class PsychoJS
 	/**
 	 * Properties
 	 */
-	get status() { return this._status; }
-	set status(status) {
+	get status()
+	{
+		return this._status;
+	}
+
+	set status(status)
+	{
 		this._status = status;
 	}
-	get config() { return this._config; }
-	get window() { return this._window; }
-	get serverManager() { return this._serverManager; }
-	get experiment() { return this._experiment; }
-	get scheduler() { return this._scheduler; }
-	get monotonicClock() { return this._monotonicClock; }
-	get logger() { return this._logger.consoleLogger; }
-	get experimentLogger() { return this._logger; }
-	get eventManager() { return this._eventManager; }
-	get gui() { return this._gui; }
-	get IP() { return this._IP; }
-	// this._serverMsg is a bi-directional message board for communications with the pavlovia.org server:
-	get serverMsg() { return this._serverMsg; }
-	get browser() { return this._browser; }
 
+	get config()
+	{
+		return this._config;
+	}
+
+	get window()
+	{
+		return this._window;
+	}
+
+	get serverManager()
+	{
+		return this._serverManager;
+	}
+
+	get experiment()
+	{
+		return this._experiment;
+	}
+
+	get scheduler()
+	{
+		return this._scheduler;
+	}
+
+	get monotonicClock()
+	{
+		return this._monotonicClock;
+	}
+
+	get logger()
+	{
+		return this._logger.consoleLogger;
+	}
+
+	get experimentLogger()
+	{
+		return this._logger;
+	}
+
+	get eventManager()
+	{
+		return this._eventManager;
+	}
+
+	get gui()
+	{
+		return this._gui;
+	}
+
+	get IP()
+	{
+		return this._IP;
+	}
+
+	// this._serverMsg is a bi-directional message board for communications with the pavlovia.org server:
+	get serverMsg()
+	{
+		return this._serverMsg;
+	}
+
+	get browser()
+	{
+		return this._browser;
+	}
 
 
 	/**
@@ -62,8 +117,9 @@ export class PsychoJS
 	constructor({
 								debug = true,
 								collectIP = false,
+								hosts = [],
 								topLevelStatus = true
-	} = {})
+							} = {})
 	{
 		// logging:
 		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
@@ -81,6 +137,10 @@ export class PsychoJS
 		this._serverManager = new ServerManager({
 			psychoJS: this
 		});
+
+		// to be loading `configURL` files in `_configure` calls from
+		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		this._hosts = Array.from(hostsEvidently);
 
 		// GUI:
 		this._gui = new GUI(this);
@@ -104,11 +164,16 @@ export class PsychoJS
 		// make the PsychoJS.Status accessible from the top level of the generated experiment script
 		// in order to accommodate PsychoPy's Code Components
 		if (topLevelStatus)
+		{
 			this._makeStatusTopLevel();
+		}
 
 		this.logger.info('[PsychoJS] Initialised.');
-	}
+		this.logger.info('[PsychoJS] @version 2021.1.0');
 
+		// Hide #root::after
+		$('#root').addClass('is-ready');
+	}
 
 
 	/**
@@ -119,9 +184,12 @@ export class PsychoJS
 	getEnvironment()
 	{
 		if (typeof this._config === 'undefined')
+		{
 			return undefined;
+		}
 		return this._config.environment;
 	}
+
 
 	/**
 	 * Open a PsychoJS Window.
@@ -142,17 +210,24 @@ export class PsychoJS
 	 * @public
 	 */
 	openWindow({
-		name,
-		fullscr,
-		color,
-		units,
-		waitBlanking,
-		autoLog
-	} = {}) {
+							 name,
+							 fullscr,
+							 color,
+							 units,
+							 waitBlanking,
+							 autoLog
+						 } = {})
+	{
 		this.logger.info('[PsychoJS] Open Window.');
 
 		if (typeof this._window !== 'undefined')
-			throw { origin : 'PsychoJS.openWindow', context : 'when opening a Window', error : 'A Window has already been opened.' };
+		{
+			throw {
+				origin: 'PsychoJS.openWindow',
+				context: 'when opening a Window',
+				error: 'A Window has already been opened.'
+			};
+		}
 
 		this._window = new Window({
 			psychoJS: this,
@@ -172,7 +247,8 @@ export class PsychoJS
 	 * @param {string} completionUrl  - the completion URL
 	 * @param {string} cancellationUrl - the cancellation URL
 	 */
-	setRedirectUrls(completionUrl, cancellationUrl) {
+	setRedirectUrls(completionUrl, cancellationUrl)
+	{
 		this._completionUrl = completionUrl;
 		this._cancellationUrl = cancellationUrl;
 	}
@@ -185,7 +261,8 @@ export class PsychoJS
 	 * @param args - arguments for that task
 	 * @public
 	 */
-	schedule(task, args) {
+	schedule(task, args)
+	{
 		this.logger.debug('schedule task: ', task.toString().substring(0, 50), '...');
 
 		this._scheduler.add(task, args);
@@ -204,7 +281,8 @@ export class PsychoJS
 	 * @param {Scheduler} elseScheduler scheduler to run if the condition is false
 	 * @public
 	 */
-	scheduleCondition(condition, thenScheduler, elseScheduler) {
+	scheduleCondition(condition, thenScheduler, elseScheduler)
+	{
 		this.logger.debug('schedule condition: ', condition.toString().substring(0, 50), '...');
 
 		this._scheduler.addConditional(condition, thenScheduler, elseScheduler);
@@ -224,27 +302,31 @@ export class PsychoJS
 	 *
 	 * @todo: close session on window or tab close
 	 */
-	async start({ configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = [] } = {})
+	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo = {}, resources = []} = {})
 	{
 		this.logger.debug();
 
-		const response = { origin: 'PsychoJS.start', context: 'when starting the experiment' };
+		const response = {origin: 'PsychoJS.start', context: 'when starting the experiment'};
 
-		try {
+		try
+		{
 			// configure the experiment:
 			await this._configure(configURL, expName);
 
 			// get the participant IP:
 			if (this._collectIP)
+			{
 				this._getParticipantIPInfo();
-			else {
+			}
+			else
+			{
 				this._IP = {
 					IP: 'X',
-					hostname : 'X',
-					city : 'X',
-					region : 'X',
-					country : 'X',
-					location : 'X'
+					hostname: 'X',
+					city: 'X',
+					region: 'X',
+					country: 'X',
+					location: 'X'
 				};
 			}
 
@@ -264,21 +346,42 @@ export class PsychoJS
 				// open a session:
 				await this._serverManager.openSession();
 
-				// attempt to close the session on beforeunload/unload (we use a synchronous request since
-				// the Beacon API only allows POST and we need DELETE ) and release the WebGL context:
-				const self = this;
-				window.onbeforeunload = () => {
-					self._serverManager.closeSession(false, true);
+				// warn the user when they attempt to close the tab or browser:
+				this.beforeunloadCallback = (event) =>
+				{
+					// preventDefault should ensure that the user gets prompted:
+					event.preventDefault();
 
-					if (typeof self._window !== 'undefined')
-						self._window.close();
+					// Chrome requires returnValue to be set:
+					event.returnValue = '';
 				};
-				window.addEventListener('unload', function(event) {
-					self._serverManager.closeSession(false, true);
+				window.addEventListener('beforeunload', this.beforeunloadCallback);
+
+
+				// when the user closes the tab or browser, we attempt to close the session,
+				// optionally save the results, and release the WebGL context
+				// note: we communicate with the server using the Beacon API
+				const self = this;
+				window.addEventListener('unload', (event) =>
+				{
+					if (self._config.session.status === 'OPEN')
+					{
+						// save the incomplete results if need be:
+						if (self._config.experiment.saveIncompleteResults)
+						{
+							self._experiment.save({sync: true});
+						}
+
+						// close the session:
+						self._serverManager.closeSession(false, true);
+					}
 
 					if (typeof self._window !== 'undefined')
+					{
 						self._window.close();
+					}
 				});
+
 			}
 
 
@@ -289,9 +392,10 @@ export class PsychoJS
 			this.logger.info('[PsychoJS] Start Experiment.');
 			this._scheduler.start();
 		}
-		catch (error) {
+		catch (error)
+		{
 			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({ error: Object.assign(response, { error }) });
+			this._gui.dialog({error: Object.assign(response, {error})});
 		}
 	}
 
@@ -310,13 +414,16 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async downloadResources(resources = []) {
-		try {
+	async downloadResources(resources = [])
+	{
+		try
+		{
 			await this.serverManager.downloadResources(resources);
 		}
-		catch (error) {
+		catch (error)
+		{
 			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({ error: Object.assign(response, { error }) });
+			this._gui.dialog({error: Object.assign(response, {error})});
 		}
 	}
 
@@ -328,13 +435,17 @@ export class PsychoJS
 	 * @param {Object.<string, *>} obj the object whose attributes we will mirror
 	 * @public
 	 */
-	importAttributes(obj) {
+	importAttributes(obj)
+	{
 		this.logger.debug('import attributes from: ', util.toString(obj));
 
 		if (typeof obj === 'undefined')
+		{
 			return;
+		}
 
-		for (const attribute in obj) {
+		for (const attribute in obj)
+		{
 			// this[attribute] = obj[attribute];
 			window[attribute] = obj[attribute];
 		}
@@ -354,26 +465,41 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async quit({ message, isCompleted = false } = {}) {
+	async quit({message, isCompleted = false} = {})
+	{
 		this.logger.info('[PsychoJS] Quit.');
 
 		this._experiment.experimentEnded = true;
 		this._status = PsychoJS.Status.FINISHED;
 
-		try {
+		try
+		{
 			// stop the main scheduler:
 			this._scheduler.stop();
+
+			// remove the beforeunload listener:
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			{
+				window.removeEventListener('beforeunload', this.beforeunloadCallback);
+			}
 
 			// save the results and the logs of the experiment:
 			this.gui.dialog({
 				warning: 'Closing the session. Please wait a few moments.',
 				showOK: false
 			});
-			await this._experiment.save();
-			await this._logger.flush();
+			if (isCompleted || this._config.experiment.saveIncompleteResults)
+			{
+				if (!this._serverMsg.has('__noOutput'))
+				{
+					await this._experiment.save();
+					await this._logger.flush();
+				}
+			}
 
 			// close the session:
-			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER) {
+			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			{
 				await this._serverManager.closeSession(isCompleted);
 			}
 
@@ -383,29 +509,37 @@ export class PsychoJS
 			const self = this;
 			this._gui.dialog({
 				message: text,
-				onOK: () => {
+				onOK: () =>
+				{
 					// close the window:
 					self._window.close();
 
 					// remove everything from the browser window:
 					while (document.body.hasChildNodes())
+					{
 						document.body.removeChild(document.body.lastChild);
+					}
 
 					// return from fullscreen if we were there:
 					this._window.closeFullScreen();
 
 					// redirect if redirection URLs have been provided:
 					if (isCompleted && typeof self._completionUrl !== 'undefined')
+					{
 						window.location = self._completionUrl;
+					}
 					else if (!isCompleted && typeof self._cancellationUrl !== 'undefined')
+					{
 						window.location = self._cancellationUrl;
+					}
 				}
 			});
 
 		}
-		catch (error) {
+		catch (error)
+		{
 			console.error(error);
-			this._gui.dialog({ error });
+			this._gui.dialog({error});
 		}
 	}
 
@@ -418,21 +552,30 @@ export class PsychoJS
 	 * @param {string} configURL - the URL of the configuration file
 	 * @param {string} name - the name of the experiment
 	 */
-	async _configure(configURL, name) {
-		const response = { origin: 'PsychoJS.configure', context: 'when configuring PsychoJS for the experiment' };
+	async _configure(configURL, name)
+	{
+		const response = {
+			origin: 'PsychoJS.configure',
+			context: 'when configuring PsychoJS for the experiment'
+		};
 
-		try {
+		try
+		{
 			this.status = PsychoJS.Status.CONFIGURING;
 
 			// if the experiment is running from the pavlovia.org server, we read the configuration file:
 			const experimentUrl = window.location.href;
-			if (experimentUrl.indexOf('https://run.pavlovia.org/') === 0 || experimentUrl.indexOf('https://pavlovia.org/run/') === 0) {
+			// go through each url in allow list
+			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
+			if (isHost)
+			{
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
 				this._config = serverResponse.config;
 
-				// legacy experiments had a psychoJsManager block instead of a pavlovia block, and the URL
-				// pointed to https://pavlovia.org/server
-				if ('psychoJsManager' in this._config) {
+				// legacy experiments had a psychoJsManager block instead of a pavlovia block,
+				// and the URL pointed to https://pavlovia.org/server
+				if ('psychoJsManager' in this._config)
+				{
 					delete this._config.psychoJsManager;
 					this._config.pavlovia = {
 						URL: 'https://pavlovia.org'
@@ -441,41 +584,60 @@ export class PsychoJS
 
 				// tests for the presence of essential blocks in the configuration:
 				if (!('experiment' in this._config))
+				{
 					throw 'missing experiment block in configuration';
+				}
 				if (!('name' in this._config.experiment))
+				{
 					throw 'missing name in experiment block in configuration';
+				}
 				if (!('fullpath' in this._config.experiment))
+				{
 					throw 'missing fullpath in experiment block in configuration';
+				}
 				if (!('pavlovia' in this._config))
+				{
 					throw 'missing pavlovia block in configuration';
+				}
 				if (!('URL' in this._config.pavlovia))
+				{
 					throw 'missing URL in pavlovia block in configuration';
+				}
 
 				this._config.environment = ExperimentHandler.Environment.SERVER;
 
-			} else
+			}
+			else
 			// otherwise we create an ad-hoc configuration:
 			{
 				this._config = {
 					environment: ExperimentHandler.Environment.LOCAL,
-					experiment: { name, saveFormat: ExperimentHandler.SaveFormat.CSV }
+					experiment: {
+						name,
+						saveFormat: ExperimentHandler.SaveFormat.CSV,
+						saveIncompleteResults: true
+					}
 				};
 			}
 
 			// get the server parameters (those starting with a double underscore):
 			this._serverMsg = new Map();
-			util.getUrlParameters().forEach((value, key) => {
+			util.getUrlParameters().forEach((value, key) =>
+			{
 				if (key.indexOf('__') === 0)
+				{
 					this._serverMsg.set(key, value);
+				}
 			});
 
 
 			this.status = PsychoJS.Status.CONFIGURED;
 			this.logger.debug('configuration:', util.toString(this._config));
 		}
-		catch (error) {
+		catch (error)
+		{
 			// throw { ...response, error };
-			throw Object.assign(response, { error });
+			throw Object.assign(response, {error});
 		}
 	}
 
@@ -486,13 +648,18 @@ export class PsychoJS
 	 * <p>Note: we use [http://www.geoplugin.net/json.gp]{@link http://www.geoplugin.net/json.gp}.</p>
 	 * @protected
 	 */
-	async _getParticipantIPInfo() {
-		const response = { origin: 'PsychoJS._getParticipantIPInfo', context: 'when getting the IP information of the participant' };
+	async _getParticipantIPInfo()
+	{
+		const response = {
+			origin: 'PsychoJS._getParticipantIPInfo',
+			context: 'when getting the IP information of the participant'
+		};
 
 		this.logger.debug('getting the IP information of the participant');
 
 		this._IP = {};
-		try {
+		try
+		{
 			const geoResponse = await $.get('http://www.geoplugin.net/json.gp');
 			const geoData = JSON.parse(geoResponse);
 			this._IP = {
@@ -503,9 +670,10 @@ export class PsychoJS
 			};
 			this.logger.debug('IP information of the participant: ' + util.toString(this._IP));
 		}
-		catch (error) {
+		catch (error)
+		{
 			// throw { ...response, error };
-			throw Object.assign(response, { error });
+			throw Object.assign(response, {error});
 		}
 	}
 
@@ -515,13 +683,15 @@ export class PsychoJS
 	 *
 	 * @protected
 	 */
-	_captureErrors() {
+	_captureErrors()
+	{
 		this.logger.debug('capturing all errors using window.onerror');
 
 		const self = this;
-		window.onerror = function (message, source, lineno, colno, error) {
+		window.onerror = function (message, source, lineno, colno, error)
+		{
 			console.error(error);
-			self._gui.dialog({ "error": error });
+			self._gui.dialog({"error": error});
 			return true;
 		};
 
@@ -539,8 +709,10 @@ export class PsychoJS
 	 * Make the various Status top level, in order to accommodate PsychoPy's Code Components.
 	 * @private
 	 */
-	_makeStatusTopLevel() {
-		for (const status in PsychoJS.Status) {
+	_makeStatusTopLevel()
+	{
+		for (const status in PsychoJS.Status)
+		{
 			window[status] = PsychoJS.Status[status];
 		}
 	}

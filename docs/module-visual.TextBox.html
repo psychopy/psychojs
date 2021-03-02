@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Polygon</title>
+    <title>JSDoc: Class: TextBox</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Polygon</h1>
+    <h1 class="page-title">Class: TextBox</h1>
 
     
 
@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>Polygon<span class="signature">(options)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>TextBox<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,16 +42,12 @@
     
 
     
-    <h4 class="name" id="Polygon"><span class="type-signature"></span>new Polygon<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="TextBox"><span class="type-signature"></span>new TextBox<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
 
 
-
-<div class="description">
-    <p>Polygonal visual stimulus.</p>
-</div>
 
 
 
@@ -173,7 +169,7 @@
             <td class="type">
             
                 
-<span class="param-type">Window</span>
+<span class="param-type"><a href="module-core.Window.html">module:core.Window</a></span>
 
 
             
@@ -202,13 +198,13 @@
 
         <tr>
             
-                <td class="name"><code>lineWidth</code></td>
+                <td class="name"><code>text</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
@@ -229,19 +225,97 @@
             
                 <td class="default">
                 
-                    1.5
+                    ""
                 
                 </td>
             
 
-            <td class="description last">the line width</td>
+            <td class="description last">the text to be rendered</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>lineColor</code></td>
+                <td class="name"><code>font</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "Arial"
+                
+                </td>
+            
+
+            <td class="description last">the font family</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    [0, 0]
+                
+                </td>
+            
+
+            <td class="description last">the position of the center of the text</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
             
 
             <td class="type">
@@ -273,42 +347,7 @@
                 </td>
             
 
-            <td class="description last">the line color</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fillColor</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Color</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the fill color</td>
+            <td class="description last">the background color</td>
         </tr>
 
     
@@ -354,7 +393,7 @@
 
         <tr>
             
-                <td class="name"><code>edges</code></td>
+                <td class="name"><code>depth</code></td>
             
 
             <td class="type">
@@ -381,203 +420,12 @@
             
                 <td class="default">
                 
-                    3
+                    0
                 
                 </td>
             
 
-            <td class="description last">the number of edges of the polygon</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>radius</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0.5
-                
-                </td>
-            
-
-            <td class="description last">the radius of the polygon</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>pos</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    [0, 0]
-                
-                </td>
-            
-
-            <td class="description last">the position</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1.0
-                
-                </td>
-            
-
-            <td class="description last">the size</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ori</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    0.0
-                
-                </td>
-            
-
-            <td class="description last">the orientation (in degrees)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>units</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">the units of the stimulus vertices, size and position</td>
+            <td class="description last">the depth (i.e. the z order)</td>
         </tr>
 
     
@@ -623,7 +471,46 @@
 
         <tr>
             
-                <td class="name"><code>depth</code></td>
+                <td class="name"><code>units</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "norm"
+                
+                </td>
+            
+
+            <td class="description last">the units of the text size and position</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ori</code></td>
             
 
             <td class="type">
@@ -650,19 +537,214 @@
             
                 <td class="default">
                 
-                    0
+                    0.0
                 
                 </td>
             
 
-            <td class="description last">the depth</td>
+            <td class="description last">the orientation (in degrees)</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>interpolate</code></td>
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0.1
+                
+                </td>
+            
+
+            <td class="description last">the height of the text</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bold</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not the text is bold</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>italic</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not the text is italic</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>anchor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    'left'
+                
+                </td>
+            
+
+            <td class="description last">horizontal alignment</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>multiline</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not a textarea is used</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autofocus</code></td>
             
 
             <td class="type">
@@ -694,7 +776,124 @@
                 </td>
             
 
-            <td class="description last">whether or not the shape is interpolated</td>
+            <td class="description last">whether or not the first input should receive focus by default</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flipHoriz</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to flip the text horizontally</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>flipVert</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to flip the text vertically</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clipMask</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PIXI.Graphics</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last">the clip mask</td>
         </tr>
 
     
@@ -806,6 +1005,14 @@
     
 
     
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li>ColorMixin</li>
+        
+        </ul></dd>
+    
 
     
 
@@ -820,7 +1027,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line15">line 15</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -860,7 +1067,7 @@
 
 
     <ul>
-        <li>ShapeStim</li>
+        <li>VisualStim</li>
     </ul>
 
 
@@ -881,13 +1088,13 @@
 
         
             
-<h4 class="name" id="setEdges"><span class="type-signature"></span>setEdges<span class="type-signature"></span></h4>
+<h4 class="name" id="_getDefaultLetterHeight"><span class="type-signature">(protected) </span>_getDefaultLetterHeight<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the edges attribute.
+    Get the default letter height given the stimulus' units.
 </div>
 
 
@@ -925,7 +1132,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line105">line 105</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line264">line 264</a>
     </li></ul></dd>
     
 
@@ -943,13 +1150,13 @@
 
         
             
-<h4 class="name" id="setRadius"><span class="type-signature"></span>setRadius<span class="type-signature"></span></h4>
+<h4 class="name" id="getText"><span class="type-signature"></span>getText<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Setter for the radius attribute.
+    For accessing the underlying input value.
 </div>
 
 
@@ -987,7 +1194,193 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_Polygon.js.html">visual/Polygon.js</a>, <a href="visual_Polygon.js.html#line85">line 85</a>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line202">line 202</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="reset"><span class="type-signature"></span>reset<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Clears the current text value.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line172">line 172</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setSize"><span class="type-signature"></span>setSize<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Setter for the size attribute.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line220">line 220</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setText"><span class="type-signature"></span>setText<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    For tweaking the underlying input value.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line184">line 184</a>
     </li></ul></dd>
     
 
@@ -1006,6 +1399,208 @@
         
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_estimateBoundingBox"><span class="type-signature">(protected) </span>_estimateBoundingBox<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Estimate the bounding box.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line354">line 354</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_getAnchor"><span class="type-signature">(protected) </span>_getAnchor<span class="signature">()</span><span class="type-signature"> &rarr; {Array.&lt;number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Convert the anchor attribute into numerical values.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_TextBox.js.html">visual/TextBox.js</a>, <a href="visual_TextBox.js.html#line448">line 448</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - the anchor, as an array of numbers in [0,1]
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;number></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     

@@ -1,9 +1,9 @@
 /**
  * Color management.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2021.1.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -11,7 +11,7 @@
 /**
  * <p>This class handles multiple color spaces, and offers various
  * static methods for converting colors from one space to another.</p>
- * 
+ *
  * <p>The constructor accepts the following color representations:
  * <ul>
  * <li>a named color, e.g. 'aliceblue' (the colorspace must be RGB)</li>
@@ -20,37 +20,49 @@
  * <li>a triplet of numbers, e.g. [-1, 0, 1], [0, 128, 255] (the numbers must be within the range determined by the colorspace)</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>Note: internally, colors are represented as a [r,g,b] triplet with r,g,b in [0,1].</p>
- * 
+ *
  * @name module:util.Color
  * @class
  * @param {string|number|Array.<number>|undefined} [obj= 'black'] - an object representing a color
  * @param {module:util.Color#COLOR_SPACE|undefined} [colorspace=Color.COLOR_SPACE.RGB] - the colorspace of that color
- * 
+ *
  * @todo implement HSV, DKL, and LMS colorspaces
  */
-export class Color {
+export class Color
+{
 
-	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB) {
-		const response = { origin: 'Color', context: 'when defining a color' };
+	constructor(obj = 'black', colorspace = Color.COLOR_SPACE.RGB)
+	{
+		const response = {
+			origin: 'Color',
+			context: 'when defining a color'
+		};
 
 		// named color (e.g. 'seagreen') or string hexadecimal representation (e.g. '#FF0000'):
 		// note: we expect the color space to be RGB
-		if (typeof obj == 'string') {
+		if (typeof obj == 'string')
+		{
 			if (colorspace !== Color.COLOR_SPACE.RGB)
-				throw Object.assign(response, { error: 'the colorspace must be RGB for' +
-						' a' +
-			' named color' });
+			{
+				throw Object.assign(response, {
+					error: 'the colorspace must be RGB for a named color'
+				});
+			}
 
 			// hexademical representation:
-			if (obj[0] === '#') {
+			if (obj[0] === '#')
+			{
 				this._hex = obj;
 			}
 			// named color:
-			else {
+			else
+			{
 				if (!(obj.toLowerCase() in Color.NAMED_COLORS))
-					throw Object.assign(response, { error: 'unknown named color: ' + obj });
+				{
+					throw Object.assign(response, {error: 'unknown named color: ' + obj});
+				}
 
 				this._hex = Color.NAMED_COLORS[obj.toLowerCase()];
 			}
@@ -60,22 +72,29 @@ export class Color {
 
 		// hexadecimal number representation (e.g. 0xFF0000)
 		// note: we expect the color space to be RGB
-		else if (typeof obj == 'number') {
+		else if (typeof obj == 'number')
+		{
 			if (colorspace !== Color.COLOR_SPACE.RGB)
-				throw Object.assign(response, { error: 'the colorspace must be RGB for' +
+			{
+				throw Object.assign(response, {
+					error: 'the colorspace must be RGB for' +
 						' a' +
-			' named color' });
+						' named color'
+				});
+			}
 
 			this._rgb = Color._intToRgb(obj);
 		}
 
 		// array of numbers:
-		else if (Array.isArray(obj)) {
+		else if (Array.isArray(obj))
+		{
 			Color._checkTypeAndRange(obj);
 			let [a, b, c] = obj;
 
 			// check range and convert to [0,1]:
-			if (colorspace !== Color.COLOR_SPACE.RGB255) {
+			if (colorspace !== Color.COLOR_SPACE.RGB255)
+			{
 				Color._checkTypeAndRange(obj, [-1, 1]);
 
 				a = (a + 1.0) / 2.0;
@@ -84,7 +103,8 @@ export class Color {
 			}
 
 			// get RGB components:
-			switch (colorspace) {
+			switch (colorspace)
+			{
 				case Color.COLOR_SPACE.RGB255:
 					Color._checkTypeAndRange(obj, [0, 255]);
 					this._rgb = [a / 255.0, b / 255.0, c / 255.0];
@@ -104,60 +124,76 @@ export class Color {
 					break;
 
 				default:
-					throw Object.assign(response, { error: 'unknown colorspace: ' + colorspace });
+					throw Object.assign(response, {error: 'unknown colorspace: ' + colorspace});
 			}
+		}
 
+		else if (obj instanceof Color)
+		{
+			this._rgb = obj._rgb.slice();
 		}
 	}
 
 
 	/**
 	 * Get the [0,1] RGB triplet equivalent of this Color.
-	 * 
+	 *
 	 * @name module:util.Color.rgb
 	 * @function
 	 * @public
 	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
 	 */
-	get rgb() { return this._rgb; }
+	get rgb()
+	{
+		return this._rgb;
+	}
 
 
 	/**
 	 * Get the [0,255] RGB triplet equivalent of this Color.
-	 * 
+	 *
 	 * @name module:util.Color.rgb255
 	 * @function
 	 * @public
 	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
 	 */
-	get rgb255() { return [Math.round(this._rgb[0] * 255.0), Math.round(this._rgb[1] * 255.0), Math.round(this._rgb[2] * 255.0)]; }
+	get rgb255()
+	{
+		return [Math.round(this._rgb[0] * 255.0), Math.round(this._rgb[1] * 255.0), Math.round(this._rgb[2] * 255.0)];
+	}
 
 
 	/**
 	 * Get the hexadecimal color code equivalent of this Color.
-	 * 
+	 *
 	 * @name module:util.Color.hex
 	 * @function
 	 * @public
 	 * @return {string} the hexadecimal color code equivalent
-	 */	
-	get hex() {
+	 */
+	get hex()
+	{
 		if (typeof this._hex === 'undefined')
+		{
 			this._hex = Color._rgbToHex(this._rgb);
+		}
 		return this._hex;
 	}
 
 	/**
 	 * Get the integer code equivalent of this Color.
-	 * 
+	 *
 	 * @name module:util.Color.int
 	 * @function
 	 * @public
 	 * @return {number} the integer code equivalent
-	 */		
-	get int() {
+	 */
+	get int()
+	{
 		if (typeof this._int === 'undefined')
+		{
 			this._int = Color._rgbToInt(this._rgb);
+		}
 		return this._int;
 	}
 
@@ -197,7 +233,7 @@ export class Color {
 
 	/**
 	 * Get the [0,255] RGB triplet equivalent of the hexadecimal color code.
-	 * 
+	 *
 	 * @name module:util.Color.hexToRgb255
 	 * @function
 	 * @static
@@ -205,10 +241,17 @@ export class Color {
 	 * @param {string} hex - the hexadecimal color code
 	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
 	 */
-	static hexToRgb255(hex) {
+	static hexToRgb255(hex)
+	{
 		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 		if (result == null)
-			throw { origin: 'Color.hexToRgb255', context: 'when converting an hexadecimal color code to its 255- or [0,1]-based RGB color representation', error: 'unable to parse the argument: wrong type or wrong code' };
+		{
+			throw {
+				origin: 'Color.hexToRgb255',
+				context: 'when converting an hexadecimal color code to its 255- or [0,1]-based RGB color representation',
+				error: 'unable to parse the argument: wrong type or wrong code'
+			};
+		}
 
 		return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
 	}
@@ -216,7 +259,7 @@ export class Color {
 
 	/**
 	 * Get the [0,1] RGB triplet equivalent of the hexadecimal color code.
-	 * 
+	 *
 	 * @name module:util.Color.hexToRgb
 	 * @function
 	 * @static
@@ -224,7 +267,8 @@ export class Color {
 	 * @param {string} hex - the hexadecimal color code
 	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
 	 */
-	static hexToRgb(hex) {
+	static hexToRgb(hex)
+	{
 		const [r255, g255, b255] = Color.hexToRgb255(hex);
 		return [r255 / 255.0, g255 / 255.0, b255 / 255.0];
 	}
@@ -232,7 +276,7 @@ export class Color {
 
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 255] RGB triplet.
-	 * 
+	 *
 	 * @name module:util.Color.rgb255ToHex
 	 * @function
 	 * @static
@@ -240,22 +284,28 @@ export class Color {
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
-	static rgb255ToHex(rgb255) {
-		const response = { origin : 'Color.rgb255ToHex', context: 'when converting an rgb triplet to its hexadecimal color representation' };
+	static rgb255ToHex(rgb255)
+	{
+		const response = {
+			origin: 'Color.rgb255ToHex',
+			context: 'when converting an rgb triplet to its hexadecimal color representation'
+		};
 
-		try {
+		try
+		{
 			Color._checkTypeAndRange(rgb255, [0, 255]);
 			return Color._rgb255ToHex(rgb255);
 		}
-		catch (error) {
-			throw Object.assign(response, { error });
+		catch (error)
+		{
+			throw Object.assign(response, {error});
 		}
 	}
 
 
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 1] RGB triplet.
-	 * 
+	 *
 	 * @name module:util.Color.rgbToHex
 	 * @function
 	 * @static
@@ -263,22 +313,28 @@ export class Color {
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
-	static rgbToHex(rgb) {
-		const response = { origin : 'Color.rgbToHex', context: 'when converting an rgb triplet to its hexadecimal color representation' };
+	static rgbToHex(rgb)
+	{
+		const response = {
+			origin: 'Color.rgbToHex',
+			context: 'when converting an rgb triplet to its hexadecimal color representation'
+		};
 
-		try {
+		try
+		{
 			Color._checkTypeAndRange(rgb, [0, 1]);
 			return Color._rgbToHex(rgb);
 		}
-		catch (error) {
-			throw Object.assign(response, { error });
+		catch (error)
+		{
+			throw Object.assign(response, {error});
 		}
 	}
 
 
 	/**
 	 * Get the integer equivalent of the [0, 1] RGB triplet.
-	 * 
+	 *
 	 * @name module:util.Color.rgbToInt
 	 * @function
 	 * @static
@@ -286,22 +342,28 @@ export class Color {
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
-	static rgbToInt(rgb) {
-		const response = { origin : 'Color.rgbToInt', context: 'when converting an rgb triplet to its integer representation' };
+	static rgbToInt(rgb)
+	{
+		const response = {
+			origin: 'Color.rgbToInt',
+			context: 'when converting an rgb triplet to its integer representation'
+		};
 
-		try {
+		try
+		{
 			Color._checkTypeAndRange(rgb, [0, 1]);
 			return Color._rgbToInt(rgb);
 		}
-		catch (error) {
-			throw Object.assign(response, { error });
+		catch (error)
+		{
+			throw Object.assign(response, {error});
 		}
 	}
 
 
 	/**
 	 * Get the integer equivalent of the [0, 255] RGB triplet.
-	 * 
+	 *
 	 * @name module:util.Color.rgb255ToInt
 	 * @function
 	 * @static
@@ -309,23 +371,29 @@ export class Color {
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
-	static rgb255ToInt(rgb255) {
-		const response = { origin : 'Color.rgb255ToInt', context: 'when converting an rgb triplet to its integer representation' };
-		try {
+	static rgb255ToInt(rgb255)
+	{
+		const response = {
+			origin: 'Color.rgb255ToInt',
+			context: 'when converting an rgb triplet to its integer representation'
+		};
+		try
+		{
 			Color._checkTypeAndRange(rgb255, [0, 255]);
 			return Color._rgb255ToInt(rgb255);
 		}
-		catch (error) {
-			throw Object.assign(response, { error });
+		catch (error)
+		{
+			throw Object.assign(response, {error});
 		}
 	}
 
 
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 255] RGB triplet.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._rgb255ToHex
 	 * @function
 	 * @static
@@ -333,16 +401,17 @@ export class Color {
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
-	static _rgb255ToHex(rgb255) {
+	static _rgb255ToHex(rgb255)
+	{
 		return "#" + ((1 << 24) + (rgb255[0] << 16) + (rgb255[1] << 8) + rgb255[2]).toString(16).slice(1);
 	}
 
 
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 1] RGB triplet.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._rgbToHex
 	 * @function
 	 * @static
@@ -350,17 +419,18 @@ export class Color {
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
-	static _rgbToHex(rgb) {
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+	static _rgbToHex(rgb)
+	{
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToHex(rgb255);
 	}
 
 
 	/**
 	 * Get the integer equivalent of the [0, 1] RGB triplet.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._rgbToInt
 	 * @function
 	 * @static
@@ -368,17 +438,18 @@ export class Color {
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
-	static _rgbToInt(rgb) {
-		let rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
+	static _rgbToInt(rgb)
+	{
+		const rgb255 = [Math.round(rgb[0] * 255), Math.round(rgb[1] * 255), Math.round(rgb[2] * 255)];
 		return Color._rgb255ToInt(rgb255);
 	}
 
 
 	/**
 	 * Get the integer equivalent of the [0, 255] RGB triplet.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._rgb255ToInt
 	 * @function
 	 * @static
@@ -386,16 +457,17 @@ export class Color {
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
-	static _rgb255ToInt(rgb255) {
+	static _rgb255ToInt(rgb255)
+	{
 		return rgb255[0] * 0x10000 + rgb255[1] * 0x100 + rgb255[2];
 	}
 
 
 	/**
 	 * Get the [0, 255] based RGB triplet equivalent of the integer color code.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._intToRgb255
 	 * @function
 	 * @static
@@ -403,7 +475,8 @@ export class Color {
 	 * @param {number} hex - the integer color code
 	 * @return {Array.<number>} the [0, 255] RGB equivalent
 	 */
-	static _intToRgb255(hex) {
+	static _intToRgb255(hex)
+	{
 		const r255 = hex >>> 0x10;
 		const g255 = (hex & 0xFF00) / 0x100;
 		const b255 = hex & 0xFF;
@@ -414,9 +487,9 @@ export class Color {
 
 	/**
 	 * Get the [0, 1] based RGB triplet equivalent of the integer color code.
-	 * 
+	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
-	 * 
+	 *
 	 * @name module:util.Color._intToRgb
 	 * @function
 	 * @static
@@ -424,7 +497,8 @@ export class Color {
 	 * @param {number} hex - the integer color code
 	 * @return {Array.<number>} the [0, 1] RGB equivalent
 	 */
-	static _intToRgb(hex) {
+	static _intToRgb(hex)
+	{
 		const [r255, g255, b255] = Color._intToRgb255(hex);
 
 		return [r255 / 255.0, g255 / 255.0, b255 / 255.0];
@@ -432,7 +506,7 @@ export class Color {
 
 	/**
 	 * Check that the argument is an array of numbers of size 3, and, potentially, that its elements fall within the range.
-	 * 
+	 *
 	 * @name module:util.Color._checkTypeAndRange
 	 * @function
 	 * @static
@@ -443,21 +517,23 @@ export class Color {
 	 */
 	static _checkTypeAndRange(arg, range = undefined)
 	{
-		if (!Array.isArray(arg) || arg.length !== 3  ||
+		if (!Array.isArray(arg) || arg.length !== 3 ||
 			typeof arg[0] !== 'number' || typeof arg[1] !== 'number' || typeof arg[2] !== 'number')
 		{
 			throw 'the argument should be an array of numbers of length 3';
 		}
 
 		if (typeof range !== 'undefined' && (arg[0] < range[0] || arg[0] > range[1] || arg[1] < range[0] || arg[1] > range[1] || arg[2] < range[0] || arg[2] > range[1]))
+		{
 			throw 'the color components should all belong to [' + range[0] + ', ' + range[1] + ']';
+		}
 	}
 }
 
 
 /**
  * Color spaces.
- * 
+ *
  * @name module:util.Color#COLOR_SPACE
  * @enum {Symbol}
  * @readonly
@@ -484,9 +560,9 @@ Color.COLOR_SPACE = {
 
 /**
  * Named colors.
- * 
+ *
  * @name module:util.Color#NAMED_COLORS
- * @enum {Symbol}
+ * @enum {string}
  * @readonly
  * @public
  */
@@ -516,6 +592,7 @@ Color.NAMED_COLORS = {
 	'darkcyan': '#008B8B',
 	'darkgoldenrod': '#B8860B',
 	'darkgray': '#A9A9A9',
+	'darkgrey': '#A9A9A9',
 	'darkgreen': '#006400',
 	'darkkhaki': '#BDB76B',
 	'darkmagenta': '#8B008B',
@@ -527,11 +604,13 @@ Color.NAMED_COLORS = {
 	'darkseagreen': '#8FBC8B',
 	'darkslateblue': '#483D8B',
 	'darkslategray': '#2F4F4F',
+	'darkslategrey': '#2F4F4F',
 	'darkturquoise': '#00CED1',
 	'darkviolet': '#9400D3',
 	'deeppink': '#FF1493',
 	'deepskyblue': '#00BFFF',
 	'dimgray': '#696969',
+	'dimgrey': '#696969',
 	'dodgerblue': '#1E90FF',
 	'firebrick': '#B22222',
 	'floralwhite': '#FFFAF0',
@@ -542,6 +621,7 @@ Color.NAMED_COLORS = {
 	'gold': '#FFD700',
 	'goldenrod': '#DAA520',
 	'gray': '#808080',
+	'grey': '#808080',
 	'green': '#008000',
 	'greenyellow': '#ADFF2F',
 	'honeydew': '#F0FFF0',
@@ -559,12 +639,14 @@ Color.NAMED_COLORS = {
 	'lightcyan': '#E0FFFF',
 	'lightgoldenrodyellow': '#FAFAD2',
 	'lightgray': '#D3D3D3',
+	'lightgrey': '#D3D3D3',
 	'lightgreen': '#90EE90',
 	'lightpink': '#FFB6C1',
 	'lightsalmon': '#FFA07A',
 	'lightseagreen': '#20B2AA',
 	'lightskyblue': '#87CEFA',
 	'lightslategray': '#778899',
+	'lightslategrey': '#778899',
 	'lightsteelblue': '#B0C4DE',
 	'lightyellow': '#FFFFE0',
 	'lime': '#00FF00',
@@ -617,6 +699,7 @@ Color.NAMED_COLORS = {
 	'skyblue': '#87CEEB',
 	'slateblue': '#6A5ACD',
 	'slategray': '#708090',
+	'slategrey': '#708090',
 	'snow': '#FFFAFA',
 	'springgreen': '#00FF7F',
 	'steelblue': '#4682B4',

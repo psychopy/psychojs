@@ -167,7 +167,7 @@ It is responsible for handling attributes.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line27">line 27</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -272,7 +272,7 @@ It is responsible for handling attributes.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line47">line 47</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -334,7 +334,7 @@ It is responsible for handling attributes.</p></div>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line59">line 59</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -362,7 +362,7 @@ It is responsible for handling attributes.</p></div>
     
 
     
-    <h4 class="name" id="_addAttribute"><span class="type-signature">(protected) </span>_addAttribute<span class="signature">(name, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="_addAttribute"><span class="type-signature">(protected) </span>_addAttribute<span class="signature">(name, value, defaultValue, onChange)</span><span class="type-signature"></span></h4>
     
 
     
@@ -449,193 +449,49 @@ It is responsible for handling attributes.</p></div>
         </tr>
 
     
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line331">line 331</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="_addAttributes"><span class="type-signature">(protected) </span>_addAttributes<span class="signature">(cls, &hellip;args<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Add attributes to this instance (e.g. define setters and getters) and affect values to them.
-
-<p>Notes:
-<ul>
-<li> If the object already has a set<attributeName> method, we do not redefine it,
-and the setter for this attribute calls that method instead of _setAttribute.</li>
-<li> _addAttributes is typically called in the constructor of an object, after
-the call to super (see module:visual.ImageStim for an illustration).</li>
-</ul></p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
 
         <tr>
             
-                <td class="name"><code>cls</code></td>
+                <td class="name"><code>defaultValue</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">the class object of the subclass of PsychoObject whose attributes we will set</td>
+            <td class="description last">the default value for the attribute</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>args</code></td>
+                <td class="name"><code>onChange</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">function</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                    &lt;repeatable><br>
-                
-                </td>
-            
 
             
 
-            <td class="description last">the values for the attributes (this also determines which attributes will be set)</td>
+            <td class="description last">function called upon changes to the attribute value</td>
         </tr>
 
     
@@ -676,7 +532,7 @@ the call to super (see module:visual.ImageStim for an illustration).</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line303">line 303</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line355">line 355</a>
     </li></ul></dd>
     
 
@@ -712,7 +568,7 @@ the call to super (see module:visual.ImageStim for an illustration).</li>
     
 
     
-    <h4 class="name" id="_setAttribute"><span class="type-signature">(private) </span>_setAttribute<span class="signature">(attributeName, attributeValue, log<span class="signature-attributes">opt</span>, operation<span class="signature-attributes">opt</span>, stealth<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id="_setAttribute"><span class="type-signature">(protected) </span>_setAttribute<span class="signature">(attributeName, attributeValue, log<span class="signature-attributes">opt</span>, operation<span class="signature-attributes">opt</span>, stealth<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -979,7 +835,7 @@ the call to super (see module:visual.ImageStim for an illustration).</li>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line114">line 114</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -1092,7 +948,7 @@ was not previously set)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line73">line 73</a>
+        <a href="util_PsychObject.js.html">util/PsychObject.js</a>, <a href="util_PsychObject.js.html#line75">line 75</a>
     </li></ul></dd>
     
 
@@ -1160,13 +1016,13 @@ was not previously set)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Feb 20 2021 13:00:58 GMT+0100 (Central European Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
