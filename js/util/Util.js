@@ -2,7 +2,7 @@
  * Various utilities.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -259,30 +259,40 @@ export function toNumerical(obj)
 			return obj;
 		}
 
-		if (typeof obj === 'string')
+		const convertToNumber = (input) =>
 		{
-			obj = [obj];
-		}
+			const n = Number.parseFloat(input);
+
+			if (Number.isNaN(n))
+			{
+				throw `unable to convert ${input} to a number`;
+			}
+
+			return n;
+		};
 
 		if (Array.isArray(obj))
 		{
-			return obj.map(e =>
-			{
-				let n = Number.parseFloat(e);
-				if (Number.isNaN(n))
-				{
-					throw `unable to convert ${e} to a number`;
-				}
-				return n;
-			});
+			return obj.map(convertToNumber);
+		}
+
+		const arrayMaybe = turnSquareBracketsIntoArrays(obj);
+
+		if (Array.isArray(arrayMaybe))
+		{
+			return arrayMaybe.map(convertToNumber);
+		}
+
+		if (typeof obj === 'string')
+		{
+			return convertToNumber(obj);
 		}
 
 		throw 'unable to convert the object to a number';
 	}
 	catch (error)
 	{
-		// this._gui.dialog({ error: { ...response, error } });
-		this._gui.dialog({ error: Object.assign(response, { error }) });
+		throw Object.assign(response, { error });
 	}
 
 }
@@ -821,12 +831,13 @@ export function selectFromArray(array, selection)
 	// and return that entry:
 	if (isInt(selection))
 	{
-		return array[parseInt(selection)];
+		return [array[parseInt(selection)]];
 	}// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
 	{
-		return array.filter((e, i) => (selection.includes(i)));
+		// Pick out `array` items matching indices contained in `selection` in order
+		return selection.map(i => array[i]);
 	}// if selection is a string, we decode it:
 	else if (typeof selection === 'string')
 	{
@@ -958,53 +969,53 @@ export function offerDataForDownload(filename, data, type)
 
 
 /**
- * To overcome built-in JSON parsing limitations when it comes to eg. floats missing the naught prefix, turn substrings contained within square brackets into arrays type casting numeric looking values in the process.
+ * Convert a string representing a JSON array, e.g. "[1, 2]" into an array, e.g. ["1","2"].
+ * This approach overcomes the built-in JSON parsing limitations when it comes to eg. floats
+ * missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,4]".
  *
  * @name module:util.turnSquareBracketsIntoArrays
  * @function
  * @public
- * @param {string} input - string containing lists in square brackets
- * @returns {array} an array of arrays found
+ * @param {string} input - string potentially containing JSON arrays
+ * @param {string} max - how many matches to return, unwrap resulting array if less than two
+ * @returns {array} an array if arrays were found, undefined otherwise
  */
-export function turnSquareBracketsIntoArrays(input)
+export function turnSquareBracketsIntoArrays(input, max = 1)
 {
 	// Only interested in strings
 	// https://stackoverflow.com/questions/4059147
 	if (String(input) !== input)
 	{
-		return input;
+		return;
 	}
 
 	// Matches content within square brackets (using literal
 	// form is MDN's advice for patterns unlikely to change)
-	const regexp = /\[(.*?)\]/g;
-	// Find all matches (iterator)
-	const matchesFound = input.matchAll(regexp);
-	// Remap results
-	const matches = Array.from(matchesFound, (data) =>
+	const matchesMaybe = input.match(/\[(.*?)\]/g);
+
+	// Exit if no array-like matches found
+	if (matchesMaybe === null)
+	{
+		return;
+	}
+
+	// Reformat content for each match
+	const matches = matchesMaybe.map((data) =>
 		{
-			// Out of all the information for each match, focus
-			// on substrings inside of square brackets
-			const [_, arrayLikeContent = ''] = data;
-
-			// Eat up space after comma
-			const commaSplitValues = arrayLikeContent.split(/[, ]+/);
-			// Type cast numeric values
-			const output = commaSplitValues.map((value) =>
-				{
-					// Leave empty strings untouched
-					const numberMaybe = value && Number(value);
-
-					return Number.isNaN(numberMaybe) ? value : numberMaybe;
-				}
-			);
-
-			return output;
+			return data
+				// Remove the square brackets
+				.replace(/[\[\]]+/g, '')
+				// Eat up space after comma
+				.split(/[, ]+/);
 		}
 	);
 
-	// Pass through if no array-like matches
-	return matches.length ? matches : input;
+	if (max < 2)
+	{
+		return matches[0];
+	}
+
+	return matches;
 }
 
 

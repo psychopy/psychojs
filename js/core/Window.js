@@ -2,14 +2,14 @@
  * Window responsible for displaying the experiment stimuli
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-import {Color} from '../util/Color';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
+import {Color} from '../util';
+import {PsychObject} from '../util';
+import {MonotonicClock} from '../util';
 import {Logger} from "./Logger";
 
 /**
@@ -41,7 +41,7 @@ export class Window extends PsychObject
 	 */
 	get monitorFramePeriod()
 	{
-		return this._monitorFramePeriod;
+		return 1.0 / this.getActualFrameRate();
 	}
 
 	constructor({
@@ -62,15 +62,16 @@ export class Window extends PsychObject
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttributes(Window, fullscr, color, units, waitBlanking, autoLog);
+		this._addAttribute('fullscr', fullscr);
+		this._addAttribute('color', color);
+		this._addAttribute('units', units);
+		this._addAttribute('waitBlanking', waitBlanking);
+		this._addAttribute('autoLog', autoLog);
 		this._addAttribute('size', []);
 
 
 		// setup PIXI:
 		this._setupPixi();
-
-		// monitor frame period:
-		this._monitorFramePeriod = 1.0 / this.getActualFrameRate();
 
 		this._frameCount = 0;
 
@@ -145,14 +146,15 @@ export class Window extends PsychObject
 	 * @name module:core.Window#getActualFrameRate
 	 * @function
 	 * @public
-	 * @return {number} always returns 60.0 at the moment
-	 *
-	 * @todo estimate the actual frame rate.
+	 * @return {number} rAF based delta time based approximation, 60.0 by default
 	 */
 	getActualFrameRate()
 	{
-		// TODO
-		return 60.0;
+		// gets updated frame by frame
+		const lastDelta = this.psychoJS.scheduler._lastDelta;
+		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
+
+		return fps;
 	}
 
 
@@ -425,7 +427,9 @@ export class Window extends PsychObject
 		this._size[1] = window.innerHeight;
 
 		// create a PIXI renderer and add it to the document:
-		this._renderer = PIXI.autoDetectRenderer(this._size[0], this._size[1], {
+		this._renderer = PIXI.autoDetectRenderer({
+			width: this._size[0],
+			height: this._size[1],
 			backgroundColor: this.color.int,
 			resolution: window.devicePixelRatio
 		});

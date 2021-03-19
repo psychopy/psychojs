@@ -2,7 +2,7 @@
  * Track Player.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -41,7 +41,12 @@ export class TrackPlayer extends SoundPlayer
 	{
 		super(psychoJS);
 
-		this._addAttributes(TrackPlayer, howl, startTime, stopTime, stereo, loops, volume);
+		this._addAttribute('howl', howl);
+		this._addAttribute('startTime', startTime);
+		this._addAttribute('stopTime', stopTime);
+		this._addAttribute('stereo', stereo);
+		this._addAttribute('loops', loops);
+		this._addAttribute('volume', volume);
 
 		this._currentLoopIndex = -1;
 	}

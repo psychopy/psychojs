@@ -2,7 +2,7 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -37,7 +37,12 @@ export class TonePlayer extends SoundPlayer
 	{
 		super(psychoJS);
 
-		this._addAttributes(TonePlayer, note, duration_s, volume, loops, soundLibrary, autoLog);
+		this._addAttribute('note', note);
+		this._addAttribute('duration_s', duration_s);
+		this._addAttribute('volume', volume);
+		this._addAttribute('loops', loops);
+		this._addAttribute('soundLibrary', soundLibrary);
+		this._addAttribute('autoLog', autoLog);
 
 		// initialise the sound library:
 		this._initSoundLibrary();
@@ -266,7 +271,7 @@ export class TonePlayer extends SoundPlayer
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			// trigger the release of the sound, immediately:
-			this._synth.triggerRelease(this._note);
+			this._synth.triggerRelease();
 
 			// clear the repeat event if need be:
 			if (this._toneId)
@@ -339,8 +344,14 @@ export class TonePlayer extends SoundPlayer
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
-			this._volumeNode.toMaster();
-
+			if (typeof this._volumeNode.toDestination === 'function')
+			{
+				this._volumeNode.toDestination();
+			}
+			else
+			{
+				this._volumeNode.toMaster();
+			}
 		}
 		else
 		{

@@ -182,14 +182,14 @@ export class TextInput extends PIXI.Container
 		return this._dom_input;
 	}
 
-	focus()
+	focus(options = { preventScroll: true })
 	{
 		if (this._substituted && !this.dom_visible)
 		{
 			this._setDOMInputVisible(true);
 		}
 
-		this._dom_input.focus();
+		this._dom_input.focus(options);
 
 	}
 
@@ -674,14 +674,15 @@ export class TextInput extends PIXI.Container
 		let states = ['DEFAULT', 'FOCUSED', 'DISABLED'];
 		let input_bounds = this._getDOMInputBounds();
 
-		for (let i in states)
-		{
-			this._box_cache[states[i]] = this._box_generator(
-				input_bounds.width,
-				input_bounds.height,
-				states[i]
-			);
-		}
+		states.forEach((state) =>
+			{
+				this._box_cache[state] = this._box_generator(
+					input_bounds.width,
+					input_bounds.height,
+					state
+				);
+			}
+		);
 
 		this._previous.input_bounds = input_bounds;
 	}

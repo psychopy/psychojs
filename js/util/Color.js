@@ -2,7 +2,7 @@
  * Color management.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -562,7 +562,7 @@ Color.COLOR_SPACE = {
  * Named colors.
  *
  * @name module:util.Color#NAMED_COLORS
- * @enum {Symbol}
+ * @enum {string}
  * @readonly
  * @public
  */

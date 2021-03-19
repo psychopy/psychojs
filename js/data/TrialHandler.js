@@ -4,7 +4,7 @@
  *
  * @author Alain Pitiot
  * @author Hiroyuki Sogo & Sotiri Bakagiannis  - better support for BOM and accented characters
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -75,7 +75,13 @@ export class TrialHandler extends PsychObject
 	{
 		super(psychoJS);
 
-		this._addAttributes(TrialHandler, trialList, nReps, method, extraInfo, seed, name, autoLog);
+		this._addAttribute('trialList', trialList);
+		this._addAttribute('nReps', nReps);
+		this._addAttribute('method', method);
+		this._addAttribute('extraInfo', extraInfo);
+		this._addAttribute('seed', seed);
+		this._addAttribute('name', name);
+		this._addAttribute('autoLog', autoLog);
 
 		this._prepareTrialList(trialList);
 
@@ -475,15 +481,24 @@ export class TrialHandler extends PsychObject
 							// Keep the first match if more than one are found. If the
 							// input string looked like '[1, 2][3, 4]' for example,
 							// the resulting `value` would be [1, 2]. When `arrayMaybe` is
-							// empty, `value` turns `undefined`. At this point that might
-							// only happen if `value` is an empty array to begin with.
-							value = arrayMaybe[0];
+							// empty, `value` turns `undefined`.
+							value = arrayMaybe;
 						}
 
-						// if value is a numerical string, convert it to a number:
-						if (typeof value === 'string' && !isNaN(value))
+						if (typeof value === 'string')
 						{
-							value = Number.parseFloat(value);
+							const numberMaybe = Number.parseFloat(value);
+
+							// if value is a numerical string, convert it to a number:
+							if (!isNaN(numberMaybe) && numberMaybe.toString().length === value.length)
+							{
+								value = numberMaybe;
+							}
+							else
+							{
+								// Parse doubly escaped line feeds
+								value = value.replace(/(\n)/g, '\n');
+							}
 						}
 
 						trial[fields[l]] = value;
@@ -667,5 +682,10 @@ TrialHandler.Method = {
 	/**
 	 * Conditions are fully randomised across all repeats.
 	 */
-	FULL_RANDOM: Symbol.for('FULL_RANDOM')
+	FULL_RANDOM: Symbol.for('FULL_RANDOM'),
+
+	/**
+	 * Same as above, but named to reflect PsychoPy boileplate.
+	 */
+	FULLRANDOM: Symbol.for('FULL_RANDOM')
 };

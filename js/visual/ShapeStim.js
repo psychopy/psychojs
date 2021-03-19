@@ -3,7 +3,7 @@
  * Basic Shape Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -256,7 +256,8 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
 			if (typeof this._fillColor !== 'undefined' && this._fillColor !== null)
 			{
-				this._pixi.beginFill(this._fillColor.int, this._opacity);
+				const contrastedColor = this.getContrastedColor(new Color(this._fillColor), this._contrast);
+				this._pixi.beginFill(contrastedColor.int, this._opacity);
 			}
 			this._pixi.drawPolygon(this._pixiPolygon_px);
 			if (typeof this._fillColor !== 'undefined' && this._fillColor !== null)
@@ -305,6 +306,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 
 		// destroy the previous PIXI polygon and create a new one:
 		this._pixiPolygon_px = new PIXI.Polygon(coords_px);
+		this._pixiPolygon_px.closeStroke = this._closeShape;
 		return this._pixiPolygon_px;
 	}
 

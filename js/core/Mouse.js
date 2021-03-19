@@ -3,7 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sotiri Bakagiannis  - isPressedIn
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -45,7 +45,10 @@ export class Mouse extends PsychObject
 
 		const units = win.units;
 		const visible = 1;
-		this._addAttributes(Mouse, win, units, visible, autoLog);
+		this._addAttribute('win', win);
+		this._addAttribute('units', units);
+		this._addAttribute('visible', visible);
+		this._addAttribute('autoLog', autoLog);
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}

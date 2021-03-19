@@ -2,7 +2,7 @@
  * Movie Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -115,6 +115,12 @@ export class MovieStim extends VisualStim
 			1.0,
 			this._onChange(false, false)
 		);
+		this._addAttribute(
+			'loop',
+			loop,
+			false,
+			this._onChange(false, false)
+		);
 
 
 		// estimate the bounding box:
@@ -172,20 +178,17 @@ export class MovieStim extends VisualStim
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
 			}
 
-			const clone = movie.cloneNode();
-
-			this._setAttribute('movie', clone, log);
-
-			const onended = () =>
+			// Make sure just one listener attached across instances
+			// https://stackoverflow.com/questions/11455515
+			if (!movie.onended)
 			{
-				// Change stimulus status when movie done playing
-				this.status = PsychoJS.Status.FINISHED;
-				// Equivalent to giving the listener below an option of `{ once: true }`
-				this._movie.removeEventListener('ended', onended);
-			};
+				movie.onended = () =>
+				{
+					this.status = PsychoJS.Status.FINISHED;
+				};
+			}
 
-			this._movie.addEventListener('ended', onended);
-
+			this._setAttribute('movie', movie, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
@@ -219,7 +222,20 @@ export class MovieStim extends VisualStim
 	play(log = false)
 	{
 		this.status = PsychoJS.Status.STARTED;
-		this._movie.play();
+
+		// As found on https://goo.gl/LdLk22
+		const playPromise = this._movie.play();
+
+		if (playPromise !== undefined)
+		{
+			playPromise.catch((error) => {
+				throw {
+					origin: 'MovieStim.play',
+					context: `when attempting to play MovieStim: ${this._name}`,
+					error
+				};
+			});
+		}
 	}
 
 
@@ -357,7 +373,7 @@ export class MovieStim extends VisualStim
 			}
 
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.fromVideo(this._movie);
+			this._texture = PIXI.Texture.from(this._movie, { resourceOptions: { autoPlay: this.autoPlay } });
 			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
@@ -374,8 +390,7 @@ export class MovieStim extends VisualStim
 		this._movie.muted = this._noAudio;
 		this._movie.volume = this._volume;
 
-		// autoplay and loop:
-		this._texture.baseTexture.autoPlay = this.autoPlay;
+		// loop:
 		this._movie.loop = this._loop;
 
 		// opacity:

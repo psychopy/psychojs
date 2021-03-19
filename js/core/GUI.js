@@ -3,7 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sijia Zhao - fine-grained resource loading
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -132,65 +132,67 @@ export class GUI
 
 
 				// add a combobox or text areas for each entry in the dictionary:
-				htmlCode += '<form>';
-				for (const key in dictionary)
-				{
-					const value = dictionary[key];
-					const keyId = CSS.escape(key) + '_id';
 
-					// only create an input if the key is not in the URL:
-					let inUrl = false;
-					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach((urlValue, urlKey) =>
+				// These may include Symbols as opposed to when using a for...in loop,
+				// but only strings are allowed in PsychoPy
+				Object.keys(dictionary).forEach((key, keyIdx) =>
 					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
+						const value = dictionary[key];
+						const keyId = 'form-input-' + keyIdx;
+
+						// only create an input if the key is not in the URL:
+						let inUrl = false;
+						const cleanedDictKey = key.trim().toLowerCase();
+						infoFromUrl.forEach((urlValue, urlKey) =>
+							{
+								const cleanedUrlKey = urlKey.trim().toLowerCase();
+								if (cleanedUrlKey === cleanedDictKey)
+								{
+									inUrl = true;
+									// break;
+								}
+							});
+
+						if (!inUrl)
 						{
-							inUrl = true;
-							// break;
-						}
-					});
+							htmlCode += '<label for="' + keyId + '">' + key + '</label>';
 
-					if (!inUrl)
-					{
-						htmlCode += '<label for="' + keyId + '">' + key + '</label>';
-
-						// if the field is required:
-						if (key.slice(-1) === '*')
-						{
-							self._requiredKeys.push(key);
-						}
-
-						// if value is an array, we create a select drop-down menu:
-						if (Array.isArray(value))
-						{
-							htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
-								' ui-corner-all">';
-
-							// if the field is required, we add an empty option and select it:
+							// if the field is required:
 							if (key.slice(-1) === '*')
 							{
-								htmlCode += '<option disabled selected>...</option>';
+								self._requiredKeys.push(keyId);
 							}
 
-							for (const option of value)
+							// if value is an array, we create a select drop-down menu:
+							if (Array.isArray(value))
 							{
-								htmlCode += '<option>' + option + '</option>';
+								htmlCode += '<select name="' + key + '" id="' + keyId + '" class="text ui-widget-content' +
+									' ui-corner-all">';
+
+								// if the field is required, we add an empty option and select it:
+								if (key.slice(-1) === '*')
+								{
+									htmlCode += '<option disabled selected>...</option>';
+								}
+
+								for (const option of value)
+								{
+									htmlCode += '<option>' + option + '</option>';
+								}
+
+								htmlCode += '</select>';
+								$('#' + keyId).selectmenu({classes: {}});
 							}
 
-							htmlCode += '</select>';
-							$('#' + keyId).selectmenu({classes: {}});
-						}
-
-						// otherwise we use a single string input:
-						else /*if (typeof value === 'string')*/
-						{
-							htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
-							htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+							// otherwise we use a single string input:
+							else /*if (typeof value === 'string')*/
+							{
+								htmlCode += '<input type="text" name="' + key + '" id="' + keyId;
+								htmlCode += '" value="' + value + '" class="text ui-widget-content ui-corner-all">';
+							}
 						}
 					}
-				}
-				htmlCode += '</form>';
+				);
 
 
 				// add a progress bar:
@@ -215,15 +217,15 @@ export class GUI
 
 
 				// setup change event handlers for all required keys:
-				for (const key of this._requiredKeys)
-				{
-					const keyId = CSS.escape(key) + '_id';
-					const input = document.getElementById(keyId);
-					if (input)
+				this._requiredKeys.forEach((keyId) =>
 					{
-						input.oninput = (event) => GUI._onKeyChange(self, event);
+						const input = document.getElementById(keyId);
+						if (input)
+						{
+							input.oninput = (event) => GUI._onKeyChange(self, event);
+						}
 					}
-				}
+				);
 
 				// init and open the dialog box:
 				self._dialogComponent.button = 'Cancel';
@@ -237,6 +239,7 @@ export class GUI
 					modal: true,
 					closeOnEscape: false,
 					resizable: false,
+					draggable: false,
 
 					buttons: [
 						{
@@ -255,20 +258,28 @@ export class GUI
 							{
 
 								// update dictionary:
-								for (const key in dictionary)
-								{
-									const input = document.getElementById(CSS.escape(key) + "_id");
-									if (input)
+								Object.keys(dictionary).forEach((key, keyIdx) =>
 									{
-										dictionary[key] = input.value;
+										const input = document.getElementById('form-input-' + keyIdx);
+										if (input)
+										{
+											dictionary[key] = input.value;
+										}
 									}
-								}
+								);
+
 
 								self._dialogComponent.button = 'OK';
 								$("#expDialog").dialog('close');
 
+								// Tackle browser demands on having user action initiate audio context
+								Tone.start();
+
 								// switch to full screen if requested:
 								self._psychoJS.window.adjustScreenSize();
+                
+                // Clear events (and keypresses) accumulated during the dialog
+                self._psychoJS.eventManager.clearEvents();
 							}
 						}
 					],
@@ -390,6 +401,12 @@ export class GUI
 				}
 				else
 				{
+					// limit the size of the error:
+					if (error.length >= 1000)
+					{
+						error = error.substring(1, 1000);
+					}
+
 					stackCode += '<li><b>' + error + '</b></li>';
 					break;
 				}
@@ -451,6 +468,8 @@ export class GUI
 			autoOpen: true,
 			modal: true,
 			closeOnEscape: false,
+			resizable: false,
+			draggable: false,
 
 			buttons: (!showOK) ? [] : [{
 				id: "buttonOk",
@@ -619,14 +638,22 @@ export class GUI
 	 * Update the status of the OK button.
 	 *
 	 * @name module:core.GUI#_updateOkButtonStatus
+	 * @param [changeFocus = false] - whether or not to change the focus to the OK button
 	 * @function
 	 * @private
 	 */
-	_updateOkButtonStatus()
+	_updateOkButtonStatus(changeFocus = true)
 	{
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys.size >= this._requiredKeys.length))
+		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length))
+		{
+			if (changeFocus)
 		{
 			$("#buttonOk").button("option", "disabled", false).focus();
+		}
+		else
+		{
+				$("#buttonOk").button("option", "disabled", false);
+			}
 		}
 		else
 		{
@@ -720,7 +747,7 @@ export class GUI
 			gui._setRequiredKeys.delete(event.target);
 		}
 
-		gui._updateOkButtonStatus();
+		gui._updateOkButtonStatus(false);
 	}
 
 

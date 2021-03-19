@@ -3,7 +3,7 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -319,48 +319,27 @@ export class PsychObject extends EventEmitter
 		const previousAttributeValue = this['_' + attributeName];
 		this['_' + attributeName] = attributeValue;
 
-		return (typeof previousAttributeValue !== 'undefined' && attributeValue !== previousAttributeValue);
-	}
-
-
-	/**
-	 * Add attributes to this instance (e.g. define setters and getters) and affect values to them.
-	 *
-	 * <p>Notes:
-	 * <ul>
-	 * <li> If the object already has a set<attributeName> method, we do not redefine it,
-	 * and the setter for this attribute calls that method instead of _setAttribute.</li>
-	 * <li> _addAttributes is typically called in the constructor of an object, after
-	 * the call to super (see module:visual.ImageStim for an illustration).</li>
-	 * </ul></p>
-	 *
-	 * @protected
-	 * @param {Object} cls - the class object of the subclass of PsychoObject whose attributes we will set
-	 * @param {...*} [args] - the values for the attributes (this also determines which attributes will be set)
-	 *
-	 */
-	_addAttributes(cls, ...args)
-	{
-		// (*) look for the line in the subclass constructor where addAttributes is called
-		// and extract its arguments:
-		const callLine = cls.toString().match(/this.*\._addAttributes\(.*\;/)[0];
-		const startIndex = callLine.indexOf('._addAttributes(') + 16;
-		const endIndex = callLine.indexOf(');');
-		const callArgs = callLine.substr(startIndex, endIndex - startIndex).split(',').map((s) => s.trim());
-
-
-		// (*) add (argument name, argument value) pairs to the attribute map:
-		const attributeMap = new Map();
-		for (let i = 1; i < callArgs.length; ++i)
+		// Things seem OK without this check except for 'vertices'
+		if (typeof previousAttributeValue === 'undefined')
 		{
-			attributeMap.set(callArgs[i], args[i - 1]);
+			// Not that any of the following lines should throw, but evaluating
+			// `this._vertices.map` on `ShapeStim._getVertices_px()` seems to
+			return false;
 		}
 
-		// (*) set the value, define the get/set<attributeName> properties and define the getter and setter:
-		for (let [name, value] of attributeMap.entries())
-		{
-			this._addAttribute(name, value);
-		}
+		// Need check for equality differently for each type of attribute somehow,
+		// Lodash has an example of what an all encompassing solution looks like below,
+		// https://github.com/lodash/lodash/blob/master/.internal/baseIsEqualDeep.js
+		const prev = util.toString(previousAttributeValue);
+		const next = util.toString(attributeValue);
+
+		// The following check comes in handy when figuring out a `hasChanged` predicate
+		// in a `ShapeStim.setPos()` call for example. Objects that belong to us, such as
+		// colors, feature a `toString()` method of their own. The types of input that
+		// `Util.toString()` might try, but fail to stringify in a meaningful way are assigned
+		// an 'Object (circular)' string representation. For being opaque as to their raw
+		// value, those types of input are liable to produce PIXI updates.
+		return prev === 'Object (circular)' || next === 'Object (circular)' || prev !== next;
 	}
 
 

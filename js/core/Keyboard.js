@@ -2,7 +2,7 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -70,7 +70,10 @@ export class Keyboard extends PsychObject
 			clock = new Clock();
 		} //this._psychoJS.monotonicClock;
 
-		this._addAttributes(Keyboard, bufferSize, waitForStart, clock, autoLog);
+		this._addAttribute('bufferSize', bufferSize);
+		this._addAttribute('waitForStart', waitForStart);
+		this._addAttribute('clock', clock);
+		this._addAttribute('autoLog', autoLog);
 		// start recording key events if need be:
 		this._addAttribute('status', (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
 
@@ -418,6 +421,7 @@ export class Keyboard extends PsychObject
 			self._psychoJS.logger.trace('keydown: ', event.key);
 
 			event.stopPropagation();
+			event.preventDefault();
 		});
 
 

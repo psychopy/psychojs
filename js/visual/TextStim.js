@@ -2,7 +2,7 @@
  * Text Stimulus.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -34,7 +34,7 @@ import * as util from '../util/Util';
  * @param {number} [options.height= 0.1] - the height of the text
  * @param {boolean} [options.bold= false] - whether or not the text is bold
  * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [options.alignHoriz = 'left'] - horizontal alignment
+ * @param {string} [options.alignHoriz = 'center'] - horizontal alignment
  * @param {string} [options.alignVert = 'center'] - vertical alignment
  * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally

@@ -2,7 +2,7 @@
  * Experiment Handler
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -76,7 +76,7 @@ export class ExperimentHandler extends PsychObject
 	{
 		super(psychoJS, name);
 
-		this._addAttributes(ExperimentHandler, extraInfo);
+		this._addAttribute('extraInfo', extraInfo);
 
 		// loop handlers:
 		this._loops = [];
@@ -101,11 +101,6 @@ export class ExperimentHandler extends PsychObject
 	 * @returns {boolean} whether or not the current entry is empty
 	 */
 	isEntryEmpty()
-	{
-		return (Object.keys(this._currentTrialData).length > 0);
-	}
-
-	isEntryEmtpy()
 	{
 		return (Object.keys(this._currentTrialData).length > 0);
 	}

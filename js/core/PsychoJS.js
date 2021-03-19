@@ -3,7 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 2020.2
+ * @version 2021.1.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -117,6 +117,7 @@ export class PsychoJS
 	constructor({
 								debug = true,
 								collectIP = false,
+								hosts = [],
 								topLevelStatus = true
 							} = {})
 	{
@@ -136,6 +137,10 @@ export class PsychoJS
 		this._serverManager = new ServerManager({
 			psychoJS: this
 		});
+
+		// to be loading `configURL` files in `_configure` calls from
+		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		this._hosts = Array.from(hostsEvidently);
 
 		// GUI:
 		this._gui = new GUI(this);
@@ -164,7 +169,10 @@ export class PsychoJS
 		}
 
 		this.logger.info('[PsychoJS] Initialised.');
-		this.logger.info('[PsychoJS] @version 2020.2');
+		this.logger.info('[PsychoJS] @version 2021.1.0');
+
+		// Hide #root::after
+		$('#root').addClass('is-ready');
 	}
 
 
@@ -294,7 +302,7 @@ export class PsychoJS
 	 *
 	 * @todo: close session on window or tab close
 	 */
-	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo, resources = []} = {})
+	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo = {}, resources = []} = {})
 	{
 		this.logger.debug();
 
@@ -350,8 +358,8 @@ export class PsychoJS
 				window.addEventListener('beforeunload', this.beforeunloadCallback);
 
 
-				// when the user closes the tab or browser, we attempt to close the session, optionally save the results,
-				// and release the WebGL context
+				// when the user closes the tab or browser, we attempt to close the session,
+				// optionally save the results, and release the WebGL context
 				// note: we communicate with the server using the Beacon API
 				const self = this;
 				window.addEventListener('unload', (event) =>
@@ -482,8 +490,11 @@ export class PsychoJS
 			});
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
-				await this._experiment.save();
-				await this._logger.flush();
+				if (!this._serverMsg.has('__noOutput'))
+				{
+					await this._experiment.save();
+					await this._logger.flush();
+				}
 			}
 
 			// close the session:
@@ -543,7 +554,10 @@ export class PsychoJS
 	 */
 	async _configure(configURL, name)
 	{
-		const response = {origin: 'PsychoJS.configure', context: 'when configuring PsychoJS for the experiment'};
+		const response = {
+			origin: 'PsychoJS.configure',
+			context: 'when configuring PsychoJS for the experiment'
+		};
 
 		try
 		{
@@ -551,13 +565,15 @@ export class PsychoJS
 
 			// if the experiment is running from the pavlovia.org server, we read the configuration file:
 			const experimentUrl = window.location.href;
-			if (experimentUrl.indexOf('https://run.pavlovia.org/') === 0 || experimentUrl.indexOf('https://pavlovia.org/run/') === 0)
+			// go through each url in allow list
+			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
+			if (isHost)
 			{
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
 				this._config = serverResponse.config;
 
-				// legacy experiments had a psychoJsManager block instead of a pavlovia block, and the URL
-				// pointed to https://pavlovia.org/server
+				// legacy experiments had a psychoJsManager block instead of a pavlovia block,
+				// and the URL pointed to https://pavlovia.org/server
 				if ('psychoJsManager' in this._config)
 				{
 					delete this._config.psychoJsManager;
@@ -596,7 +612,11 @@ export class PsychoJS
 			{
 				this._config = {
 					environment: ExperimentHandler.Environment.LOCAL,
-					experiment: {name, saveFormat: ExperimentHandler.SaveFormat.CSV}
+					experiment: {
+						name,
+						saveFormat: ExperimentHandler.SaveFormat.CSV,
+						saveIncompleteResults: true
+					}
 				};
 			}
 
