@@ -170,8 +170,9 @@ export class TrackPlayer extends SoundPlayer
 	 * @function
 	 * @public
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
+	 * @param {number} [fadeDuration = 17] - how long should the fading in last in ms
 	 */
-	play(loops, frameDuration = 17)
+	play(loops, fadeDuration = 17)
 	{
 		if (typeof loops !== 'undefined')
 		{
@@ -213,6 +214,7 @@ export class TrackPlayer extends SoundPlayer
 	 * @name module:sound.TrackPlayer#stop
 	 * @function
 	 * @public
+	 * @param {number} [fadeDuration = 17] - how long should the fading out last in ms
 	 */
 	stop(fadeDuration = 17)
 	{
