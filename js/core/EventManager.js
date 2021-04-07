@@ -234,7 +234,7 @@ export class EventManager
 	{
 		const self = this;
 
-		renderer.view.addEventListener("pointerdown", (event) =>
+		document.documentElement.addEventListener("mousedown", (event) =>
 		{
 			event.preventDefault();
 
@@ -262,7 +262,7 @@ export class EventManager
 		}, false);
 
 
-		renderer.view.addEventListener("pointerup", (event) =>
+		document.documentElement.addEventListener("mouseup", (event) =>
 		{
 			event.preventDefault();
 
