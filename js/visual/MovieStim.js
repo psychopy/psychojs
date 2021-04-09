@@ -110,12 +110,6 @@ export class MovieStim extends VisualStim
 			this._onChange(true, false)
 		);
 		this._addAttribute(
-			'opacity',
-			opacity,
-			1.0,
-			this._onChange(false, false)
-		);
-		this._addAttribute(
 			'loop',
 			loop,
 			false,

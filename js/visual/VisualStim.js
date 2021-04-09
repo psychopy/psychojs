@@ -64,7 +64,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			'opacity',
 			opacity,
 			1.0,
-			this._onChange(false, false)
+			this._onChange(true, false)
 		);
 		this._addAttribute(
 			'depth',
