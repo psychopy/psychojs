@@ -101,12 +101,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			1.0,
 			this._onChange(true, false)
 		);
-		this._addAttribute(
-			'opacity',
-			opacity,
-			1.0,
-			this._onChange(false, false)
-		);
 	}
 
 

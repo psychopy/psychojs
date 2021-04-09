@@ -144,9 +144,15 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: src= ' + image.src + ', size= ' + image.width + 'x' + image.height);
 			}
 
+			const existingImage = this.getImage();
+			const hasChanged = existingImage ? existingImage.src !== image.src : true;
+
 			this._setAttribute('image', image, log);
 
-			this._onChange(true, true)();
+			if (hasChanged)
+			{
+				this._onChange(true, true)();
+			}
 		}
 		catch (error)
 		{
