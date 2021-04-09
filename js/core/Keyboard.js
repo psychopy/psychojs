@@ -2,8 +2,8 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2021.1.2
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2021.1.4
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
