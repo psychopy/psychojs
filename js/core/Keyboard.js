@@ -421,7 +421,6 @@ export class Keyboard extends PsychObject
 			self._psychoJS.logger.trace('keydown: ', event.key);
 
 			event.stopPropagation();
-			event.preventDefault();
 		});
 
 
