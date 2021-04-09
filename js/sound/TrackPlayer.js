@@ -170,8 +170,9 @@ export class TrackPlayer extends SoundPlayer
 	 * @function
 	 * @public
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
+	 * @param {number} [fadeDuration = 17] - how long should the fading in last in ms
 	 */
-	play(loops)
+	play(loops, fadeDuration = 17)
 	{
 		if (typeof loops !== 'undefined')
 		{
@@ -193,12 +194,17 @@ export class TrackPlayer extends SoundPlayer
 				{
 					self._howl.seek(self._startTime);
 					self._howl.play();
+
+					self._howl.seek(self._startTime);
+					self._id = self._howl.play();
+					self._howl.fade(0, self._volume, fadeDuration, self._id);
 				}
 			});
 		}
 
 		this._howl.seek(this._startTime);
-		this._howl.play();
+		this._id = this._howl.play();
+		this._howl.fade(0, this._volume, fadeDuration, this._id);
 	}
 
 
@@ -208,11 +214,15 @@ export class TrackPlayer extends SoundPlayer
 	 * @name module:sound.TrackPlayer#stop
 	 * @function
 	 * @public
+	 * @param {number} [fadeDuration = 17] - how long should the fading out last in ms
 	 */
-	stop()
+	stop(fadeDuration = 17)
 	{
-		this._howl.stop();
-		this._howl.off('end');
+		this._howl.once('fade', (id) => {
+			this._howl.stop(id);
+			this._howl.off('end');
+		});
+		this._howl.fade(this._howl.volume(), 0, fadeDuration, this._id);
 	}
 
 }
