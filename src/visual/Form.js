@@ -350,19 +350,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	}
 	/**
-	 * Check if the form is complete.
-	 *
-	 * @name module:visual.Form#complete
-	 * @function
-	 * @public
-	 * @return {boolean} - whether there are any remaining incomplete responses.
-	 */
-	complete()//used by PsychoPy versin 2020.2 onward
-	{this.getData();//get the data so we can check nbIncompleteResponse
-		return this._items._complete;
-
-	}
-	/**
 	 * Add the form data to the given experiment.
 	 *
 	 * @name module:visual.Form#addDataToExp
