@@ -196,13 +196,13 @@ a remote one, etc.</p>
 
         
             
-<h4 class="name" id="_customConsoleLayout"><span class="type-signature">(private) </span>_customConsoleLayout<span class="type-signature"></span></h4>
+<h4 class="name" id="_getValue"><span class="type-signature">(protected) </span>_getValue<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Create a custom console layout.
+    Get the integer value associated with a logging level.
 </div>
 
 
@@ -240,7 +240,143 @@ a remote one, etc.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line195">line 195</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line380">line 380</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_ServerLevelValue"><span class="type-signature">(protected, readonly) </span>_ServerLevelValue<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Server logging level values.
+
+<p>We use those values to determine whether a log is to be sent to the server or not.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line419">line 419</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="_throttle"><span class="type-signature">(protected) </span>_throttle<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Check whether or not a log messages must be throttled.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line162">line 162</a>
     </li></ul></dd>
     
 
@@ -302,7 +438,7 @@ a remote one, etc.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line84">line 84</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line104">line 104</a>
     </li></ul></dd>
     
 
@@ -364,7 +500,7 @@ a remote one, etc.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line69">line 69</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -390,8 +526,8 @@ a remote one, etc.</p>
 <div class="description">
     Flush all server logs to the server.
 
-<p>Note: the logs are compressed using Pako's zlib algorithm. See https://github.com/nodeca/pako
-for details.</p>
+<p>Note: the logs are compressed using Pako's zlib algorithm.
+See https://github.com/nodeca/pako for details.</p>
 </div>
 
 
@@ -429,7 +565,7 @@ for details.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line126">line 126</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line236">line 236</a>
     </li></ul></dd>
     
 
@@ -491,7 +627,7 @@ for details.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line99">line 99</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -563,7 +699,69 @@ for details.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line270">line 270</a>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line397">line 397</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="setLevel"><span class="type-signature"></span>setLevel<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Change the logging level.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_Logger.js.html">core/Logger.js</a>, <a href="core_Logger.js.html#line73">line 73</a>
     </li></ul></dd>
     
 
@@ -603,7 +801,7 @@ for details.</p>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Aug 20 2020 12:03:43 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
