@@ -28,22 +28,23 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * Manager responsible for the interactions between the experiment's stimuli and the mouse.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @author Sotiri Bakagiannis  - isPressedIn
+ * @version 2021.1.4
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-import { PsychoJS } from './PsychoJS';
-import { PsychObject } from '../util/PsychObject';
+import {PsychoJS} from './PsychoJS';
+import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
 
 
 /**
  * &lt;p>This manager handles the interactions between the experiment's stimuli and the mouse.&lt;/p>
  * &lt;p>Note: the unit of Mouse is that of its associated Window.&lt;/p>
- * 
+ *
  * @name module:core.Mouse
  * @class
  * @extends PsychObject
@@ -51,16 +52,18 @@ import * as util from '../util/Util';
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
  * @param {boolean} [options.autoLog= true] - whether or not to log
- * 
+ *
  * @todo visible is not handled at the moment (mouse is always visible)
  */
-export class Mouse extends PsychObject {
+export class Mouse extends PsychObject
+{
 
 	constructor({
-		name,
-		win,
-		autoLog = true
-	} = {}) {
+								name,
+								win,
+								autoLog = true
+							} = {})
+	{
 		super(win._psychoJS, name);
 
 		// note: those are in window units:
@@ -70,7 +73,10 @@ export class Mouse extends PsychObject {
 
 		const units = win.units;
 		const visible = 1;
-		this._addAttributes(Mouse, win, units, visible, autoLog);
+		this._addAttribute('win', win);
+		this._addAttribute('units', units);
+		this._addAttribute('visible', visible);
+		this._addAttribute('autoLog', autoLog);
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
@@ -78,13 +84,14 @@ export class Mouse extends PsychObject {
 
 	/**
 	 * Get the current position of the mouse in mouse/Window units.
-	 * 
+	 *
 	 * @name module:core.Mouse#getPos
 	 * @function
 	 * @public
 	 * @return {Array.number} the position of the mouse in mouse/Window units
 	 */
-	getPos() {
+	getPos()
+	{
 		// get mouse position in the canvas:
 		const mouseInfo = this.psychoJS.eventManager.getMouseInfo();
 		let pos_px = mouseInfo.pos.slice();
@@ -103,16 +110,20 @@ export class Mouse extends PsychObject {
 	/**
 	 * Get the position of the mouse relative to that at the last call to getRel
 	 * or getPos, in mouse/Window units.
-	 * 
+	 *
 	 * @name module:core.Mouse#getRel
 	 * @function
 	 * @public
 	 * @return {Array.number} the relation position of the mouse in mouse/Window units.
 	 */
-	getRel() {
+	getRel()
+	{
 		if (typeof this._lastPos === 'undefined')
+		{
 			return this.getPos();
-		else {
+		}
+		else
+		{
 			// note: (this.getPos()-lastPos) would not work here since getPos changes this._lastPos
 			const lastPos = this._lastPos;
 			const pos = this.getPos();
@@ -123,10 +134,10 @@ export class Mouse extends PsychObject {
 
 	/**
 	 * Get the travel of the mouse scroll wheel since the last call to getWheelRel.
-	 * 
+	 *
 	 * &lt;p>Note: Even though this method returns a [x, y] array, for most wheels/systems y is the only
 	 * value that varies.&lt;/p>
-	 * 
+	 *
 	 * @name module:core.Mouse#getWheelRel
 	 * @function
 	 * @public
@@ -147,20 +158,24 @@ export class Mouse extends PsychObject {
 
 	/**
 	 * Get the status of each button (pressed or released) and, optionally, the time elapsed between  the last call to [clickReset]{@link module:core.Mouse#clickReset} and the pressing or releasing of the buttons.
-	 * 
+	 *
 	 * &lt;p>Note: clickReset is typically called at stimulus onset. When the participant presses a button, the time elapsed since the clickReset is stored internally and can be accessed any time afterwards with getPressed.&lt;/p>
-	 * 
+	 *
 	 * @name module:core.Mouse#getPressed
 	 * @function
 	 * @public
 	 * @param {boolean} [getTime= false] whether or not to also return timestamps
 	 * @return {Array.number | Array.&lt;Array.number>} either an array of size 3 with the status (1 for pressed, 0 for released) of each mouse button [left, center, right], or a tuple with that array and another array of size 3 with the timestamps.
 	 */
-	getPressed(getTime = false) {
+	getPressed(getTime = false)
+	{
 		const buttonPressed = this.psychoJS.eventManager.getMouseInfo().buttons.pressed.slice();
 		if (!getTime)
+		{
 			return buttonPressed;
-		else {
+		}
+		else
+		{
 			const buttonTimes = this.psychoJS.eventManager.getMouseInfo().buttons.times.slice();
 			return [buttonPressed, buttonTimes];
 		}
@@ -168,8 +183,66 @@ export class Mouse extends PsychObject {
 
 
 	/**
+	 * Helper method for checking whether a stimulus has had any button presses within bounds.
+	 *
+	 * @name module:core.Mouse#isPressedIn
+	 * @function
+	 * @public
+	 * @param {object|module:visual.VisualStim} shape A type of visual stimulus or object having a `contains()` method.
+	 * @param {object|number} [buttons] The target button index potentially tucked inside an object.
+	 * @param {object} [options]
+	 * @param {object|module:visual.VisualStim} [options.shape]
+	 * @param {number} [options.buttons]
+	 * @return {boolean} Whether button pressed is contained within stimulus.
+	 */
+	isPressedIn(...args)
+	{
+		// Look for options given in object literal form, cut out falsy inputs
+		const [{ shape: shapeMaybe, buttons: buttonsMaybe } = {}] = args.filter(v => !!v);
+
+		// Helper to check if some object features a certain key
+		const hasKey = key => object => !!(object &amp;&amp; object[key]);
+
+		// Shapes are expected to be instances of stimuli, or at
+		// the very least objects featuring a `contains()` method
+		const isShape = hasKey('contains');
+
+		// Go through arguments array looking for a shape if options object offers none
+		const shapeFound = isShape(shapeMaybe) ? shapeMaybe : args.find(isShape);
+		// Default to input (pass through)
+		const shape = shapeFound || shapeMaybe;
+
+		// Buttons values may be extracted from an object
+		// featuring the `buttons` key, or found as integers
+		// in the arguments array
+		const hasButtons = hasKey('buttons');
+		const { isInteger } = Number;
+		// Prioritize buttons value given as part of an options object,
+		// then look for the first occurrence in the arguments array of either
+		// an integer or an extra object with a `buttons` key
+		const buttonsFound = isInteger(buttonsMaybe) ? buttonsMaybe : args.find(o => hasButtons(o) || isInteger(o));
+		// Worst case scenario `wanted` ends up being an empty object
+		const { buttons: wanted = buttonsFound || buttonsMaybe } = buttonsFound || {};
+
+		// Will throw if stimulus is falsy or non-object like
+		if (typeof shape.contains === 'function')
+		{
+			const mouseInfo = this.psychoJS.eventManager.getMouseInfo();
+			const { pressed } = mouseInfo.buttons;
+
+			// If no specific button wanted, any pressed will do
+			const hasButtonPressed = isInteger(wanted) ? pressed[wanted] > 0 : pressed.some(v => v > 0);
+
+			return hasButtonPressed &amp;&amp; shape.contains(this);
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Determine whether the mouse has moved beyond a certain distance.
-	 * 
+	 *
 	 * &lt;p>&lt;b>distance&lt;/b>
 	 * &lt;ul>
 	 * &lt;li>mouseMoved() or mouseMoved(undefined, false): determine whether the mouse has moved at all since the last
@@ -177,14 +250,14 @@ export class Mouse extends PsychObject {
 	 * &lt;li>mouseMoved(distance: number, false): determine whether the mouse has travelled further than distance, in terms of line of sight&lt;/li>
 	 * &lt;li>mouseMoved(distance: [number,number], false): determine whether the mouse has travelled horizontally or vertically further then the given horizontal and vertical distances&lt;/li>
 	 * &lt;/ul>&lt;/p>
-	 * 
+	 *
 	 * &lt;p>&lt;b>reset&lt;/b>
 	 * &lt;ul>
 	 * &lt;li>mouseMoved(distance, true): reset the mouse move clock, return false&lt;/li>
 	 * &lt;li>mouseMoved(distance, 'here'): return false&lt;/li>
 	 * &lt;li>mouseMoved(distance, [x: number, y: number]: artifically set the previous mouse position to the given coordinates and determine whether the mouse moved further than the given distance&lt;/li>
 	 * &lt;/ul>&lt;/p>
-	 * 
+	 *
 	 * @name module:core.Mouse#mouseMoved
 	 * @function
 	 * @public
@@ -192,92 +265,120 @@ export class Mouse extends PsychObject {
 	 * @param {boolean|String|Array.number} [reset= false] - see above for a full description
 	 * @return {boolean} see above for a full description
 	 */
-	mouseMoved(distance, reset = false) {
+	mouseMoved(distance, reset = false)
+	{
 		// make sure that _lastPos is defined:
 		if (typeof this._lastPos === 'undefined')
+		{
 			this.getPos();
+		}
 		this._prevPos = this._lastPos.slice();
 		this.getPos();
 
-		if (typeof reset === 'boolean' &amp;&amp; reset == false) {
+		if (typeof reset === 'boolean' &amp;&amp; reset == false)
+		{
 			if (typeof distance === 'undefined')
+			{
 				return (this._prevPos[0] != this._lastPos[0]) || (this._prevPos[1] != this._lastPos[1]);
-			else {
-				if (typeof distance === 'number') {
+			}
+			else
+			{
+				if (typeof distance === 'number')
+				{
 					this._movedistance = Math.sqrt((this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]));
 					return (this._movedistance > distance);
 				}
 				if (this._prevPos[0] + distance[0] - this._lastPos[0] > 0.0)
-					return true; // moved on X-axis
+				{
+					return true;
+				} // moved on X-axis
 				if (this._prevPos[1] + distance[1] - this._lastPos[0] > 0.0)
-					return true; // moved on Y-axis
+				{
+					return true;
+				} // moved on Y-axis
 				return false;
 			}
 		}
 
-		else if (typeof reset === 'boolean' &amp;&amp; reset == true) {
+		else if (typeof reset === 'boolean' &amp;&amp; reset == true)
+		{
 			// reset the moveClock:
 			this.psychoJS.eventManager.getMouseInfo().moveClock.reset();
 			return false;
 		}
 
-		else if (reset === 'here') {
+		else if (reset === 'here')
+		{
 			// set to wherever we are
 			this._prevPos = this._lastPos.clone();
 			return false;
 		}
 
-		else if (reset instanceof Array) {
+		else if (reset instanceof Array)
+		{
 			// an (x,y) array
 			// reset to (x,y) to check movement from there
 			this._prevPos = reset.slice();
 			if (!distance)
-				return false; // just resetting prevPos, not checking distance
-			else {
+			{
+				return false;
+			}// just resetting prevPos, not checking distance
+			else
+			{
 				// checking distance of current pos to newly reset prevposition
-				if (typeof distance === 'number') {
+				if (typeof distance === 'number')
+				{
 					this._movedistance = Math.sqrt((this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]));
 					return (this._movedistance > distance);
 				}
 
 				if (Math.abs(this._lastPos[0] - this._prevPos[0]) > distance[0])
-					return true;  // moved on X-axis
+				{
+					return true;
+				}  // moved on X-axis
 				if (Math.abs(this._lastPos[1] - this._prevPos[1]) > distance[1])
-					return true;  // moved on Y-axis
+				{
+					return true;
+				}  // moved on Y-axis
 
 				return false;
 			}
 		}
 
 		else
+		{
 			return false;
+		}
 	}
 
 
 	/**
 	 * Get the amount of time elapsed since the last mouse movement.
-	 * 
+	 *
 	 * @name module:core.Mouse#mouseMoveTime
 	 * @function
 	 * @public
 	 * @return {number} the time elapsed since the last mouse movement
 	 */
-	mouseMoveTime() {
+	mouseMoveTime()
+	{
 		return this.psychoJS.eventManager.getMouseInfo().moveClock.getTime();
 	}
 
 
 	/**
 	 * Reset the clocks associated to the given mouse buttons.
-	 * 
+	 *
 	 * @name module:core.Mouse#clickReset
 	 * @function
 	 * @public
 	 * @param {Array.number} [buttons= [0,1,2]] the buttons to reset (0: left, 1: center, 2: right)
 	 */
-	clickReset(buttons = [0, 1, 2]) {
+	clickReset(buttons = [0, 1, 2])
+	{
 		const mouseInfo = this.psychoJS.eventManager.getMouseInfo();
-		for (const b of buttons) {
+		for (const b of buttons)
+		{
 			mouseInfo.buttons.clocks[b].reset();
 			mouseInfo.buttons.times[b] = 0.0;
 		}
@@ -296,13 +397,13 @@ export class Mouse extends PsychObject {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

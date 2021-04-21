@@ -28,160 +28,193 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * Mixin implementing various unit-handling measurement methods.
- * 
+ *
  * @author Alain Pitiot
- * @version 2020.1
- * @copyright (c) 2020 Ilixa Ltd. ({@link http://ilixa.com})
+ * @version 2021.1.4
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
 /**
  * &lt;p>This mixin implements various unit-handling measurement methods.&lt;/p>
- * 
+ *
  * &lt;p>Note: (a) this is the equivalent of PsychoPY's WindowMixin.
  *          (b) it will most probably be made obsolete by a fully-integrated unit approach.
  * &lt;/p>
- * 
+ *
  * @name module:core.WindowMixin
  * @mixin
- * 
+ *
  */
-export let WindowMixin = (superclass) => class extends superclass {
-	constructor(args) {
+export let WindowMixin = (superclass) => class extends superclass
+{
+	constructor(args)
+	{
 		super(args);
 	}
 
 
-	/**
-	 * Setter for units attribute.
-	 * 
-	 * @name module:core.WindowMixin#setUnits
-	 * @function
-	 * @public
-	 * @param {String} [units= this.win.units] - the units
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setUnits(units = this.win.units, log = false) {
-		this._setAttribute('units', units, log);
-	}
-
 
 	/**
 	 * Convert the given length from stimulus unit to pixel units.
-	 * 
+	 *
 	 * @name module:core.WindowMixin#_getLengthPix
 	 * @function
 	 * @protected
 	 * @param {number} length - the length in stimulus units
+	 * @param {boolean} [integerCoordinates = false] - whether or not to round the length.
 	 * @return {number} - the length in pixel units
 	 */
-	_getLengthPix(length) {
-		let response = { origin: 'WindowMixin._getLengthPix', context: 'when converting a length from stimulus unit to pixel units' };
+	_getLengthPix(length, integerCoordinates = false)
+	{
+		let response = {
+			origin: 'WindowMixin._getLengthPix',
+			context: 'when converting a length from stimulus unit to pixel units'
+		};
 
-		if (this._units === 'pix') {
-			return length;
+		let length_px;
+
+		if (this._units === 'pix')
+		{
+			length_px = length;
 		}
-		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+		else if (typeof this._units === 'undefined' || this._units === 'norm')
+		{
 			var winSize = this.win.size;
-			return length * winSize[1] / 2; // TODO: how do we handle norm when width != height?
+			length_px = length * winSize[1] / 2; // TODO: how do we handle norm when width != height?
 		}
-		else if (this._units === 'height') {
+		else if (this._units === 'height')
+		{
 			const minSize = Math.min(this.win.size[0], this.win.size[1]);
-			return length * minSize;
+			length_px = length * minSize;
 		}
-		else {
+		else
+		{
 			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
-			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
+			throw Object.assign(response, {error: 'unable to deal with unit: ' + this._units});
+		}
+
+		if (integerCoordinates)
+		{
+			return Math.round(length_px);
+		}
+		else
+		{
+			return length_px;
 		}
 	}
 
 
 	/**
 	 * Convert the given length from pixel units to the stimulus units
-	 * 
+	 *
 	 * @name module:core.WindowMixin#_getLengthUnits
 	 * @function
 	 * @protected
 	 * @param {number} length_px - the length in pixel units
 	 * @return {number} - the length in stimulus units
 	 */
-	_getLengthUnits(length_px) {
-		let response = { origin: 'WindowMixin._getLengthUnits', context: 'when converting a length from pixel unit to stimulus units' };
+	_getLengthUnits(length_px)
+	{
+		let response = {
+			origin: 'WindowMixin._getLengthUnits',
+			context: 'when converting a length from pixel unit to stimulus units'
+		};
 
-		if (this._units === 'pix') {
+		if (this._units === 'pix')
+		{
 			return length_px;
 		}
-		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+		else if (typeof this._units === 'undefined' || this._units === 'norm')
+		{
 			const winSize = this.win.size;
 			return length_px / (winSize[1] / 2); // TODO: how do we handle norm when width != height?
 		}
-		else if (this._units === 'height') {
+		else if (this._units === 'height')
+		{
 			const minSize = Math.min(this.win.size[0], this.win.size[1]);
 			return length_px / minSize;
 		}
-		else {
+		else
+		{
 			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
-			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
+			throw Object.assign(response, {error: 'unable to deal with unit: ' + this._units});
 		}
 	}
 
 
 	/**
-	 * Convert the given length from pixel units to the stimulus units
-	 * 
+	 * Convert the given length from stimulus units to pixel units
+	 *
 	 * @name module:core.WindowMixin#_getHorLengthPix
 	 * @function
 	 * @protected
-	 * @param {number} length_px - the length in pixel units
-	 * @return {number} - the length in stimulus units
+	 * @param {number} length - the length in stimulus units
+	 * @return {number} - the length in pixels
 	 */
-	_getHorLengthPix(length) {
-		let response = { origin: 'WindowMixin._getHorLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+	_getHorLengthPix(length)
+	{
+		let response = {
+			origin: 'WindowMixin._getHorLengthPix',
+			context: 'when converting a length from stimulus units to pixel units'
+		};
 
-		if (this._units === 'pix') {
+		if (this._units === 'pix')
+		{
 			return length;
 		}
-		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+		else if (typeof this._units === 'undefined' || this._units === 'norm')
+		{
 			var winSize = this.win.size;
 			return length * winSize[0] / 2;
 		}
-		else if (this._units === 'height') {
+		else if (this._units === 'height')
+		{
 			const minSize = Math.min(this.win.size[0], this.win.size[1]);
 			return length * minSize;
 		}
-		else {
+		else
+		{
 			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
-			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
+			throw Object.assign(response, {error: 'unable to deal with unit: ' + this._units});
 		}
 	}
 
 	/**
 	 * Convert the given length from pixel units to the stimulus units
-	 * 
+	 *
 	 * @name module:core.WindowMixin#_getVerLengthPix
 	 * @function
 	 * @protected
-	 * @param {number} length_px - the length in pixel units
+	 * @param {number} length - the length in pixel units
 	 * @return {number} - the length in stimulus units
 	 */
-	_getVerLengthPix(length) {
-		let response = { origin: 'WindowMixin._getVerLengthPix', context: 'when converting a length from pixel unit to stimulus units' };
+	_getVerLengthPix(length)
+	{
+		let response = {
+			origin: 'WindowMixin._getVerLengthPix',
+			context: 'when converting a length from pixel unit to stimulus units'
+		};
 
-		if (this._units === 'pix') {
+		if (this._units === 'pix')
+		{
 			return length;
 		}
-		else if (typeof this._units === 'undefined' || this._units === 'norm') {
+		else if (typeof this._units === 'undefined' || this._units === 'norm')
+		{
 			var winSize = this.win.size;
 			return length * winSize[1] / 2;
 		}
-		else if (this._units === 'height') {
+		else if (this._units === 'height')
+		{
 			const minSize = Math.min(this.win.size[0], this.win.size[1]);
 			return length * minSize;
 		}
-		else {
+		else
+		{
 			// throw { ...response, error: 'unable to deal with unit: ' + this._units };
-			throw Object.assign(response, { error: 'unable to deal with unit: ' + this._units });
+			throw Object.assign(response, {error: 'unable to deal with unit: ' + this._units});
 		}
 	}
 
@@ -196,13 +229,13 @@ export let WindowMixin = (superclass) => class extends superclass {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Feb 14 2020 08:15:34 GMT+0100 (Central European Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
