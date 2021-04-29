@@ -11,7 +11,7 @@
   "main": "src/index.js",
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
-    "build:css": "cross-var postcss -o dist/psychojs-$npm_package_version.css src/index.css",
+    "build:css": "npx cross-var postcss -o dist/psychojs-$npm_package_version.css src/index.css",
     "build:docs": "jsdoc src -r -d docs",
     "build:js": "rollup -c",
     "lint": "npm run lint:js && npm run lint:css",
