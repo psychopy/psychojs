@@ -340,14 +340,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	formComplete()//same as complete but might be used by some experiments before 2020.2
 	{this.getData();
 		return this._items._complete;
-	/**
-	 * Check if the form is complete.
-	 *
-	 * @name module:visual.Form#formComplete
-	 * @function
-	 * @public
-	 * @return {boolean} - whether there are any remaining incomplete responses.
-	 */
 	}
 	/**
 	 * Add the form data to the given experiment.
