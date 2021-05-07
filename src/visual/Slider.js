@@ -347,7 +347,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
+		/**
+	 * Get the current position of the slider marker (if there is one)
+	 *
+	 * @name module:visual.Slider#getMarkerPos
+	 * @return {number[]} - the position of the marker, as a rating
+	 * @private
+	 */
+	getMarkerPos()
+	{
+		return this._markerPos;
+	}
 
 	/**
 	 * Setter for the rating attribute.
