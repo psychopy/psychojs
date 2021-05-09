@@ -569,7 +569,13 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 				{
 					item.type = 'CHOICE';
 				}
-
+				
+				// Support the 'slider' type for newer versions of PsychoPy
+				if (item.type === 'SLIDER')
+				{
+					item.type = 'RATING';
+				}
+				
 				// convert item type to symbol:
 				item.type = Symbol.for(item.type);
 
