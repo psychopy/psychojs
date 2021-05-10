@@ -32,7 +32,7 @@ env:
   STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
   STAGING_PORT: ${{ secrets.STAGING_PORT }}
   STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
-  PSYCHOJS_PATH: '/home/runner/work/psychojs_testing/psychojs_testing/psychojs'
+  PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
   DEFAULT_REPO: 'psychopy/psychojs'
   DEFAULT_TESTRUN: 'test_fast'
   DEFAULT_SUBSET: 'true'
@@ -47,26 +47,26 @@ jobs:
         with:
           node-version: '12'
           
-      # START: install psychojs_tests
-      - name: Checkout psychojs_tests
+      # START: install psychojs_testing
+      - name: Checkout psychojs_testing
         uses: actions/checkout@v2
         with:
           repository: psychopy/psychojs_testing
-          path: psychojs_tests
-      - name: Cache modules psychojs_tests
+          path: psychojs_testing
+      - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
-          cache-name: cache-modules-psychojs_tests
+          cache-name: cache-modules-psychojs_testing
         with:
-          path: ~/psychojs_tests/.npm
+          path: ~/psychojs_testing/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-:  
-      - name: Install psychojs_tests
-        run: npm --prefix psychojs_tests ci
-      # END: install psychojs_tests
+      - name: Install psychojs_testing
+        run: npm --prefix psychojs_testing ci
+      # END: install psychojs_testing
     
       # START: install psychojs
       - name: Checkout psychojs
@@ -102,5 +102,5 @@ jobs:
       # START: run tests
       - name: Run tests
         run: node test.cjs --server bs --testrun ${{github.event.inputs.testrun || env.DEFAULT_TESTRUN}} --subset ${{github.event.inputs.subset || env.DEFAULT_SUBSET}} --platform ${{github.event.inputs.platform || env.DEFAULT_PLATFORM}} --url stager --uploadExperiments --uploadResults --label ${{github.event.inputs.label || env.DEFAULT_LABEL}}
-        working-directory: ./psychojs_tests        
+        working-directory: ./psychojs_testing        
       # END: run tests
