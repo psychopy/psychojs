@@ -92,7 +92,7 @@ export class ButtonStim extends TextBox
 	 */
 	get isClicked()
 	{
-		return this.listener.isPressedIn(this);
+		return this.listener.isPressedIn(this, [1, 0, 0]);
 	}
 
 }
