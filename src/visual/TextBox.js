@@ -12,6 +12,7 @@ import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import {TextInput} from './TextInput';
+import {ButtonStim} from './ButtonStim.js';
 import * as util from '../util/Util';
 
 // TODO finish documenting all options
