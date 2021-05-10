@@ -337,8 +337,10 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 * @return {boolean} - whether there are any remaining incomplete responses.
 	 */
-	formComplete()//same as complete but might be used by some experiments before 2020.2
-	{this.getData();
+	formComplete()
+	{
+		//same as complete but might be used by some experiments before 2020.2
+		this.getData();
 		return this._items._complete;
 	}
 	/**
