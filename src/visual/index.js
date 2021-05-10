@@ -1,3 +1,4 @@
+export * from './ButtonStim.js';
 export * from './Form.js';
 export * from './ImageStim.js';
 export * from './MovieStim.js';
