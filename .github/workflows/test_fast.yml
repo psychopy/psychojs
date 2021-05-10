@@ -9,10 +9,10 @@ on:
   workflow_dispatch:
     inputs:
       repo:
-        description: 'PscyhoJS repo (psychopy/psychojs)'
+        description: 'PsychoJS repo (psychopy/psychojs)'
         required: false
       ref:
-        description: 'Branch/tag/SHA (default branch)'
+        description: 'branch/tag/SHA (default branch)'
         required: false
       testrun:
         description: 'testrun (test_fast)'
