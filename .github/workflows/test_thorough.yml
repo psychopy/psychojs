@@ -3,7 +3,7 @@
 name: test_thorough
 on:
   schedule:
-    - cron: '30 14 * * mon'
+    - cron: '0 17 * * mon'
   workflow_dispatch:
     inputs:
       repo:
