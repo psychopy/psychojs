@@ -13,9 +13,9 @@ import {Mouse} from '../core/Mouse.js';
 
 
 /**
- * <p>Button visual stimulus.</p>
+ * <p>ButtonStim visual stimulus.</p>
  *
- * @name module:visual.Button
+ * @name module:visual.ButtonStim
  * @class
  * @extends TextBox
  * @param {Object} options
@@ -37,13 +37,13 @@ import {Mouse} from '../core/Mouse.js';
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-export class Button extends TextBox
+export class ButtonStim extends TextBox
 {
 	constructor({win, name, text, font, pos, size, padding, anchor = 'center', units, color, fillColor = 'darkgrey', borderColor, borderWidth = 0, opacity, letterHeight, bold = true, italic, autoDraw, autoLog} = {})
 	{
 		super({win, name, text, font, pos, size, padding, anchor, units, color, fillColor, borderColor, borderWidth, opacity, letterHeight, bold, italic, alignment: 'center', autoDraw, autoLog});
 
-		this._psychoJS.logger.debug('create a new Button with name: ', name);
+		this.psychoJS.logger.debug('create a new Button with name: ', name);
 
 		this.listener = new Mouse({name, win, autoLog});
 
@@ -74,7 +74,7 @@ export class Button extends TextBox
 	/**
 	 * How many times has this button been clicked on?
 	 *
-	 * @name module:visual.Button#numClicks
+	 * @name module:visual.ButtonStim#numClicks
 	 * @returns {number} the number of times the button has been clicked on
 	 */
 	get numClicks()
@@ -87,7 +87,7 @@ export class Button extends TextBox
 	/**
 	 * Is this button currently being clicked on?
 	 *
-	 * @name module:visual.Button#isClicked
+	 * @name module:visual.ButtonStim#isClicked
 	 * @returns {boolean} whether or not the button is being clicked on
 	 */
 	get isClicked()
