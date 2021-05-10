@@ -1,0 +1,106 @@
+# Starts up one BrowserStack session per platform, then runs each test in succession. 
+# That's relatively fast, but less thorough, since a failed test aborts any successive tests.
+name: test_fast
+on:
+#  push:
+#    branches: '**'
+#  pull_request:
+#    branches: '**'
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'PscyhoJS repo (psychopy/psychojs)'
+        required: false
+      ref:
+        description: 'Branch/tag/SHA (default branch)'
+        required: false
+      testrun:
+        description: 'testrun (test_fast)'
+        required: false
+      subset:
+        description: 'subset (true)'
+        required: false
+      platform:
+        description: 'platform (\*)'
+        required: false
+      label:
+        description: 'label (all)'
+        required: false
+env:
+  BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
+  BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
+  STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+  STAGING_PORT: ${{ secrets.STAGING_PORT }}
+  STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
+  PSYCHOJS_PATH: '/home/runner/work/psychojs_testing/psychojs_testing/psychojs'
+  DEFAULT_REPO: 'psychopy/psychojs'
+  DEFAULT_TESTRUN: 'test_fast'
+  DEFAULT_SUBSET: 'true'
+  DEFAULT_PLATFORM: '\*'
+  DEFAULT_LABEL: 'all'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+          
+      # START: install psychojs_tests
+      - name: Checkout psychojs_tests
+        uses: actions/checkout@v2
+        with:
+          repository: psychopy/psychojs_testing
+          path: psychojs_tests
+      - name: Cache modules psychojs_tests
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-modules-psychojs_tests
+        with:
+          path: ~/psychojs_tests/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-:  
+      - name: Install psychojs_tests
+        run: npm --prefix psychojs_tests ci
+      # END: install psychojs_tests
+    
+      # START: install psychojs
+      - name: Checkout psychojs
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.event.inputs.repo || env.DEFAULT_REPO}}
+          ref: ${{github.event.inputs.ref}}
+          path: psychojs
+      - name: Cache modules psychojs
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-modules-psychojs
+        with:
+          path: ~/psychojs/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-:  
+      - name: Install psychojs
+        run: npm --prefix psychojs ci
+      # END: install psychojs
+      
+      # START: wait for other workflows to complete
+      - name: Turnstyle (wait for other workflows to complete)
+        uses: softprops/turnstyle@v1
+        with:
+          poll-interval-seconds: 10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # END: wait for other workflows to complete          
+      
+      # START: run tests
+      - name: Run tests
+        run: node test.cjs --server bs --testrun ${{github.event.inputs.testrun || env.DEFAULT_TESTRUN}} --subset ${{github.event.inputs.subset || env.DEFAULT_SUBSET}} --platform ${{github.event.inputs.platform || env.DEFAULT_PLATFORM}} --url stager --uploadExperiments --uploadResults --label ${{github.event.inputs.label || env.DEFAULT_LABEL}}
+        working-directory: ./psychojs_tests        
+      # END: run tests
