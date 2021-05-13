@@ -403,6 +403,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
+			// Get the currently entered value and placeholder, if any
+			let enteredText = textbox1._pixi !== undefined? textbox1._pixi.text: '';
+			let placeholder = textbox1._pixi !== undefined? textbox1._pixi.placeholder: '';
+			// Create a new TextInput PIXI object
 			this._pixi = new TextInput(this._getTextInputOptions());
 			// check if other TextBox instances are already in focus
 			const { _drawList = [] } = this.psychoJS.window;
@@ -417,7 +421,14 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this._pixi.placeholder = this._text;
+
+				// Set text to currently entered value, if any
+				if (enteredText !== '') {
+					this.text = enteredText;
+					this._pixi.placeholder = placeholder;
+				} else {
+					this._pixi.placeholder = this._text;
+				}
 			}
 			else
 			{
