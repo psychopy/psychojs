@@ -404,8 +404,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			// Get the currently entered value and placeholder, if any
-			let enteredText = textbox1._pixi !== undefined? textbox1._pixi.text: '';
-			let placeholder = textbox1._pixi !== undefined? textbox1._pixi.placeholder: '';
+			let enteredText = this._pixi !== undefined? this._pixi.text: '';
+			let placeholder = this._pixi !== undefined? this._pixi.placeholder: '';
 			// Create a new TextInput PIXI object
 			this._pixi = new TextInput(this._getTextInputOptions());
 			// check if other TextBox instances are already in focus
