@@ -125,7 +125,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			'borderColor',
 			borderColor,
-			'white',
+			this.fillColor,
 			this._onChange(true, false)
 		);
 		this._addAttribute(
