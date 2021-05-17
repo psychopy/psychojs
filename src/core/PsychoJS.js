@@ -696,7 +696,8 @@ export class PsychoJS
 				source: source,
 				lineno: lineno,
 				colno: colno,
-				error: error.stack
+				error: error
+				//stack: error.stack
 			}));
 			self._gui.dialog({"error": error});
 			return true;
