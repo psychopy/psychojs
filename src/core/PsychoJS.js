@@ -692,12 +692,11 @@ export class PsychoJS
 		{
 			console.error(error);
 			document.body.setAttribute('data-error', JSON.stringify({
-				message: message.toString(),
+				message: message,
 				source: source,
 				lineno: lineno,
 				colno: colno,
 				error: error
-				//stack: error.stack
 			}));
 			self._gui.dialog({"error": error});
 			return true;
