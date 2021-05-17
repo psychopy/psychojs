@@ -24,7 +24,7 @@ on:
         description: 'platform (\*)'
         required: false
       label:
-        description: 'label (all)'
+        description: 'label (fast)'
         required: false
 env:
   BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
@@ -37,7 +37,7 @@ env:
   DEFAULT_TESTRUN: 'test_fast'
   DEFAULT_SUBSET: 'true'
   DEFAULT_PLATFORM: '\*'
-  DEFAULT_LABEL: 'all'
+  DEFAULT_LABEL: 'fast'
 jobs:
   test:
     runs-on: ubuntu-latest
