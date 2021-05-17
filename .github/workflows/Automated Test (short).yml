@@ -15,7 +15,7 @@ on:
         description: 'branch/tag/SHA (default branch)'
         required: false
       testrun:
-        description: 'testrun (test_fast)'
+        description: 'testrun (short)'
         required: false
       subset:
         description: 'subset (true)'
@@ -34,7 +34,7 @@ env:
   STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
   PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
   DEFAULT_REPO: 'psychopy/psychojs'
-  DEFAULT_TESTRUN: 'test_fast'
+  DEFAULT_TESTRUN: 'short'
   DEFAULT_SUBSET: 'true'
   DEFAULT_PLATFORM: '\*'
   DEFAULT_LABEL: 'short'
