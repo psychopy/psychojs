@@ -692,7 +692,7 @@ export class PsychoJS
 		{
 			console.error(error);
 			document.body.setAttribute('data-error', JSON.stringify({
-				message: message,
+				message: message.toString(),
 				source: source,
 				lineno: lineno,
 				colno: colno,
