@@ -24,7 +24,7 @@ The idea behind PsychoJS is to make PsychoPy experiments available online, from 
 Running PsychoPy experiments online requires the generation of an index.html file and of a javascript file that contains the code describing the experiment. Those files need to be hosted on a web server to which participants will point their browser in order to run the experiment. The server will also need to host the PsychoJS library.
 
 ### PsychoPy Builder
-The recommended approach to creating experiments is to use [PsychoPy Builder](http://www.psychopy.org/builder/builder.html) automatically to generate the javascript and html files. Many of the existing Builder experiments should "just work", subject to the Components being currently supported by PsychoJS (see below).
+The recommended approach to creating experiments is to use [PsychoPy Builder](http://www.psychopy.org/builder/builder.html) to generate the javascript and html files. Many of the existing Builder experiments should "just work", subject to the [Components being compatible between PsychoPy and PsychoJS](https://www.psychopy.org/online/status.html).
 
 ### JavaScript Code
 We built the PsychoJS library to make the JavaScript experiment files look and behave in very much the same way as to the Builder-generated Python files. PsychoJS offers classes such as `Window` and `ImageStim`, with very similar attributes to their Python equivalents. Experiment designers familiar with the PsychoPy library should feel at home with PsychoJS, and can expect the same level of control they have with PsychoPy, from the structure of the trials/loops all the way down to frame-by-frame updates.
