@@ -3,7 +3,7 @@
 name: test_thorough
 on:
   schedule:
-    - cron: '0 17 * * mon'
+    - cron: '0 0 * * sat'
   workflow_dispatch:
     inputs:
       repo:
@@ -22,7 +22,7 @@ on:
         description: 'platform (\*)'
         required: false
       label:
-        description: 'label (all)'
+        description: 'label (thorough)'
         required: false
 env:
   BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
@@ -35,7 +35,7 @@ env:
   DEFAULT_TESTRUN: 'test_thorough'
   DEFAULT_SUBSET: 'false'
   DEFAULT_PLATFORM: '\*'
-  DEFAULT_LABEL: 'all'
+  DEFAULT_LABEL: 'thorough'
 jobs:
   prepare:
     name: Clean up and get tests
