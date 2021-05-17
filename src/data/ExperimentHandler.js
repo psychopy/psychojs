@@ -302,7 +302,8 @@ export class ExperimentHandler extends PsychObject
 			// note: we use the XLSX library as it automatically deals with header, takes care of quotes,
 			// newlines, etc.
 			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
-			const csv = XLSX.utils.sheet_to_csv(worksheet);
+			// prepend BOM
+			const csv = '\ufeff' + XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
 			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
