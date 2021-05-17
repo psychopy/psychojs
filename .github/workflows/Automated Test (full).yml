@@ -1,6 +1,6 @@
 # Starts up a separate BrowserStack session for each combination of platform and test. 
 # That's relatively slow, but also thorough, since a failed test does not abort any successive tests. 
-name: test_thorough
+name: Automated Test (full)
 on:
   schedule:
     - cron: '0 0 * * sat'
@@ -13,7 +13,7 @@ on:
         description: 'branch/tag/SHA (default branch)'
         required: false
       testrun:
-        description: 'testrun (test_thorough)'
+        description: 'testrun (full)'
         required: false
       subset:
         description: 'subset (false)'
@@ -22,7 +22,7 @@ on:
         description: 'platform (\*)'
         required: false
       label:
-        description: 'label (thorough)'
+        description: 'label (full)'
         required: false
 env:
   BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
@@ -32,10 +32,10 @@ env:
   STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
   PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
   DEFAULT_REPO: 'tpronk/psychojs'
-  DEFAULT_TESTRUN: 'test_thorough'
+  DEFAULT_TESTRUN: 'full'
   DEFAULT_SUBSET: 'false'
   DEFAULT_PLATFORM: '\*'
-  DEFAULT_LABEL: 'thorough'
+  DEFAULT_LABEL: 'full'
 jobs:
   prepare:
     name: Clean up and get tests
