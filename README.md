@@ -1,5 +1,7 @@
 # PsychoJS
 
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
+
 PsychoJS is a JavaScript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy](http://www.psychopy.org/) Python library. 
 
 To use PsychoJS you can create online experiments in PsychoPy Builder, or you can find and adapt existing experiments on Pavlovia.org.
@@ -7,8 +9,6 @@ To use PsychoJS you can create online experiments in PsychoPy Builder, or you ca
 If you want to write PsychoJS experiments by hand you can view the [PsychoJS API here](https://psychopy.github.io/psychojs/)
 
 PsychoJS is an open-source project. You can contribute with pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs) and you can discuss future it in the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online)
-
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
 
 ## Motivation
 
