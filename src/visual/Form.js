@@ -42,6 +42,7 @@ import {Slider} from './Slider';
  * @param {number[]} [options.items= []] - the array of labels
  * @param {number} [options.itemPadding= 0.05] - the granularity
  *
+ * @param {string} [options.font= 'Arial'] - the text font
  * @param {string} [options.fontFamily= 'Helvetica'] - the text font
  * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
  * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
@@ -55,7 +56,7 @@ import {Slider} from './Slider';
  */
 export class Form extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, size, units, color, contrast, opacity, depth, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, units, color, contrast, opacity, depth, items, randomize, itemPadding, font, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog});
 
@@ -81,6 +82,13 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		);
 
 		// fonts:
+		this._addAttribute(
+			'font',
+			font,
+			'Arial',
+			this._onChange(true, true)
+		);
+		// Not in use at present
 		this._addAttribute(
 			'fontFamily',
 			fontFamily,
@@ -688,7 +696,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		const textStimOption = {
 			win: this._win,
 			name: 'item text',
-			font: 'Arial',
+			font: this.font,
 			units: this._units,
 			alignHoriz: 'left',
 			alignVert: 'top',
@@ -704,7 +712,10 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			name: 'choice response',
 			units: this._units,
 			flip: false,
-			fontFamily: 'Arial',
+			// Not part of Slider options as things stand
+			fontFamily: this.fontFamily,
+			// As found in Slider options
+			font: this.font,
 			bold: false,
 			italic: false,
 			fontSize: this._fontSize * this._responseTextHeightRatio,
@@ -722,7 +733,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			flip: false,
 			opacity: 1,
 			depth: this._depth + 1,
-			font: 'Arial',
+			font: this.font,
 			letterHeight: this._fontSize * this._responseTextHeightRatio,
 			bold: false,
 			italic: false,
