@@ -49,6 +49,10 @@ jobs:
         with:
           repository: psychopy/psychojs_testing
           path: psychojs_testing
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
       - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
@@ -92,17 +96,16 @@ jobs:
       matrix: 
         test: ${{fromJson(needs.prepare.outputs.tests)}}
     steps:
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: '12'
-          
       # START: install psychojs_testing
       - name: Checkout psychojs_testing
         uses: actions/checkout@v2
         with:
           repository: psychopy/psychojs_testing
           path: psychojs_testing
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
       - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
@@ -167,6 +170,10 @@ jobs:
         with:
           repository: psychopy/psychojs_testing
           path: psychojs_testing
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
       - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
