@@ -75,12 +75,23 @@ export class MonotonicClock
 	 * @function
 	 * @public
 	 * @static
-	 * @param {string} [format= 'YYYY-MM-DD_HH[h]mm.ss.SSS'] - the format for the string (see [momentjs.com]{@link https://momentjs.com/docs/#/parsing/string-format/} for details)
-	 * @return {string} a string representing the current time in the given format
+	 * @return {string} ISO based, zero UTC offset datetime string re-formatted as YYYY-MM-DD_HH[h]mm.ss.sss
 	 */
-	static getDateStr(format = 'YYYY-MM-DD_HH[h]mm.ss.SSS')
+	static getDateStr()
 	{
-		return moment().format(format);
+		const date = new Date();
+		const s = date.toISOString();
+
+		// Go from:
+		// ±YYYYYY-MM-DDTHH:mm:ss.sssZ
+		//    YYYY-MM-DDTHH:mm:ss.sssZ
+		// To:
+		//    YYYY-MM-DD_HH[h]mm.ss.sss
+		return s.substring(s.length - 24)
+			.replace('T', '_')
+			.replace(':', 'h')
+			.replace(':', '.')
+			.replace('Z', '');
 	}
 }
 
