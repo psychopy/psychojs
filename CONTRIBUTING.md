@@ -13,7 +13,7 @@ Contributing to PsychoJS consists of four steps:
 ## 1. Getting your own copy of the PsychoJS codebase
 To be sure your improvements can easily be integrated, follow these steps:
 1. **Make a [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) of the [PsychoJS repo](https://github.com/psychopy/psychojs).** This provides you with your own copy of the PsychoJS source code.
-2. **Inside your fork, make a new [branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches) for the feature you've got in mind.** Base your new branch on the  *master* branch. We tend to name branches after the feature we're building. For example `olfactory_component`.
+2. **Inside your fork, make a new [branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-branches) for the feature you've got in mind.** Base your new branch on the  *main* branch. We tend to name branches after the feature we're building. For example `olfactory_component`.
 3. **Clone your fork to your hard drive.** Next, switch to the new branch and you're all set up!
 
 ## 2. Making your changes
@@ -27,4 +27,4 @@ Once you're happy with your changes, commit them to your GitHub repo. Please use
   - **DOC:** for all kinds of documentation related commits
 
 ## 4. File a Pull Request
-Once you're done, it's time to add it to the central PsychoJS source code. File a [Pull Request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) from your own fork and branch to the *master* branch in the PsychoJS repo. Thanks for contributing!
+Once you're done, it's time to add it to the central PsychoJS source code. File a [Pull Request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request) from your own fork and branch to the *main* branch in the PsychoJS repo. Thanks for contributing!
