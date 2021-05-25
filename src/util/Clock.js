@@ -80,18 +80,26 @@ export class MonotonicClock
 	static getDateStr()
 	{
 		const date = new Date();
-		const s = date.toISOString();
+		const dateTimeFormat = new Intl.DateTimeFormat('en-CA', {
+			hour12: false,
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric',
+			fractionalSecondDigits: 3
+		});
 
-		// Go from:
-		// ±YYYYYY-MM-DDTHH:mm:ss.sssZ
-		//    YYYY-MM-DDTHH:mm:ss.sssZ
-		// To:
-		//    YYYY-MM-DD_HH[h]mm.ss.sss
-		return s.substring(s.length - 24)
-			.replace('T', '_')
+		return dateTimeFormat
+			// yyyy-mm-dd, hh:mm:ss.sss
+			.format(date)
+			// yyyy-mm-dd_hh:mm:ss.sss
+			.replace(', ', '_')
+			// yyyy-mm-dd_hh[h]mm:ss.sss
 			.replace(':', 'h')
-			.replace(':', '.')
-			.replace('Z', '');
+			// yyyy-mm-dd_hh[h]mm.ss.sss
+			.replace(':', '.');
 	}
 }
 
