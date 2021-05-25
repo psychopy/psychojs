@@ -8,7 +8,7 @@ PsychoJS is a JavaScript library that makes it possible to run neuroscience, psy
 
 You can create online experiments from the [PsychoPy Builder](http://www.psychopy.org/builder/builder.html), you can find and adapt existing experiments on [pavlovia.org](https://www.pavlovia.org), or create them from scratch: the PsychoJS API is available [here](https://psychopy.github.io/psychojs/).
 
-PsychoJS is an open-source project. You can contribute by submitting pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs) and discuss current and future features and issue on the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online).
+PsychoJS is an open-source project. You can contribute by submitting pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs), and discuss issues and current and future features on the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online).
 
 ## Motivation
 
