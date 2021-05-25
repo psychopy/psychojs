@@ -55,7 +55,7 @@ import {Slider} from './Slider';
  */
 export class Form extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, size, units, color, contrast, opacity, depth, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, units, borderColor, fillColor, itemColor, markerColor, responseColor, color, contrast, opacity, depth, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog});
 
@@ -69,10 +69,47 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		// colors:
 		this._addAttribute(
 			'color',
+			// Same as itemColor
 			color,
-			'white',
+			undefined,
 			this._onChange(true, false)
 		);
+
+		this._addAttribute(
+			'borderColor',
+			borderColor,
+			fillColor,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'fillColor',
+			fillColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'itemColor',
+			itemColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'markerColor',
+			markerColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'responseColor',
+			responseColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
 		this._addAttribute(
 			'contrast',
 			contrast,
@@ -360,7 +397,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		const _doNotSave = [
 			'itemCtrl', 'responseCtrl',
 			'itemColor', 'options', 'ticks', 'tickLabels',
-				'responseWidth', 'responseColor', 'layout'
+			'responseWidth', 'responseColor', 'layout'
 		];
 
 		for (const item of this.getData())
@@ -693,7 +730,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			alignHoriz: 'left',
 			alignVert: 'top',
 			height: this._fontSize,
-			color: 'white',
+			color: this.itemColor,
 			ori: 0,
 			opacity: 1,
 			depth: this._depth + 1,
@@ -708,7 +745,8 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			bold: false,
 			italic: false,
 			fontSize: this._fontSize * this._responseTextHeightRatio,
-			color: this._color,
+			color: this.responseColor,
+			markerColor: this.markerColor,
 			opacity: 1,
 			depth: this._depth + 1,
 			clipMask: this._stimuliClipMask,
@@ -727,9 +765,10 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			bold: false,
 			italic: false,
 			alignment: 'left',
-			color: this._color,
+			color: this.responseColor,
+			fillColor: this.fillColor,
 			contrast: 1.0,
-			borderColor: this._color,
+			borderColor: this.responseColor,
 			borderWidth: 0.002,
 			padding: 0.01,
 			editable: true,
@@ -877,7 +916,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			win: this._win,
 			name: 'scrollbar',
 			units: this._units,
-			color: this._color,
+			color: this.itemColor,
 			depth: this._depth + 1,
 			pos: [0, 0],
 			size: [this._scrollbarWidth, this._size[1]],
@@ -1048,11 +1087,12 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 
 		// form background:
-		this._pixi.lineStyle(1, new Color('lightgray').int, this._opacity, 0.5);
+		this._pixi.lineStyle(1, new Color(this.borderColor).int, this._opacity, 0.5);
 		// this._decorations.beginFill(this._barFillColor.int, this._opacity);
+		this._pixi.beginFill(new Color(this.fillColor).int);
 		this._pixi.drawRect(this._leftEdge_px, this._bottomEdge_px, this._size_px[0], this._size_px[1]);
 		// this._decorations.endFill();
-
+		this._pixi.endFill();
 
 		// item decorators:
 		this._decorations = new PIXI.Graphics();
