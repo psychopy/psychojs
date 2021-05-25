@@ -75,7 +75,7 @@ export class MonotonicClock
 	 * @function
 	 * @public
 	 * @static
-	 * @return {string} ISO based, zero UTC offset datetime string re-formatted as YYYY-MM-DD_HH[h]mm.ss.sss
+	 * @return {string} a string representing the current time formatted as YYYY-MM-DD_HH[h]mm.ss.sss
 	 */
 	static getDateStr()
 	{
