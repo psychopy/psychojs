@@ -122,16 +122,12 @@ export class TrialHandler extends PsychObject
 	}
 
 
-	get trialIterator() {
-		return this[Symbol.iterator]();
-	}
-
-
 	/**
 	 * Helps go through each trial in the sequence one by one, mirrors PsychoPy.
 	 */
 	next() {
-		const { value } = this.trialIterator.next();
+		const trialIterator = this[Symbol.iterator]();
+		const { value } = trialIterator.next();
 
 		return value;
 	}
