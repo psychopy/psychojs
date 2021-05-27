@@ -9,5 +9,5 @@ buildSync({
 	bundle: true,
 	entryPoints: ['src/index.css'],
 	minify: true,
-	outfile: `./${dir}/psycho-${version}.css`
+	outfile: `./${dir}/psychojs-${version}.css`
 });

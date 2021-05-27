@@ -10,5 +10,5 @@ buildSync({
 	entryPoints: ['src/index.js'],
 	format: 'esm',
 	minify: true,
-	outfile: `./${dir}/psycho-${version}.js`
+	outfile: `./${dir}/psychojs-${version}.js`
 });
