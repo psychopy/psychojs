@@ -10,9 +10,10 @@
  */
 
 
+import seedrandom from 'seedrandom';
+import * as XLSX from 'xlsx';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
-
 
 /**
  * <p>A Trial Handler handles the importing and sequencing of conditions.</p>
@@ -619,11 +620,11 @@ export class TrialHandler extends PsychObject
 		// seed the random number generator:
 		if (typeof (this.seed) !== 'undefined')
 		{
-			Math.seedrandom(this.seed);
+			seedrandom(this.seed);
 		}
 		else
 		{
-			Math.seedrandom();
+			seedrandom();
 		}
 
 		if (this.method === TrialHandler.Method.SEQUENTIAL)

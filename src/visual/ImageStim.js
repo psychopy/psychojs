@@ -8,6 +8,7 @@
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';

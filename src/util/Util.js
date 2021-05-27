@@ -7,6 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import * as PIXI from 'pixi.js-legacy';
+
 
 /**
  * Syntactic sugar for Mixins

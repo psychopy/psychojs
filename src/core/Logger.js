@@ -8,10 +8,11 @@
  */
 
 
+import log4javascript from 'log4javascript';
+import pako from 'pako';
 import * as util from '../util/Util';
 import {MonotonicClock} from '../util/Clock';
 import {ExperimentHandler} from '../data/ExperimentHandler';
-
 
 /**
  * <p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging),
