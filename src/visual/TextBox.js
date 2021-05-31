@@ -12,6 +12,7 @@ import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import {TextInput} from './TextInput';
+import {ButtonStim} from './ButtonStim.js';
 import * as util from '../util/Util';
 
 // TODO finish documenting all options
@@ -125,7 +126,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			'borderColor',
 			borderColor,
-			'white',
+			this.fillColor,
 			this._onChange(true, false)
 		);
 		this._addAttribute(
@@ -404,6 +405,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			this._pixi = new TextInput(this._getTextInputOptions());
+
+			// listeners required for regular textboxes, but may cause problems with button stimuli
+			if (!(this instanceof ButtonStim))
+			{
+				this._pixi._addListeners();
+			}
+
 			// check if other TextBox instances are already in focus
 			const { _drawList = [] } = this.psychoJS.window;
 			const otherTextBoxWithFocus = _drawList.some(item => item instanceof TextBox && item._pixi && item._pixi._hasFocus());

@@ -727,7 +727,17 @@ export class PsychoJS
 		window.onerror = function (message, source, lineno, colno, error)
 		{
 			console.error(error);
-			self._gui.dialog({error});
+
+			document.body.setAttribute('data-error', JSON.stringify({
+				message: message,
+				source: source,
+				lineno: lineno,
+				colno: colno,
+				error: error.stack
+			}));
+      
+			self._gui.dialog({"error": error});
+      
 			return true;
 		};
 		window.onunhandledrejection = function (error)
