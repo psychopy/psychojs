@@ -123,6 +123,17 @@ export class TrialHandler extends PsychObject
 
 
 	/**
+	 * Helps go through each trial in the sequence one by one, mirrors PsychoPy.
+	 */
+	next() {
+		const trialIterator = this[Symbol.iterator]();
+		const { value } = trialIterator.next();
+
+		return value;
+	}
+
+
+	/**
 	 * Iterator over the trial sequence.
 	 *
 	 * <p>This makes it possible to iterate over all trials.</p>
