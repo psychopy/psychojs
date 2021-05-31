@@ -193,9 +193,6 @@ export class TrackPlayer extends SoundPlayer
 				else
 				{
 					self._howl.seek(self._startTime);
-					self._howl.play();
-
-					self._howl.seek(self._startTime);
 					self._id = self._howl.play();
 					self._howl.fade(0, self._volume, fadeDuration, self._id);
 				}
