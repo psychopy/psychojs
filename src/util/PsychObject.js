@@ -349,10 +349,10 @@ export class PsychObject extends EventEmitter
 	 * @protected
 	 * @param {string} name - the name of the attribute
 	 * @param {object} value - the value of the attribute
-	 * @param {object} defaultValue - the default value for the attribute
-	 * @param {function} onChange - function called upon changes to the attribute value
+	 * @param {object} [defaultValue] - the default value for the attribute
+	 * @param {function} [onChange] - function called upon changes to the attribute value
 	 */
-	_addAttribute(name, value, defaultValue, onChange = () => {})
+	_addAttribute(name, value, defaultValue = undefined, onChange = () => {})
 	{
 		const getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
 		if (typeof this[getPropertyName] === 'undefined')
