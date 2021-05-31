@@ -8,6 +8,7 @@
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
