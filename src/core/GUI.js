@@ -313,7 +313,7 @@ export class GUI
 				//jQuery.blockUI({ message: "", baseZ: 1});
 
 				// show dialog box:
-				jQuery("#progressbar").progressbar({value: self._progressBarCurrentIncrement});
+				jQuery("#progressbar").progressbar({value: self._progressBarCurrentValue});
 				jQuery("#progressbar").progressbar("option", "max", self._progressBarMax);
 			}
 
@@ -587,15 +587,14 @@ export class GUI
 	{
 		this._psychoJS.logger.debug('signal: ' + util.toString(signal));
 
-		// all resources have been registered:
-		if (signal.message === ServerManager.Event.RESOURCES_REGISTERED)
+		// the download of the specified resources has started:
+		if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCES)
 		{
 			// for each resource, we have a 'downloading resource' and a 'resource downloaded' message:
 			this._progressBarMax = signal.count * 2;
 			jQuery("#progressbar").progressbar("option", "max", this._progressBarMax);
 
-			this._progressBarCurrentIncrement = 0;
-			jQuery("#progressMsg").text('all resources registered.');
+			this._progressBarCurrentValue = 0;
 		}
 
 		// all the resources have been downloaded: show the ok button
@@ -607,23 +606,25 @@ export class GUI
 		}
 
 		// update progress bar:
-		else if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE || signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
+		else if (signal.message === ServerManager.Event.DOWNLOADING_RESOURCE
+			|| signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
 		{
-			if (typeof this._progressBarCurrentIncrement === 'undefined')
+			if (typeof this._progressBarCurrentValue === 'undefined')
 			{
-				this._progressBarCurrentIncrement = 0;
+				this._progressBarCurrentValue = 0;
 			}
-			++this._progressBarCurrentIncrement;
+			++this._progressBarCurrentValue;
 
 			if (signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
 			{
-				jQuery("#progressMsg").text('downloaded ' + this._progressBarCurrentIncrement / 2 + ' / ' + this._progressBarMax / 2);
+				jQuery("#progressMsg").text('downloaded ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
 			}
-			// jQuery("#progressMsg").text(signal.resource + ': downloaded.');
-			// else
-			// jQuery("#progressMsg").text(signal.resource + ': downloading...');
-
-			jQuery("#progressbar").progressbar("option", "value", this._progressBarCurrentIncrement);
+			else
+			{
+				jQuery("#progressMsg").text('downloading ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
+			}
+			// $("#progressMsg").text(signal.resource + ': downloaded.');
+			jQuery("#progressbar").progressbar("option", "value", this._progressBarCurrentValue);
 		}
 
 		// unknown message: we just display it

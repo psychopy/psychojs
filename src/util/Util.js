@@ -1,7 +1,7 @@
 /**
  * Various utilities.
  *
- * @author Alain Pitiot
+ * @authors Alain Pitiot, Sotiri Bakagiannis, Thomas Pronk
  * @version 2021.1.4
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
@@ -960,12 +960,12 @@ export function offerDataForDownload(filename, data, type)
 	}
 	else
 	{
-		let elem = window.document.createElement('a');
-		elem.href = window.URL.createObjectURL(blob);
-		elem.download = filename;
-		document.body.appendChild(elem);
-		elem.click();
-		document.body.removeChild(elem);
+		const anchor = document.createElement('a');
+		anchor.href = window.URL.createObjectURL(blob);
+		anchor.download = filename;
+		document.body.appendChild(anchor);
+		anchor.click();
+		document.body.removeChild(anchor);
 	}
 }
 
@@ -1055,7 +1055,8 @@ export function randint(min = 0, max)
 }
 
 
-/** Round to a certain number of decimal places.
+/**
+ * Round to a certain number of decimal places.
  *
  * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
  *
@@ -1074,25 +1075,380 @@ export function round(input, places = 0)
 
 
 /**
- * Calculate a total for all numeric input array elements.
+ * Calculate the sum of the elements in the input array.
+ *
+ * If 'input' is not an array, then we return start.
  *
  * @name module:util.sum
  * @function
  * @public
- * @param {array} inputMaybe - a list of numbers to add up
- * @returns {number} numeric input entries added up
+ * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @param {number} start - value added to the sum of numbers (a la Python)
+ * @returns {number} the sum of the elements in the array + start
  */
-export function sum(inputMaybe = [])
+export function sum(input = [], start = 0)
 {
-	// Cover against null input
-	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
+	if (!Array.isArray(input))
+	{
+		return start;
+	}
+
 	const add = (a, b) => a + b;
 
 	return input
-		// Type cast everything as a number
+		// type cast everything as a number
 		.map(value => Number(value))
-		// Drop non numeric looking entries, needs transpiling for IE11
+		// drop non numeric looking entries (note: needs transpiling for IE11)
 		.filter(value => Number.isNaN(value) === false)
-		// Add up each successive entry starting from naught
-		.reduce(add, 0);
+		// add up each successive entry, starting with start
+		.reduce(add, start);
+}
+
+
+/**
+ * Calculate the average of the elements in the input array.
+ *
+ * If 'input' is not an array, or if it is an empty array, then we return 0.
+ *
+ * @name module:util.average
+ * @function
+ * @public
+ * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @returns {number} the average of the elements in the array
+ */
+export function average(input = [])
+{
+	if (!Array.isArray(input))
+	{
+		return 0;
+	}
+
+	if (input.length === 0)
+	{
+		return 0;
+	}
+
+	return sum(input, 0) / input.length;
+}
+
+
+/**
+ * Sort the elements of the input array, in increasing alphabetical or numerical order.
+ * 
+ * @name module:util.sort
+ * @function
+ * @public
+ * @param {array} input - an array of numbers or of strings
+ * @return {array} the sorted array
+ * @throws if 'input' is not an array, or if its elements are not consistent in types, or if they are not all either numbers or
+ * 	strings
+ */
+export function sort(input)
+{
+	const response = {
+		origin: 'util.sort',
+		context: 'when sorting the elements of an array'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		// check the type and consistency of the array, and sort it accordingly:
+		const isNumberArray = input.every(element => typeof element === "number");
+		if (isNumberArray)
+		{
+			return input.sort((a, b) => (a - b));
+		}
+
+		const isStringArray = input.every(element => typeof element === "string");
+		if (isStringArray)
+		{
+			return input.sort();
+		}
+		
+		throw 'the input array should either consist entirely of strings or of numbers';
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}	
+ }
+ 
+ 
+/**
+ * Create a sequence of integers.
+ * 
+ * The sequence is such that the integer at index i is: start + step * i, with i >= 0 and start + step * i < stop
+ * 
+ * <p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.</p>
+ *
+ * @name module:util.range
+ * @function
+ * @public
+ * @param {Number} [start=0] - the value of start
+ * @param {Number} stop - the value of stop
+ * @param {Number} [step=1] - the value of step
+ * @returns {Array.{Number}} the range as an array of numbers
+ */
+export function range(...args)
+{
+	const response = {
+		origin: 'util.range',
+		context: 'when building a range of numbers'
+	};
+
+	try
+	{
+		let start, stop, step;
+
+		switch (args.length)
+		{
+			case 0:
+				throw 'at least one argument is required';
+
+			// 1 arg: start = 0, stop = arg, step = 1
+			case 1:
+				start = 0;
+				stop = args[0];
+				step = 1;
+				break;
+
+			// 2 args: start = arg1, stop = arg2
+			case 2:
+				start = args[0];
+				stop = args[1];
+				step = 1;
+				break;
+
+			// 3 args:
+			case 3:
+				start = args[0];
+				stop = args[1];
+				step = args[2];
+				break;
+
+			default:
+				throw 'range requires at least one and at most 3 arguments'
+		}
+
+		if (!Number.isInteger(start)) {
+			throw 'start should be an integer';
+		}
+		if (!Number.isInteger(stop)) {
+			throw 'stop should be an integer';
+		}
+		if (!Number.isInteger(step)) {
+			throw 'step should be an integer';
+		}
+
+		// if start >= stop, the range is empty:
+		if (start >= stop)
+		{
+			return [];
+		}
+
+		let result = [];
+		for (let i = start; i < stop; i += step)
+		{
+			result.push(i);
+		}
+		return result;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+}
+
+
+/**
+ * Create a boolean function that compares an input element to the given value.
+ * 
+ * @name module:util._match
+ * @function
+ * @private
+ * @param {Number|string|object|null} value the matching value
+ * @return {} a function that compares an input element to the given value
+ */
+function _match(value)
+{
+	const response = {
+		origin: 'util._match',
+		context: 'when creating a function that compares an input element to the given value'
+	};
+
+	try
+	{
+		// function:
+		if (typeof value === 'function')
+		{
+			throw 'the value cannot be a function';
+		}
+
+		// NaN:
+		if (Number.isNaN(value))
+		{
+			return (element) => Number.isNaN(element);
+		}
+
+		// null:
+		if (value === null)
+		{
+			return (element) => element === null;
+		}
+
+		// object: we compare using JSON.stringify
+		if (typeof value === 'object')
+		{
+			const jsonValue = JSON.stringify(value);
+			if (typeof jsonValue === 'undefined')
+			{
+				throw 'value could not be converted to a JSON string';
+			}
+
+			return (element) =>
+			{
+				const jsonElement = JSON.stringify(element);
+				return (jsonElement === jsonValue);
+			}
+		}
+
+		// everything else:
+		return (element) => element === value;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}	
+ }
+ 
+
+ /**
+  * Count the number of elements in the input array that match the given value.
+  * 
+  * <p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
+  * 
+  * @name module:util.count
+  * @function
+  * @public
+  * @param {array} input the input array
+  * @param {Number|string|object|null} value the matching value
+  * @returns the number of matching elements
+  */
+ export function count(input, value)
+ {
+	const response = {
+		origin: 'util.count',
+		context: 'when counting how many elements in the input array match the given value'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		const match = _match(value);
+
+		let nbMatches = 0;
+		input.forEach(element =>
+			{
+				if (match(element))
+				{
+					++ nbMatches;
+				}
+			});
+		return nbMatches;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+ }
+ 
+
+  /**
+  * Get the index in the input array of the first element that matches the given value.
+  * 
+  * <p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
+  * 
+  * @name module:util.index
+  * @function
+  * @public
+  * @param {array} input the input array
+  * @param {Number|string|object|null} value the matching value
+  * @returns the index of the first element that matches the value
+  * @throws if the input array does not contain any matching element
+  */
+ export function index(input, value)
+ {
+	const response = {
+		origin: 'util.index',
+		context: 'when getting the index in the input array of the first element that matches the given value'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		const match = _match(value);
+		const index = input.findIndex(match);
+
+		if (index === -1)
+		{
+			throw 'no element in the input array matches the value';
+		}
+
+		return index;
+
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+ }
+
+
+/**
+ * Return the file extension corresponding to an audio mime type.
+ * If the provided mimeType is not a string (e.g. null, undefined, an array)
+ * or unknown, then '.dat' is returned, instead of throwing an exception.
+ *
+ * @name module:util.extensionFromMimeType
+ * @function
+ * @public
+ * @param {string} mimeType the MIME type, e.g. 'audio/webm;codecs=opus'
+ * @return {string} the corresponding file extension, e.g. '.webm'
+ */
+export function extensionFromMimeType(mimeType)
+{
+	if (typeof mimeType !== 'string')
+	{
+		return '.dat';
+	}
+
+	if (mimeType.indexOf('audio/webm') === 0)
+	{
+		return '.webm';
+	}
+
+	if (mimeType.indexOf('audio/ogg') === 0)
+	{
+		return '.ogg';
+	}
+
+	if (mimeType.indexOf('audio/wav') === 0)
+	{
+		return '.wav';
+	}
+
+	return '.dat';
 }

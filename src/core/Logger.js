@@ -313,9 +313,9 @@ export class Logger
 	 */
 	_customConsoleLayout()
 	{
-		const detectedBrowser = this._psychoJS.browser;
+		const detectedBrowser = util.detectBrowser();
 
-		const customLayout = new log4javascript.PatternLayout("%p %f{1} | %m");
+		const customLayout = new log4javascript.PatternLayout("%p %d{HH:mm:ss.SSS} %f{1} | %m");
 		customLayout.setCustomField('location', function (layout, loggingReference)
 		{
 			// we throw a fake exception to retrieve the stack trace
@@ -346,7 +346,7 @@ export class Logger
 					const file = buf[buf.length - 3].split('/').pop();
 					const method = relevantEntry.split('@')[0];
 
-					return method + ' ' + file + ' ' + line;
+					return method + ' ' + file + ':' + line;
 				}
 				else if (detectedBrowser === 'Safari')
 				{
@@ -364,7 +364,7 @@ export class Logger
 					const line = buf.pop();
 					const file = buf.pop().split('/').pop();
 
-					return method + ' ' + file + ' ' + line;
+					return method + ' ' + file + ':' + line;
 				}
 				else
 				{

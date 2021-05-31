@@ -18,6 +18,7 @@ import {GUI} from './GUI';
 import {MonotonicClock} from '../util/Clock';
 import {Logger} from './Logger';
 import * as util from '../util/Util';
+// import {Shelf} from "../data/Shelf";
 
 
 /**
@@ -30,6 +31,7 @@ import * as util from '../util/Util';
  */
 export class PsychoJS
 {
+
 	/**
 	 * Properties
 	 */
@@ -109,6 +111,11 @@ export class PsychoJS
 		return this._browser;
 	}
 
+	// get shelf()
+	// {
+	// 	return this._shelf;
+	// }
+
 
 	/**
 	 * @constructor
@@ -153,6 +160,9 @@ export class PsychoJS
 
 		// Window:
 		this._window = undefined;
+
+		// // Shelf:
+		// this._shelf = new Shelf(this);
 
 		// redirection URLs:
 		this._cancellationUrl = undefined;
@@ -292,6 +302,17 @@ export class PsychoJS
 	/**
 	 * Start the experiment.
 	 *
+	 * <p>The resources are specified in the following fashion:
+	 * <ul>
+	 *   <li>For an experiment running locally: the root directory for the specified resources is that of index.html
+	 *   unless they are prepended with a protocol, such as http:// or https://.</li>
+	 *   <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
+	 *   of the experiment are downloaded, otherwise we only download the specified resources. All resources are assumed
+	 *   local to index.html unless they are prepended with a protocol.</li>
+	 *   <li>If resources is null: we do not download any resources.</li>
+	 * </ul>
+	 * </p>
+	 *
 	 * @param {Object} options
 	 * @param {string} [options.configURL=config.json] - the URL of the configuration file
 	 * @param {string} [options.expName=UNKNOWN] - the name of the experiment
@@ -299,8 +320,6 @@ export class PsychoJS
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
 	 * @async
 	 * @public
-	 *
-	 * @todo: close session on window or tab close
 	 */
 	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo = {}, resources = []} = {})
 	{
@@ -386,11 +405,11 @@ export class PsychoJS
 
 
 			// start the asynchronous download of resources:
-			this._serverManager.downloadResources(resources);
+			await this._serverManager.prepareResources(resources);
 
 			// start the experiment:
 			this.logger.info('[PsychoJS] Start Experiment.');
-			this._scheduler.start();
+			await this._scheduler.start();
 		}
 		catch (error)
 		{
@@ -400,8 +419,12 @@ export class PsychoJS
 	}
 
 
+
 	/**
-	 * Synchronously download resources for the experiment.
+	 * Block the experiment until the specified resources have been downloaded.
+	 *
+	 * <p>Note: only those resources that have not already been downloaded at that point are
+	 * considered.</p>
 	 *
 	 * <ul>
 	 *   <li>For an experiment running locally: the root directory for the specified resources is that of index.html
@@ -411,14 +434,18 @@ export class PsychoJS
 	 *   local to index.html unless they are prepended with a protocol.</li>
 	 *
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
-	 * @async
 	 * @public
 	 */
-	async downloadResources(resources = [])
+	waitForResources(resources = [])
 	{
+		const response = {
+			origin: 'PsychoJS.waitForResources',
+			context: 'while waiting for resources to be downloaded'
+		};
+
 		try
 		{
-			await this.serverManager.downloadResources(resources);
+			return this.serverManager.waitForResources(resources);
 		}
 		catch (error)
 		{
@@ -426,6 +453,7 @@ export class PsychoJS
 			this._gui.dialog({error: Object.assign(response, {error})});
 		}
 	}
+
 
 
 	/**
@@ -603,6 +631,14 @@ export class PsychoJS
 				{
 					throw 'missing URL in pavlovia block in configuration';
 				}
+				if (!('gitlab' in this._config))
+				{
+					throw 'missing gitlab block in configuration';
+				}
+				if (!('projectId' in this._config.gitlab))
+				{
+					throw 'missing projectId in gitlab block in configuration';
+				}
 
 				this._config.environment = ExperimentHandler.Environment.SERVER;
 
@@ -685,12 +721,13 @@ export class PsychoJS
 	 */
 	_captureErrors()
 	{
-		this.logger.debug('capturing all errors using window.onerror');
+		this.logger.debug('capturing all errors and showing them in a pop up window');
 
 		const self = this;
 		window.onerror = function (message, source, lineno, colno, error)
 		{
 			console.error(error);
+
 			document.body.setAttribute('data-error', JSON.stringify({
 				message: message,
 				source: source,
@@ -698,17 +735,17 @@ export class PsychoJS
 				colno: colno,
 				error: error.stack
 			}));
+      
 			self._gui.dialog({"error": error});
+      
 			return true;
 		};
-
-		/* NOT UNIVERSALLY SUPPORTED YET
-		window.addEventListener('unhandledrejection', event => {
-			console.error(error);
-			self._gui.dialog({"error" : error});
+		window.onunhandledrejection = function (error)
+		{
+			console.error(error.reason);
+			self._gui.dialog({error: error.reason});
 			return true;
-		});*/
-
+		};
 	}
 
 
@@ -744,8 +781,9 @@ PsychoJS.Status = {
 	CONFIGURED: Symbol.for('CONFIGURED'),
 	NOT_STARTED: Symbol.for('NOT_STARTED'),
 	STARTED: Symbol.for('STARTED'),
+	PAUSED: Symbol.for('PAUSED'),
 	FINISHED: Symbol.for('FINISHED'),
-
-	STOPPED: Symbol.for('FINISHED') //Symbol.for('STOPPED')
+	STOPPED: Symbol.for('FINISHED'), //Symbol.for('STOPPED')
+	ERROR: Symbol.for('ERROR')
 };
 

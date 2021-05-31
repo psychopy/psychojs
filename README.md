@@ -6,11 +6,9 @@
 
 PsychoJS is a JavaScript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy](http://www.psychopy.org/) Python library. 
 
-To use PsychoJS you can create online experiments in PsychoPy Builder, or you can find and adapt existing experiments on Pavlovia.org.
+You can create online experiments from the [PsychoPy Builder](http://www.psychopy.org/builder/builder.html), you can find and adapt existing experiments on [pavlovia.org](https://www.pavlovia.org), or create them from scratch: the PsychoJS API is available [here](https://psychopy.github.io/psychojs/).
 
-If you want to write PsychoJS experiments by hand you can view the [PsychoJS API here](https://psychopy.github.io/psychojs/)
-
-PsychoJS is an open-source project. You can contribute with pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs) and you can discuss future it in the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online)
+PsychoJS is an open-source project. You can contribute by submitting pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs), and discuss issues and current and future features on the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online).
 
 ## Motivation
 
@@ -37,7 +35,7 @@ Under the hood PsychoJS relies on [PixiJs](http://www.pixijs.com) to present sti
 
 
 ### Hosting Experiments
-A convenient way to make experiment available to participants is to host them on [pavlovia.org](https://www.pavlovia.org), an open-science server under active development. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.org.
+A convenient way to make experiment available to participants is to host them on [pavlovia.org](https://www.pavlovia.org), an open-science server. PsychoPy Builder offers the possibility of uploading the experiment directly to pavlovia.org.
 
 
 ## Which PsychoPy Components are supported by PsychoJS?
