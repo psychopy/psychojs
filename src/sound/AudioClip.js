@@ -131,7 +131,7 @@ export class AudioClip extends PsychObject
 	 * 	e.g. 'en-gb'
 	 * @return {Promise<void>}
 	 */
-	async transcribe({engine, languageCode} = {})
+	async transcribe({engine, languageCode, key} = {})
 	{
 		this._psychoJS.logger.debug('request to transcribe the audio clip');
 
@@ -166,8 +166,7 @@ export class AudioClip extends PsychObject
 			};
 
 			// TODO get the key from the designer's pavlovia account
-			const GOOGLE_API_KEY = '***REMOVED***';
-			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${GOOGLE_API_KEY}`;
+			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${key}`;
 
 			const response = await fetch(url, {
 				method: 'POST',
