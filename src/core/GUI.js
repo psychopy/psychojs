@@ -113,7 +113,9 @@ export class GUI
 				}
 
 				// prepare jquery UI dialog box:
-				let htmlCode = '<div id="expDialog" title="' + title + '">';
+				let htmlCode =
+					'<div id="expDialog" title="' + title + '">' +
+					'<p class="validateTips">Fields marked with an asterisk (*) are required.</p>';
 
 				// uncomment for older version of the library:
 				// htmlCode += '<p style="font-size: 0.8em; padding: 0.5em; margin-bottom: 0.5em; color: #FFAA00; border: 1px solid #FFAA00;">&#9888; This experiment uses a deprecated version of the PsychoJS library. Consider updating to a newer version (e.g. by updating PsychoPy and re-exporting the experiment).</p>'+
