@@ -8,7 +8,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
+import * as Tone from 'tone';
 import {PsychoJS} from './PsychoJS';
 import {ServerManager} from './ServerManager';
 import {Scheduler} from '../util/Scheduler';
@@ -181,7 +181,7 @@ export class GUI
 								}
 
 								htmlCode += '</select>';
-								$('#' + keyId).selectmenu({classes: {}});
+								jQuery('#' + keyId).selectmenu({classes: {}});
 							}
 
 							// otherwise we use a single string input:
@@ -209,7 +209,7 @@ export class GUI
 				// the dialog box:
 				if (typeof logoUrl === 'string')
 				{
-					$("#dialog-logo").on('load', () =>
+					jQuery("#dialog-logo").on('load', () =>
 					{
 						self._onDialogOpen('#expDialog')();
 					});
@@ -231,7 +231,7 @@ export class GUI
 				self._dialogComponent.button = 'Cancel';
 				self._estimateDialogScalingFactor();
 				const dialogSize = self._getDialogSize();
-				$("#expDialog").dialog({
+				jQuery("#expDialog").dialog({
 					width: dialogSize[0],
 					maxHeight: dialogSize[1],
 
@@ -248,7 +248,7 @@ export class GUI
 							click: function ()
 							{
 								self._dialogComponent.button = 'Cancel';
-								$("#expDialog").dialog('close');
+								jQuery("#expDialog").dialog('close');
 							}
 						},
 						{
@@ -270,7 +270,7 @@ export class GUI
 
 
 								self._dialogComponent.button = 'OK';
-								$("#expDialog").dialog('close');
+								jQuery("#expDialog").dialog('close');
 
 								// Tackle browser demands on having user action initiate audio context
 								Tone.start();
@@ -290,8 +290,8 @@ export class GUI
 					// close is called by both buttons and when the user clicks on the cross:
 					close: function ()
 					{
-						//$.unblockUI();
-						$(this).dialog('destroy').remove();
+						//jQuery.unblockUI();
+						jQuery(this).dialog('destroy').remove();
 						self._dialogComponent.status = PsychoJS.Status.FINISHED;
 					}
 
@@ -310,11 +310,11 @@ export class GUI
 
 				// block UI until user has pressed dialog button:
 				// note: block UI does not allow for text to be entered in the dialog form boxes, alas!
-				//$.blockUI({ message: "", baseZ: 1});
+				//jQuery.blockUI({ message: "", baseZ: 1});
 
 				// show dialog box:
-				$("#progressbar").progressbar({value: self._progressBarCurrentValue});
-				$("#progressbar").progressbar("option", "max", self._progressBarMax);
+				jQuery("#progressbar").progressbar({value: self._progressBarCurrentValue});
+				jQuery("#progressbar").progressbar("option", "max", self._progressBarMax);
 			}
 
 			if (self._dialogComponent.status === PsychoJS.Status.FINISHED)
@@ -357,12 +357,12 @@ export class GUI
 	{
 
 		// close the previously opened dialog box, if there is one:
-		const expDialog = $("#expDialog");
+		const expDialog = jQuery("#expDialog");
 		if (expDialog.length)
 		{
 			expDialog.dialog("destroy").remove();
 		}
-		const msgDialog = $("#msgDialog");
+		const msgDialog = jQuery("#msgDialog");
 		if (msgDialog.length)
 		{
 			msgDialog.dialog("destroy").remove();
@@ -459,7 +459,7 @@ export class GUI
 		this._estimateDialogScalingFactor();
 		const dialogSize = this._getDialogSize();
 		const self = this;
-		$("#msgDialog").dialog({
+		jQuery("#msgDialog").dialog({
 			dialogClass: 'no-close',
 
 			width: dialogSize[0],
@@ -476,7 +476,7 @@ export class GUI
 				text: "Ok",
 				click: function ()
 				{
-					$(this).dialog("destroy").remove();
+					jQuery(this).dialog("destroy").remove();
 
 					// execute callback function:
 					if (typeof onOK !== 'undefined')
@@ -514,10 +514,10 @@ export class GUI
 
 		return () =>
 		{
-			const windowSize = [$(window).width(), $(window).height()];
+			const windowSize = [jQuery(window).width(), jQuery(window).height()];
 
-			// note: $(dialogId) is the dialog-content, $(dialogId).parent() is the actual widget
-			const parent = $(dialogId).parent();
+			// note: jQuery(dialogId) is the dialog-content, jQuery(dialogId).parent() is the actual widget
+			const parent = jQuery(dialogId).parent();
 			parent.css({
 				position: 'absolute',
 				left: Math.max(0, (windowSize[0] - parent.outerWidth()) / 2.0),
@@ -526,8 +526,8 @@ export class GUI
 
 			// record width and height difference between dialog content and dialog:
 			self._contentDelta = [
-				parent.css('width').slice(0, -2) - $(dialogId).css('width').slice(0, -2),
-				parent.css('height').slice(0, -2) - $(dialogId).css('height').slice(0, -2)];
+				parent.css('width').slice(0, -2) - jQuery(dialogId).css('width').slice(0, -2),
+				parent.css('height').slice(0, -2) - jQuery(dialogId).css('height').slice(0, -2)];
 		};
 	}
 
@@ -544,10 +544,10 @@ export class GUI
 	{
 		const self = this;
 
-		$(window).resize(function ()
+		jQuery(window).resize(function ()
 		{
-			const parent = $(dialogId).parent();
-			const windowSize = [$(window).width(), $(window).height()];
+			const parent = jQuery(dialogId).parent();
+			const windowSize = [jQuery(window).width(), jQuery(window).height()];
 
 			// size (we need to redimension both the dialog and the dialog content):
 			const dialogSize = self._getDialogSize();
@@ -559,7 +559,7 @@ export class GUI
 			const isDifferent = self._estimateDialogScalingFactor();
 			if (!isDifferent)
 			{
-				$(dialogId).css({
+				jQuery(dialogId).css({
 					width: dialogSize[0] - self._contentDelta[0],
 					maxHeight: dialogSize[1] - self._contentDelta[1]
 				});
@@ -592,7 +592,7 @@ export class GUI
 		{
 			// for each resource, we have a 'downloading resource' and a 'resource downloaded' message:
 			this._progressBarMax = signal.count * 2;
-			$("#progressbar").progressbar("option", "max", this._progressBarMax);
+			jQuery("#progressbar").progressbar("option", "max", this._progressBarMax);
 
 			this._progressBarCurrentValue = 0;
 		}
@@ -601,7 +601,7 @@ export class GUI
 		else if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
 		{
 			this._allResourcesDownloaded = true;
-			$("#progressMsg").text('all resources downloaded.');
+			jQuery("#progressMsg").text('all resources downloaded.');
 			this._updateOkButtonStatus();
 		}
 
@@ -617,20 +617,20 @@ export class GUI
 
 			if (signal.message === ServerManager.Event.RESOURCE_DOWNLOADED)
 			{
-				$("#progressMsg").text('downloaded ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
+				jQuery("#progressMsg").text('downloaded ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
 			}
 			else
 			{
-				$("#progressMsg").text('downloading ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
+				jQuery("#progressMsg").text('downloading ' + (this._progressBarCurrentValue / 2) + ' / ' + (this._progressBarMax / 2));
 			}
 			// $("#progressMsg").text(signal.resource + ': downloaded.');
-			$("#progressbar").progressbar("option", "value", this._progressBarCurrentValue);
+			jQuery("#progressbar").progressbar("option", "value", this._progressBarCurrentValue);
 		}
 
 		// unknown message: we just display it
 		else
 		{
-			$("#progressMsg").text(signal.message);
+			jQuery("#progressMsg").text(signal.message);
 		}
 	}
 
@@ -649,23 +649,23 @@ export class GUI
 		{
 			if (changeFocus)
 		{
-			$("#buttonOk").button("option", "disabled", false).focus();
+			jQuery("#buttonOk").button("option", "disabled", false).focus();
 		}
 		else
 		{
-				$("#buttonOk").button("option", "disabled", false);
+				jQuery("#buttonOk").button("option", "disabled", false);
 			}
 		}
 		else
 		{
-			$("#buttonOk").button("option", "disabled", true);
+			jQuery("#buttonOk").button("option", "disabled", true);
 		}
 
 		// strangely, changing the disabled option sometimes fails to update the ui,
 		// so we need to hide it and show it again:
-		$("#buttonOk").hide(0, () =>
+		jQuery("#buttonOk").hide(0, () =>
 		{
-			$("#buttonOk").show();
+			jQuery("#buttonOk").show();
 		});
 	}
 
@@ -680,7 +680,7 @@ export class GUI
 	 */
 	_estimateDialogScalingFactor()
 	{
-		const windowSize = [$(window).width(), $(window).height()];
+		const windowSize = [jQuery(window).width(), jQuery(window).height()];
 
 		// desktop:
 		let dialogScalingFactor = 1.0;
@@ -715,7 +715,7 @@ export class GUI
 	 */
 	_getDialogSize()
 	{
-		const windowSize = [$(window).width(), $(window).height()];
+		const windowSize = [jQuery(window).width(), jQuery(window).height()];
 		this._estimateDialogScalingFactor();
 
 		return [
