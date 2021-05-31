@@ -198,7 +198,7 @@ export class Keyboard extends PsychObject
 			const keyEvent = this._circularBuffer[i];
 			if (keyEvent && keyEvent.status === Keyboard.KeyStatus.KEY_UP)
 			{
-				// check that the key is in the keyList:
+				// if the keylist is empty of the key is in the keyList:
 				if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey))
 				{
 					// look for a corresponding, preceding keydown event:
