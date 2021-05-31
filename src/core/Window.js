@@ -7,6 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import * as PIXI from 'pixi.js-legacy';
 import {Color} from '../util/Color';
 import {PsychObject} from '../util/PsychObject';
 import {MonotonicClock} from '../util/Clock';

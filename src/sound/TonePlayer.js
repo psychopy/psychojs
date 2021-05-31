@@ -7,6 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import * as Tone from 'tone';
 import {SoundPlayer} from './SoundPlayer';
 
 
@@ -243,7 +244,7 @@ export class TonePlayer extends SoundPlayer
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				Tone.Infinity
+				Infinity
 			);
 		}
 		else

@@ -1,6 +1,6 @@
 # Starts up one BrowserStack session per platform, then runs each test in succession. 
 # That's relatively fast, but less thorough, since a failed test aborts any successive tests.
-name: test_fast
+name: Automated Test (short)
 on:
 #  push:
 #    branches: '**'
@@ -15,7 +15,7 @@ on:
         description: 'branch/tag/SHA (default branch)'
         required: false
       testrun:
-        description: 'testrun (test_fast)'
+        description: 'testrun (short)'
         required: false
       subset:
         description: 'subset (true)'
@@ -24,7 +24,7 @@ on:
         description: 'platform (\*)'
         required: false
       label:
-        description: 'label (all)'
+        description: 'label (short)'
         required: false
 env:
   BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
@@ -34,10 +34,10 @@ env:
   STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
   PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
   DEFAULT_REPO: 'psychopy/psychojs'
-  DEFAULT_TESTRUN: 'test_fast'
+  DEFAULT_TESTRUN: 'short'
   DEFAULT_SUBSET: 'true'
   DEFAULT_PLATFORM: '\*'
-  DEFAULT_LABEL: 'all'
+  DEFAULT_LABEL: 'short'
 jobs:
   test:
     runs-on: ubuntu-latest
