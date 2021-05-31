@@ -61,6 +61,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._onChange(true, true)
 		);
 		this._addAttribute(
+			'placeholder',
+			text,
+			'',
+			this._onChange(true, true)
+		);		
+		this._addAttribute(
 			'anchor',
 			anchor,
 			'center',
@@ -405,6 +411,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
+			// Get the currently entered text
+			let enteredText = this._pixi !== undefined? this._pixi.text: '';
+			// Create new TextInput 
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
@@ -426,7 +435,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this._pixi.placeholder = this._text;
+				this.text = enteredText;				
+				this._pixi.placeholder = this._placeholder;
 			}
 			else
 			{
