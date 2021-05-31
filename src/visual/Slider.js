@@ -8,6 +8,7 @@
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
@@ -65,7 +66,7 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, ori, units, color, markerColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
 
@@ -163,6 +164,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			'color',
 			color,
 			'lightgray',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'markerColor',
+			markerColor,
+			'red',
 			this._onChange(true, false)
 		);
 		this._addAttribute(
@@ -1078,8 +1085,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._tickType = Slider.Shape.LINE;
 		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._color) : skin.TICK_COLOR;
 
+		if (this.markerColor === undefined) {
+			this.markerColor = skin.MARKER_COLOR;
+		}
+
 		// this._markerColor = this.getContrastedColor(this._color, 0.3);
-		this._markerColor = skin.MARKER_COLOR;
+		this.markerColor = new Color(this.markerColor);
 		this._markerType = Slider.Shape.DISC;
 		this._markerSize = (!this._skin.MARKER_SIZE) ? this._tickSize : this._skin.MARKER_SIZE;
 
