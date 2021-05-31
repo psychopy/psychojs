@@ -56,7 +56,6 @@ export class TextInput extends PIXI.Container
 		this._createDOMInput();
 		this.substituteText = true;
 		this._setState('DEFAULT');
-		this._addListeners();
 	}
 
 
