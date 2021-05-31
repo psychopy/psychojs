@@ -50,9 +50,8 @@
 
 
 <div class="description">
-    <p>This manager handles all communications between the experiment running in the participant's browser and the remote PsychoJS manager running on the <a href="http://pavlovia.org">pavlovia.org</a> server, <em>in an asynchronous manner</em>.</p>
-<p>It is responsible for reading the configuration file of an experiment, for opening and closing a session, for listing and downloading resources, and for uploading results and log.</p>
-<p>Note: The Server Manager uses <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promises</a> to deal with asynchronicity, is mostly called by <a href="PsychoJS.html">PsychoJS</a>, and is not exposed to the experiment code.</p>
+    <p>This manager handles all communications between the experiment running in the participant's browser and the <a href="http://pavlovia.org">pavlovia.org</a> server, <em>in an asynchronous manner</em>.</p>
+<p>It is responsible for reading the configuration file of an experiment, for opening and closing a session, for listing and downloading resources, and for uploading results, logs, and audio recordings.</p>
 </div>
 
 
@@ -366,7 +365,79 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line809">line 809</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1136">line 1136</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="ResourceStatus"><span class="type-signature">(readonly) </span>ResourceStatus<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+<div class="description">
+    Resource status
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1205">line 1205</a>
     </li></ul></dd>
     
 
@@ -510,7 +581,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line848">line 848</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1179">line 1179</a>
     </li></ul></dd>
     
 
@@ -531,6 +602,145 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="_downloadResources"><span class="type-signature">(protected) </span>_downloadResources<span class="signature">(resources)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Download the specified resources.
+
+<p>Note: we use the <a href="https://www.createjs.com/preloadjs">preloadjs library</a>.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Set</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a set of names of previously registered resources</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line901">line 901</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
             
@@ -698,7 +908,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line188">line 188</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line196">line 196</a>
     </li></ul></dd>
     
 
@@ -748,171 +958,6 @@
 </dl>
 
     
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="downloadResources"><span class="type-signature"></span>downloadResources<span class="signature">(resources<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Asynchronously download resources for the experiment and register them with the server manager.
-
-<ul>
-  <li>For an experiment running locally: the root directory for the specified resources is that of index.html
-  unless they are prepended with a protocol, such as http:// or https://.</li>
-  <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
-  of the experiment are downloaded, otherwise we only download the specified resources. All resources are assumed
-  local to index.html unless they are prepended with a protocol.</li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>resources</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;{name: string, path: string}></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    []
-                
-                </td>
-            
-
-            <td class="description last">the list of resources</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line347">line 347</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1025,7 +1070,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line61">line 61</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line69">line 69</a>
     </li></ul></dd>
     
 
@@ -1083,7 +1128,7 @@
     
 
     
-    <h4 class="name" id="getResource"><span class="type-signature"></span>getResource<span class="signature">(name)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="getResource"><span class="type-signature"></span>getResource<span class="signature">(name, errorIfNotDownloaded<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -1092,6 +1137,251 @@
 
 <div class="description">
     Get the value of a resource.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">name of the requested resource</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errorIfNotDownloaded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">whether or not to throw an exception if the
+resource status is not DOWNLOADED</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line277">line 277</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        exception if no resource with that name has previously been registered
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    value of the resource, or undefined if the resource has been registered
+but not downloaded yet.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="getResourceStatus"><span class="type-signature"></span>getResourceStatus<span class="signature">(name)</span><span class="type-signature"> &rarr; {core.ServerManager.ResourceStatus}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the status of a resource.
 </div>
 
 
@@ -1184,7 +1474,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line269">line 269</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line317">line 317</a>
     </li></ul></dd>
     
 
@@ -1242,7 +1532,7 @@
 
         
 <div class="param-desc">
-    value of the resource
+    status of the resource
 </div>
 
 
@@ -1253,7 +1543,7 @@
     </dt>
     <dd>
         
-<span class="param-type">Object</span>
+<span class="param-type">core.ServerManager.ResourceStatus</span>
 
 
     </dd>
@@ -1323,7 +1613,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line108">line 108</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line116">line 116</a>
     </li></ul></dd>
     
 
@@ -1370,6 +1660,173 @@
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="prepareResources"><span class="type-signature"></span>prepareResources<span class="signature">(resources<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Prepare resources for the experiment: register them with the server manager and possibly
+start downloading them right away.
+
+<ul>
+  <li>For an experiment running locally: the root directory for the specified resources is that of index.html
+  unless they are prepended with a protocol, such as http:// or https://.</li>
+  <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
+  of the experiment are downloaded, otherwise we only download the specified resources. All resources are assumed
+  local to index.html unless they are prepended with a protocol.</li>
+  <li>If resources is null, then we do not download any resources</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;({name: string, path: string, download: boolean}|Symbol)></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+
+            <td class="description last">the list of resources</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line395">line 395</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1433,7 +1890,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line333">line 333</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line381">line 381</a>
     </li></ul></dd>
     
 
@@ -1543,7 +2000,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line297">line 297</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line345">line 345</a>
     </li></ul></dd>
     
 
@@ -1579,6 +2036,188 @@
     
 
     
+    <h4 class="name" id="uploadAudio"><span class="type-signature"></span>uploadAudio<span class="signature">(audioBlob, tag)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Asynchronously upload audio data to the pavlovia server.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>audioBlob</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Blob</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the audio blob to be uploaded</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tag</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">additional tag</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line754">line 754</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the response
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="uploadData"><span class="type-signature"></span>uploadData<span class="signature">(key, value, sync<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>>}</span></h4>
     
 
@@ -1587,7 +2226,7 @@
 
 
 <div class="description">
-    Asynchronously upload experiment data to the remote PsychoJS manager.
+    Asynchronously upload experiment data to the pavlovia server.
 </div>
 
 
@@ -1770,7 +2409,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line444">line 444</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line626">line 626</a>
     </li></ul></dd>
     
 
@@ -1836,7 +2475,7 @@
 
 
 <div class="description">
-    Asynchronously upload experiment logs to the remote PsychoJS manager.
+    Asynchronously upload experiment logs to the pavlovia server.
 </div>
 
 
@@ -1984,7 +2623,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line510">line 510</a>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line693">line 693</a>
     </li></ul></dd>
     
 
@@ -2037,6 +2676,163 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="waitForResources"><span class="type-signature"></span>waitForResources<span class="signature">(resources<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Block the experiment until the specified resources have been downloaded.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;{name: string, path: string}></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    []
+                
+                </td>
+            
+
+            <td class="description last">the list of resources</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line520">line 520</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -2052,13 +2848,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 14:03:40 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri May 28 2021 10:49:17 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

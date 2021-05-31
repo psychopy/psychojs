@@ -211,7 +211,6 @@ export class TrialHandler extends PsychObject
 	 * @property {number} ran - whether or not the trial ran
 	 * @property {number} finished - whether or not the trials finished
 	 */
-
 	/**
 	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
 	 * number of trial remaining).
@@ -433,7 +432,7 @@ export class TrialHandler extends PsychObject
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1)
 			{
 				// (*) read conditions from resource:
-				const resourceValue = serverManager.getResource(resourceName);
+				const resourceValue = serverManager.getResource(resourceName, true);
 
 				// Conditionally use a `TextDecoder` to reprocess .csv type input,
 				// which is then read in as a string
