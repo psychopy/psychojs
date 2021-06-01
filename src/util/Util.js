@@ -1192,7 +1192,7 @@ export function sort(input)
  * @param {Number} [start=0] - the value of start
  * @param {Number} stop - the value of stop
  * @param {Number} [step=1] - the value of step
- * @returns {Array.{Number}} the range as an array of numbers
+ * @returns {Number[]} the range as an array of numbers
  */
 export function range(...args)
 {
