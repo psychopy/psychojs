@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: visual/Rect.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: visual/Rect.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Rectangular Stimulus.
+ *
+ * @author Alain Pitiot
+ * @version 2021.1.4
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+import {ShapeStim} from './ShapeStim';
+import {Color} from '../util/Color';
+
+
+/**
+ * &lt;p>Rectangular visual stimulus.&lt;/p>
+ *
+ * @name module:visual.Rect
+ * @class
+ * @extends ShapeStim
+ * @param {Object} options
+ * @param {String} options.name - the name used when logging messages from this stimulus
+ * @param {module:core.Window} options.win - the associated Window
+ * @param {number} [options.lineWidth= 1.5] - the line width
+ * @param {Color} [options.lineColor= 'white'] the line color
+ * @param {Color} [options.fillColor= undefined] - the fill color
+ * @param {number} [options.opacity= 1.0] - the opacity
+ * @param {number} [options.width= 0.5] - the width of the rectangle
+ * @param {number} [options.height= 0.5] - the height of the rectangle
+ * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position
+ * @param {number} [options.size= 1.0] - the size
+ * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+ * @param {string} [options.units= "height"] - the units of the stimulus vertices, size and position
+ * @param {number} [options.contrast= 1.0] - the contrast
+ * @param {number} [options.depth= 0] - the depth
+ * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
+ * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+ * @param {boolean} [options.autoLog= false] - whether or not to log
+ */
+export class Rect extends ShapeStim
+{
+	constructor({name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
+	{
+		super({
+			name,
+			win,
+			lineWidth,
+			lineColor,
+			fillColor,
+			opacity,
+			pos,
+			ori,
+			size,
+			units,
+			contrast,
+			depth,
+			interpolate,
+			autoDraw,
+			autoLog
+		});
+
+		this._psychoJS.logger.debug('create a new Rect with name: ', name);
+
+		this._addAttribute(
+			'width',
+			width,
+			0.5
+		);
+		this._addAttribute(
+			'height',
+			height,
+			0.5
+		);
+
+		this._updateVertices();
+
+		if (this._autoLog)
+		{
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
+	}
+
+
+
+	/**
+	 * Setter for the width attribute.
+	 *
+	 * @name module:visual.Rect#setWidth
+	 * @public
+	 * @param {number} width - the rectangle width
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setWidth(width, log = false)
+	{
+		this._psychoJS.logger.debug('set the width of Rect: ', this.name, 'to: ', width);
+
+		const hasChanged = this._setAttribute('width', width, log);
+
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
+	}
+
+
+
+	/**
+	 * Setter for the height attribute.
+	 *
+	 * @name module:visual.Rect#setHeight
+	 * @public
+	 * @param {number} height - the rectangle height
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setHeight(height, log = false)
+	{
+		this._psychoJS.logger.debug('set the height of Rect: ', this.name, 'to: ', height);
+
+		const hasChanged = this._setAttribute('height', height, log);
+
+		if (hasChanged)
+		{
+			this._updateVertices();
+		}
+	}
+
+
+
+	/**
+	 * Update the vertices.
+	 *
+	 * @name module:visual.Rect#_updateVertices
+	 * @private
+	 */
+	_updateVertices()
+	{
+		this._psychoJS.logger.debug('update the vertices of Rect: ', this.name);
+
+		const halfWidth = this._width / 2.0;
+		const halfHeight = this._height / 2.0;
+
+		this.setVertices([
+			[-halfWidth, -halfHeight],
+			[halfWidth, -halfHeight],
+			[halfWidth, halfHeight],
+			[-halfWidth, halfHeight]
+		]);
+	}
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri May 28 2021 10:49:17 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
