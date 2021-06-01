@@ -170,6 +170,16 @@ export class ServerManager extends PsychObject
 					self._psychoJS.config.experiment.license = data.experiment.license;
 					self._psychoJS.config.experiment.runMode = data.experiment.runMode;
 
+					// secret keys for various services, e.g. Google Speech API
+					if ('keys' in data.experiment)
+					{
+						self._psychoJS.config.experiment.keys = data.experiment.keys;
+					}
+					else
+					{
+						self._psychoJS.config.experiment.keys = [];
+					}
+
 					self.setStatus(ServerManager.Status.READY);
 					// resolve({ ...response, token: data.token, status: data.status });
 					resolve(Object.assign(response, {token: data.token, status: data.status}));

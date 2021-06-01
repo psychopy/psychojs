@@ -131,9 +131,29 @@ export class AudioClip extends PsychObject
 	 * 	e.g. 'en-gb'
 	 * @return {Promise<void>}
 	 */
-	async transcribe({engine, languageCode, key} = {})
+	async transcribe({engine, languageCode} = {})
 	{
 		this._psychoJS.logger.debug('request to transcribe the audio clip');
+
+		// get the secret key from the experiment configuration:
+		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
+		let transcriptionKey;
+		for (const key of this._psychoJS.config.experiment.keys)
+		{
+			if (key.name === fullEngineName)
+			{
+				transcriptionKey = key.value;
+			}
+		}
+		if (typeof transcriptionKey === 'undefined')
+		{
+			throw {
+				origin: 'AudioClip.transcribe',
+				context: `when transcribing audio clip: ${this._name}`,
+				error: `missing key for engine: ${fullEngineName}`
+			};
+		}
+
 
 		// wait for the decoding to complete:
 		await this._decodeAudio();
@@ -165,8 +185,7 @@ export class AudioClip extends PsychObject
 				},
 			};
 
-			// TODO get the key from the designer's pavlovia account
-			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${key}`;
+			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${transcriptionKey}`;
 
 			const response = await fetch(url, {
 				method: 'POST',

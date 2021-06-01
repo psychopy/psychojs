@@ -651,7 +651,8 @@ export class PsychoJS
 					experiment: {
 						name,
 						saveFormat: ExperimentHandler.SaveFormat.CSV,
-						saveIncompleteResults: true
+						saveIncompleteResults: true,
+						keys: []
 					}
 				};
 			}
