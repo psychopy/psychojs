@@ -9,6 +9,8 @@
  * We are currently using it almost as is but will be making modification in the near future.
  */
 
+import * as PIXI from 'pixi.js-legacy';
+
 export class TextInput extends PIXI.Container
 {
 	constructor(styles)
