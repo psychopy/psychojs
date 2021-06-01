@@ -8,6 +8,7 @@
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {MinimalStim} from '../core/MinimalStim';
 import {WindowMixin} from '../core/WindowMixin';
 import * as util from '../util/Util';

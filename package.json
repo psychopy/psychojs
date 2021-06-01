@@ -8,69 +8,42 @@
     "name": "Alain Pitiot"
   },
   "type": "module",
-  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./css": "./src/index.css",
+    "./package": "./package.json"
+  },
+  "main": "./src/index.js",
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
-    "build:css": "npx cross-var postcss -o dist/psychojs-$npm_package_version.css src/index.css",
+    "build:css": "node ./scripts/build.css.cjs",
     "build:docs": "jsdoc src -r -d docs",
-    "build:js": "rollup -c",
+    "build:js": "node ./scripts/build.js.cjs",
     "lint": "npm run lint:js && npm run lint:css",
-    "lint:css": "stylelint src/**/*.css",
-    "lint:js": "eslint rollup.config.js src/**/*.js",
+    "lint:css": "csslint src",
+    "lint:js": "eslint src",
+    "lint:scripts": "eslint scripts --ext .cjs",
     "start": "npm run build"
   },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "modules": false,
-          "targets": {
-            "ie": 11
-          },
-          "spec": true,
-          "forceAllTransforms": true,
-          "debug": true
-        }
-      ]
-    ]
-  },
-  "browserslist": [
-    "last 2 versions"
-  ],
-  "stylelint": {
-    "extends": "stylelint-config-standard",
-    "rules": {
-      "no-descending-specificity": [
-        true,
-        {
-          "severity": "warning"
-        }
-      ]
-    }
+  "dependencies": {
+    "howler": "^2.2.1",
+    "log4javascript": "github:Ritzlgrmft/log4javascript",
+    "moment": "^2.29.1",
+    "pako": "^1.0.10",
+    "pixi.js-legacy": "^6.0.4",
+    "preload-js": "^0.6.3",
+    "seedrandom": "^3.0.5",
+    "tone": "^14.7.77",
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "@rollup/plugin-babel": "^5.2.1",
-    "cross-var": "^1.1.0",
-    "cssnano": "^4.1.10",
-    "eslint": "^7.24.0",
-    "jsdoc": "^3.6.6",
-    "postcss": "^8.1.3",
-    "postcss-cli": "^8.1.0",
-    "postcss-preset-env": "^6.7.0",
-    "rollup": "^2.32.1",
-    "stylelint": "^13.7.2",
-    "stylelint-config-standard": "^20.0.0",
-    "terser": "^5.3.8"
+    "csslint": "^1.0.5",
+    "esbuild": "^0.12.1",
+    "eslint": "^7.26.0",
+    "jsdoc": "^3.6.7"
   },
-  "postcss": {
-    "plugins": {
-      "postcss-preset-env": {},
-      "cssnano": {
-        "autoprefixer": false
-      }
-    }
+  "engines": {
+    "node": ">=14.15.0",
+    "npm": ">=6.14.8"
   }
 }

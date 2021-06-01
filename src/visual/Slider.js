@@ -8,6 +8,7 @@
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
@@ -44,7 +45,7 @@ import {PsychoJS} from "../core/PsychoJS";
  * and labels with respect to the central bar
  * @param {boolean} [options.readOnly= false] - whether or not the slider is read only
  *
- * @param {string} [options.fontFamily= 'Helvetica'] - the text font
+ * @param {string} [options.font= 'Arial'] - the text font
  * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
  * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
  * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
@@ -130,7 +131,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._addAttribute(
 			'font',
 			font,
-			'Helvetica',
+			'Arial',
 			this._onChange(true, true)
 		);
 		this._addAttribute(
