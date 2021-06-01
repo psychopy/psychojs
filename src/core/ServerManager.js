@@ -7,14 +7,13 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
+import createjs from 'preload-js';
+import { Howl } from 'howler';
 import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
 import {ExperimentHandler} from "../data/ExperimentHandler";
 import {MonotonicClock} from "../util/Clock";
-
-// import { Howl } from 'howler';
 
 
 /**
@@ -87,7 +86,7 @@ export class ServerManager extends PsychObject
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			$.get(configURL, 'json')
+			jQuery.get(configURL, 'json')
 				.done((config, textStatus) =>
 				{
 					// resolve({ ...response, config });
@@ -144,7 +143,7 @@ export class ServerManager extends PsychObject
 		return new Promise((resolve, reject) =>
 		{
 			const url = this._psychoJS.config.pavlovia.URL + '/api/v2/experiments/' + encodeURIComponent(self._psychoJS.config.experiment.fullpath) + '/sessions';
-			$.post(url, data, null, 'json')
+			jQuery.post(url, data, null, 'json')
 				.done((data, textStatus) =>
 				{
 					if (!('token' in data))
@@ -246,7 +245,7 @@ export class ServerManager extends PsychObject
 			const self = this;
 			return new Promise((resolve, reject) =>
 			{
-				$.ajax({
+				jQuery.ajax({
 					url,
 					type: 'delete',
 					data: {isCompleted},
@@ -669,7 +668,7 @@ export class ServerManager extends PsychObject
 					value
 				};
 
-				$.post(url, data, null, 'json')
+				jQuery.post(url, data, null, 'json')
 					.done((serverData, textStatus) =>
 					{
 						self.setStatus(ServerManager.Status.READY);
@@ -731,7 +730,7 @@ export class ServerManager extends PsychObject
 				'/sessions/' + self._psychoJS.config.session.token +
 				'/logs';
 
-			$.post(url, data, null, 'json')
+			jQuery.post(url, data, null, 'json')
 				.done((serverData, textStatus) =>
 				{
 					self.setStatus(ServerManager.Status.READY);
@@ -860,7 +859,7 @@ export class ServerManager extends PsychObject
 				'/api/v2/experiments/' + encodeURIComponent(this._psychoJS.config.experiment.fullpath) +
 				'/resources';
 
-			$.get(url, data, null, 'json')
+			jQuery.get(url, data, null, 'json')
 				.done((data, textStatus) =>
 				{
 					if (!('resources' in data))

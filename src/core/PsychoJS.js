@@ -8,7 +8,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
+import log4javascript from 'log4javascript';
 import {Scheduler} from '../util/Scheduler';
 import {ServerManager} from './ServerManager';
 import {ExperimentHandler} from '../data/ExperimentHandler';
@@ -182,7 +182,7 @@ export class PsychoJS
 		this.logger.info('[PsychoJS] @version 2021.1.4');
 
 		// Hide #root::after
-		$('#root').addClass('is-ready');
+		jQuery('#root').addClass('is-ready');
 	}
 
 
@@ -696,7 +696,7 @@ export class PsychoJS
 		this._IP = {};
 		try
 		{
-			const geoResponse = await $.get('http://www.geoplugin.net/json.gp');
+			const geoResponse = await jQuery.get('http://www.geoplugin.net/json.gp');
 			const geoData = JSON.parse(geoResponse);
 			this._IP = {
 				IP: geoData.geoplugin_request,

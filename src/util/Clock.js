@@ -7,6 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import moment from 'moment';
+
 
 /**
  * <p>MonotonicClock offers a convenient way to keep track of time during experiments. An experiment can have as many independent clocks as needed, e.g. one to time responses, another one to keep track of stimuli, etc.</p>

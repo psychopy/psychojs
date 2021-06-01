@@ -8,6 +8,7 @@
  */
 
 
+import * as XLSX from 'xlsx';
 import {PsychObject} from '../util/PsychObject';
 import {MonotonicClock} from '../util/Clock';
 import * as util from '../util/Util';
