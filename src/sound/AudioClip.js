@@ -2,7 +2,7 @@
  * AudioClip encapsulate an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2021.x
+ * @version 2021.2.0
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -135,6 +135,26 @@ export class AudioClip extends PsychObject
 	{
 		this._psychoJS.logger.debug('request to transcribe the audio clip');
 
+		// get the secret key from the experiment configuration:
+		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
+		let transcriptionKey;
+		for (const key of this._psychoJS.config.experiment.keys)
+		{
+			if (key.name === fullEngineName)
+			{
+				transcriptionKey = key.value;
+			}
+		}
+		if (typeof transcriptionKey === 'undefined')
+		{
+			throw {
+				origin: 'AudioClip.transcribe',
+				context: `when transcribing audio clip: ${this._name}`,
+				error: `missing key for engine: ${fullEngineName}`
+			};
+		}
+
+
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
@@ -165,9 +185,7 @@ export class AudioClip extends PsychObject
 				},
 			};
 
-			// TODO get the key from the designer's pavlovia account
-			const GOOGLE_API_KEY = 'AIzaSyDngTi-pJcVrm_Kr2yTKV8OYLtfRN180gY';
-			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${GOOGLE_API_KEY}`;
+			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${transcriptionKey}`;
 
 			const response = await fetch(url, {
 				method: 'POST',

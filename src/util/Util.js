@@ -2,7 +2,7 @@
  * Various utilities.
  *
  * @authors Alain Pitiot, Sotiri Bakagiannis, Thomas Pronk
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -1192,7 +1192,7 @@ export function sort(input)
  * @param {Number} [start=0] - the value of start
  * @param {Number} stop - the value of stop
  * @param {Number} [step=1] - the value of step
- * @returns {Array.{Number}} the range as an array of numbers
+ * @returns {Number[]} the range as an array of numbers
  */
 export function range(...args)
 {
