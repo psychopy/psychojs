@@ -18,7 +18,7 @@ const [,,, dir = dirMaybe || 'out', version = versionMaybe || pkg.version] = pro
 		legalComments: 'none',
 		outfile: `./${dir}/psychojs-${version}.iife.js`
 	}
-].forEach(function build(options) {
+].forEach(function(options) {
 	buildSync({ ...this, ...options });
 }, {
 	// Shared options
