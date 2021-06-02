@@ -29,11 +29,13 @@
             <pre class="prettyprint source linenums"><code>/**
  * Various utilities.
  *
- * @author Alain Pitiot
- * @version 2021.1.4
+ * @authors Alain Pitiot, Sotiri Bakagiannis, Thomas Pronk
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
+
+import * as PIXI from 'pixi.js-legacy';
 
 
 /**
@@ -986,12 +988,12 @@ export function offerDataForDownload(filename, data, type)
 	}
 	else
 	{
-		let elem = window.document.createElement('a');
-		elem.href = window.URL.createObjectURL(blob);
-		elem.download = filename;
-		document.body.appendChild(elem);
-		elem.click();
-		document.body.removeChild(elem);
+		const anchor = document.createElement('a');
+		anchor.href = window.URL.createObjectURL(blob);
+		anchor.download = filename;
+		document.body.appendChild(anchor);
+		anchor.click();
+		document.body.removeChild(anchor);
 	}
 }
 
@@ -1081,7 +1083,8 @@ export function randint(min = 0, max)
 }
 
 
-/** Round to a certain number of decimal places.
+/**
+ * Round to a certain number of decimal places.
  *
  * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
  *
@@ -1100,27 +1103,382 @@ export function round(input, places = 0)
 
 
 /**
- * Calculate a total for all numeric input array elements.
+ * Calculate the sum of the elements in the input array.
+ *
+ * If 'input' is not an array, then we return start.
  *
  * @name module:util.sum
  * @function
  * @public
- * @param {array} inputMaybe - a list of numbers to add up
- * @returns {number} numeric input entries added up
+ * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @param {number} start - value added to the sum of numbers (a la Python)
+ * @returns {number} the sum of the elements in the array + start
  */
-export function sum(inputMaybe = [])
+export function sum(input = [], start = 0)
 {
-	// Cover against null input
-	const input = Array.isArray(inputMaybe) ? inputMaybe : [];
+	if (!Array.isArray(input))
+	{
+		return start;
+	}
+
 	const add = (a, b) => a + b;
 
 	return input
-		// Type cast everything as a number
+		// type cast everything as a number
 		.map(value => Number(value))
-		// Drop non numeric looking entries, needs transpiling for IE11
+		// drop non numeric looking entries (note: needs transpiling for IE11)
 		.filter(value => Number.isNaN(value) === false)
-		// Add up each successive entry starting from naught
-		.reduce(add, 0);
+		// add up each successive entry, starting with start
+		.reduce(add, start);
+}
+
+
+/**
+ * Calculate the average of the elements in the input array.
+ *
+ * If 'input' is not an array, or if it is an empty array, then we return 0.
+ *
+ * @name module:util.average
+ * @function
+ * @public
+ * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @returns {number} the average of the elements in the array
+ */
+export function average(input = [])
+{
+	if (!Array.isArray(input))
+	{
+		return 0;
+	}
+
+	if (input.length === 0)
+	{
+		return 0;
+	}
+
+	return sum(input, 0) / input.length;
+}
+
+
+/**
+ * Sort the elements of the input array, in increasing alphabetical or numerical order.
+ * 
+ * @name module:util.sort
+ * @function
+ * @public
+ * @param {array} input - an array of numbers or of strings
+ * @return {array} the sorted array
+ * @throws if 'input' is not an array, or if its elements are not consistent in types, or if they are not all either numbers or
+ * 	strings
+ */
+export function sort(input)
+{
+	const response = {
+		origin: 'util.sort',
+		context: 'when sorting the elements of an array'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		// check the type and consistency of the array, and sort it accordingly:
+		const isNumberArray = input.every(element => typeof element === "number");
+		if (isNumberArray)
+		{
+			return input.sort((a, b) => (a - b));
+		}
+
+		const isStringArray = input.every(element => typeof element === "string");
+		if (isStringArray)
+		{
+			return input.sort();
+		}
+		
+		throw 'the input array should either consist entirely of strings or of numbers';
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}	
+ }
+ 
+ 
+/**
+ * Create a sequence of integers.
+ * 
+ * The sequence is such that the integer at index i is: start + step * i, with i >= 0 and start + step * i &lt; stop
+ * 
+ * &lt;p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.&lt;/p>
+ *
+ * @name module:util.range
+ * @function
+ * @public
+ * @param {Number} [start=0] - the value of start
+ * @param {Number} stop - the value of stop
+ * @param {Number} [step=1] - the value of step
+ * @returns {Number[]} the range as an array of numbers
+ */
+export function range(...args)
+{
+	const response = {
+		origin: 'util.range',
+		context: 'when building a range of numbers'
+	};
+
+	try
+	{
+		let start, stop, step;
+
+		switch (args.length)
+		{
+			case 0:
+				throw 'at least one argument is required';
+
+			// 1 arg: start = 0, stop = arg, step = 1
+			case 1:
+				start = 0;
+				stop = args[0];
+				step = 1;
+				break;
+
+			// 2 args: start = arg1, stop = arg2
+			case 2:
+				start = args[0];
+				stop = args[1];
+				step = 1;
+				break;
+
+			// 3 args:
+			case 3:
+				start = args[0];
+				stop = args[1];
+				step = args[2];
+				break;
+
+			default:
+				throw 'range requires at least one and at most 3 arguments'
+		}
+
+		if (!Number.isInteger(start)) {
+			throw 'start should be an integer';
+		}
+		if (!Number.isInteger(stop)) {
+			throw 'stop should be an integer';
+		}
+		if (!Number.isInteger(step)) {
+			throw 'step should be an integer';
+		}
+
+		// if start >= stop, the range is empty:
+		if (start >= stop)
+		{
+			return [];
+		}
+
+		let result = [];
+		for (let i = start; i &lt; stop; i += step)
+		{
+			result.push(i);
+		}
+		return result;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+}
+
+
+/**
+ * Create a boolean function that compares an input element to the given value.
+ * 
+ * @name module:util._match
+ * @function
+ * @private
+ * @param {Number|string|object|null} value the matching value
+ * @return {} a function that compares an input element to the given value
+ */
+function _match(value)
+{
+	const response = {
+		origin: 'util._match',
+		context: 'when creating a function that compares an input element to the given value'
+	};
+
+	try
+	{
+		// function:
+		if (typeof value === 'function')
+		{
+			throw 'the value cannot be a function';
+		}
+
+		// NaN:
+		if (Number.isNaN(value))
+		{
+			return (element) => Number.isNaN(element);
+		}
+
+		// null:
+		if (value === null)
+		{
+			return (element) => element === null;
+		}
+
+		// object: we compare using JSON.stringify
+		if (typeof value === 'object')
+		{
+			const jsonValue = JSON.stringify(value);
+			if (typeof jsonValue === 'undefined')
+			{
+				throw 'value could not be converted to a JSON string';
+			}
+
+			return (element) =>
+			{
+				const jsonElement = JSON.stringify(element);
+				return (jsonElement === jsonValue);
+			}
+		}
+
+		// everything else:
+		return (element) => element === value;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}	
+ }
+ 
+
+ /**
+  * Count the number of elements in the input array that match the given value.
+  * 
+  * &lt;p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.&lt;/p>
+  * 
+  * @name module:util.count
+  * @function
+  * @public
+  * @param {array} input the input array
+  * @param {Number|string|object|null} value the matching value
+  * @returns the number of matching elements
+  */
+ export function count(input, value)
+ {
+	const response = {
+		origin: 'util.count',
+		context: 'when counting how many elements in the input array match the given value'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		const match = _match(value);
+
+		let nbMatches = 0;
+		input.forEach(element =>
+			{
+				if (match(element))
+				{
+					++ nbMatches;
+				}
+			});
+		return nbMatches;
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+ }
+ 
+
+  /**
+  * Get the index in the input array of the first element that matches the given value.
+  * 
+  * &lt;p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.&lt;/p>
+  * 
+  * @name module:util.index
+  * @function
+  * @public
+  * @param {array} input the input array
+  * @param {Number|string|object|null} value the matching value
+  * @returns the index of the first element that matches the value
+  * @throws if the input array does not contain any matching element
+  */
+ export function index(input, value)
+ {
+	const response = {
+		origin: 'util.index',
+		context: 'when getting the index in the input array of the first element that matches the given value'
+	};
+
+	try
+	{
+		if (!Array.isArray(input))
+		{
+			throw 'the input argument should be an array';
+		}
+
+		const match = _match(value);
+		const index = input.findIndex(match);
+
+		if (index === -1)
+		{
+			throw 'no element in the input array matches the value';
+		}
+
+		return index;
+
+	}
+	catch (error)
+	{
+		throw {...response, error};
+	}
+ }
+
+
+/**
+ * Return the file extension corresponding to an audio mime type.
+ * If the provided mimeType is not a string (e.g. null, undefined, an array)
+ * or unknown, then '.dat' is returned, instead of throwing an exception.
+ *
+ * @name module:util.extensionFromMimeType
+ * @function
+ * @public
+ * @param {string} mimeType the MIME type, e.g. 'audio/webm;codecs=opus'
+ * @return {string} the corresponding file extension, e.g. '.webm'
+ */
+export function extensionFromMimeType(mimeType)
+{
+	if (typeof mimeType !== 'string')
+	{
+		return '.dat';
+	}
+
+	if (mimeType.indexOf('audio/webm') === 0)
+	{
+		return '.webm';
+	}
+
+	if (mimeType.indexOf('audio/ogg') === 0)
+	{
+		return '.ogg';
+	}
+
+	if (mimeType.indexOf('audio/wav') === 0)
+	{
+		return '.wav';
+	}
+
+	return '.dat';
 }
 </code></pre>
         </article>
@@ -1132,13 +1490,13 @@ export function sum(inputMaybe = [])
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -203,7 +203,7 @@ since those are reserved for client/server communication</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line777">line 777</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line779">line 779</a>
     </li></ul></dd>
     
 
@@ -228,6 +228,348 @@ since those are reserved for client/server communication</p>
 
 
 
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".average"><span class="type-signature">(static) </span>average<span class="signature">(input)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calculate the average of the elements in the input array.
+
+If 'input' is not an array, or if it is an empty array, then we return 0.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1108">line 1108</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the average of the elements in the array
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".count"><span class="type-signature">(static) </span>count<span class="signature">(input, value)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Count the number of elements in the input array that match the given value.
+
+<p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the input array</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the matching value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1330">line 1330</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the number of matching elements
+</div>
+
+
+
+    
 
 
 
@@ -294,7 +636,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line141">line 141</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line143">line 143</a>
     </li></ul></dd>
     
 
@@ -325,6 +667,167 @@ https://stackoverflow.com/a/9851769</p>
 <div class="param-desc">
     the detected browser, one of 'Opera', 'Firefox', 'Safari',
 'IE', 'Edge', 'EdgeChromium', 'Chrome', 'unknown'
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".extensionFromMimeType"><span class="type-signature">(static) </span>extensionFromMimeType<span class="signature">(mimeType)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Return the file extension corresponding to an audio mime type.
+If the provided mimeType is not a string (e.g. null, undefined, an array)
+or unknown, then '.dat' is returned, instead of throwing an exception.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mimeType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the MIME type, e.g. 'audio/webm;codecs=opus'</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1420">line 1420</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the corresponding file extension, e.g. '.webm'
 </div>
 
 
@@ -454,7 +957,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line873">line 873</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line875">line 875</a>
     </li></ul></dd>
     
 
@@ -564,7 +1067,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line84">line 84</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -746,7 +1249,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line355">line 355</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line357">line 357</a>
     </li></ul></dd>
     
 
@@ -936,7 +1439,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line697">line 697</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line699">line 699</a>
     </li></ul></dd>
     
 
@@ -1024,7 +1527,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line750">line 750</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line752">line 752</a>
     </li></ul></dd>
     
 
@@ -1080,6 +1583,199 @@ https://stackoverflow.com/a/9851769</p>
     <pre class="prettyprint"><code>const urlParameters = util.getUrlParameters();
 for (const [key, value] of urlParameters)
   console.log(key + ' = ' + value);</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".index"><span class="type-signature">(static) </span>index<span class="signature">(input, value)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get the index in the input array of the first element that matches the given value.
+
+<p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the input array</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+|
+
+<span class="param-type">null</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the matching value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1375">line 1375</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        if the input array does not contain any matching element
+    
+    </div>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the index of the first element that matches the value
+</div>
+
+
+
+    
+
+
 
 
 
@@ -1190,7 +1886,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line109">line 109</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line111">line 111</a>
     </li></ul></dd>
     
 
@@ -1350,7 +2046,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line728">line 728</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line730">line 730</a>
     </li></ul></dd>
     
 
@@ -1533,7 +2229,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line301">line 301</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line303">line 303</a>
     </li></ul></dd>
     
 
@@ -1644,7 +2340,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line65">line 65</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line67">line 67</a>
     </li></ul></dd>
     
 
@@ -1849,7 +2545,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line942">line 942</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line944">line 944</a>
     </li></ul></dd>
     
 
@@ -1986,7 +2682,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line47">line 47</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -2201,7 +2897,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1022">line 1022</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1024">line 1024</a>
     </li></ul></dd>
     
 
@@ -2242,6 +2938,263 @@ where error is null if there was no error
     <dd>
         
 <span class="param-type">number</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".range"><span class="type-signature">(static) </span>range<span class="signature">(start<span class="signature-attributes">opt</span>, stop, step<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;Number>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Create a sequence of integers.
+
+The sequence is such that the integer at index i is: start + step * i, with i >= 0 and start + step * i < stop
+
+<p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>start</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">the value of start</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the value of stop</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>step</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">the value of step</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1182">line 1182</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the range as an array of numbers
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Number></span>
 
 
     </dd>
@@ -2385,7 +3338,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1056">line 1056</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1058">line 1058</a>
     </li></ul></dd>
     
 
@@ -2590,7 +3543,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line807">line 807</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line809">line 809</a>
     </li></ul></dd>
     
 
@@ -2753,7 +3706,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line333">line 333</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line335">line 335</a>
     </li></ul></dd>
     
 
@@ -3045,7 +3998,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line895">line 895</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line897">line 897</a>
     </li></ul></dd>
     
 
@@ -3103,7 +4056,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
 
     
-    <h4 class="name" id=".sum"><span class="type-signature">(static) </span>sum<span class="signature">(inputMaybe)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id=".sort"><span class="type-signature">(static) </span>sort<span class="signature">(input)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
 
     
@@ -3111,7 +4064,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
 
 
 <div class="description">
-    Calculate a total for all numeric input array elements.
+    Sort the elements of the input array, in increasing alphabetical or numerical order.
 </div>
 
 
@@ -3147,7 +4100,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
 
         <tr>
             
-                <td class="name"><code>inputMaybe</code></td>
+                <td class="name"><code>input</code></td>
             
 
             <td class="type">
@@ -3163,7 +4116,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
 
             
 
-            <td class="description last">a list of numbers to add up</td>
+            <td class="description last">an array of numbers or of strings</td>
         </tr>
 
     
@@ -3204,7 +4157,204 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1074">line 1074</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1135">line 1135</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+    <div class="param-desc">
+    
+        if 'input' is not an array, or if its elements are not consistent in types, or if they are not all either numbers or
+	strings
+    
+    </div>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the sorted array
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".sum"><span class="type-signature">(static) </span>sum<span class="signature">(input, start)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calculate the sum of the elements in the input array.
+
+If 'input' is not an array, then we return start.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>start</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">value added to the sum of numbers (a la Python)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1077">line 1077</a>
     </li></ul></dd>
     
 
@@ -3233,7 +4383,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
 
         
 <div class="param-desc">
-    numeric input entries added up
+    the sum of the elements in the array + start
 </div>
 
 
@@ -3409,7 +4559,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line483">line 483</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line485">line 485</a>
     </li></ul></dd>
     
 
@@ -3614,7 +4764,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line450">line 450</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line452">line 452</a>
     </li></ul></dd>
     
 
@@ -3898,7 +5048,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line599">line 599</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line601">line 601</a>
     </li></ul></dd>
     
 
@@ -4182,7 +5332,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line400">line 400</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line402">line 402</a>
     </li></ul></dd>
     
 
@@ -4410,7 +5560,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line559">line 559</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line561">line 561</a>
     </li></ul></dd>
     
 
@@ -4615,7 +5765,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line520">line 520</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line522">line 522</a>
     </li></ul></dd>
     
 
@@ -4781,7 +5931,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line221">line 221</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line223">line 223</a>
     </li></ul></dd>
     
 
@@ -4945,7 +6095,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line625">line 625</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line627">line 627</a>
     </li></ul></dd>
     
 
@@ -5129,7 +6279,7 @@ missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line971">line 971</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line973">line 973</a>
     </li></ul></dd>
     
 
@@ -5197,13 +6347,13 @@ missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:57 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

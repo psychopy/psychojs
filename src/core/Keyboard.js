@@ -2,7 +2,7 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -198,7 +198,7 @@ export class Keyboard extends PsychObject
 			const keyEvent = this._circularBuffer[i];
 			if (keyEvent && keyEvent.status === Keyboard.KeyStatus.KEY_UP)
 			{
-				// check that the key is in the keyList:
+				// if the keylist is empty of the key is in the keyList:
 				if (keyList.length === 0 || keyList.includes(keyEvent.pigletKey))
 				{
 					// look for a corresponding, preceding keydown event:

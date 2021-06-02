@@ -2,12 +2,13 @@
  * Editable TextBox Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
@@ -59,6 +60,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			'',
 			this._onChange(true, true)
 		);
+		this._addAttribute(
+			'placeholder',
+			text,
+			'',
+			this._onChange(true, true)
+		);		
 		this._addAttribute(
 			'anchor',
 			anchor,
@@ -404,6 +411,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi.destroy(true);
 			}
+			// Get the currently entered text
+			let enteredText = this._pixi !== undefined? this._pixi.text: '';
+			// Create new TextInput 
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
@@ -425,7 +435,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this._pixi.placeholder = this._text;
+				this.text = enteredText;				
+				this._pixi.placeholder = this._placeholder;
 			}
 			else
 			{

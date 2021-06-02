@@ -2,16 +2,17 @@
  * Logger
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
+import log4javascript from 'log4javascript';
+import pako from 'pako';
 import * as util from '../util/Util';
 import {MonotonicClock} from '../util/Clock';
 import {ExperimentHandler} from '../data/ExperimentHandler';
-
 
 /**
  * <p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging),
@@ -312,9 +313,9 @@ export class Logger
 	 */
 	_customConsoleLayout()
 	{
-		const detectedBrowser = this._psychoJS.browser;
+		const detectedBrowser = util.detectBrowser();
 
-		const customLayout = new log4javascript.PatternLayout("%p %f{1} | %m");
+		const customLayout = new log4javascript.PatternLayout("%p %d{HH:mm:ss.SSS} %f{1} | %m");
 		customLayout.setCustomField('location', function (layout, loggingReference)
 		{
 			// we throw a fake exception to retrieve the stack trace
@@ -345,7 +346,7 @@ export class Logger
 					const file = buf[buf.length - 3].split('/').pop();
 					const method = relevantEntry.split('@')[0];
 
-					return method + ' ' + file + ' ' + line;
+					return method + ' ' + file + ':' + line;
 				}
 				else if (detectedBrowser === 'Safari')
 				{
@@ -363,7 +364,7 @@ export class Logger
 					const line = buf.pop();
 					const file = buf.pop().split('/').pop();
 
-					return method + ' ' + file + ' ' + line;
+					return method + ' ' + file + ':' + line;
 				}
 				else
 				{

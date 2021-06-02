@@ -4,15 +4,16 @@
  *
  * @author Alain Pitiot
  * @author Hiroyuki Sogo & Sotiri Bakagiannis  - better support for BOM and accented characters
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
+import seedrandom from 'seedrandom';
+import * as XLSX from 'xlsx';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
-
 
 /**
  * <p>A Trial Handler handles the importing and sequencing of conditions.</p>
@@ -222,7 +223,6 @@ export class TrialHandler extends PsychObject
 	 * @property {number} ran - whether or not the trial ran
 	 * @property {number} finished - whether or not the trials finished
 	 */
-
 	/**
 	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
 	 * number of trial remaining).
@@ -444,7 +444,7 @@ export class TrialHandler extends PsychObject
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1)
 			{
 				// (*) read conditions from resource:
-				const resourceValue = serverManager.getResource(resourceName);
+				const resourceValue = serverManager.getResource(resourceName, true);
 
 				// Conditionally use a `TextDecoder` to reprocess .csv type input,
 				// which is then read in as a string
@@ -619,11 +619,11 @@ export class TrialHandler extends PsychObject
 		// seed the random number generator:
 		if (typeof (this.seed) !== 'undefined')
 		{
-			Math.seedrandom(this.seed);
+			seedrandom(this.seed);
 		}
 		else
 		{
-			Math.seedrandom();
+			seedrandom();
 		}
 
 		if (this.method === TrialHandler.Method.SEQUENTIAL)

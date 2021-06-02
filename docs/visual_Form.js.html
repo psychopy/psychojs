@@ -30,12 +30,13 @@
  * Form Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 
+import * as PIXI from 'pixi.js-legacy';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
@@ -70,6 +71,7 @@ import {Slider} from './Slider';
  * @param {number[]} [options.items= []] - the array of labels
  * @param {number} [options.itemPadding= 0.05] - the granularity
  *
+ * @param {string} [options.font= 'Arial'] - the text font
  * @param {string} [options.fontFamily= 'Helvetica'] - the text font
  * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
  * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
@@ -83,7 +85,7 @@ import {Slider} from './Slider';
  */
 export class Form extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, size, units, color, contrast, opacity, depth, items, randomize, itemPadding, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, units, borderColor, fillColor, itemColor, markerColor, responseColor, color, contrast, opacity, depth, items, randomize, itemPadding, font, fontFamily, bold, italic, fontSize, clipMask, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog});
 
@@ -97,10 +99,47 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		// colors:
 		this._addAttribute(
 			'color',
+			// Same as itemColor
 			color,
-			'white',
+			undefined,
 			this._onChange(true, false)
 		);
+
+		this._addAttribute(
+			'borderColor',
+			borderColor,
+			fillColor,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'fillColor',
+			fillColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'itemColor',
+			itemColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'markerColor',
+			markerColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
+		this._addAttribute(
+			'responseColor',
+			responseColor,
+			undefined,
+			this._onChange(true, false)
+		);
+
 		this._addAttribute(
 			'contrast',
 			contrast,
@@ -109,6 +148,13 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		);
 
 		// fonts:
+		this._addAttribute(
+			'font',
+			font,
+			'Arial',
+			this._onChange(true, true)
+		);
+		// Not in use at present
 		this._addAttribute(
 			'fontFamily',
 			fontFamily,
@@ -357,9 +403,20 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		// return a copy of this._items:
 		return this._items.map(item => Object.assign({}, item));
 	}
-
-
-
+	/**
+	 * Check if the form is complete.
+	 *
+	 * @name module:visual.Form#formComplete
+	 * @function
+	 * @public
+	 * @return {boolean} - whether there are any remaining incomplete responses.
+	 */
+	formComplete()
+	{
+		//same as complete but might be used by some experiments before 2020.2
+		this.getData();
+		return this._items._complete;
+	}
 	/**
 	 * Add the form data to the given experiment.
 	 *
@@ -377,7 +434,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		const _doNotSave = [
 			'itemCtrl', 'responseCtrl',
 			'itemColor', 'options', 'ticks', 'tickLabels',
-				'responseWidth', 'responseColor', 'layout'
+			'responseWidth', 'responseColor', 'layout'
 		];
 
 		for (const item of this.getData())
@@ -705,12 +762,12 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		const textStimOption = {
 			win: this._win,
 			name: 'item text',
-			font: 'Arial',
+			font: this.font,
 			units: this._units,
 			alignHoriz: 'left',
 			alignVert: 'top',
 			height: this._fontSize,
-			color: 'white',
+			color: this.itemColor,
 			ori: 0,
 			opacity: 1,
 			depth: this._depth + 1,
@@ -721,11 +778,15 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			name: 'choice response',
 			units: this._units,
 			flip: false,
-			fontFamily: 'Arial',
+			// Not part of Slider options as things stand
+			fontFamily: this.fontFamily,
+			// As found in Slider options
+			font: this.font,
 			bold: false,
 			italic: false,
 			fontSize: this._fontSize * this._responseTextHeightRatio,
-			color: this._color,
+			color: this.responseColor,
+			markerColor: this.markerColor,
 			opacity: 1,
 			depth: this._depth + 1,
 			clipMask: this._stimuliClipMask,
@@ -739,14 +800,15 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			flip: false,
 			opacity: 1,
 			depth: this._depth + 1,
-			font: 'Arial',
+			font: this.font,
 			letterHeight: this._fontSize * this._responseTextHeightRatio,
 			bold: false,
 			italic: false,
 			alignment: 'left',
-			color: this._color,
+			color: this.responseColor,
+			fillColor: this.fillColor,
 			contrast: 1.0,
-			borderColor: this._color,
+			borderColor: this.responseColor,
 			borderWidth: 0.002,
 			padding: 0.01,
 			editable: true,
@@ -894,7 +956,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			win: this._win,
 			name: 'scrollbar',
 			units: this._units,
-			color: this._color,
+			color: this.itemColor,
 			depth: this._depth + 1,
 			pos: [0, 0],
 			size: [this._scrollbarWidth, this._size[1]],
@@ -1065,11 +1127,12 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 
 		// form background:
-		this._pixi.lineStyle(1, new Color('lightgray').int, this._opacity, 0.5);
+		this._pixi.lineStyle(1, new Color(this.borderColor).int, this._opacity, 0.5);
 		// this._decorations.beginFill(this._barFillColor.int, this._opacity);
+		this._pixi.beginFill(new Color(this.fillColor).int);
 		this._pixi.drawRect(this._leftEdge_px, this._bottomEdge_px, this._size_px[0], this._size_px[1]);
 		// this._decorations.endFill();
-
+		this._pixi.endFill();
 
 		// item decorators:
 		this._decorations = new PIXI.Graphics();
@@ -1176,13 +1239,13 @@ Form._defaultItems = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Apr 09 2021 13:58:25 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

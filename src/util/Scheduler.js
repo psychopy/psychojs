@@ -2,7 +2,7 @@
  * Scheduler.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -134,10 +134,10 @@ export class Scheduler
 	 * @name module:util.Scheduler#start
 	 * @public
 	 */
-	start()
+	async start()
 	{
 		const self = this;
-		let update = (timestamp) =>
+		const update = async (timestamp) =>
 		{
 			// stop the animation if need be:
 			if (self._stopAtNextUpdate)
@@ -149,7 +149,7 @@ export class Scheduler
 			// self._psychoJS.window._writeLogOnFlip();
 
 			// run the next scheduled tasks until a scene render is requested:
-			const state = self._runNextTasks();
+			const state = await self._runNextTasks();
 			if (state === Scheduler.Event.QUIT)
 			{
 				self._status = Scheduler.Status.STOPPED;
@@ -195,7 +195,7 @@ export class Scheduler
 	 * @private
 	 * @return {module:util.Scheduler#Event} the state of the scheduler after the last task ran
 	 */
-	_runNextTasks()
+	async _runNextTasks()
 	{
 		this._status = Scheduler.Status.RUNNING;
 
@@ -234,14 +234,14 @@ export class Scheduler
 			// if the current task is a function, we run it:
 			if (this._currentTask instanceof Function)
 			{
-				state = this._currentTask(...this._currentArgs);
+				state = await this._currentTask(...this._currentArgs);
 			}
 			// otherwise, we assume that the current task is a scheduler and we run its tasks until a rendering
 			// of the scene is required.
 			// note: "if (this._currentTask instanceof Scheduler)" does not work because of CORS...
 			else
 			{
-				state = this._currentTask._runNextTasks();
+				state = await this._currentTask._runNextTasks();
 				if (state === Scheduler.Event.QUIT)
 				{
 					// if the experiment has not ended, we move onto the next task:

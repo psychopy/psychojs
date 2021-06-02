@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: data/Shelf.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: data/Shelf.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Shelf handles persistent key/value pairs, which are stored in the shelf collection on the
+ * server, and accesses in a concurrent fashion.
+ *
+ * @author Alain Pitiot
+ * @version 2021.2.0
+ * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ */
+
+import {PsychObject} from "../util/PsychObject";
+
+
+/**
+ * &lt;p>Shelf handles persistent key/value pairs, which are stored in the shelf collection on the
+ * server, and accesses in a concurrent fashion&lt;/p>
+ *
+ * @name module:data.Shelf
+ * @class
+ * @extends PsychObject
+ * @param {Object} options
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {boolean} [options.autoLog= false] - whether or not to log
+ */
+export class Shelf extends PsychObject
+{
+
+	constructor({
+								psychoJS,
+								autoLog = false
+							} = {})
+	{
+		super(psychoJS);
+
+		this._addAttribute('autoLog', autoLog);
+		this._addAttribute('status', Shelf.Status.READY);
+	}
+
+
+	increment()
+	{/*
+		// prepare a PsychoJS component:
+		this._waitForDownloadComponent = {
+			status: PsychoJS.Status.NOT_STARTED,
+			clock: new Clock(),
+			resources: new Set()
+		};
+
+		const self = this;
+		return () =>
+		{
+			const t = self._waitForDownloadComponent.clock.getTime();
+
+			// start the component:
+			if (t >= 0.0 &amp;&amp; self._waitForDownloadComponent.status === PsychoJS.Status.NOT_STARTED)
+			{
+				self._waitForDownloadComponent.tStart = t;
+				self._waitForDownloadComponent.status = PsychoJS.Status.STARTED;
+
+				// if resources is an empty array, we consider all registered resources:
+				if (resources.length === 0)
+				{
+					for (const [name, {status, path, data}] of this._resources)
+					{
+						resources.append({ name, path });
+					}
+				}
+
+				// only download those resources not already downloaded or downloading:
+				const resourcesToDownload = new Set();
+				for (let {name, path} of resources)
+				{
+					// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
+					// not hosted on pavlovia.org:
+					if ( (path.toLowerCase().indexOf('www.') === 0 ||
+						path.toLowerCase().indexOf('http:') === 0 ||
+						path.toLowerCase().indexOf('https:') === 0) &amp;&amp;
+						(path.indexOf('pavlovia.org') === -1) )
+					{
+						path = 'https://devlovia.org/api/v2/proxy/' + path;
+					}
+
+					const pathStatusData = this._resources.get(name);
+
+					// the resource has not been registered yet:
+					if (typeof pathStatusData === 'undefined')
+					{
+						self._resources.set(name, {
+							status: ServerManager.ResourceStatus.REGISTERED,
+							path,
+							data: undefined
+						});
+						self._waitForDownloadComponent.resources.add(name);
+						resourcesToDownload.add(name);
+						self._psychoJS.logger.debug('registered resource:', name, path);
+					}
+
+					// the resource has been registered but is not downloaded yet:
+					else if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+						// else if (typeof pathStatusData.data === 'undefined')
+					{
+						self._waitForDownloadComponent.resources.add(name);
+					}
+
+				}
+
+				// start the download:
+				self._downloadResources(resourcesToDownload);
+			}
+
+			// check whether all resources have been downloaded:
+			for (const name of self._waitForDownloadComponent.resources)
+			{
+				const pathStatusData = this._resources.get(name);
+
+				// the resource has not been downloaded yet: loop this component
+				if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					// if (typeof pathStatusData.data === 'undefined')
+				{
+					return Scheduler.Event.FLIP_REPEAT;
+				}
+			}
+
+			// all resources have been downloaded: move to the next component:
+			self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
+			return Scheduler.Event.NEXT;
+		};*/
+	}
+
+
+
+
+	/**
+	 * Increment the integer counter corresponding to the given key by the given amount.
+	 *
+	 * @param {string[]} [key = [] ] key as an array of key components
+	 * @param {number} [increment = 1] increment
+	 * @return {Promise&lt;any>}
+	 */
+	async _increment(key = [], increment = 1)
+	{
+		const response = {
+			origin: 'Shelf.increment',
+			context: 'when incrementing an integer counter'
+		};
+
+		try
+		{
+			this._status = Shelf.Status.BUSY;
+
+			if (!Array.isArray(key) || key.length === 0)
+			{
+				throw 'the key must be a non empty array';
+			}
+
+			// prepare the request:
+			const componentList = key.reduce((list, component) => list + '+' + component, '');
+			const url = this._psychoJS.config.pavlovia.URL + '/api/v2/shelf/' + componentList;
+			const data = { increment };
+
+			// query the server:
+			const response = await fetch(url, {
+				method: 'POST',
+				mode: 'cors', // no-cors, *cors, same-origin
+				cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+				credentials: 'same-origin', // include, *same-origin, omit
+				headers: {
+					'Content-Type': 'application/json',
+					'session-token': ''
+				},
+				redirect: 'follow', // manual, *follow, error
+				referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+				body: JSON.stringify(data)
+			});
+
+			// convert the response to json:
+			const document = await response.json();
+
+			// return the updated value:
+			this._status = Shelf.Status.READY;
+			return document['value'];
+		}
+		catch (error)
+		{
+			this._status = Shelf.Status.ERROR;
+			throw {...response, error};
+		}
+	}
+}
+
+
+
+/**
+ * Shelf status
+ *
+ * @name module:data.Shelf#Status
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+Shelf.Status = {
+	/**
+	 * The shelf is ready.
+	 */
+	READY: Symbol.for('READY'),
+
+	/**
+	 * The shelf is busy, e.g. storing or retrieving values.
+	 */
+	BUSY: Symbol.for('BUSY'),
+
+	/**
+	 * The shelf has encountered an error.
+	 */
+	ERROR: Symbol.for('ERROR')
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:56 GMT+0200 (Central European Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

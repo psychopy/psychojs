@@ -11,7 +11,7 @@ indent_style = space
 indent_style = tab
 indent_size = 4
 
-# HTML+CSS/JS  files
-[*.{html,js}]
+# HTML+CSS/JS files
+[*.{html,js,cjs}]
 indent_style = tab
 indent_size = 2

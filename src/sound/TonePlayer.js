@@ -2,11 +2,12 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
+import * as Tone from 'tone';
 import {SoundPlayer} from './SoundPlayer';
 
 
@@ -243,7 +244,7 @@ export class TonePlayer extends SoundPlayer
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				Tone.Infinity
+				Infinity
 			);
 		}
 		else
