@@ -2,7 +2,7 @@
  * Manager responsible for the communication between the experiment running in the participant's browser and the pavlovia.org server.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -168,6 +168,16 @@ export class ServerManager extends PsychObject
 					self._psychoJS.config.experiment.saveIncompleteResults = data.experiment.saveIncompleteResults;
 					self._psychoJS.config.experiment.license = data.experiment.license;
 					self._psychoJS.config.experiment.runMode = data.experiment.runMode;
+
+					// secret keys for various services, e.g. Google Speech API
+					if ('keys' in data.experiment)
+					{
+						self._psychoJS.config.experiment.keys = data.experiment.keys;
+					}
+					else
+					{
+						self._psychoJS.config.experiment.keys = [];
+					}
 
 					self.setStatus(ServerManager.Status.READY);
 					// resolve({ ...response, token: data.token, status: data.status });
@@ -431,7 +441,6 @@ export class ServerManager extends PsychObject
 				}
 
 				// whether all resources have been requested:
-
 				const allResources = (resources.length === 1 && resources[0] === ServerManager.ALL_RESOURCES);
 
 				// if the experiment is hosted on the pavlovia.org server and
@@ -1033,13 +1042,14 @@ export class ServerManager extends PsychObject
 			// preload.js with forced binary for xls and xlsx:
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
 			{
-				manifest.push(new createjs.LoadItem().set({
+				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
 					src: pathStatusData.path,
-					type: createjs.Types.BINARY,
+					type: createjs.LoadQueue.BINARY, //createjs.Types.BINARY,
 					crossOrigin: 'Anonymous'
-				}));
-			}/* ascii .csv are adequately handled in binary format
+				}/*)*/);
+			}
+			/* ascii .csv are adequately handled in binary format
 			// forced text for .csv:
 			else if (['csv'].indexOf(resourceExtension) > -1)
 				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
@@ -1059,11 +1069,11 @@ export class ServerManager extends PsychObject
 			// preload.js for the other extensions (download type decided by preload.js):
 			else
 			{
-				manifest.push(new createjs.LoadItem().set({
+				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
 					src: pathStatusData.path,
 					crossOrigin: 'Anonymous'
-				}));
+				}/*)*/);
 			}
 		}
 
