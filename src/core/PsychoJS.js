@@ -690,6 +690,7 @@ export class PsychoJS
 		const self = this;
 		window.onerror = function (message, source, lineno, colno, error)
 		{
+			console.error(error);
 			document.body.setAttribute('data-error', JSON.stringify({
 				message: message,
 				source: source,
