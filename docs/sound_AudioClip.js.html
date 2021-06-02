@@ -30,13 +30,15 @@
  * AudioClip encapsulate an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2021.x
+ * @version 2021.2.0
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "../core/PsychoJS";
+import {PsychObject} from '../util/PsychObject';
+import {PsychoJS} from '../core/PsychoJS';
+import {ExperimentHandler} from '../data/ExperimentHandler';
+import * as util from '../util/Util';
 
 
 /**
@@ -76,9 +78,19 @@ export class AudioClip extends PsychObject
 	}
 
 
-	play()
+	/**
+	 * Play the audio clip.
+	 *
+	 * @name module:sound.AudioClip#upload
+	 * @function
+	 * @public
+	 */
+	async play()
 	{
-		// TODO check that the audio buffer is ready
+		this._psychoJS.logger.debug('request to play the audio clip');
+
+		// wait for the decoding to complete:
+		await this._decodeAudio();
 
 		// play the audio buffer:
 		const source = this._audioContext.createBufferSource();
@@ -88,9 +100,51 @@ export class AudioClip extends PsychObject
 	}
 
 
+	/**
+	 * Upload the audio clip to the pavlovia server.
+	 *
+	 * @name module:sound.AudioClip#upload
+	 * @function
+	 * @public
+	 */
 	upload()
 	{
-		// TODO
+		this._psychoJS.logger.debug('request to upload the audio clip to pavlovia.org');
+
+		// add a format-dependent audio extension to the name:
+		const filename = this._name + util.extensionFromMimeType(this._format);
+
+
+		// if the audio recording cannot be uploaded, e.g. the experiment is running locally, or
+		// if it is piloting mode, then we offer the audio clip as a file for download:
+		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
+			this._psychoJS.config.experiment.status !== 'RUNNING' ||
+			this._psychoJS._serverMsg.has('__pilotToken'))
+		{
+			return this.download(filename);
+		}
+
+		// upload the data:
+		return this._psychoJS.serverManager.uploadAudio(this._data, filename);
+	}
+
+
+
+	/**
+	 * Offer the audio clip to the participant as a sound file to download.
+	 *
+	 * @name module:sound.AudioClip#download
+	 * @function
+	 * @public
+	 */
+	download(filename = 'audio.webm')
+	{
+		const anchor = document.createElement('a');
+		anchor.href = window.URL.createObjectURL(this._data);
+		anchor.download = filename;
+		document.body.appendChild(anchor);
+		anchor.click();
+		document.body.removeChild(anchor);
 	}
 
 
@@ -107,6 +161,28 @@ export class AudioClip extends PsychObject
 	 */
 	async transcribe({engine, languageCode} = {})
 	{
+		this._psychoJS.logger.debug('request to transcribe the audio clip');
+
+		// get the secret key from the experiment configuration:
+		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
+		let transcriptionKey;
+		for (const key of this._psychoJS.config.experiment.keys)
+		{
+			if (key.name === fullEngineName)
+			{
+				transcriptionKey = key.value;
+			}
+		}
+		if (typeof transcriptionKey === 'undefined')
+		{
+			throw {
+				origin: 'AudioClip.transcribe',
+				context: `when transcribing audio clip: ${this._name}`,
+				error: `missing key for engine: ${fullEngineName}`
+			};
+		}
+
+
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
@@ -137,9 +213,7 @@ export class AudioClip extends PsychObject
 				},
 			};
 
-			// TODO get the key from the designer's pavlovia account
-			const GOOGLE_API_KEY = 'AIzaSyDngTi-pJcVrm_Kr2yTKV8OYLtfRN180gY';
-			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${GOOGLE_API_KEY}`;
+			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${transcriptionKey}`;
 
 			const response = await fetch(url, {
 				method: 'POST',
@@ -150,16 +224,25 @@ export class AudioClip extends PsychObject
 			});
 
 			// convert the response to json:
-			const results = await response.json();
-			console.log('>>>> ', results);
+			const decodedResponse = await response.json();
+			this._psychoJS.logger.debug('speech.googleapis.com response:', JSON.stringify(decodedResponse));
 
-			resolve(results[0].alternatives[0]);
+			// TODO deal with more than one results and/or alternatives
+			resolve(decodedResponse.results[0].alternatives[0]);
 		});
 	}
 
 
+	/**
+	 * Decode the formatted audio data (e.g. webm) into a 32bit float PCM audio buffer.
+	 *
+	 * @returns {Promise&lt;unknown>}
+	 * @private
+	 */
 	_decodeAudio()
 	{
+		this._psychoJS.logger.debug('request to decode the data of the audio clip');
+
 		// if the audio clip is ready, the PCM audio data is available in _audioData, a Float32Array:
 		if (this._status === AudioClip.Status.READY)
 		{
@@ -174,8 +257,8 @@ export class AudioClip extends PsychObject
 			return new Promise(function (resolve, reject)
 			{
 				self._decodingCallbacks.push(resolve);
-				// TODO
-				// self._errorCallback = reject;
+
+				// self._errorCallback = reject; // TODO
 			}.bind(this));
 		}
 
@@ -192,20 +275,29 @@ export class AudioClip extends PsychObject
 		const reader = new window.FileReader();
 		reader.onloadend = async () =>
 		{
-			// decode the ArrayBuffer containing the formatted audio data (e.g. webm)
-			// into an audio buffer:
-			this._audioBuffer = await this._audioContext.decodeAudioData(reader.result);
-
-			// get the Float32Array containing the PCM data:
-			this._audioData = this._audioBuffer.getChannelData(0);
-
-			// we are now ready to translate and play:
-			this._status = AudioClip.Status.READY;
-
-			// resolve all the promises waiting for the decoding to complete:
-			for (const callback of this._decodingCallbacks)
+			try
 			{
-				callback();
+				// decode the ArrayBuffer containing the formatted audio data (e.g. webm)
+				// into an audio buffer:
+				this._audioBuffer = await this._audioContext.decodeAudioData(reader.result);
+
+				// get the Float32Array containing the PCM data:
+				this._audioData = this._audioBuffer.getChannelData(0);
+
+				// we are now ready to translate and play:
+				this._status = AudioClip.Status.READY;
+
+				// resolve all the promises waiting for the decoding to complete:
+				for (const callback of this._decodingCallbacks)
+				{
+					callback();
+				}
+			}
+			catch (error)
+			{
+				console.error(error);
+
+				// TODO
 			}
 		};
 
@@ -330,13 +422,13 @@ AudioClip.Status = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri May 28 2021 10:49:17 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

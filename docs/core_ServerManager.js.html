@@ -30,19 +30,18 @@
  * Manager responsible for the communication between the experiment running in the participant's browser and the pavlovia.org server.
  *
  * @author Alain Pitiot
- * @version 2021.1.4
+ * @version 2021.2.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-
+import createjs from 'preload-js';
+import { Howl } from 'howler';
 import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
 import {ExperimentHandler} from "../data/ExperimentHandler";
 import {MonotonicClock} from "../util/Clock";
-
-// import { Howl } from 'howler';
 
 
 /**
@@ -115,7 +114,7 @@ export class ServerManager extends PsychObject
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			$.get(configURL, 'json')
+			jQuery.get(configURL, 'json')
 				.done((config, textStatus) =>
 				{
 					// resolve({ ...response, config });
@@ -172,7 +171,7 @@ export class ServerManager extends PsychObject
 		return new Promise((resolve, reject) =>
 		{
 			const url = this._psychoJS.config.pavlovia.URL + '/api/v2/experiments/' + encodeURIComponent(self._psychoJS.config.experiment.fullpath) + '/sessions';
-			$.post(url, data, null, 'json')
+			jQuery.post(url, data, null, 'json')
 				.done((data, textStatus) =>
 				{
 					if (!('token' in data))
@@ -197,6 +196,16 @@ export class ServerManager extends PsychObject
 					self._psychoJS.config.experiment.saveIncompleteResults = data.experiment.saveIncompleteResults;
 					self._psychoJS.config.experiment.license = data.experiment.license;
 					self._psychoJS.config.experiment.runMode = data.experiment.runMode;
+
+					// secret keys for various services, e.g. Google Speech API
+					if ('keys' in data.experiment)
+					{
+						self._psychoJS.config.experiment.keys = data.experiment.keys;
+					}
+					else
+					{
+						self._psychoJS.config.experiment.keys = [];
+					}
 
 					self.setStatus(ServerManager.Status.READY);
 					// resolve({ ...response, token: data.token, status: data.status });
@@ -274,7 +283,7 @@ export class ServerManager extends PsychObject
 			const self = this;
 			return new Promise((resolve, reject) =>
 			{
-				$.ajax({
+				jQuery.ajax({
 					url,
 					type: 'delete',
 					data: {isCompleted},
@@ -460,7 +469,6 @@ export class ServerManager extends PsychObject
 				}
 
 				// whether all resources have been requested:
-
 				const allResources = (resources.length === 1 &amp;&amp; resources[0] === ServerManager.ALL_RESOURCES);
 
 				// if the experiment is hosted on the pavlovia.org server and
@@ -697,7 +705,7 @@ export class ServerManager extends PsychObject
 					value
 				};
 
-				$.post(url, data, null, 'json')
+				jQuery.post(url, data, null, 'json')
 					.done((serverData, textStatus) =>
 					{
 						self.setStatus(ServerManager.Status.READY);
@@ -759,7 +767,7 @@ export class ServerManager extends PsychObject
 				'/sessions/' + self._psychoJS.config.session.token +
 				'/logs';
 
-			$.post(url, data, null, 'json')
+			jQuery.post(url, data, null, 'json')
 				.done((serverData, textStatus) =>
 				{
 					self.setStatus(ServerManager.Status.READY);
@@ -888,7 +896,7 @@ export class ServerManager extends PsychObject
 				'/api/v2/experiments/' + encodeURIComponent(this._psychoJS.config.experiment.fullpath) +
 				'/resources';
 
-			$.get(url, data, null, 'json')
+			jQuery.get(url, data, null, 'json')
 				.done((data, textStatus) =>
 				{
 					if (!('resources' in data))
@@ -1062,13 +1070,14 @@ export class ServerManager extends PsychObject
 			// preload.js with forced binary for xls and xlsx:
 			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
 			{
-				manifest.push(new createjs.LoadItem().set({
+				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
 					src: pathStatusData.path,
-					type: createjs.Types.BINARY,
+					type: createjs.LoadQueue.BINARY, //createjs.Types.BINARY,
 					crossOrigin: 'Anonymous'
-				}));
-			}/* ascii .csv are adequately handled in binary format
+				}/*)*/);
+			}
+			/* ascii .csv are adequately handled in binary format
 			// forced text for .csv:
 			else if (['csv'].indexOf(resourceExtension) > -1)
 				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
@@ -1088,11 +1097,11 @@ export class ServerManager extends PsychObject
 			// preload.js for the other extensions (download type decided by preload.js):
 			else
 			{
-				manifest.push(new createjs.LoadItem().set({
+				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
 					src: pathStatusData.path,
 					crossOrigin: 'Anonymous'
-				}));
+				}/*)*/);
 			}
 		}
 
@@ -1269,13 +1278,13 @@ ServerManager.ResourceStatus = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li><li><a href="TextInput.html">TextInput</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri May 28 2021 10:49:17 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Jun 02 2021 13:52:56 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

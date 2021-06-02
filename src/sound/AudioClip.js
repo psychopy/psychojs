@@ -2,7 +2,7 @@
  * AudioClip encapsulate an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2021.x
+ * @version 2021.2.0
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
