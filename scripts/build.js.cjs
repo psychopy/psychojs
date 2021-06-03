@@ -27,5 +27,10 @@ const [,,, dir = dirMaybe || 'out', version = versionMaybe || pkg.version] = pro
 	},
 	bundle: true,
 	entryPoints: ['src/index.js'],
-	minify: true
+	minify: true,
+	target: [
+		// https://github.com/evanw/esbuild/issues/121#issuecomment-646956379
+		'es2017',
+		'node14',
+	]
 });
