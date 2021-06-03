@@ -744,6 +744,7 @@ export class PsychoJS
 		window.onunhandledrejection = function (error)
 		{
 			console.error(error.reason);
+			document.body.setAttribute('data-error', JSON.stringify(error.reason.stack));
 			self._gui.dialog({error: error.reason});
 			return true;
 		};
