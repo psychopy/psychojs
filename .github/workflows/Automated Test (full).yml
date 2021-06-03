@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       repo:
-        description: 'PsychoJS repo (tpronk/psychojs)'
+        description: 'PsychoJS repo (psychopy/psychojs)'
         required: false
       ref:
         description: 'branch/tag/SHA (default branch)'
@@ -31,7 +31,7 @@ env:
   STAGING_PORT: ${{ secrets.STAGING_PORT }}
   STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
   PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
-  DEFAULT_REPO: 'tpronk/psychojs'
+  DEFAULT_REPO: 'psychopy/psychojs'
   DEFAULT_TESTRUN: 'full'
   DEFAULT_SUBSET: 'false'
   DEFAULT_PLATFORM: '\*'
