@@ -743,8 +743,15 @@ export class PsychoJS
 		};
 		window.onunhandledrejection = function (error)
 		{
+			//window.myError = error;
+			//console.log(JSON.stringify(error.reason));
 			console.error(error.reason);
-			document.body.setAttribute('data-error', JSON.stringify(error.reason.stack));
+			// No stack? Error thrown by PsychoJS; stringify whole error
+			if (error.reason.stack === undefined) {
+				document.body.setAttribute('data-error', JSON.stringify(error.reason));
+			} else {
+				document.body.setAttribute('data-error', JSON.stringify(error.reason.stack));
+			}
 			self._gui.dialog({error: error.reason});
 			return true;
 		};
