@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "howler": "^2.2.1",
-    "log4javascript": "github:tpronk/log4javascript",
+    "log4javascript": "github:Ritzlgrmft/log4javascript",
     "moment": "^2.29.1",
     "pako": "^1.0.10",
     "pixi.js-legacy": "^6.0.4",
