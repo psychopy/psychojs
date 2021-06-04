@@ -26,6 +26,7 @@ const [,,, dir = dirMaybe || 'out', version = versionMaybe || pkg.version] = pro
 		js: `/*! For license information please see psychojs-${version}.js.LEGAL.txt */`,
 	},
 	bundle: true,
+	sourcemap: true,
 	entryPoints: ['src/index.js'],
 	minify: true
 });
