@@ -743,15 +743,15 @@ export class PsychoJS
 		};
 		window.onunhandledrejection = function (error)
 		{
-			console.error(error.reason);
-			if (error.reason.stack === undefined) {
+			console.error(error?.reason);
+			if (error?.reason?.stack === undefined) {
 				// No stack? Error thrown by PsychoJS; stringify whole error
-				document.body.setAttribute('data-error', JSON.stringify(error.reason));
+				document.body.setAttribute('data-error', JSON.stringify(error?.reason));
 			} else {
 				// Yes stack? Error thrown by JS; stringify stack
-				document.body.setAttribute('data-error', JSON.stringify(error.reason.stack));
+				document.body.setAttribute('data-error', JSON.stringify(error?.reason?.stack));
 			}
-			self._gui.dialog({error: error.reason});
+			self._gui.dialog({error: error?.reason});
 			return true;
 		};
 	}
