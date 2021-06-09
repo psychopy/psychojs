@@ -831,9 +831,9 @@ function DefaultBoxGenerator(styles)
 		if (style.stroke)
 		{
 			box.lineStyle(
-				style.stroke.width || 1,
-				style.stroke.color || 0,
-				style.stroke.alpha || 1
+				style.stroke.width ?? 1,
+				style.stroke.color ?? 0,
+				style.stroke.alpha ?? 1
 			);
 		}
 
