@@ -31,7 +31,6 @@
     "moment": "^2.29.1",
     "pako": "^1.0.10",
     "pixi.js-legacy": "^6.0.4",
-    "preloadjs": "github:CreateJS/PreloadJS",
     "seedrandom": "^3.0.5",
     "tone": "^14.7.77",
     "xlsx": "^0.17.0"
