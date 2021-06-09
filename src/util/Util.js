@@ -340,17 +340,17 @@ export function IsPointInsidePolygon(point, vertices)
  * @function
  * @public
  * @param {Object[]} array - the input 1-D array
- * @param {Function} [rng = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} the shuffled array
  */
-export function shuffle(array, rng = undefined)
+export function shuffle(array, randomNumberGenerator = undefined)
 {
-	if (rng === undefined) {
-		rng = Math.random;
+	if (randomNumberGenerator === undefined) {
+		randomNumberGenerator = Math.random;
 	}
 	for (let i = array.length - 1; i > 0; i--)
 	{
-		const j = Math.floor(rng() * (i + 1));
+		const j = Math.floor(randomNumberGenerator() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
 	return array;

@@ -261,16 +261,16 @@ export class TrialHandler extends PsychObject
 	 *
 	 * @param {boolean} newSeed - New value for seed
 	 */
-	setSeed(newSeed)
+	setSeed(newSeed, log)
 	{
-		this._seed = newSeed;
-		if (this._seed !== undefined) 
+		this._setAttribute('seed', newSeed, log);
+		if (this.seed !== undefined) 
 		{
-			this.rng = seedrandom(this._seed);
+			this._randomNumberGenerator = seedrandom(this.seed);
 		}
 		else
 		{
-			this.rng = seedrandom();
+			this._randomNumberGenerator = seedrandom();
 		}
 	}
 
@@ -644,7 +644,7 @@ export class TrialHandler extends PsychObject
 			this._trialSequence = [];
 			for (let i = 0; i < this.nReps; ++i)
 			{
-				this._trialSequence.push(util.shuffle(indices.slice(), this.rng));
+				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
 
@@ -658,7 +658,7 @@ export class TrialHandler extends PsychObject
 			}
 
 			// shuffle the sequence:
-			util.shuffle(flatSequence, this.rng);
+			util.shuffle(flatSequence, this._randomNumberGenerator);
 
 			// reshape it into the trialSequence:
 			this._trialSequence = [];
