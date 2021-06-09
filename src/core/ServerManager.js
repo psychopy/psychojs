@@ -7,7 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import 'preloadjs';
 import { Howl } from 'howler';
 import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
