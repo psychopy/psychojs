@@ -82,7 +82,7 @@ export class TrialHandler extends PsychObject
 		this._addAttribute('extraInfo', extraInfo);
 		this._addAttribute('name', name);
 		this._addAttribute('autoLog', autoLog);
-		this.seed = seed;
+		this._addAttribute('seed', seed);
 		this._prepareTrialList(trialList);
 		
 		// number of stimuli
@@ -261,7 +261,7 @@ export class TrialHandler extends PsychObject
 	 *
 	 * @param {boolean} newSeed - New value for seed
 	 */
-	set seed(newSeed)
+	setSeed(newSeed)
 	{
 		this._seed = newSeed;
 		if (this._seed !== undefined) 
@@ -272,14 +272,6 @@ export class TrialHandler extends PsychObject
 		{
 			this.rng = seedrandom();
 		}
-	}
-
-	/**
-	 * Getter for the seed attribute.
-	 */
-	get seed()
-	{
-		return this._seed;
 	}
 
 	/**
