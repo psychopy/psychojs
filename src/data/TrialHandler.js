@@ -80,12 +80,11 @@ export class TrialHandler extends PsychObject
 		this._addAttribute('nReps', nReps);
 		this._addAttribute('method', method);
 		this._addAttribute('extraInfo', extraInfo);
-		this._addAttribute('seed', seed);
 		this._addAttribute('name', name);
 		this._addAttribute('autoLog', autoLog);
-
+		this._addAttribute('seed', seed);
 		this._prepareTrialList(trialList);
-
+		
 		// number of stimuli
 		this.nStim = this.trialList.length;
 
@@ -257,6 +256,23 @@ export class TrialHandler extends PsychObject
 		return snapshot;
 	}
 
+	/**
+	 * Setter for the seed attribute.
+	 *
+	 * @param {boolean} newSeed - New value for seed
+	 */
+	setSeed(seed, log)
+	{
+		this._setAttribute('seed', seed, log);
+		if (typeof this.seed !== 'undefined') 
+		{
+			this._randomNumberGenerator = seedrandom(this.seed);
+		}
+		else
+		{
+			this._randomNumberGenerator = seedrandom();
+		}
+	}
 
 	/**
 	 * Setter for the finished attribute.
@@ -616,16 +632,6 @@ export class TrialHandler extends PsychObject
 		// get an array of the indices of the elements of trialList :
 		const indices = Array.from(this.trialList.keys());
 
-		// seed the random number generator:
-		if (typeof (this.seed) !== 'undefined')
-		{
-			seedrandom(this.seed);
-		}
-		else
-		{
-			seedrandom();
-		}
-
 		if (this.method === TrialHandler.Method.SEQUENTIAL)
 		{
 			this._trialSequence = Array(this.nReps).fill(indices);
@@ -638,7 +644,7 @@ export class TrialHandler extends PsychObject
 			this._trialSequence = [];
 			for (let i = 0; i < this.nReps; ++i)
 			{
-				this._trialSequence.push(util.shuffle(indices.slice()));
+				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
 
@@ -652,7 +658,7 @@ export class TrialHandler extends PsychObject
 			}
 
 			// shuffle the sequence:
-			util.shuffle(flatSequence);
+			util.shuffle(flatSequence, this._randomNumberGenerator);
 
 			// reshape it into the trialSequence:
 			this._trialSequence = [];
