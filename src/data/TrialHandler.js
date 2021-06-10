@@ -261,10 +261,10 @@ export class TrialHandler extends PsychObject
 	 *
 	 * @param {boolean} newSeed - New value for seed
 	 */
-	setSeed(newSeed, log)
+	setSeed(seed, log)
 	{
-		this._setAttribute('seed', newSeed, log);
-		if (this.seed !== undefined) 
+		this._setAttribute('seed', seed, log);
+		if (typeof this.seed !== 'undefined') 
 		{
 			this._randomNumberGenerator = seedrandom(this.seed);
 		}
