@@ -211,6 +211,7 @@ export class TrialHandler extends PsychObject
 
 	/**
 	 * @typedef {Object} Snapshot
+	 * @property {TrialHandler} handler - the trialHandler
 	 * @property {string} name - the trialHandler name
 	 * @property {number} nStim - the number of stimuli
 	 * @property {number} nTotal - the total number of trials that will be run
@@ -236,6 +237,7 @@ export class TrialHandler extends PsychObject
 		const currentIndex = this.thisIndex;
 
 		const snapshot = {
+			handler: this,
 			name: this.name,
 			nStim: this.nStim,
 			nTotal: this.nTotal,
@@ -249,6 +251,8 @@ export class TrialHandler extends PsychObject
 
 			getCurrentTrial: () => this.getTrial(currentIndex),
 			getTrial: (index = 0) => this.getTrial(index),
+
+			addData: (key, value) => this.addData(key, value)
 		};
 
 		this._snapshots.push(snapshot);
@@ -273,6 +277,33 @@ export class TrialHandler extends PsychObject
 			this._randomNumberGenerator = seedrandom();
 		}
 	}
+
+	/**
+	 * Set the internal state of this trial handler from the given snapshot.
+	 *
+	 * @public
+	 * @static
+	 * @param {Snapshot} snapshot - the snapshot from which to update the current internal state.
+	 */
+	static fromSnapshot(snapshot)
+	{
+		// if snapshot is undefined, do nothing:
+		if (typeof snapshot === 'undefined')
+		{
+			return;
+		}
+
+		snapshot.handler.nStim = snapshot.nStim;
+		snapshot.handler.nTotal = snapshot.nTotal;
+		snapshot.handler.nRemaining = snapshot.nRemaining;
+		snapshot.handler.thisRepN = snapshot.thisRepN;
+		snapshot.handler.thisTrialN = snapshot.thisTrialN;
+		snapshot.handler.thisN = snapshot.thisN;
+		snapshot.handler.thisIndex = snapshot.thisIndex;
+		snapshot.handler.ran = snapshot.ran;
+		snapshot.handler._finished = snapshot._finished;
+	}
+
 
 	/**
 	 * Setter for the finished attribute.
