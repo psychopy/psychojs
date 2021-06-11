@@ -874,6 +874,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 				responseStim = new Slider(
 					Object.assign(sliderOption, {
+						granularity,
 						size: sliderSize,
 						style,
 						labels,
