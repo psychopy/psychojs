@@ -302,6 +302,8 @@ export class TrialHandler extends PsychObject
 		snapshot.handler.thisIndex = snapshot.thisIndex;
 		snapshot.handler.ran = snapshot.ran;
 		snapshot.handler._finished = snapshot._finished;
+
+		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
 	}
 
 
