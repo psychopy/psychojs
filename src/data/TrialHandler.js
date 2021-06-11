@@ -306,6 +306,17 @@ export class TrialHandler extends PsychObject
 
 
 	/**
+	 * Getter for the finished attribute.
+	 *
+	 * @returns {boolean} whether or not the trial has finished.
+	 */
+	get finished()
+	{
+		return this._finished;
+	}
+
+
+	/**
 	 * Setter for the finished attribute.
 	 *
 	 * @param {boolean} isFinished - whether or not the loop is finished.
