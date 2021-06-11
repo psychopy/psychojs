@@ -851,7 +851,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 					flip = true;
 				}
 
-				let style, labels, ticks, granularity;
+				let style, labels, ticks, granularity = 1;
 				if (item.type === Form.Types.CHOICE)
 				{
 					style = [Slider.Style.RATING, Slider.Style.RADIO];
@@ -870,10 +870,11 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 					style = [Slider.Style.RATING];
 					labels = item.tickLabels;
 					ticks = item.ticks;
+					granularity = 1;
 				}
 
 				responseStim = new Slider(
-					Object.assign(sliderOption, {
+					Object.assign({}, sliderOption, {
 						granularity,
 						size: sliderSize,
 						style,
