@@ -391,6 +391,31 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 
 
+	/** Let `fillColor` alias `markerColor` to parallel PsychoPy */
+	set fillColor(color) {
+		this.markerColor = color;
+	}
+
+
+
+	setFillColor(color) {
+		this.setMarkerColor(color);
+	}
+
+
+
+	get fillColor() {
+		return this.markerColor;
+	}
+
+
+
+	getFillColor() {
+		return this.getMarkerColor();
+	}
+
+
+
 	/**
 	 * Estimate the bounding box.
 	 *
