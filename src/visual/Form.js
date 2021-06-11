@@ -346,7 +346,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			const responseStim = this._visual.responseStims[i];
 			if (responseStim)
 			{
-				if (item.type === Form.Types.CHOICE || item.type === Form.Types.RATING)
+				if (item.type === Form.Types.CHOICE || item.type === Form.Types.RATING || item.type === Form.Types.SLIDER)
 				{
 					item.response = responseStim.getRating();
 					item.rt = responseStim.getRT();
@@ -560,7 +560,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 					delete item.questionWidth;
 
 					// for items of type 'rating, the ticks are in 'options' instead of in 'ticks':
-					if (item.type === 'rating')
+					if (item.type === 'rating' || item.type === 'slider')
 					{
 						item.ticks = item.options;
 						item.options = undefined;
@@ -632,7 +632,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 				}
 
 				// turn the ticks and tickLabels into arrays, where applicable:
-				else if (item.type === Form.Types.RATING)
+				else if (item.type === Form.Types.RATING || item.type === Form.Types.SLIDER)
 				{
 					item.ticks = item.ticks.split(',').map( (_,t) => parseInt(t) );
 					item.tickLabels = (item.tickLabels.length > 0) ? item.tickLabels.split(',') : [];
@@ -835,7 +835,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			const responseWidth = rowWidth * item.responseWidth;
 
 			// CHOICE and RATING
-			if (item.type === Form.Types.CHOICE || item.type === Form.Types.RATING)
+			if (item.type === Form.Types.CHOICE || item.type === Form.Types.RATING || item.type === Form.Types.SLIDER)
 			{
 				let sliderSize;
 				if (item.layout === Form.Layout.HORIZONTAL)
@@ -851,12 +851,19 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 					flip = true;
 				}
 
-				let style, labels, ticks;
+				let style, labels, ticks, granularity;
 				if (item.type === Form.Types.CHOICE)
 				{
 					style = [Slider.Style.RATING, Slider.Style.RADIO];
 					labels = item.options;
 					ticks = []; // categorical
+				}
+				else if (item.type === Form.Types.SLIDER)
+				{
+					style = [Slider.Style.SLIDER];
+					labels = item.tickLabels;
+					ticks = item.ticks;
+					granularity = 0;
 				}
 				else
 				{
