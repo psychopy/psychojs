@@ -1161,7 +1161,7 @@ Form.Types = {
 	SLIDER: Symbol.for('SLIDER'),
 	FREE_TEXT: Symbol.for('FREE_TEXT'),
 	CHOICE: Symbol.for('CHOICE'),
-	RADIO: Symbol.for('CHOICE')
+	RADIO: Symbol.for('RADIO')
 };
 
 
