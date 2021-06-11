@@ -359,7 +359,8 @@ export class Window extends PsychObject
 				this._renderer.backgroundColor = this._color.int;
 			}
 
-			// we also change the background color of the body since the dialog popup may be longer than the window's height:
+			// we also change the background color of the body since
+			// the dialog popup may be longer than the window's height:
 			document.body.style.backgroundColor = this._color.hex;
 
 			this._needUpdate = false;
@@ -378,7 +379,8 @@ export class Window extends PsychObject
 	{
 		this._updateIfNeeded();
 
-		// if a stimuli needs to be updated, we remove it from the window container, update it, then put it back
+		// if a stimuli needs to be updated, we remove it from the window container,
+		// update it, then put it back
 		for (const stimulus of this._drawList)
 		{
 			if (stimulus._needUpdate && typeof stimulus._pixi !== 'undefined')
