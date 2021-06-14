@@ -728,7 +728,7 @@ export class PsychoJS
 		window.onerror = function (message, source, lineno, colno, error)
 		{
 			console.error(error);
-
+			// Log errors in data-error, for processing by WebDriverIO tests
 			document.body.setAttribute('data-error', JSON.stringify({
 				message: message,
 				source: source,
@@ -736,22 +736,7 @@ export class PsychoJS
 				colno: colno,
 				error: error
 			}));
-      
 			self._gui.dialog({"error": error});
-      
-			return true;
-		};
-		window.onunhandledrejection = function (error)
-		{
-			console.error(error?.reason);
-			if (error?.reason?.stack === undefined) {
-				// No stack? Error thrown by PsychoJS; stringify whole error
-				document.body.setAttribute('data-error', JSON.stringify(error?.reason));
-			} else {
-				// Yes stack? Error thrown by JS; stringify stack
-				document.body.setAttribute('data-error', JSON.stringify(error?.reason?.stack));
-			}
-			self._gui.dialog({error: error?.reason});
 			return true;
 		};
 	}
