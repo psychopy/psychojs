@@ -9,7 +9,7 @@
  * We are currently using it almost as is but will be making modification in the near future.
  */
 
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from "pixi.js-legacy";
 
 export class TextInput extends PIXI.Container
 {
@@ -18,26 +18,26 @@ export class TextInput extends PIXI.Container
 		super();
 		this._input_style = Object.assign(
 			{
-				position: 'absolute',
-				background: 'none',
-				border: 'none',
-				outline: 'none',
-				transformOrigin: '0 0',
-				lineHeight: '1'
+				position: "absolute",
+				background: "none",
+				border: "none",
+				outline: "none",
+				transformOrigin: "0 0",
+				lineHeight: "1",
 			},
-			styles.input
+			styles.input,
 		);
 
 		if (styles.box)
 		{
-			this._box_generator = typeof styles.box === 'function' ? styles.box : new DefaultBoxGenerator(styles.box);
+			this._box_generator = typeof styles.box === "function" ? styles.box : new DefaultBoxGenerator(styles.box);
 		}
 		else
 		{
 			this._box_generator = null;
 		}
 
-		if (this._input_style.hasOwnProperty('multiline'))
+		if (this._input_style.hasOwnProperty("multiline"))
 		{
 			this._multiline = !!this._input_style.multiline;
 			delete this._input_style.multiline;
@@ -51,15 +51,14 @@ export class TextInput extends PIXI.Container
 		this._previous = {};
 		this._dom_added = false;
 		this._dom_visible = true;
-		this._placeholder = '';
+		this._placeholder = "";
 		this._placeholderColor = 0xa9a9a9;
 		this._selection = [0, 0];
-		this._restrict_value = '';
+		this._restrict_value = "";
 		this._createDOMInput();
 		this.substituteText = false;
-		this._setState('DEFAULT');
+		this._setState("DEFAULT");
 	}
-
 
 	// GETTERS & SETTERS
 
@@ -102,7 +101,7 @@ export class TextInput extends PIXI.Container
 		if (this._substituted)
 		{
 			this._updateSurrogate();
-			this._dom_input.placeholder = '';
+			this._dom_input.placeholder = "";
 		}
 		else
 		{
@@ -119,7 +118,7 @@ export class TextInput extends PIXI.Container
 	{
 		this._disabled = disabled;
 		this._dom_input.disabled = disabled;
-		this._setState(disabled ? 'DISABLED' : 'DEFAULT');
+		this._setState(disabled ? "DISABLED" : "DEFAULT");
 	}
 
 	get maxLength()
@@ -130,7 +129,7 @@ export class TextInput extends PIXI.Container
 	set maxLength(length)
 	{
 		this._max_length = length;
-		this._dom_input.setAttribute('maxlength', length);
+		this._dom_input.setAttribute("maxlength", length);
 	}
 
 	get restrict()
@@ -144,21 +143,21 @@ export class TextInput extends PIXI.Container
 		{
 			regex = regex.toString().slice(1, -1);
 
-			if (regex.charAt(0) !== '^')
+			if (regex.charAt(0) !== "^")
 			{
-				regex = '^' + regex;
+				regex = "^" + regex;
 			}
 
-			if (regex.charAt(regex.length - 1) !== '$')
+			if (regex.charAt(regex.length - 1) !== "$")
 			{
-				regex = regex + '$';
+				regex = regex + "$";
 			}
 
 			regex = new RegExp(regex);
 		}
 		else
 		{
-			regex = new RegExp('^[' + regex + ']*$');
+			regex = new RegExp("^[" + regex + "]*$");
 		}
 
 		this._restrict_regex = regex;
@@ -191,7 +190,6 @@ export class TextInput extends PIXI.Container
 		}
 
 		this._dom_input.focus(options);
-
 	}
 
 	blur()
@@ -210,7 +208,7 @@ export class TextInput extends PIXI.Container
 		this._input_style[key] = value;
 		this._dom_input.style[key] = value;
 
-		if (this._substituted && (key === 'fontFamily' || key === 'fontSize'))
+		if (this._substituted && (key === "fontFamily" || key === "fontSize"))
 		{
 			this._updateFontMetrics();
 		}
@@ -227,20 +225,19 @@ export class TextInput extends PIXI.Container
 		super.destroy(options);
 	}
 
-
 	// SETUP
 
 	_createDOMInput()
 	{
 		if (this._multiline)
 		{
-			this._dom_input = document.createElement('textarea');
-			this._dom_input.style.resize = 'none';
+			this._dom_input = document.createElement("textarea");
+			this._dom_input.style.resize = "none";
 		}
 		else
 		{
-			this._dom_input = document.createElement('input');
-			this._dom_input.type = 'text';
+			this._dom_input = document.createElement("input");
+			this._dom_input.type = "text";
 		}
 
 		for (let key in this._input_style)
@@ -251,23 +248,23 @@ export class TextInput extends PIXI.Container
 
 	_addListeners()
 	{
-		this.on('added', this._onAdded.bind(this));
-		this.on('removed', this._onRemoved.bind(this));
-		this._dom_input.addEventListener('keydown', this._onInputKeyDown.bind(this));
-		this._dom_input.addEventListener('input', this._onInputInput.bind(this));
-		this._dom_input.addEventListener('keyup', this._onInputKeyUp.bind(this));
-		this._dom_input.addEventListener('focus', this._onFocused.bind(this));
-		this._dom_input.addEventListener('blur', this._onBlurred.bind(this));
+		this.on("added", this._onAdded.bind(this));
+		this.on("removed", this._onRemoved.bind(this));
+		this._dom_input.addEventListener("keydown", this._onInputKeyDown.bind(this));
+		this._dom_input.addEventListener("input", this._onInputInput.bind(this));
+		this._dom_input.addEventListener("keyup", this._onInputKeyUp.bind(this));
+		this._dom_input.addEventListener("focus", this._onFocused.bind(this));
+		this._dom_input.addEventListener("blur", this._onBlurred.bind(this));
 	}
 
 	_onInputKeyDown(e)
 	{
 		this._selection = [
 			this._dom_input.selectionStart,
-			this._dom_input.selectionEnd
+			this._dom_input.selectionEnd,
 		];
 
-		this.emit('keydown', e.keyCode);
+		this.emit("keydown", e.keyCode);
 	}
 
 	_onInputInput(e)
@@ -282,30 +279,30 @@ export class TextInput extends PIXI.Container
 			this._updateSubstitution();
 		}
 
-		this.emit('input', this.text);
+		this.emit("input", this.text);
 	}
 
 	_onInputKeyUp(e)
 	{
-		this.emit('keyup', e.keyCode);
+		this.emit("keyup", e.keyCode);
 	}
 
 	_onFocused()
 	{
-		this._setState('FOCUSED');
-		this.emit('focus');
+		this._setState("FOCUSED");
+		this.emit("focus");
 	}
 
 	_onBlurred()
 	{
-		this._setState('DEFAULT');
-		this.emit('blur');
+		this._setState("DEFAULT");
+		this.emit("blur");
 	}
 
 	_onAdded()
 	{
 		document.body.appendChild(this._dom_input);
-		this._dom_input.style.display = 'none';
+		this._dom_input.style.display = "none";
 		this._dom_added = true;
 	}
 
@@ -324,7 +321,6 @@ export class TextInput extends PIXI.Container
 			this._updateSubstitution();
 		}
 	}
-
 
 	// RENDER & UPDATE
 
@@ -382,7 +378,10 @@ export class TextInput extends PIXI.Container
 			this._buildBoxCache();
 		}
 
-		if (this.state == this._previous.state && this._box == this._box_cache[this.state])
+		if (
+			this.state == this._previous.state
+			&& this._box == this._box_cache[this.state]
+		)
 		{
 			return;
 		}
@@ -399,7 +398,7 @@ export class TextInput extends PIXI.Container
 
 	_updateSubstitution()
 	{
-		if (this.state === 'FOCUSED')
+		if (this.state === "FOCUSED")
 		{
 			this._dom_visible = true;
 			this._surrogate.visible = this.text.length === 0;
@@ -420,8 +419,8 @@ export class TextInput extends PIXI.Container
 			return;
 		}
 
-		this._dom_input.style.top = (this._canvas_bounds.top || 0) + 'px';
-		this._dom_input.style.left = (this._canvas_bounds.left || 0) + 'px';
+		this._dom_input.style.top = (this._canvas_bounds.top || 0) + "px";
+		this._dom_input.style.left = (this._canvas_bounds.left || 0) + "px";
 		this._dom_input.style.transform = this._pixiMatrixToCSS(this._getDOMRelativeWorldTransform());
 		this._dom_input.style.opacity = this.worldAlpha;
 		this._setDOMInputVisible(this.worldVisible && this._dom_visible);
@@ -443,21 +442,20 @@ export class TextInput extends PIXI.Container
 			this.text = this._restrict_value;
 			this._dom_input.setSelectionRange(
 				this._selection[0],
-				this._selection[1]
+				this._selection[1],
 			);
 		}
 	}
-
 
 	// STATE COMPAIRSON (FOR PERFORMANCE BENEFITS)
 
 	_needsUpdate()
 	{
 		return (
-			!this._comparePixiMatrices(this.worldTransform, this._previous.world_transform) ||
-			!this._compareClientRects(this._canvas_bounds, this._previous.canvas_bounds) ||
-			this.worldAlpha != this._previous.world_alpha ||
-			this.worldVisible != this._previous.world_visible
+			!this._comparePixiMatrices(this.worldTransform, this._previous.world_transform)
+			|| !this._compareClientRects(this._canvas_bounds, this._previous.canvas_bounds)
+			|| this.worldAlpha != this._previous.world_alpha
+			|| this.worldVisible != this._previous.world_visible
 		);
 	}
 
@@ -465,12 +463,11 @@ export class TextInput extends PIXI.Container
 	{
 		let input_bounds = this._getDOMInputBounds();
 		return (
-			!this._previous.input_bounds ||
-			input_bounds.width != this._previous.input_bounds.width ||
-			input_bounds.height != this._previous.input_bounds.height
+			!this._previous.input_bounds
+			|| input_bounds.width != this._previous.input_bounds.width
+			|| input_bounds.height != this._previous.input_bounds.height
 		);
 	}
-
 
 	// INPUT SUBSTITUTION
 
@@ -479,14 +476,14 @@ export class TextInput extends PIXI.Container
 		this._surrogate_hitbox = new PIXI.Graphics();
 		this._surrogate_hitbox.alpha = 0;
 		this._surrogate_hitbox.interactive = true;
-		this._surrogate_hitbox.cursor = 'text';
-		this._surrogate_hitbox.on('pointerdown', this._onSurrogateFocus.bind(this));
+		this._surrogate_hitbox.cursor = "text";
+		this._surrogate_hitbox.on("pointerdown", this._onSurrogateFocus.bind(this));
 		this.addChild(this._surrogate_hitbox);
 
 		this._surrogate_mask = new PIXI.Graphics();
 		this.addChild(this._surrogate_mask);
 
-		this._surrogate = new PIXI.Text('', {});
+		this._surrogate = new PIXI.Text("", {});
 		this.addChild(this._surrogate);
 
 		this._surrogate.mask = this._surrogate_mask;
@@ -508,15 +505,15 @@ export class TextInput extends PIXI.Container
 
 		switch (this._surrogate.style.align)
 		{
-			case 'left':
+			case "left":
 				this._surrogate.x = padding[3];
 				break;
 
-			case 'center':
+			case "center":
 				this._surrogate.x = input_bounds.width * 0.5 - this._surrogate.width * 0.5;
 				break;
 
-			case 'right':
+			case "right":
 				this._surrogate.x = input_bounds.width - padding[1] - this._surrogate.width;
 				break;
 		}
@@ -562,7 +559,7 @@ export class TextInput extends PIXI.Container
 	_onSurrogateFocus()
 	{
 		this._setDOMInputVisible(true);
-		//sometimes the input is not being focused by the mouseclick
+		// sometimes the input is not being focused by the mouseclick
 		setTimeout(this._ensureFocus.bind(this), 10);
 	}
 
@@ -582,23 +579,23 @@ export class TextInput extends PIXI.Container
 		{
 			switch (key)
 			{
-				case 'color':
+				case "color":
 					style.fill = this._input_style.color;
 					break;
 
-				case 'fontFamily':
-				case 'fontSize':
-				case 'fontWeight':
-				case 'fontVariant':
-				case 'fontStyle':
+				case "fontFamily":
+				case "fontSize":
+				case "fontWeight":
+				case "fontVariant":
+				case "fontStyle":
 					style[key] = this._input_style[key];
 					break;
 
-				case 'letterSpacing':
+				case "letterSpacing":
 					style.letterSpacing = parseFloat(this._input_style.letterSpacing);
 					break;
 
-				case 'textAlign':
+				case "textAlign":
 					style.align = this._input_style.textAlign;
 					break;
 			}
@@ -625,7 +622,7 @@ export class TextInput extends PIXI.Container
 
 		if (this._input_style.padding && this._input_style.padding.length > 0)
 		{
-			let components = this._input_style.padding.trim().split(' ');
+			let components = this._input_style.padding.trim().split(" ");
 
 			if (components.length == 1)
 			{
@@ -654,7 +651,17 @@ export class TextInput extends PIXI.Container
 
 	_deriveSurrogateText()
 	{
-		return this._dom_input.value.length === 0 ? this._placeholder : this._dom_input.value;
+		if (this._dom_input.value.length === 0)
+		{
+			return this._placeholder;
+		}
+
+		if (this._dom_input.type == "password")
+		{
+			return "•".repeat(this._dom_input.value.length);
+		}
+
+		return this._dom_input.value;
 	}
 
 	_updateFontMetrics()
@@ -665,25 +672,23 @@ export class TextInput extends PIXI.Container
 		this._font_metrics = PIXI.TextMetrics.measureFont(font);
 	}
 
-
 	// CACHING OF INPUT BOX GRAPHICS
 
 	_buildBoxCache()
 	{
 		this._destroyBoxCache();
 
-		let states = ['DEFAULT', 'FOCUSED', 'DISABLED'];
+		let states = ["DEFAULT", "FOCUSED", "DISABLED"];
 		let input_bounds = this._getDOMInputBounds();
 
 		states.forEach((state) =>
-			{
-				this._box_cache[state] = this._box_generator(
-					input_bounds.width,
-					input_bounds.height,
-					state
-				);
-			}
-		);
+		{
+			this._box_cache[state] = this._box_generator(
+				input_bounds.width,
+				input_bounds.height,
+				state,
+			);
+		});
 
 		this._previous.input_bounds = input_bounds;
 	}
@@ -704,7 +709,6 @@ export class TextInput extends PIXI.Container
 		}
 	}
 
-
 	// HELPER FUNCTIONS
 
 	_hasFocus()
@@ -714,13 +718,13 @@ export class TextInput extends PIXI.Container
 
 	_setDOMInputVisible(visible)
 	{
-		this._dom_input.style.display = visible ? 'block' : 'none';
+		this._dom_input.style.display = visible ? "block" : "none";
 	}
 
 	_getCanvasBounds()
 	{
 		let rect = this._last_renderer.view.getBoundingClientRect();
-		let bounds = {top: rect.top, left: rect.left, width: rect.width, height: rect.height};
+		let bounds = { top: rect.top, left: rect.left, width: rect.width, height: rect.height };
 		bounds.left += window.scrollX;
 		bounds.top += window.scrollY;
 		return bounds;
@@ -738,8 +742,8 @@ export class TextInput extends PIXI.Container
 
 		let org_transform = this._dom_input.style.transform;
 		let org_display = this._dom_input.style.display;
-		this._dom_input.style.transform = '';
-		this._dom_input.style.display = 'block';
+		this._dom_input.style.transform = "";
+		this._dom_input.style.display = "block";
 		let bounds = this._dom_input.getBoundingClientRect();
 		this._dom_input.style.transform = org_transform;
 		this._dom_input.style.display = org_display;
@@ -758,14 +762,13 @@ export class TextInput extends PIXI.Container
 		let matrix = this.worldTransform.clone();
 
 		matrix.scale(this._resolution, this._resolution);
-		matrix.scale(canvas_bounds.width / this._last_renderer.width,
-			canvas_bounds.height / this._last_renderer.height);
+		matrix.scale(canvas_bounds.width / this._last_renderer.width, canvas_bounds.height / this._last_renderer.height);
 		return matrix;
 	}
 
 	_pixiMatrixToCSS(m)
 	{
-		return 'matrix(' + [m.a, m.b, m.c, m.d, m.tx, m.ty].join(',') + ')';
+		return "matrix(" + [m.a, m.b, m.c, m.d, m.tx, m.ty].join(",") + ")";
 	}
 
 	_comparePixiMatrices(m1, m2)
@@ -775,12 +778,12 @@ export class TextInput extends PIXI.Container
 			return false;
 		}
 		return (
-			m1.a == m2.a &&
-			m1.b == m2.b &&
-			m1.c == m2.c &&
-			m1.d == m2.d &&
-			m1.tx == m2.tx &&
-			m1.ty == m2.ty
+			m1.a == m2.a
+			&& m1.b == m2.b
+			&& m1.c == m2.c
+			&& m1.d == m2.d
+			&& m1.tx == m2.tx
+			&& m1.ty == m2.ty
 		);
 	}
 
@@ -791,20 +794,17 @@ export class TextInput extends PIXI.Container
 			return false;
 		}
 		return (
-			r1.left == r2.left &&
-			r1.top == r2.top &&
-			r1.width == r2.width &&
-			r1.height == r2.height
+			r1.left == r2.left
+			&& r1.top == r2.top
+			&& r1.width == r2.width
+			&& r1.height == r2.height
 		);
 	}
-
-
 }
-
 
 function DefaultBoxGenerator(styles)
 {
-	styles = styles || {fill: 0xcccccc};
+	styles = styles || { fill: 0xcccccc };
 
 	if (styles.default)
 	{
@@ -818,7 +818,7 @@ function DefaultBoxGenerator(styles)
 		styles.default = styles.focused = styles.disabled = temp_styles;
 	}
 
-	return function (w, h, state)
+	return function(w, h, state)
 	{
 		let style = styles[state.toLowerCase()];
 		let box = new PIXI.Graphics();
@@ -833,7 +833,7 @@ function DefaultBoxGenerator(styles)
 			box.lineStyle(
 				style.stroke.width ?? 1,
 				style.stroke.color ?? 0,
-				style.stroke.alpha ?? 1
+				style.stroke.alpha ?? 1,
 			);
 		}
 
