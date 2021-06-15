@@ -1,6 +1,6 @@
 # Starts up one BrowserStack session per platform, then runs each test in succession. 
 # That's relatively fast, but less thorough, since a failed test aborts any successive tests.
-name: Automated Test (short)
+name: Compile and Deploy
 on:
 #  push:
 #    branches: '**'
