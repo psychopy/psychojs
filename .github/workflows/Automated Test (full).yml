@@ -3,7 +3,8 @@
 name: Automated Test (full)
 on:
   schedule:
-    - cron: '0 0 * * sat'
+# Temporarily disabled so the stager test logs aren't cleaned up
+#    - cron: '0 0 * * sat'
   workflow_dispatch:
     inputs:
       repo:
