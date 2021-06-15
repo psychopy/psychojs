@@ -222,6 +222,7 @@ export class TrialHandler extends PsychObject
 	 * @property {number} thisIndex - the index of the current trial in the conditions list
 	 * @property {number} ran - whether or not the trial ran
 	 * @property {number} finished - whether or not the trials finished
+	 * @property {Object} trialAttributes - a list of trial attributes
 	 */
 	/**
 	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
@@ -255,6 +256,26 @@ export class TrialHandler extends PsychObject
 			addData: (key, value) => this.addData(key, value)
 		};
 
+		// add to the snapshots the current trial's attributes:
+		const currentTrial = this.getCurrentTrial();
+		const excludedAttributes = ['handler', 'name', 'nStim', 'nRemaining', 'thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'ran', 'finished'];
+		const trialAttributes = [];
+		for (const attribute in currentTrial)
+		{
+			if (!(attribute in excludedAttributes))
+			{
+				snapshot[attribute] = currentTrial[attribute];
+				trialAttributes.push(attribute);
+			}
+			else
+			{
+				this._psychoJS.logger.warn(`attempt to replace the value of protected TrialHandler variable: ${attribute}`);
+			}
+			snapshot.trialAttributes = trialAttributes;
+		}
+
+
+
 		this._snapshots.push(snapshot);
 
 		return snapshot;
@@ -278,6 +299,7 @@ export class TrialHandler extends PsychObject
 		}
 	}
 
+	
 	/**
 	 * Set the internal state of this trial handler from the given snapshot.
 	 *
@@ -304,6 +326,12 @@ export class TrialHandler extends PsychObject
 		snapshot.handler._finished = snapshot._finished;
 
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
+
+		// add to the trial handler the snapshot's trial attributes:
+		for (const attribute of snapshot.trialAttributes)
+		{
+			snapshot.handler[attribute] = snapshot[attribute];
+		}
 	}
 
 
