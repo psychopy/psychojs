@@ -69,7 +69,7 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, markerColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog, dependentStims} = {})
+	constructor({name, win, pos, size, ori, units, color, markerColor, lineColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog, dependentStims} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
 
@@ -166,6 +166,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._addAttribute(
 			'color',
 			color,
+			'lightgray',
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			'lineColor',
+			lineColor,
 			'lightgray',
 			this._onChange(true, false)
 		);
@@ -389,6 +395,30 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._setAttribute('rating', rating, log);
 	}
 
+
+
+	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
+	set borderColor(color) {
+		this.lineColor = color;
+	}
+
+
+
+	setBorderColor(color) {
+		this.setLineColor(color);
+	}
+
+
+
+	get borderColor() {
+		return this.lineColor;
+	}
+
+
+
+	getBorderColor() {
+		return this.getLineColor();
+	}
 
 
 	/** Let `fillColor` alias `markerColor` to parallel PsychoPy */
@@ -1121,11 +1151,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 
 		this._barLineWidth_px = 1;
-		this._barLineColor = (!skin.BAR_LINE_COLOR) ? new Color(this._color) : skin.BAR_LINE_COLOR;
+		this._barLineColor = (!skin.BAR_LINE_COLOR) ? new Color(this._lineColor) : skin.BAR_LINE_COLOR;
 		this._barFillColor = undefined;
 
 		this._tickType = Slider.Shape.LINE;
-		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._color) : skin.TICK_COLOR;
+		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._lineColor) : skin.TICK_COLOR;
 
 		if (this.markerColor === undefined) {
 			this.markerColor = skin.MARKER_COLOR;
