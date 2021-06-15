@@ -22,6 +22,7 @@ export class TextInput extends PIXI.Container
 				background: 'none',
 				border: 'none',
 				outline: 'none',
+				text: '',
 				transformOrigin: '0 0',
 				lineHeight: '1'
 			},
@@ -56,7 +57,7 @@ export class TextInput extends PIXI.Container
 		this._selection = [0, 0];
 		this._restrict_value = '';
 		this._createDOMInput();
-		this.substituteText = false;
+		this.substituteText = !this._multiline;
 		this._setState('DEFAULT');
 	}
 
