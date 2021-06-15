@@ -56,7 +56,7 @@ export class TextInput extends PIXI.Container
 		this._selection = [0, 0];
 		this._restrict_value = '';
 		this._createDOMInput();
-		this.substituteText = true;
+		this.substituteText = false;
 		this._setState('DEFAULT');
 	}
 
@@ -831,9 +831,9 @@ function DefaultBoxGenerator(styles)
 		if (style.stroke)
 		{
 			box.lineStyle(
-				style.stroke.width || 1,
-				style.stroke.color || 0,
-				style.stroke.alpha || 1
+				style.stroke.width ?? 1,
+				style.stroke.color ?? 0,
+				style.stroke.alpha ?? 1
 			);
 		}
 

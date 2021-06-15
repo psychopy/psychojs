@@ -7,7 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import createjs from 'preload-js';
 import { Howl } from 'howler';
 import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
@@ -1045,7 +1044,7 @@ export class ServerManager extends PsychObject
 				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
 					src: pathStatusData.path,
-					type: createjs.LoadQueue.BINARY, //createjs.Types.BINARY,
+					type: createjs.Types.BINARY,
 					crossOrigin: 'Anonymous'
 				}/*)*/);
 			}

@@ -80,12 +80,11 @@ export class TrialHandler extends PsychObject
 		this._addAttribute('nReps', nReps);
 		this._addAttribute('method', method);
 		this._addAttribute('extraInfo', extraInfo);
-		this._addAttribute('seed', seed);
 		this._addAttribute('name', name);
 		this._addAttribute('autoLog', autoLog);
-
+		this._addAttribute('seed', seed);
 		this._prepareTrialList(trialList);
-
+		
 		// number of stimuli
 		this.nStim = this.trialList.length;
 
@@ -212,6 +211,7 @@ export class TrialHandler extends PsychObject
 
 	/**
 	 * @typedef {Object} Snapshot
+	 * @property {TrialHandler} handler - the trialHandler
 	 * @property {string} name - the trialHandler name
 	 * @property {number} nStim - the number of stimuli
 	 * @property {number} nTotal - the total number of trials that will be run
@@ -237,6 +237,7 @@ export class TrialHandler extends PsychObject
 		const currentIndex = this.thisIndex;
 
 		const snapshot = {
+			handler: this,
 			name: this.name,
 			nStim: this.nStim,
 			nTotal: this.nTotal,
@@ -250,11 +251,70 @@ export class TrialHandler extends PsychObject
 
 			getCurrentTrial: () => this.getTrial(currentIndex),
 			getTrial: (index = 0) => this.getTrial(index),
+
+			addData: (key, value) => this.addData(key, value)
 		};
 
 		this._snapshots.push(snapshot);
 
 		return snapshot;
+	}
+
+	/**
+	 * Setter for the seed attribute.
+	 *
+	 * @param {boolean} newSeed - New value for seed
+	 */
+	setSeed(seed, log)
+	{
+		this._setAttribute('seed', seed, log);
+		if (typeof this.seed !== 'undefined') 
+		{
+			this._randomNumberGenerator = seedrandom(this.seed);
+		}
+		else
+		{
+			this._randomNumberGenerator = seedrandom();
+		}
+	}
+
+	/**
+	 * Set the internal state of this trial handler from the given snapshot.
+	 *
+	 * @public
+	 * @static
+	 * @param {Snapshot} snapshot - the snapshot from which to update the current internal state.
+	 */
+	static fromSnapshot(snapshot)
+	{
+		// if snapshot is undefined, do nothing:
+		if (typeof snapshot === 'undefined')
+		{
+			return;
+		}
+
+		snapshot.handler.nStim = snapshot.nStim;
+		snapshot.handler.nTotal = snapshot.nTotal;
+		snapshot.handler.nRemaining = snapshot.nRemaining;
+		snapshot.handler.thisRepN = snapshot.thisRepN;
+		snapshot.handler.thisTrialN = snapshot.thisTrialN;
+		snapshot.handler.thisN = snapshot.thisN;
+		snapshot.handler.thisIndex = snapshot.thisIndex;
+		snapshot.handler.ran = snapshot.ran;
+		snapshot.handler._finished = snapshot._finished;
+
+		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
+	}
+
+
+	/**
+	 * Getter for the finished attribute.
+	 *
+	 * @returns {boolean} whether or not the trial has finished.
+	 */
+	get finished()
+	{
+		return this._finished;
 	}
 
 
@@ -616,16 +676,6 @@ export class TrialHandler extends PsychObject
 		// get an array of the indices of the elements of trialList :
 		const indices = Array.from(this.trialList.keys());
 
-		// seed the random number generator:
-		if (typeof (this.seed) !== 'undefined')
-		{
-			seedrandom(this.seed);
-		}
-		else
-		{
-			seedrandom();
-		}
-
 		if (this.method === TrialHandler.Method.SEQUENTIAL)
 		{
 			this._trialSequence = Array(this.nReps).fill(indices);
@@ -638,7 +688,7 @@ export class TrialHandler extends PsychObject
 			this._trialSequence = [];
 			for (let i = 0; i < this.nReps; ++i)
 			{
-				this._trialSequence.push(util.shuffle(indices.slice()));
+				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
 
@@ -652,7 +702,7 @@ export class TrialHandler extends PsychObject
 			}
 
 			// shuffle the sequence:
-			util.shuffle(flatSequence);
+			util.shuffle(flatSequence, this._randomNumberGenerator);
 
 			// reshape it into the trialSequence:
 			this._trialSequence = [];

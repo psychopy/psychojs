@@ -59,6 +59,9 @@ import {PsychoJS} from "../core/PsychoJS";
  *   frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  *
+ * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
+ * 	which must be updated when this Slider is updated, e.g. a Form.
+ *
  * @todo check that parameters are valid, e.g. ticks are an array of numbers, etc.
  * @todo readOnly
  * @todo complete setters, for instance setTicks should change this._isCategorical
@@ -66,7 +69,7 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, markerColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog} = {})
+	constructor({name, win, pos, size, ori, units, color, markerColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog, dependentStims} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
 
@@ -178,6 +181,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			1.0,
 			this._onChange(true, false)
 		);
+
+		this._addAttribute(
+			'dependentStims',
+			dependentStims,
+			[],
+			this._onChange(false, false)
+		);
+
 
 
 		// slider rating (which might be different from the visible marker rating):
@@ -376,6 +387,31 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 
 		this._setAttribute('rating', rating, log);
+	}
+
+
+
+	/** Let `fillColor` alias `markerColor` to parallel PsychoPy */
+	set fillColor(color) {
+		this.markerColor = color;
+	}
+
+
+
+	setFillColor(color) {
+		this.setMarkerColor(color);
+	}
+
+
+
+	get fillColor() {
+		return this.markerColor;
+	}
+
+
+
+	getFillColor() {
+		return this.getMarkerColor();
 	}
 
 
@@ -607,6 +643,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
+
+		// make sure that the dependent Stimuli are also updated:
+		for (const dependentStim of this._dependentStims)
+		{
+			dependentStim.draw();
+		}
 	}
 
 

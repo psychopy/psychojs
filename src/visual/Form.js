@@ -923,7 +923,9 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._visual.stimuliTotalHeight = stimulusOffset;
 
 
-		// scrollbar:
+		// scrollbar
+		// note: we add this Form as a dependent stimulus such that the Form is redrawn whenever
+		// the slider is updated
 		this._scrollbar = new Slider({
 			win: this._win,
 			name: 'scrollbar',
@@ -934,6 +936,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			size: [this._scrollbarWidth, this._size[1]],
 			style: [Slider.Style.SLIDER],
 			ticks: [0, -this._visual.stimuliTotalHeight / this._size[1]],
+			dependentStims: [this]
 		});
 		this._prevScrollbarMarkerPos = 0;
 		this._scrollbar.setMarkerPos(this._prevScrollbarMarkerPos);
@@ -967,7 +970,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			return;
 		}
 		this._needUpdate = false;
-
 
 		// calculate the edges of the form and various other sizes, in various units:
 		this._leftEdge = this._pos[0] - this._size[0] / 2.0;

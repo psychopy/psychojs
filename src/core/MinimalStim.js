@@ -106,7 +106,7 @@ export class MinimalStim extends PsychObject
 				if (typeof this._pixi === 'undefined')
 				{
 					this.psychoJS.logger.warn('the Pixi.js representation of this stimulus is undefined.');
-				}// throw Object.assign(response, { error: 'the PIXI representation of the stimulus is unavailable'});
+				}
 				else
 				{
 					this.win._rootContainer.addChild(this._pixi);
