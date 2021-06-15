@@ -112,6 +112,6 @@ jobs:
 
       # START: compile and deploy
       - name: Run tests
-        run: node test.cjs --nocalibration --nocss --nojs --compile --skiptests --beep --url stager --uploadExperiments --label ${{github.event.inputs.label || env.DEFAULT_LABEL}}
+        run: node test.cjs --nocalibration --compile --skiptests --url stager --uploadExperiments --label ${{github.event.inputs.label || env.DEFAULT_LABEL}}
         working-directory: ./psychojs_testing        
       # END: run tests
