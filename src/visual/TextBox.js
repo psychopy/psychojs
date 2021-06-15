@@ -319,6 +319,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 				padding: padding_px + 'px',
 				multiline,
+				text: this._text,
 				height: multiline ? (height_px - 2 * padding_px) + 'px' : undefined,
 				width: (width_px - 2 * padding_px) + 'px'
 			},
