@@ -200,7 +200,18 @@ export class AudioClip extends PsychObject
 			this._psychoJS.logger.debug('speech.googleapis.com response:', JSON.stringify(decodedResponse));
 
 			// TODO deal with more than one results and/or alternatives
-			resolve(decodedResponse.results[0].alternatives[0]);
+			if (('results' in decodedResponse) && (decodedResponse.results.length > 0))
+			{
+				resolve(decodedResponse.results[0].alternatives[0]);
+			}
+			else
+			{
+				// no transcription available:
+				resolve({
+					transcript: '',
+					confidence: -1
+				});
+			}
 		});
 	}
 
