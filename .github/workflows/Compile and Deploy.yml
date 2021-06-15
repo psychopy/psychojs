@@ -1,0 +1,117 @@
+# Starts up one BrowserStack session per platform, then runs each test in succession. 
+# That's relatively fast, but less thorough, since a failed test aborts any successive tests.
+name: Automated Test (short)
+on:
+#  push:
+#    branches: '**'
+#  pull_request:
+#    branches: '**'
+  workflow_dispatch:
+    inputs:
+      psychojs_repo:
+        description: 'PsychoJS repo (psychopy/psychojs)'
+        required: false
+      psychojs_ref:
+        description: 'PsychoJS branch/tag/SHA (default branch)'
+        required: false
+      psychopy_repo:
+        description: 'PsychoPy repo (psychopy/psychopy)'
+        required: false
+      psychopy_ref:
+        description: 'PsychoPy branch/tag/SHA (default branch)'
+        required: false
+      label:
+        description: 'label (short)'
+        required: false
+env:
+  BROWSERSTACK_ACCESSKEY: ${{ secrets.BROWSERSTACK_ACCESSKEY }}
+  BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
+  STAGING_PASSWORD: ${{ secrets.STAGING_PASSWORD }}
+  STAGING_PORT: ${{ secrets.STAGING_PORT }}
+  STAGING_USERNAME: ${{ secrets.STAGING_USERNAME }}
+  PSYCHOJS_PATH: '/home/runner/work/psychojs/psychojs/psychojs'
+  PSYCHOPY_PATH: '/home/runner/work/psychojs/psychojs/psychopy'
+  DEFAULT_PSYCHOJS_REPO: 'psychopy/psychojs'
+  DEFAULT_PSYCHOPY_REPO: 'psychopy/psychopy'
+  DEFAULT_LABEL: 'short'
+  PYTHON_VERSION: '3.6'
+  PYGLET: '1.3'
+  DISPLAY: ':99.0'
+jobs:
+  test:
+    runs-on: windows-2019
+    steps:
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+          
+      # START: install psychojs_testing
+      - name: Checkout psychojs_testing
+        uses: actions/checkout@v2
+        with:
+          repository: psychopy/psychojs_testing
+          path: psychojs_testing
+      - name: Cache modules psychojs_testing
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-modules-psychojs_testing
+        with:
+          path: ~/psychojs_testing/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-:  
+      - name: Install psychojs_testing
+        run: npm --prefix psychojs_testing ci
+      # END: install psychojs_testing
+    
+      # START: install psychojs
+      - name: Checkout psychojs
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.event.inputs.psychojs_repo || env.DEFAULT_PSYCHOJS_REPO}}
+          ref: ${{github.event.inputs.psychojs_ref}}
+          path: psychojs
+      - name: Cache modules psychojs
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-modules-psychojs
+        with:
+          path: ~/psychojs/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-:  
+      - name: Install psychojs
+        run: npm --prefix psychojs ci
+      # END: install psychojs
+
+      # START: install psychopy
+      - name: Checkout PsychoPy
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.event.inputs.psychopy_repo || env.DEFAULT_PSYCHOPY_REPO}}
+          ref: ${{github.event.inputs.psychopy_ref}}
+          path: psychopy
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - name: Install swig
+        run: |
+          $CONDA/bin/conda install swig
+          pip install pocketsphinx
+        working-directory: ./psychopy
+      - name: Install PsychoPy
+        run: pip install -e .
+        working-directory: ./psychopy
+      # END: install psychopy
+
+      # START: compile and deploy
+      - name: Run tests
+        run: node test.cjs --nocalibration --nocss --nojs --compile --skiptests --beep --url stager --uploadExperiments --label ${{github.event.inputs.label || env.DEFAULT_LABEL}}
+        working-directory: ./psychojs_testing        
+      # END: run tests
