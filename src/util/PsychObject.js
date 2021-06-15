@@ -120,7 +120,10 @@ export class PsychObject extends EventEmitter
 	 */
 	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false)
 	{
-		const response = {origin: 'PsychObject.setAttribute', context: 'when setting the attribute of an object'};
+		const response = {
+			origin: 'PsychObject.setAttribute',
+			context: 'when setting the attribute of an object'
+		};
 
 		if (typeof attributeName == 'undefined')
 		{
