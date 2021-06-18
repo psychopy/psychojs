@@ -51,13 +51,13 @@ export class AudioClip extends PsychObject
 
 
 	/**
-	 * Play the audio clip.
+	 * Start playing the audio clip.
 	 *
-	 * @name module:sound.AudioClip#upload
+	 * @name module:sound.AudioClip#startPlayback
 	 * @function
 	 * @public
 	 */
-	async play()
+	async startPlayback()
 	{
 		this._psychoJS.logger.debug('request to play the audio clip');
 
@@ -65,10 +65,27 @@ export class AudioClip extends PsychObject
 		await this._decodeAudio();
 
 		// play the audio buffer:
-		const source = this._audioContext.createBufferSource();
-		source.buffer = this._audioBuffer;
-		source.connect(this._audioContext.destination);
-		source.start();
+		if (!this._source)
+		{
+			this._source = this._audioContext.createBufferSource();
+		}
+
+		this._source.buffer = this._audioBuffer;
+		this._source.connect(this._audioContext.destination);
+		this._source.start();
+	}
+
+
+	/**
+	 * Stop playing the audio clip.
+	 *
+	 * @name module:sound.AudioClip#startPlayback
+	 * @function
+	 * @public
+	 */
+	async stopPlayback()
+	{
+		// TODO
 	}
 
 
@@ -254,6 +271,7 @@ export class AudioClip extends PsychObject
 		this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
 			sampleRate: this._sampleRateHz
 		});
+		this._source = null;
 
 		const reader = new window.FileReader();
 		reader.onloadend = async () =>
