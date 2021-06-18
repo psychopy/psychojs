@@ -505,7 +505,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 					this._labelPositions_px[l][1] += this._tickSize_px[1];
 				}
 
-				if (this._style.indexOf(Slider.Style.LABELS45) === -1)
+				if (this._style.indexOf(Slider.Style.LABELS_45) === -1)
 				{
 					this._labelPositions_px[l][0] -= labelBounds.width / 2;
 					if (this._compact)
@@ -1213,7 +1213,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		*/
 
 		// labels45:
-		if (this._style.indexOf(Slider.Style.LABELS45) > -1)
+		if (this._style.indexOf(Slider.Style.LABELS_45) > -1)
 		{
 			this._labelOri = -45;
 			if (this._flip)
@@ -1411,10 +1411,10 @@ Slider.Shape = {
  */
 Slider.Style = {
 	RATING: Symbol.for('RATING'),
-	TRIANGLE_MARKER: Symbol.for('TRIANGLEMARKER'),
+	TRIANGLE_MARKER: Symbol.for('TRIANGLE_MARKER'),
 	SLIDER: Symbol.for('SLIDER'),
-	WHITE_ON_BLACK: Symbol.for('WHITEONBLACK'),
-	LABELS45: Symbol.for('LABELS45'),
+	WHITE_ON_BLACK: Symbol.for('WHITE_ON_BLACK'),
+	LABELS_45: Symbol.for('LABELS_45'),
 	RADIO: Symbol.for('RADIO')
 };
 
