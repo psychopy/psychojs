@@ -2,7 +2,7 @@
 # That's relatively slow, but also thorough, since a failed test does not abort any successive tests. 
 name: Automated Test (full)
 on:
-  schedule:
+#  schedule:
 # Temporarily disabled so the stager test logs aren't cleaned up
 #    - cron: '0 0 * * sat'
   workflow_dispatch:
