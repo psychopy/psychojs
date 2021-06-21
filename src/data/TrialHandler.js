@@ -271,8 +271,8 @@ export class TrialHandler extends PsychObject
 			{
 				this._psychoJS.logger.warn(`attempt to replace the value of protected TrialHandler variable: ${attribute}`);
 			}
-			snapshot.trialAttributes = trialAttributes;
 		}
+		snapshot.trialAttributes = trialAttributes;
 
 		// add the snapshot to the list:
 		this._snapshots.push(snapshot);
@@ -317,6 +317,7 @@ export class TrialHandler extends PsychObject
 			return;
 		}
 
+
 		snapshot.handler.nStim = snapshot.nStim;
 		snapshot.handler.nTotal = snapshot.nTotal;
 		snapshot.handler.nRemaining = snapshot.nRemaining;
@@ -329,11 +330,22 @@ export class TrialHandler extends PsychObject
 
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
 
-		// add to the trial handler the snapshot's trial attributes:
+
+		// add the snapshot's trial attributes to a global variable, whose name is derived from
+		// that of the handler: loops -> thisLoop (note the dropped s):
+		let name = snapshot.name;
+		if (name[name.length-1] === 's')
+		{
+			name = name.substr(0, name.length-1);
+		}
+		name = `this${name[0].toUpperCase()}${name.substr(1)}`;
+
+		const value = {};
 		for (const attribute of snapshot.trialAttributes)
 		{
-			snapshot.handler[attribute] = snapshot[attribute];
+			value[attribute] = snapshot[attribute];
 		}
+		window[name] = value;
 	}
 
 
