@@ -12,6 +12,7 @@ import {PsychoJS} from '../core/PsychoJS';
 import {PsychObject} from '../util/PsychObject';
 import {TonePlayer} from './TonePlayer';
 import {TrackPlayer} from './TrackPlayer';
+import {AudioClipPlayer} from './AudioClipPlayer';
 
 
 /**
@@ -231,7 +232,8 @@ export class Sound extends PsychObject
 	{
 		const acceptFns = [
 			sound => TonePlayer.accept(sound),
-			sound => TrackPlayer.accept(sound)
+			sound => TrackPlayer.accept(sound),
+			sound => AudioClipPlayer.accept(sound)
 		];
 
 		for (const acceptFn of acceptFns)

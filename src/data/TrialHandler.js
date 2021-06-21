@@ -274,24 +274,26 @@ export class TrialHandler extends PsychObject
 			snapshot.trialAttributes = trialAttributes;
 		}
 
-
-
+		// add the snapshot to the list:
 		this._snapshots.push(snapshot);
 
 		return snapshot;
 	}
 
+
 	/**
 	 * Setter for the seed attribute.
 	 *
-	 * @param {boolean} newSeed - New value for seed
+	 * @param {boolean} seed - the seed value
+	 * @param {boolean} log - whether or not to log the change of seed
 	 */
 	setSeed(seed, log)
 	{
 		this._setAttribute('seed', seed, log);
-		if (typeof this.seed !== 'undefined') 
+
+		if (typeof seed !== 'undefined')
 		{
-			this._randomNumberGenerator = seedrandom(this.seed);
+			this._randomNumberGenerator = seedrandom(seed);
 		}
 		else
 		{
@@ -299,7 +301,7 @@ export class TrialHandler extends PsychObject
 		}
 	}
 
-	
+
 	/**
 	 * Set the internal state of this trial handler from the given snapshot.
 	 *

@@ -39,6 +39,7 @@ a:hover {
   display: block;
   margin: 0 auto 1em;
   max-width: 100%;
+  max-height: 20vh;
 }
 
 /* Don't display close button in the top right corner of the box */
