@@ -1026,36 +1026,46 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 
 
 /**
- * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ * Generates random integers in the "half-open" interval [low, high). In other words, random integers from min inclusive to max exclusive. This function is modeled after {@link https://numpy.org/devdocs/reference/random/generated/numpy.random.randint.html|numpy.random.randint}.
  *
  * @name module:util.randint
  * @function
  * @public
- * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
- * @param {number} max - one above the largest integer to be drawn
+ * @param {number} low - lowest integer to be drawn is this argument rounded down
+ * @param {number} high - one above the largest integer to be drawn is this argument rounded down
  * @returns {number} a random integer in the requested range (signed)
+ * @throws if not exactly two arguments are passed, or if low or high are not numbers, or if low (rounded down) is greater-than-or-equal-to high (rounded down)
  */
-export function randint(min = 0, max)
+export function randint(low, high)
 {
-	let lo = min;
-	let hi = max;
-
-	if (typeof max === 'undefined')
+	const response = {
+		origin: 'util.randint',
+		context: 'when generating a random integer'
+	};
+	try 
 	{
-		hi = lo;
-		lo = 0;
+		if (arguments.length !== 2) 
+		{
+			throw 'This function takes exactly two arguments: "low" and "high"';
+		}
+		const lowFloored = Math.floor(low);
+		const highFloored = Math.floor(high);
+		if (isNaN(lowFloored)) 
+		{
+			throw '"low" should be a number';
+		}
+		if (isNaN(highFloored)) {
+			throw '"high" should be a number';
+		}
+		if (lowFloored >= highFloored) {
+			throw '"low" (rounded down) should be smaller than "high" (rounded down)';
+		}
+			return Math.floor(Math.random() * (highFloored - lowFloored)) + lowFloored;
 	}
-
-	if (hi < lo)
+	catch (error)
 	{
-		throw {
-			origin: 'util.randint',
-			context: 'when generating a random integer',
-			error: 'min should be <= max'
-		};
+		throw {...response, error};
 	}
-
-	return Math.floor(Math.random() * (hi - lo)) + lo;
 }
 
 
@@ -1079,75 +1089,110 @@ export function round(input, places = 0)
 
 
 /**
- * Calculate the sum of the elements in the input array.
- *
- * If 'input' is not an array, then we return start.
+ * Calculate the sum of 'iterable' together with 'start'. This function is modeled after  {@link https://docs.python.org/3/library/functions.html#sum|Python's sum}.
  *
  * @name module:util.sum
  * @function
  * @public
- * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @param {array} iterable - an array of numbers
  * @param {number} start - value added to the sum of numbers (a la Python)
- * @returns {number} the sum of the elements in the array + start
+ * @returns {number} the sum of the elements in the iterable array + start
+ * @throws if more than two arguments are provided, or if 'iterable' is not an array of numbers, or if 'start' is not a number
  */
-export function sum(input = [], start = 0)
+export function sum(iterable, start = 0) 
 {
-	if (!Array.isArray(input))
+	const response = {
+		origin: 'util.sum',
+		context: 'when summing the elements of "iterable" together with "start"'
+	};
+	try
 	{
-		return start;
+		if (arguments.length > 2) 
+		{
+			throw 'this function takes at most two arguments: "iterable" and "sum"';
+		}
+		if (!Array.isArray(iterable)) 
+		{
+			throw '"iterable" argument should be an Array';
+		}
+		if (typeof start !== 'number') 
+		{
+			throw '"start" argument should be a number';
+		}
+		return iterable.reduce(
+			(a,b) => {
+				if (typeof b !== 'number') 
+				{
+					throw 'Each element of "iterable" argument should be a number';
+				}
+				return a + b;
+			},
+			start
+		);
+	}
+	catch (error)
+	{
+		throw {...response, error};
 	}
 
-	const add = (a, b) => a + b;
-
-	return input
-		// type cast everything as a number
-		.map(value => Number(value))
-		// drop non numeric looking entries (note: needs transpiling for IE11)
-		.filter(value => Number.isNaN(value) === false)
-		// add up each successive entry, starting with start
-		.reduce(add, start);
 }
 
 
 /**
- * Calculate the average of the elements in the input array.
+ * Calculate the average of the elements in the input array. This function is modeled after {@link https://numpy.org/devdocs/reference/generated/numpy.average.html?highlight=average#numpy.average|numpy.average}.
  *
- * If 'input' is not an array, or if it is an empty array, then we return 0.
  *
  * @name module:util.average
  * @function
  * @public
- * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
+ * @param {array} a - an array of numbers
  * @returns {number} the average of the elements in the array
+ * @throws if not exactly one argument is provided, or if 'a' is not an array of numbers
  */
-export function average(input = [])
+export function average(a)
 {
-	if (!Array.isArray(input))
+	const response = {
+		origin: 'util.average',
+		context: 'when averaging the elements of "a"'
+	};
+  try
+  {
+    if (arguments.length !== 1) 
+    {
+      throw 'this function only supports one argument';
+    }
+    if (!Array.isArray(a)) 
+    {
+    throw 'received an argument for that was not an array';
+    }
+    return a.reduce(
+      (a,b) => {
+        if (typeof b !== 'number') {
+          throw 'received an argument which had an element that was not a number';
+        }
+        return a + b;
+      },
+      0
+    ) / a.length;
+  }
+  catch (error)
 	{
-		return 0;
+		throw {...response, error};
 	}
-
-	if (input.length === 0)
-	{
-		return 0;
-	}
-
-	return sum(input, 0) / input.length;
 }
 
 
 /**
- * Sort the elements of the input array, in increasing alphabetical or numerical order.
+ * Sort the elements of array 'array', in increasing alphabetical or numerical order. This function is modeled after {@link https://docs.python.org/3/library/stdtypes.html#list.sort| Python's sort}
  * 
  * @name module:util.sort
  * @function
  * @public
- * @param {array} input - an array of numbers or of strings
+ * @param {array} array - an array of numbers or of strings
  * @return {array} the sorted array
- * @throws if 'input' is not an array, or if its elements are not consistent in types, or if they are not all either numbers or
- * 	strings
+ * @throws if more than one argument is provided, if 'array' is not an array, or if its elements are not all either numbers or strings
  */
-export function sort(input)
+export function sort(array)
 {
 	const response = {
 		origin: 'util.sort',
@@ -1156,25 +1201,30 @@ export function sort(input)
 
 	try
 	{
-		if (!Array.isArray(input))
+		if (arguments.length > 1) 
 		{
-			throw 'the input argument should be an array';
+			throw 'this function takes at most one argument: "array"';
+		}
+
+		if (!Array.isArray(array))
+		{
+			throw 'the "array" argument should be an array';
 		}
 
 		// check the type and consistency of the array, and sort it accordingly:
-		const isNumberArray = input.every(element => typeof element === "number");
+		const isNumberArray = array.every(element => typeof element === "number");
 		if (isNumberArray)
 		{
-			return input.sort((a, b) => (a - b));
+			return array.sort((a, b) => (a - b));
 		}
 
-		const isStringArray = input.every(element => typeof element === "string");
+		const isStringArray = array.every(element => typeof element === "string");
 		if (isStringArray)
 		{
-			return input.sort();
+			return array.sort();
 		}
 		
-		throw 'the input array should either consist entirely of strings or of numbers';
+		throw 'the "array" argument should either consist entirely of strings or of numbers';
 	}
 	catch (error)
 	{
@@ -1186,9 +1236,7 @@ export function sort(input)
 /**
  * Create a sequence of integers.
  * 
- * The sequence is such that the integer at index i is: start + step * i, with i >= 0 and start + step * i < stop
- * 
- * <p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.</p>
+ * The sequence is such that the integer at index i is: start + step * i when i >= 0 and start + step * i < stop when i < 0. This function is modeled after {@link https://docs.python.org/3/library/functions.html#func-range|Python's range}, which is why the arguments are managed somewhat unusually.
  *
  * @name module:util.range
  * @function
@@ -1197,6 +1245,7 @@ export function sort(input)
  * @param {Number} stop - the value of stop
  * @param {Number} [step=1] - the value of step
  * @returns {Number[]} the range as an array of numbers
+ * @throws if less than one argument or more than three arguments is provided, if any of the arguments is not an integer, or if the 'step' argument equals zero
  */
 export function range(...args)
 {
@@ -1247,6 +1296,9 @@ export function range(...args)
 		}
 		if (!Number.isInteger(step)) {
 			throw 'step should be an integer';
+		}
+		if (step == 0) {
+			throw 'step should not be zero';
 		}
 
 		// if start >= stop, the range is empty:
@@ -1332,7 +1384,7 @@ function _match(value)
  
 
  /**
-  * Count the number of elements in the input array that match the given value.
+  * Count the number of elements in the input array that match the given value. This function is modeled after {@link https://docs.python.org/3/library/array.html?highlight=count#array.array.count|Python's count}.
   * 
   * <p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
   * 
@@ -1342,6 +1394,7 @@ function _match(value)
   * @param {array} input the input array
   * @param {Number|string|object|null} value the matching value
   * @returns the number of matching elements
+	* @throws if 'input' is not an array or if 'value' is a value that cannot be handled by count
   */
  export function count(input, value)
  {
@@ -1377,7 +1430,7 @@ function _match(value)
  
 
   /**
-  * Get the index in the input array of the first element that matches the given value.
+  * Get the index in the input array of the first element that matches the given value. This function is modeled after {@link https://docs.python.org/3/library/array.html?highlight=count#array.array.index|Python's index}.
   * 
   * <p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
   * 
@@ -1387,7 +1440,7 @@ function _match(value)
   * @param {array} input the input array
   * @param {Number|string|object|null} value the matching value
   * @returns the index of the first element that matches the value
-  * @throws if the input array does not contain any matching element
+  * @throws if 'input' is not an array, if 'value' is a value that cannot be handled by index, or if the input array does not contain any matching element
   */
  export function index(input, value)
  {
