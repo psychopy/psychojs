@@ -54,6 +54,7 @@ a:hover {
 
 .ui-dialog {
   margin: auto;
+  max-width: 88vw;
   position: relative;
 }
 
