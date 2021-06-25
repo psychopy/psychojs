@@ -1,5 +1,5 @@
 /**
- * AudioClip encapsulate an audio recording.
+ * AudioClip encapsulates an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
  * @version 2021.2.0
@@ -14,7 +14,7 @@ import * as util from '../util/Util';
 
 
 /**
- * <p>AudioClip encapsulate an audio recording.</p>
+ * <p>AudioClip encapsulates an audio recording.</p>
  *
  * @name module:sound.AudioClip
  * @class
@@ -40,6 +40,9 @@ export class AudioClip extends PsychObject
 		this._addAttribute('autoLog', false, autoLog);
 		this._addAttribute('status', AudioClip.Status.CREATED);
 
+		// add a volume attribute, for playback:
+		this._addAttribute('volume', 1.0);
+
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
@@ -47,6 +50,20 @@ export class AudioClip extends PsychObject
 
 		// decode the blob into an audio buffer:
 		this._decodeAudio();
+	}
+
+
+	/**
+	 * Set the volume of the playback.
+	 *
+	 * @name module:sound.AudioClip#setVolume
+	 * @function
+	 * @public
+	 * @param {number} volume - the volume of the playback (must be between 0.0 and 1.0)
+	 */
+	setVolume(volume)
+	{
+		this._volume = volume;
 	}
 
 
@@ -64,14 +81,25 @@ export class AudioClip extends PsychObject
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
-		// play the audio buffer:
-		if (!this._source)
-		{
-			this._source = this._audioContext.createBufferSource();
-		}
+		// note: we need to prepare the audio graph anew each time since, for instance, an
+		// AudioBufferSourceNode can only be played once
+		// ref: https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
 
+		// create a source node from the in-memory audio data in _audioBuffer:
+		this._source = this._audioContext.createBufferSource();
 		this._source.buffer = this._audioBuffer;
-		this._source.connect(this._audioContext.destination);
+
+		// create a gain node, so we can control the volume:
+		this._gainNode = this._audioContext.createGain();
+
+		// connect the nodes:
+		this._source.connect(this._gainNode);
+		this._gainNode.connect(this._audioContext.destination);
+
+		// set the volume:
+		this._gainNode.gain.value = this._volume;
+
+		// start the playback:
 		this._source.start();
 	}
 
@@ -82,10 +110,31 @@ export class AudioClip extends PsychObject
 	 * @name module:sound.AudioClip#startPlayback
 	 * @function
 	 * @public
+	 * @param {number} [fadeDuration = 17] - how long the fading out should last, in ms
 	 */
-	async stopPlayback()
+	async stopPlayback(fadeDuration = 17)
 	{
-		// TODO
+		// TODO deal with fade duration
+
+		// stop the playback:
+		this._source.stop();
+	}
+
+
+	/**
+	 * Get the duration of the audio clip, in seconds.
+	 *
+	 * @name module:sound.AudioClip#getDuration
+	 * @function
+	 * @public
+	 * @returns {Promise<number>} the duration of the audio clip
+	 */
+	async getDuration()
+	{
+		// wait for the decoding to complete:
+		await this._decodeAudio();
+
+		return this._audioBuffer.duration;
 	}
 
 
@@ -140,17 +189,26 @@ export class AudioClip extends PsychObject
 	/**
 	 * Transcribe the audio clip.
 	 *
-	 * ref: https://cloud.google.com/speech-to-text/docs/reference/rest/v1/speech/recognize
-	 *
 	 * @param {Object} options
-	 * @param engine
+	 * @param {Symbol} options.engine - the speech-to-text engine
 	 * @param {String} options.languageCode - the BCP-47 language code for the recognition,
-	 * 	e.g. 'en-gb'
-	 * @return {Promise<void>}
+	 * 	e.g. 'en-GB'
+	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * 	transcription confidence
 	 */
 	async transcribe({engine, languageCode} = {})
 	{
-		this._psychoJS.logger.debug('request to transcribe the audio clip');
+		const response = {
+			origin: 'AudioClip.transcribe',
+			context: `when transcribing audio clip: ${this._name}`,
+		};
+
+		this._psychoJS.logger.debug(response);
+
+		this._psychoJS.config.experiment.keys = [{
+			name: 'sound.AudioClip.Engine.GOOGLE',
+			value: 'AIzaSyCdnfQzMI8zfTBsIkzMRPTzC9Ty6uIhcRk'
+		}];
 
 		// get the secret key from the experiment configuration:
 		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
@@ -165,16 +223,42 @@ export class AudioClip extends PsychObject
 		if (typeof transcriptionKey === 'undefined')
 		{
 			throw {
-				origin: 'AudioClip.transcribe',
-				context: `when transcribing audio clip: ${this._name}`,
+				...response,
 				error: `missing key for engine: ${fullEngineName}`
 			};
 		}
 
-
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
+		// dispatch on engine:
+		if (engine === AudioClip.Engine.GOOGLE)
+		{
+			return this._GoogleTranscribe(transcriptionKey, languageCode);
+		}
+		else
+		{
+			throw {
+				...response,
+				error: `unsupported speech-to-text engine: ${engine}`
+			};
+		}
+
+	}
+
+
+	/**
+	 * Transcribe the audio clip using the Google Cloud Speech-To-Text Engine.
+	 *
+	 * ref: https://cloud.google.com/speech-to-text/docs/reference/rest/v1/speech/recognize
+	 *
+	 * @param {String} transcriptionKey - the secret key to the Google service
+	 * @param {String} languageCode - the BCP-47 language code for the recognition, e.g. 'en-GB'
+	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * 	transcription confidence
+	 */
+	_GoogleTranscribe(transcriptionKey, languageCode)
+	{
 		return new Promise(async (resolve, reject) =>
 		{
 			// convert the Float32 PCM audio data to UInt16:
@@ -236,8 +320,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Decode the formatted audio data (e.g. webm) into a 32bit float PCM audio buffer.
 	 *
-	 * @returns {Promise<unknown>}
-	 * @private
 	 */
 	_decodeAudio()
 	{
@@ -266,12 +348,13 @@ export class AudioClip extends PsychObject
 		// otherwise, start decoding the input formatted audio data:
 		this._status = AudioClip.Status.DECODING;
 		this._audioData = null;
+		this._source = null;
+		this._gainNode = null;
 		this._decodingCallbacks = [];
 
 		this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
 			sampleRate: this._sampleRateHz
 		});
-		this._source = null;
 
 		const reader = new window.FileReader();
 		reader.onloadend = async () =>
@@ -314,14 +397,13 @@ export class AudioClip extends PsychObject
 	/**
 	 * Convert an array buffer to a base64 string.
 	 *
-	 * @note this is only very lightly adapted from the folowing post of @Grantlyk:
+	 * @note this is heavily inspired by the following post by @Grantlyk:
 	 * https://gist.github.com/jonleighton/958841#gistcomment-1953137
-	 *
-	 * the following only works for small buffers:
+	 * It is necessary since the following approach only works for small buffers:
 	 * const dataAsString = String.fromCharCode.apply(null, new Uint8Array(buffer));
 	 * base64Data = window.btoa(dataAsString);
 	 *
-	 * @param arrayBuffer
+	 * @param arrayBuffer - the input buffer
 	 * @return {string} the base64 encoded input buffer
 	 */
 	_base64ArrayBuffer(arrayBuffer)

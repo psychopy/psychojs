@@ -105,7 +105,7 @@ export class TrackPlayer extends SoundPlayer
 
 
 	/**
-	 * Set the duration of the default sprite.
+	 * Set the duration of the track.
 	 *
 	 * @name module:sound.TrackPlayer#setDuration
 	 * @function

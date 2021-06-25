@@ -403,11 +403,6 @@ export class Microphone extends PsychObject
 		this._audioBuffer = [];
 		this._recorder = null;
 
-		// // create an audio context (mostly used for getRecording() ):
-		// this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
-		// 	sampleRate: this._sampleRateHz
-		// });
-
 		// create a new audio recorder:
 		const stream = await navigator.mediaDevices.getUserMedia({
 			audio: {
