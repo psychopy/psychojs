@@ -205,11 +205,6 @@ export class AudioClip extends PsychObject
 
 		this._psychoJS.logger.debug(response);
 
-		this._psychoJS.config.experiment.keys = [{
-			name: 'sound.AudioClip.Engine.GOOGLE',
-			value: 'AIzaSyCdnfQzMI8zfTBsIkzMRPTzC9Ty6uIhcRk'
-		}];
-
 		// get the secret key from the experiment configuration:
 		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
 		let transcriptionKey;
