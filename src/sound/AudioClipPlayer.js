@@ -89,17 +89,16 @@ export class AudioClipPlayer extends SoundPlayer
 	 * @name module:sound.AudioClipPlayer#getDuration
 	 * @function
 	 * @public
-	 * @return {number} the duration of the track, in seconds
+	 * @return {number} the duration of the clip, in seconds
 	 */
 	getDuration()
 	{
-		// TODO
-		return -1;
+		return this._audioClip.getDuration();
 	}
 
 
 	/**
-	 * Set the duration of the default sprite.
+	 * Set the duration of the audio clip.
 	 *
 	 * @name module:sound.AudioClipPlayer#setDuration
 	 * @function
@@ -109,6 +108,12 @@ export class AudioClipPlayer extends SoundPlayer
 	setDuration(duration_s)
 	{
 		// TODO
+
+		throw {
+			origin: 'AudioClipPlayer.setDuration',
+			context: 'when setting the duration of the playback for audio clip player: ' + this._name,
+			error: 'not implemented yet'
+		};
 	}
 
 
@@ -118,14 +123,14 @@ export class AudioClipPlayer extends SoundPlayer
 	 * @name module:sound.AudioClipPlayer#setVolume
 	 * @function
 	 * @public
-	 * @param {Integer} volume - the volume of the playback (must be between 0 and 1.0)
+	 * @param {number} volume - the volume of the playback (must be between 0.0 and 1.0)
 	 * @param {boolean} [mute= false] - whether or not to mute the playback
 	 */
 	setVolume(volume, mute = false)
 	{
 		this._volume = volume;
 
-		// TODO
+		this._audioClip.setVolume((mute) ? 0.0 : volume);
 	}
 
 
@@ -178,11 +183,11 @@ export class AudioClipPlayer extends SoundPlayer
 	 * @name module:sound.AudioClipPlayer#stop
 	 * @function
 	 * @public
-	 * @param {number} [fadeDuration = 17] - how long should the fading out last in ms
+	 * @param {number} [fadeDuration = 17] - how long the fading out should last, in ms
 	 */
 	stop(fadeDuration = 17)
 	{
-		this._audioClip.stopPlayback();
+		this._audioClip.stopPlayback(fadeDuration);
 	}
 
 }

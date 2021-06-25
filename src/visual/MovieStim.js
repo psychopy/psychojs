@@ -138,7 +138,8 @@ export class MovieStim extends VisualStim
 	 *
 	 * @name module:visual.MovieStim#setMovie
 	 * @public
-	 * @param {string | HTMLVideoElement} movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
+	 * @param {string | HTMLVideoElement} movie - the name of the movie resource or a
+	 * 	HTMLVideoElement
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setMovie(movie, log = false)
@@ -171,17 +172,20 @@ export class MovieStim extends VisualStim
 				}
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
+
+				// ensure we have only one onended listener per HTMLVideoElement (we can have several
+				// MovieStim with the same underlying HTMLVideoElement)
+				// https://stackoverflow.com/questions/11455515
+				if (!movie.onended)
+				{
+					movie.onended = () =>
+					{
+						this.status = PsychoJS.Status.FINISHED;
+					};
+				}
 			}
 
-			// Make sure just one listener attached across instances
-			// https://stackoverflow.com/questions/11455515
-			if (!movie.onended)
-			{
-				movie.onended = () =>
-				{
-					this.status = PsychoJS.Status.FINISHED;
-				};
-			}
+
 
 			this._setAttribute('movie', movie, log);
 			this._needUpdate = true;

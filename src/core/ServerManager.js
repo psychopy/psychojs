@@ -1039,7 +1039,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// preload.js with forced binary for xls and xlsx:
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
+			if (['csv', 'odp', 'xls', 'xlsx', 'json'].indexOf(extension) > -1)
 			{
 				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,
