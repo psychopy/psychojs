@@ -536,24 +536,159 @@ EventManager._keycodeMap = {
  * @type {Object.<String,String>}
  */
 EventManager._pygletMap = {
-	// alphanumeric:
-	"grave": "Backquote",
-	"backslash": "Backslash",
+	// https://pyglet.readthedocs.io/en/latest/modules/window_key.html?highlight=keys#ascii-commands
+	// ASCII commands:
 	"backspace": "Backspace",
-	"bracketleft": "BracketLeft",
-	"bracketright": "BracketRight",
+	"tab": "Tab",
+	// "linefeed":
+	// "clear":
+	"return": "Enter",
+	"enter": "Enter",
+	"pause": "Pause",
+	"scrolllock": "ScrollLock",
+	// "sysreq":
+	"escape": "Escape",
+	"space": "Space",
+
+	// Cursor control and motion
+	"home": "Home",
+	"left": "ArrowLeft",
+	"up": "ArrowUp",
+	"right": "ArrowRight",
+	"down": "ArrowDown",
+	"pageup": "PageUp",
+	"pagedown": "PageDown",
+	"end": "End",
+	// "begin":
+
+	// Misc functions
+	"delete": "Delete",
+	"select": "Select",
+	"print": "PrintScreen",
+	// "execute":
+	"insert": "Insert",
+	"undo": "Undo",
+	// "redo":
+	"menu": "ContextMenu",
+	"find": "Find",
+	// "cancel":
+	"help": "Help",
+	// "break":
+	// "modeswitch":
+	// "scriptswitch":
+	"function": "Fn"
+
+	// Number pad
+	"numlock": "NumLock",
+	// "num_space":
+	// "num_tab":
+	"num_enter": "NumpadEnter",
+	// "num_f1":
+	// "num_f2":
+	// "num_f3":
+	// "num_f4":
+	// "num_home":
+	// "num_left":
+	// "num_up":
+	// "num_right":
+	// "num_down":
+	// "num_prior":
+	// "num_page_up":
+	// "num_next":
+	// "num_page_down":
+	// "num_end":
+	// "num_begin":
+	// "num_insert":
+	// "num_delete":
+	"num_equal": "NumpadEqual",
+	"num_multiply": "NumpadMultiply",
+	"num_add": "NumpadAdd",
+	// "num_separator":
+	"num_subtract": "NumpadSubtract",
+	"num_decimal": "NumpadDecimal",
+	"num_divide": "NumpadDivide",
+	"num_0": "Numpad0",
+	"num_1": "Numpad1",
+	"num_2": "Numpad2",
+	"num_3": "Numpad3",
+	"num_4": "Numpad4",
+	"num_5": "Numpad5",
+	"num_6": "Numpad6",
+	"num_7": "Numpad7",
+	"num_8": "Numpad8",
+	"num_9": "Numpad9",
+
+	// Function keys
+	"f1": "F1",
+	"f2": "F2",
+	"f3": "F3",
+	"f4": "F4",
+	"f5": "F5",
+	"f6": "F6",
+	"f7": "F7",
+	"f8": "F8",
+	"f9": "F9",
+	"f10": "F10",
+	"f11": "F11",
+	"f12": "F12",
+	// "f13":
+	// "f14":
+	// "f15":
+	// "f16":
+	// "f17":
+	// "f18":
+	// "f19":
+	// "f20":
+
+	// Modifiers
+	"lshift": "ShiftLeft",
+	"rshift": "ShiftRight",
+	"lctrl": "ControlLeft",
+	"rctrl": "ControlRight",
+	"capslock": "CapsLock",
+	"lmeta": "MetaLeft",
+	"rmeta": "MetaRight",
+	"lalt": "AltLeft",
+	"ralt": "AltRight",
+	// "lwindows":
+	// "rwindows":
+	"lcommand": "MetaLeft",
+	"rcommand": "MetaRight",
+	"loption": "AltLeft",
+	"roption": "AltRight",
+
+	// Latin-1
+	"space": "Space",
+	// "exclamation":
+	// "doublequote":
+	// "hash":
+	// "pound":
+	// "dollar":
+	// "percent":
+	// "ampersand":
+	"apostrophe": "Quote",
+	// "parenleft":
+	// "parenright":
+	// "asterisk":
+	// "plus":
 	"comma": "Comma",
-	"0": "Digit0",
-	"1": "Digit1",
-	"2": "Digit2",
-	"3": "Digit3",
-	"4": "Digit4",
-	"5": "Digit5",
-	"6": "Digit6",
-	"7": "Digit7",
-	"8": "Digit8",
-	"9": "Digit9",
+	"minus": "Minus",
+	"period": "Period",
+	"slash": "Slash",
+	// "colon":
+	"semicolon": "Semicolon",
+	// "less":
 	"equal": "Equal",
+	// "greater":
+	// "question":
+	// "at":
+	"bracketleft": "BracketLeft",
+	"backslash": "Backslash",
+	"bracketright": "BracketRight",
+	// "asciicircum":
+	// "underscore":
+	"grave": "Backquote",
+	// "quoteleft":
 	"a": "KeyA",
 	"b": "KeyB",
 	"c": "KeyC",
@@ -580,52 +715,10 @@ EventManager._pygletMap = {
 	"x": "KeyX",
 	"y": "KeyY",
 	"z": "KeyZ",
-	"minus": "Minus",
-	"period": "Period",
-	"apostrophe": "Quote",
-	"semicolon": "Semicolon",
-	"slash": "Slash",
-
-	// functional keys
-	"escape": "Escape",
-	"loption": "AltLeft",
-	"roption": "AltRight",
-	"capslock": "CapsLock",
-	"lcontrol": "ControlLeft",
-	"rcontrol": "ControlRight",
-	"return": "Enter",
-	"lcommand": "MetaLeft",
-	"rcommand": "MetaRight",
-	"lshift": "ShiftLeft",
-	"rshift": "ShiftRight",
-	"space": "Space",
-	"tab": "Tab",
-
-	// arrowpad
-	"down": "ArrowDown",
-	"left": "ArrowLeft",
-	"right": "ArrowRight",
-	"up": "ArrowUp",
-
-	// numeric pad
-	"num_0": "Numpad0",
-	"num_1": "Numpad1",
-	"num_2": "Numpad2",
-	"num_3": "Numpad3",
-	"num_4": "Numpad4",
-	"num_5": "Numpad5",
-	"num_6": "Numpad6",
-	"num_7": "Numpad7",
-	"num_8": "Numpad8",
-	"num_9": "Numpad9",
-	"num_decimal": "NumpadDecimal",
-	"num_enter": "NumpadEnter",
-	"num_add": "NumpadAdd",
-	"num_subtract": "NumpadSubtract",
-	"num_multiply": "NumpadMultiply",
-	"num_divide": "NumpadDivide",
-	"num_equal": "NumpadEqual",
-	"num_numlock": "NumpadNumlock"
+	// "braceleft":
+	// "bar":
+	// "braceright":
+	// "asciitilde":
 };
 
 
