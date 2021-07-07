@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
-    "build:docs": "jsdoc src -r -d docs -c jsdoc-conf.json --readme README.md",
+    "build:docs": "jsdoc src -r -d docs --readme README.md",
     "build:js": "node ./scripts/build.js.cjs",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:css": "csslint src",
