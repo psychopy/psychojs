@@ -12,7 +12,7 @@ import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
 import {ExperimentHandler} from "../data/ExperimentHandler";
-import {MonotonicClock} from "../util/Clock";
+import {MonotonicClock, Clock} from "../util/Clock";
 
 
 /**
