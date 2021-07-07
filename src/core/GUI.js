@@ -207,17 +207,6 @@ export class GUI
 				dialogElement.innerHTML = htmlCode;
 
 
-				// when the logo is loaded, we call _onDialogOpen again to reset the dimensions and position of
-				// the dialog box:
-				if (typeof logoUrl === 'string')
-				{
-					jQuery("#dialog-logo").on('load', () =>
-					{
-						self._onDialogOpen('#expDialog')();
-					});
-				}
-
-
 				// setup change event handlers for all required keys:
 				this._requiredKeys.forEach((keyId) =>
 					{
@@ -231,14 +220,11 @@ export class GUI
 
 				// init and open the dialog box:
 				self._dialogComponent.button = 'Cancel';
-				self._estimateDialogScalingFactor();
-				const dialogSize = self._getDialogSize();
 				jQuery("#expDialog").dialog({
-					width: dialogSize[0],
-					maxHeight: dialogSize[1],
+					width: "500",
 
 					autoOpen: true,
-					modal: true,
+					modal: false,
 					closeOnEscape: false,
 					resizable: false,
 					draggable: false,
@@ -286,9 +272,6 @@ export class GUI
 						}
 					],
 
-					// open the dialog in the middle of the screen:
-					open: self._onDialogOpen('#expDialog'),
-
 					// close is called by both buttons and when the user clicks on the cross:
 					close: function ()
 					{
@@ -304,10 +287,6 @@ export class GUI
 
 				// update the OK button status:
 				self._updateOkButtonStatus();
-
-
-				// when the browser window is resize, we redimension and reposition the dialog:
-				self._dialogResize('#expDialog');
 
 
 				// block UI until user has pressed dialog button:
@@ -458,17 +437,14 @@ export class GUI
 		dialogElement.innerHTML = htmlCode;
 
 		// init and open the dialog box:
-		this._estimateDialogScalingFactor();
-		const dialogSize = this._getDialogSize();
 		const self = this;
 		jQuery("#msgDialog").dialog({
 			dialogClass: 'no-close',
 
-			width: dialogSize[0],
-			maxHeight: dialogSize[1],
+			width: "500",
 
 			autoOpen: true,
-			modal: true,
+			modal: false,
 			closeOnEscape: false,
 			resizable: false,
 			draggable: false,
@@ -487,93 +463,9 @@ export class GUI
 					}
 				}
 			}],
-
-			// open the dialog in the middle of the screen:
-			open: self._onDialogOpen('#msgDialog'),
-
 		})
 		// change colour of title bar
 			.prev(".ui-dialog-titlebar").css("background", titleColour);
-
-
-		// when the browser window is resize, we redimension and reposition the dialog:
-		self._dialogResize('#msgDialog');
-	}
-
-
-	/**
-	 * Callback triggered when the jQuery UI dialog box is open.
-	 *
-	 * @name module:core.GUI#_onDialogOpen
-	 * @function
-	 * @param {String} dialogId - the dialog ID
-	 * @returns {Function} function setting the dimension and position of the dialog box
-	 * @private
-	 */
-	_onDialogOpen(dialogId)
-	{
-		const self = this;
-
-		return () =>
-		{
-			const windowSize = [jQuery(window).width(), jQuery(window).height()];
-
-			// note: jQuery(dialogId) is the dialog-content, jQuery(dialogId).parent() is the actual widget
-			const parent = jQuery(dialogId).parent();
-			parent.css({
-				position: 'absolute',
-				left: Math.max(0, (windowSize[0] - parent.outerWidth()) / 2.0),
-				top: Math.max(0, (windowSize[1] - parent.outerHeight()) / 2.0)
-			});
-
-			// record width and height difference between dialog content and dialog:
-			self._contentDelta = [
-				parent.css('width').slice(0, -2) - jQuery(dialogId).css('width').slice(0, -2),
-				parent.css('height').slice(0, -2) - jQuery(dialogId).css('height').slice(0, -2)];
-		};
-	}
-
-
-	/**
-	 * Ensure that the browser window's resize events redimension and reposition the dialog UI.
-	 *
-	 * @name module:core.GUI#_dialogResize
-	 * @function
-	 * @param {String} dialogId - the dialog ID
-	 * @private
-	 */
-	_dialogResize(dialogId)
-	{
-		const self = this;
-
-		jQuery(window).resize(function ()
-		{
-			const parent = jQuery(dialogId).parent();
-			const windowSize = [jQuery(window).width(), jQuery(window).height()];
-
-			// size (we need to redimension both the dialog and the dialog content):
-			const dialogSize = self._getDialogSize();
-			parent.css({
-				width: dialogSize[0],
-				maxHeight: dialogSize[1]
-			});
-
-			const isDifferent = self._estimateDialogScalingFactor();
-			if (!isDifferent)
-			{
-				jQuery(dialogId).css({
-					width: dialogSize[0] - self._contentDelta[0],
-					maxHeight: dialogSize[1] - self._contentDelta[1]
-				});
-			}
-
-			// position:
-			parent.css({
-				position: 'absolute',
-				left: Math.max(0, (windowSize[0] - parent.outerWidth()) / 2.0),
-				top: Math.max(0, (windowSize[1] - parent.outerHeight()) / 2.0),
-			});
-		});
 	}
 
 
@@ -669,60 +561,6 @@ export class GUI
 		{
 			jQuery("#buttonOk").show();
 		});
-	}
-
-
-	/**
-	 * Estimate the scaling factor for the dialog popup windows.
-	 *
-	 * @name module:core.GUI#_estimateDialogScalingFactor
-	 * @function
-	 * @private
-	 * @returns {boolean} whether or not the scaling factor is different from the previously estimated one
-	 */
-	_estimateDialogScalingFactor()
-	{
-		const windowSize = [jQuery(window).width(), jQuery(window).height()];
-
-		// desktop:
-		let dialogScalingFactor = 1.0;
-
-		// mobile or tablet:
-		if (windowSize[0] < 1080)
-		{
-			// landscape:
-			if (windowSize[0] > windowSize[1])
-			{
-				dialogScalingFactor = 1.5;
-			}// portrait:
-			else
-			{
-				dialogScalingFactor = 2.0;
-			}
-		}
-
-		const isDifferent = (dialogScalingFactor !== this._dialogScalingFactor);
-		this._dialogScalingFactor = dialogScalingFactor;
-
-		return isDifferent;
-	}
-
-
-	/**
-	 * Get the size of the dialog.
-	 *
-	 * @name module:core.GUI#_getDialogSize
-	 * @private
-	 * @returns {number[]} the size of the popup dialog window
-	 */
-	_getDialogSize()
-	{
-		const windowSize = [jQuery(window).width(), jQuery(window).height()];
-		this._estimateDialogScalingFactor();
-
-		return [
-			Math.min(GUI.dialogMaxSize[0], (windowSize[0] - GUI.dialogMargin[0]) / this._dialogScalingFactor),
-			Math.min(GUI.dialogMaxSize[1], (windowSize[1] - GUI.dialogMargin[1]) / this._dialogScalingFactor)];
 	}
 
 
