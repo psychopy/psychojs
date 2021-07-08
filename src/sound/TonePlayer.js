@@ -8,6 +8,7 @@
  */
 
 import * as Tone from 'tone';
+import { isNumeric } from "../util/Util.js";
 import {SoundPlayer} from './SoundPlayer';
 
 
@@ -74,7 +75,7 @@ export class TonePlayer extends SoundPlayer
 	static accept(sound)
 	{
 		// if the sound's value is an integer, we interpret it as a frequency:
-		if ($.isNumeric(sound.value))
+		if (isNumeric(sound.value))
 		{
 			return new TonePlayer({
 				psychoJS: sound.psychoJS,
