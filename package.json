@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
-    "build:docs": "jsdoc src -r -d docs",
+    "build:docs": "jsdoc src -r -d docs --readme README.md",
     "build:js": "node ./scripts/build.js.cjs",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:css": "csslint src",
@@ -28,7 +28,6 @@
   "dependencies": {
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
-    "moment": "^2.29.1",
     "pako": "^1.0.10",
     "pixi.js-legacy": "^6.0.4",
     "seedrandom": "^3.0.5",

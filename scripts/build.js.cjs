@@ -28,7 +28,8 @@ const [,,, dir = dirMaybe || 'out', version = versionMaybe || pkg.version] = pro
 	bundle: true,
 	sourcemap: true,
 	entryPoints: ['src/index.js'],
-	minify: true,
+	minifySyntax: true,
+	minifyWhitespace: true,
 	target: [
 		// https://github.com/evanw/esbuild/issues/121#issuecomment-646956379
 		'es2017',

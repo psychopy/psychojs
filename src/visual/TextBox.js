@@ -178,15 +178,31 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 
 	/**
-	 * Clears the current text value.
+	 * Clears the current text value or sets it back to match the placeholder.
 	 *
 	 * @name module:visual.TextBox#reset
 	 * @public
 	 */
 	reset()
 	{
+		const text = this.editable ? '' : this.placeholder;
+
+		this.setText(this.placeholder);
+	}
+
+
+
+	/**
+	 * Clears the current text value.
+	 *
+	 * @name module:visual.TextBox#clear
+	 * @public
+	 */
+	clear()
+	{
 		this.setText();
 	}
+
 
 
 	/**
@@ -319,6 +335,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 				padding: padding_px + 'px',
 				multiline,
+				text: this._text,
 				height: multiline ? (height_px - 2 * padding_px) + 'px' : undefined,
 				width: (width_px - 2 * padding_px) + 'px'
 			},

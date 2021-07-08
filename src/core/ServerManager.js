@@ -12,7 +12,7 @@ import {PsychoJS} from './PsychoJS';
 import {PsychObject} from '../util/PsychObject';
 import * as util from '../util/Util';
 import {ExperimentHandler} from "../data/ExperimentHandler";
-import {MonotonicClock} from "../util/Clock";
+import {MonotonicClock, Clock} from "../util/Clock";
 
 
 /**
@@ -1039,7 +1039,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// preload.js with forced binary for xls and xlsx:
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
+			if (['csv', 'odp', 'xls', 'xlsx', 'json'].indexOf(extension) > -1)
 			{
 				manifest.push(/*new createjs.LoadItem().set(*/{
 					id: name,

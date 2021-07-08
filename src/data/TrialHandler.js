@@ -222,6 +222,7 @@ export class TrialHandler extends PsychObject
 	 * @property {number} thisIndex - the index of the current trial in the conditions list
 	 * @property {number} ran - whether or not the trial ran
 	 * @property {number} finished - whether or not the trials finished
+	 * @property {Object} trialAttributes - a list of trial attributes
 	 */
 	/**
 	 * Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
@@ -255,28 +256,51 @@ export class TrialHandler extends PsychObject
 			addData: (key, value) => this.addData(key, value)
 		};
 
+		// add to the snapshots the current trial's attributes:
+		const currentTrial = this.getCurrentTrial();
+		const excludedAttributes = ['handler', 'name', 'nStim', 'nRemaining', 'thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'ran', 'finished'];
+		const trialAttributes = [];
+		for (const attribute in currentTrial)
+		{
+			if (!(attribute in excludedAttributes))
+			{
+				snapshot[attribute] = currentTrial[attribute];
+				trialAttributes.push(attribute);
+			}
+			else
+			{
+				this._psychoJS.logger.warn(`attempt to replace the value of protected TrialHandler variable: ${attribute}`);
+			}
+		}
+		snapshot.trialAttributes = trialAttributes;
+
+		// add the snapshot to the list:
 		this._snapshots.push(snapshot);
 
 		return snapshot;
 	}
 
+
 	/**
 	 * Setter for the seed attribute.
 	 *
-	 * @param {boolean} newSeed - New value for seed
+	 * @param {boolean} seed - the seed value
+	 * @param {boolean} log - whether or not to log the change of seed
 	 */
 	setSeed(seed, log)
 	{
 		this._setAttribute('seed', seed, log);
-		if (typeof this.seed !== 'undefined') 
+
+		if (typeof seed !== 'undefined')
 		{
-			this._randomNumberGenerator = seedrandom(this.seed);
+			this._randomNumberGenerator = seedrandom(seed);
 		}
 		else
 		{
 			this._randomNumberGenerator = seedrandom();
 		}
 	}
+
 
 	/**
 	 * Set the internal state of this trial handler from the given snapshot.
@@ -293,6 +317,7 @@ export class TrialHandler extends PsychObject
 			return;
 		}
 
+
 		snapshot.handler.nStim = snapshot.nStim;
 		snapshot.handler.nTotal = snapshot.nTotal;
 		snapshot.handler.nRemaining = snapshot.nRemaining;
@@ -304,6 +329,23 @@ export class TrialHandler extends PsychObject
 		snapshot.handler._finished = snapshot._finished;
 
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
+
+
+		// add the snapshot's trial attributes to a global variable, whose name is derived from
+		// that of the handler: loops -> thisLoop (note the dropped s):
+		let name = snapshot.name;
+		if (name[name.length-1] === 's')
+		{
+			name = name.substr(0, name.length-1);
+		}
+		name = `this${name[0].toUpperCase()}${name.substr(1)}`;
+
+		const value = {};
+		for (const attribute of snapshot.trialAttributes)
+		{
+			value[attribute] = snapshot[attribute];
+		}
+		window[name] = value;
 	}
 
 

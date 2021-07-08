@@ -21,7 +21,7 @@ import {AudioClip} from "./AudioClip";
  * @class
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {String} options.name - the name used when logging messages
+ * @param @param {module:core.Window} options.win - the associated Window
  * @param {string} [options.format='audio/webm;codecs=opus'] the format for the audio file
  * @param {number} [options.sampleRateHz= 48000] - the audio sampling rate, in Hz
  * @param {Clock} [options.clock= undefined] - an optional clock
@@ -30,10 +30,11 @@ import {AudioClip} from "./AudioClip";
 export class Microphone extends PsychObject
 {
 
-	constructor({psychoJS, name, format, sampleRateHz, clock, autoLog} = {})
+	constructor({win, name, format, sampleRateHz, clock, autoLog} = {})
 	{
-		super(psychoJS);
+		super(win._psychoJS);
 
+		this._addAttribute('win', win, undefined);
 		this._addAttribute('name', name, 'microphone');
 		this._addAttribute('format', format, 'audio/webm;codecs=opus', this._onChange);
 		this._addAttribute('sampleRateHz', sampleRateHz, 48000, this._onChange);
@@ -401,11 +402,6 @@ export class Microphone extends PsychObject
 		// empty the audio buffer:
 		this._audioBuffer = [];
 		this._recorder = null;
-
-		// // create an audio context (mostly used for getRecording() ):
-		// this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
-		// 	sampleRate: this._sampleRateHz
-		// });
 
 		// create a new audio recorder:
 		const stream = await navigator.mediaDevices.getUserMedia({

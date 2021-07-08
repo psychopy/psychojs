@@ -59,8 +59,9 @@ export class TrackPlayer extends SoundPlayer
 	 * @function
 	 * @static
 	 * @public
-	 * @param {module:sound.Sound} - the sound
-	 * @return {Object|undefined} an instance of TrackPlayer that can play the given sound or undefined otherwise
+	 * @param {module:sound.Sound} sound - the sound, which should be the name of an audio resource
+	 * 	file
+	 * @return {Object|undefined} an instance of TrackPlayer that can play the given track or undefined otherwise
 	 */
 	static accept(sound)
 	{
@@ -104,7 +105,7 @@ export class TrackPlayer extends SoundPlayer
 
 
 	/**
-	 * Set the duration of the default sprite.
+	 * Set the duration of the track.
 	 *
 	 * @name module:sound.TrackPlayer#setDuration
 	 * @function
