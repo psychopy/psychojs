@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "csslint": "^1.0.5",
+    "dprint": "^0.15.3",
     "esbuild": "^0.12.1",
     "eslint": "^7.26.0",
     "jsdoc": "^3.6.7"
