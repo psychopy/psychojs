@@ -8,7 +8,7 @@
  */
 
 
-import {Color} from './Color';
+import {Color} from './Color.js';
 
 
 /**

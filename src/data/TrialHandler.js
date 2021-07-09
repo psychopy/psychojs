@@ -12,8 +12,8 @@
 
 import seedrandom from 'seedrandom';
 import * as XLSX from 'xlsx';
-import {PsychObject} from '../util/PsychObject';
-import * as util from '../util/Util';
+import {PsychObject} from '../util/PsychObject.js';
+import * as util from '../util/Util.js';
 
 /**
  * <p>A Trial Handler handles the importing and sequencing of conditions.</p>

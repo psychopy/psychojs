@@ -9,7 +9,7 @@
 
 import * as Tone from 'tone';
 import { isNumeric } from "../util/Util.js";
-import {SoundPlayer} from './SoundPlayer';
+import {SoundPlayer} from './SoundPlayer.js';
 
 
 /**

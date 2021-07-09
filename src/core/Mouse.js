@@ -8,9 +8,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychoJS} from './PsychoJS';
-import {PsychObject} from '../util/PsychObject';
-import * as util from '../util/Util';
+import {PsychoJS} from './PsychoJS.js';
+import {PsychObject} from '../util/PsychObject.js';
+import * as util from '../util/Util.js';
 
 
 /**

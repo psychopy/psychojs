@@ -8,8 +8,8 @@
  */
 
 
-import {ShapeStim} from './ShapeStim';
-import {Color} from '../util/Color';
+import {ShapeStim} from './ShapeStim.js';
+import {Color} from '../util/Color.js';
 
 
 /**

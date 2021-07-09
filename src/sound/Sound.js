@@ -8,11 +8,11 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychoJS} from '../core/PsychoJS';
-import {PsychObject} from '../util/PsychObject';
-import {TonePlayer} from './TonePlayer';
-import {TrackPlayer} from './TrackPlayer';
-import {AudioClipPlayer} from './AudioClipPlayer';
+import {PsychoJS} from '../core/PsychoJS.js';
+import {PsychObject} from '../util/PsychObject.js';
+import {TonePlayer} from './TonePlayer.js';
+import {TrackPlayer} from './TrackPlayer.js';
+import {AudioClipPlayer} from './AudioClipPlayer.js';
 
 
 /**

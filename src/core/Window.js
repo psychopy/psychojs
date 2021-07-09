@@ -8,10 +8,10 @@
  */
 
 import * as PIXI from 'pixi.js-legacy';
-import {Color} from '../util/Color';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
-import {Logger} from "./Logger";
+import {Color} from '../util/Color.js';
+import {PsychObject} from '../util/PsychObject.js';
+import {MonotonicClock} from '../util/Clock.js';
+import {Logger} from "./Logger.js";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>

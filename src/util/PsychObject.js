@@ -9,8 +9,8 @@
  */
 
 
-import {EventEmitter} from './EventEmitter';
-import * as util from './Util';
+import {EventEmitter} from './EventEmitter.js';
+import * as util from './Util.js';
 
 
 /**

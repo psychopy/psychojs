@@ -8,9 +8,9 @@
  */
 
 
-import {PsychObject} from '../util/PsychObject';
-import {PsychoJS} from './PsychoJS';
-import * as util from '../util/Util';
+import {PsychObject} from '../util/PsychObject.js';
+import {PsychoJS} from './PsychoJS.js';
+import * as util from '../util/Util.js';
 
 
 

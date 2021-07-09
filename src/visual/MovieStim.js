@@ -9,11 +9,11 @@
 
 
 import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
-import {PsychoJS} from "../core/PsychoJS";
+import {VisualStim} from './VisualStim.js';
+import {Color} from '../util/Color.js';
+import {ColorMixin} from '../util/ColorMixin.js';
+import * as util from '../util/Util.js';
+import {PsychoJS} from "../core/PsychoJS.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 
 

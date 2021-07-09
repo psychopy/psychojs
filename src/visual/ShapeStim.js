@@ -10,12 +10,12 @@
 
 
 import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
+import {VisualStim} from './VisualStim.js';
+import {Color} from '../util/Color.js';
+import {ColorMixin} from '../util/ColorMixin.js';
+import * as util from '../util/Util.js';
 import { to_pixiPoint } from "../util/Pixi.js";
-import {WindowMixin} from "../core/WindowMixin";
+import {WindowMixin} from "../core/WindowMixin.js";
 
 
 /**

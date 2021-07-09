@@ -7,7 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychObject} from '../util/PsychObject';
+import {PsychObject} from '../util/PsychObject.js';
 
 
 /**
