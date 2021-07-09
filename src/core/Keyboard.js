@@ -7,11 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock, MonotonicClock} from "../util/Clock.js";
-import {PsychObject} from "../util/PsychObject.js";
-import {PsychoJS} from "./PsychoJS.js";
-import {EventManager} from "./EventManager.js";
-
+import { Clock, MonotonicClock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import { EventManager } from "./EventManager.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * @name module:core.KeyPress
@@ -27,7 +26,7 @@ export class KeyPress
 	{
 		this.code = code;
 		this.tDown = tDown;
-		this.name = (typeof name !== 'undefined') ? name : EventManager.w3c2pyglet(code);
+		this.name = (typeof name !== "undefined") ? name : EventManager.w3c2pyglet(code);
 
 		// duration of the keypress (time between keydown and keyup events) or undefined if there was no keyup
 		this.duration = undefined;
@@ -36,7 +35,6 @@ export class KeyPress
 		this.rt = undefined;
 	}
 }
-
 
 /**
  * <p>This manager handles all keyboard events. It is a substitute for the keyboard component of EventManager. </p>
@@ -53,38 +51,34 @@ export class KeyPress
  */
 export class Keyboard extends PsychObject
 {
-
 	constructor({
-								psychoJS,
-								bufferSize = 10000,
-								waitForStart = false,
-								clock,
-								autoLog = false,
-							} = {})
+		psychoJS,
+		bufferSize = 10000,
+		waitForStart = false,
+		clock,
+		autoLog = false,
+	} = {})
 	{
-
 		super(psychoJS);
 
-		if (typeof clock === 'undefined')
+		if (typeof clock === "undefined")
 		{
 			clock = new Clock();
-		} //this._psychoJS.monotonicClock;
+		} // this._psychoJS.monotonicClock;
 
-		this._addAttribute('bufferSize', bufferSize);
-		this._addAttribute('waitForStart', waitForStart);
-		this._addAttribute('clock', clock);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("bufferSize", bufferSize);
+		this._addAttribute("waitForStart", waitForStart);
+		this._addAttribute("clock", clock);
+		this._addAttribute("autoLog", autoLog);
 		// start recording key events if need be:
-		this._addAttribute('status', (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
+		this._addAttribute("status", (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
 
 		// setup circular buffer:
 		this.clearEvents();
 
 		// add key listeners:
 		this._addKeyListeners();
-
 	}
-
 
 	/**
 	 * Start recording keyboard events.
@@ -99,7 +93,6 @@ export class Keyboard extends PsychObject
 		this._status = PsychoJS.Status.STARTED;
 	}
 
-
 	/**
 	 * Stop recording keyboard events.
 	 *
@@ -112,7 +105,6 @@ export class Keyboard extends PsychObject
 	{
 		this._status = PsychoJS.Status.STOPPED;
 	}
-
 
 	/**
 	 * @typedef Keyboard.KeyEvent
@@ -139,7 +131,6 @@ export class Keyboard extends PsychObject
 			return [];
 		}
 
-
 		// iterate over the buffer, from start to end, and discard the null event:
 		let filteredEvents = [];
 		const bufferWrap = (this._bufferLength === this._bufferSize);
@@ -157,7 +148,6 @@ export class Keyboard extends PsychObject
 		return filteredEvents;
 	}
 
-
 	/**
 	 * Get the list of keys pressed or pushed by the participant.
 	 *
@@ -174,12 +164,11 @@ export class Keyboard extends PsychObject
 	 * (keydown with no subsequent keyup at the time getKeys is called).
 	 */
 	getKeys({
-						keyList = [],
-						waitRelease = true,
-						clear = true
-					} = {})
+		keyList = [],
+		waitRelease = true,
+		clear = true,
+	} = {})
 	{
-
 		// if nothing in the buffer, return immediately:
 		if (this._bufferLength === 0)
 		{
@@ -203,7 +192,7 @@ export class Keyboard extends PsychObject
 				{
 					// look for a corresponding, preceding keydown event:
 					const precedingKeydownIndex = keyEvent.keydownIndex;
-					if (typeof precedingKeydownIndex !== 'undefined')
+					if (typeof precedingKeydownIndex !== "undefined")
 					{
 						const precedingKeydownEvent = this._circularBuffer[precedingKeydownIndex];
 						if (precedingKeydownEvent)
@@ -250,12 +239,9 @@ export class Keyboard extends PsychObject
 					{
 						this._circularBuffer[i] = null;
 					}
-
 				}
 			}
-
 		} while (i !== this._bufferIndex);
-
 
 		// if waitRelease = false, we iterate again over the map of unmatched keydown events:
 		if (!waitRelease)
@@ -303,17 +289,14 @@ export class Keyboard extends PsychObject
 			} while (i !== this._bufferIndex);*/
 		}
 
-
 		// if clear = true and the keyList is empty, we clear all the events:
 		if (clear && keyList.length === 0)
 		{
 			this.clearEvents();
 		}
 
-
 		return keyPresses;
 	}
-
 
 	/**
 	 * Clear all events and resets the circular buffers.
@@ -333,7 +316,6 @@ export class Keyboard extends PsychObject
 		this._unmatchedKeydownMap = new Map();
 	}
 
-
 	/**
 	 * Test whether a list of KeyPress's contains one with a particular name.
 	 *
@@ -352,9 +334,8 @@ export class Keyboard extends PsychObject
 		}
 
 		const value = keypressList.find((keypress) => keypress.name === keyName);
-		return (typeof value !== 'undefined');
+		return (typeof value !== "undefined");
 	}
-
 
 	/**
 	 * Add key listeners to the document.
@@ -368,10 +349,9 @@ export class Keyboard extends PsychObject
 		this._previousKeydownKey = undefined;
 		const self = this;
 
-
 		// add a keydown listener:
 		window.addEventListener("keydown", (event) =>
-			// document.addEventListener("keydown", (event) =>
+		// document.addEventListener("keydown", (event) =>
 		{
 			// only consider non-repeat events, i.e. only the first keydown event associated with a participant
 			// holding a key down:
@@ -398,13 +378,12 @@ export class Keyboard extends PsychObject
 			let code = event.code;
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
-			if (typeof code === 'undefined')
+			if (typeof code === "undefined")
 			{
 				code = EventManager.keycode2w3c(event.keyCode);
 			}
 
 			let pigletKey = EventManager.w3c2pyglet(code);
-
 
 			self._bufferIndex = (self._bufferIndex + 1) % self._bufferSize;
 			self._bufferLength = Math.min(self._bufferLength + 1, self._bufferSize);
@@ -413,20 +392,19 @@ export class Keyboard extends PsychObject
 				key: event.key,
 				pigletKey,
 				status: Keyboard.KeyStatus.KEY_DOWN,
-				timestamp
+				timestamp,
 			};
 
 			self._unmatchedKeydownMap.set(event.code, self._bufferIndex);
 
-			self._psychoJS.logger.trace('keydown: ', event.key);
+			self._psychoJS.logger.trace("keydown: ", event.key);
 
 			event.stopPropagation();
 		});
 
-
 		// add a keyup listener:
 		window.addEventListener("keyup", (event) =>
-			// document.addEventListener("keyup", (event) =>
+		// document.addEventListener("keyup", (event) =>
 		{
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
@@ -440,7 +418,7 @@ export class Keyboard extends PsychObject
 			let code = event.code;
 
 			// take care of legacy Microsoft Edge:
-			if (typeof code === 'undefined')
+			if (typeof code === "undefined")
 			{
 				code = EventManager.keycode2w3c(event.keyCode);
 			}
@@ -454,27 +432,25 @@ export class Keyboard extends PsychObject
 				key: event.key,
 				pigletKey,
 				status: Keyboard.KeyStatus.KEY_UP,
-				timestamp
+				timestamp,
 			};
 
 			// get the corresponding keydown event
 			// note: if more keys are down than there are slots in the circular buffer, there might
 			// not be a corresponding keydown event
 			const correspondingKeydownIndex = self._unmatchedKeydownMap.get(event.code);
-			if (typeof correspondingKeydownIndex !== 'undefined')
+			if (typeof correspondingKeydownIndex !== "undefined")
 			{
 				self._circularBuffer[self._bufferIndex].keydownIndex = correspondingKeydownIndex;
 				self._unmatchedKeydownMap.delete(event.code);
 			}
 
-			self._psychoJS.logger.trace('keyup: ', event.key);
+			self._psychoJS.logger.trace("keyup: ", event.key);
 
 			event.stopPropagation();
 		});
-
 	}
 }
-
 
 /**
  * Keyboard KeyStatus.
@@ -485,6 +461,6 @@ export class Keyboard extends PsychObject
  * @public
  */
 Keyboard.KeyStatus = {
-	KEY_DOWN: Symbol.for('KEY_DOWN'),
-	KEY_UP: Symbol.for('KEY_UP')
+	KEY_DOWN: Symbol.for("KEY_DOWN"),
+	KEY_UP: Symbol.for("KEY_UP"),
 };

@@ -8,18 +8,17 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import log4javascript from 'log4javascript';
-import {Scheduler} from '../util/Scheduler.js';
-import {ServerManager} from './ServerManager.js';
-import {ExperimentHandler} from '../data/ExperimentHandler.js';
-import {EventManager} from './EventManager.js';
-import {Window} from './Window.js';
-import {GUI} from './GUI.js';
-import {MonotonicClock} from '../util/Clock.js';
-import {Logger} from './Logger.js';
-import * as util from '../util/Util.js';
+import log4javascript from "log4javascript";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { MonotonicClock } from "../util/Clock.js";
+import { Scheduler } from "../util/Scheduler.js";
+import * as util from "../util/Util.js";
+import { EventManager } from "./EventManager.js";
+import { GUI } from "./GUI.js";
+import { Logger } from "./Logger.js";
+import { ServerManager } from "./ServerManager.js";
+import { Window } from "./Window.js";
 // import {Shelf} from "../data/Shelf";
-
 
 /**
  * <p>PsychoJS manages the lifecycle of an experiment. It initialises the PsychoJS library and its various components (e.g. the {@link ServerManager}, the {@link EventManager}), and is used by the experiment to schedule the various tasks.</p>
@@ -31,7 +30,6 @@ import * as util from '../util/Util.js';
  */
 export class PsychoJS
 {
-
 	/**
 	 * Properties
 	 */
@@ -116,17 +114,16 @@ export class PsychoJS
 	// 	return this._shelf;
 	// }
 
-
 	/**
 	 * @constructor
 	 * @public
 	 */
 	constructor({
-								debug = true,
-								collectIP = false,
-								hosts = [],
-								topLevelStatus = true
-							} = {})
+		debug = true,
+		collectIP = false,
+		hosts = [],
+		topLevelStatus = true,
+	} = {})
 	{
 		// logging:
 		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
@@ -134,7 +131,7 @@ export class PsychoJS
 
 		// detect the browser:
 		this._browser = util.detectBrowser();
-		this.logger.info('[PsychoJS] Detected browser:', this._browser);
+		this.logger.info("[PsychoJS] Detected browser:", this._browser);
 
 		// core clock:
 		this._monotonicClock = new MonotonicClock();
@@ -142,11 +139,11 @@ export class PsychoJS
 		// managers:
 		this._eventManager = new EventManager(this);
 		this._serverManager = new ServerManager({
-			psychoJS: this
+			psychoJS: this,
 		});
 
 		// to be loading `configURL` files in `_configure` calls from
-		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		const hostsEvidently = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/"]);
 		this._hosts = Array.from(hostsEvidently);
 
 		// GUI:
@@ -178,13 +175,12 @@ export class PsychoJS
 			this._makeStatusTopLevel();
 		}
 
-		this.logger.info('[PsychoJS] Initialised.');
-		this.logger.info('[PsychoJS] @version 2021.2.0');
+		this.logger.info("[PsychoJS] Initialised.");
+		this.logger.info("[PsychoJS] @version 2021.2.0");
 
 		// Hide #root::after
-		jQuery('#root').addClass('is-ready');
+		jQuery("#root").addClass("is-ready");
 	}
-
 
 	/**
 	 * Get the experiment's environment.
@@ -193,13 +189,12 @@ export class PsychoJS
 	 */
 	getEnvironment()
 	{
-		if (typeof this._config === 'undefined')
+		if (typeof this._config === "undefined")
 		{
 			return undefined;
 		}
 		return this._config.environment;
 	}
-
 
 	/**
 	 * Open a PsychoJS Window.
@@ -220,22 +215,22 @@ export class PsychoJS
 	 * @public
 	 */
 	openWindow({
-							 name,
-							 fullscr,
-							 color,
-							 units,
-							 waitBlanking,
-							 autoLog
-						 } = {})
+		name,
+		fullscr,
+		color,
+		units,
+		waitBlanking,
+		autoLog,
+	} = {})
 	{
-		this.logger.info('[PsychoJS] Open Window.');
+		this.logger.info("[PsychoJS] Open Window.");
 
-		if (typeof this._window !== 'undefined')
+		if (typeof this._window !== "undefined")
 		{
 			throw {
-				origin: 'PsychoJS.openWindow',
-				context: 'when opening a Window',
-				error: 'A Window has already been opened.'
+				origin: "PsychoJS.openWindow",
+				context: "when opening a Window",
+				error: "A Window has already been opened.",
 			};
 		}
 
@@ -246,10 +241,9 @@ export class PsychoJS
 			color,
 			units,
 			waitBlanking,
-			autoLog
+			autoLog,
 		});
 	}
-
 
 	/**
 	 * Set the completion and cancellation URL to which the participant will be redirect at the end of the experiment.
@@ -263,7 +257,6 @@ export class PsychoJS
 		this._cancellationUrl = cancellationUrl;
 	}
 
-
 	/**
 	 * Schedule a task.
 	 *
@@ -273,11 +266,10 @@ export class PsychoJS
 	 */
 	schedule(task, args)
 	{
-		this.logger.debug('schedule task: ', task.toString().substring(0, 50), '...');
+		this.logger.debug("schedule task: ", task.toString().substring(0, 50), "...");
 
 		this._scheduler.add(task, args);
 	}
-
 
 	/**
 	 * @callback PsychoJS.condition
@@ -293,11 +285,10 @@ export class PsychoJS
 	 */
 	scheduleCondition(condition, thenScheduler, elseScheduler)
 	{
-		this.logger.debug('schedule condition: ', condition.toString().substring(0, 50), '...');
+		this.logger.debug("schedule condition: ", condition.toString().substring(0, 50), "...");
 
 		this._scheduler.addConditional(condition, thenScheduler, elseScheduler);
 	}
-
 
 	/**
 	 * Start the experiment.
@@ -321,11 +312,11 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async start({configURL = 'config.json', expName = 'UNKNOWN', expInfo = {}, resources = []} = {})
+	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [] } = {})
 	{
 		this.logger.debug();
 
-		const response = {origin: 'PsychoJS.start', context: 'when starting the experiment'};
+		const response = { origin: "PsychoJS.start", context: "when starting the experiment" };
 
 		try
 		{
@@ -340,24 +331,24 @@ export class PsychoJS
 			else
 			{
 				this._IP = {
-					IP: 'X',
-					hostname: 'X',
-					city: 'X',
-					region: 'X',
-					country: 'X',
-					location: 'X'
+					IP: "X",
+					hostname: "X",
+					city: "X",
+					region: "X",
+					country: "X",
+					location: "X",
 				};
 			}
 
 			// setup the experiment handler:
 			this._experiment = new ExperimentHandler({
 				psychoJS: this,
-				extraInfo: expInfo
+				extraInfo: expInfo,
 			});
 
 			// setup the logger:
-			//my.logger.console.setLevel(psychoJS.logging.WARNING);
-			//my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
+			// my.logger.console.setLevel(psychoJS.logging.WARNING);
+			// my.logger.server.set({'level':psychoJS.logging.WARNING, 'experimentInfo': my.expInfo});
 
 			// if the experiment is running on the server:
 			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
@@ -372,53 +363,48 @@ export class PsychoJS
 					event.preventDefault();
 
 					// Chrome requires returnValue to be set:
-					event.returnValue = '';
+					event.returnValue = "";
 				};
-				window.addEventListener('beforeunload', this.beforeunloadCallback);
-
+				window.addEventListener("beforeunload", this.beforeunloadCallback);
 
 				// when the user closes the tab or browser, we attempt to close the session,
 				// optionally save the results, and release the WebGL context
 				// note: we communicate with the server using the Beacon API
 				const self = this;
-				window.addEventListener('unload', (event) =>
+				window.addEventListener("unload", (event) =>
 				{
-					if (self._config.session.status === 'OPEN')
+					if (self._config.session.status === "OPEN")
 					{
 						// save the incomplete results if need be:
 						if (self._config.experiment.saveIncompleteResults)
 						{
-							self._experiment.save({sync: true});
+							self._experiment.save({ sync: true });
 						}
 
 						// close the session:
 						self._serverManager.closeSession(false, true);
 					}
 
-					if (typeof self._window !== 'undefined')
+					if (typeof self._window !== "undefined")
 					{
 						self._window.close();
 					}
 				});
-
 			}
-
 
 			// start the asynchronous download of resources:
 			await this._serverManager.prepareResources(resources);
 
 			// start the experiment:
-			this.logger.info('[PsychoJS] Start Experiment.');
+			this.logger.info("[PsychoJS] Start Experiment.");
 			await this._scheduler.start();
 		}
 		catch (error)
 		{
 			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({error: Object.assign(response, {error})});
+			this._gui.dialog({ error: Object.assign(response, { error }) });
 		}
 	}
-
-
 
 	/**
 	 * Block the experiment until the specified resources have been downloaded.
@@ -439,8 +425,8 @@ export class PsychoJS
 	waitForResources(resources = [])
 	{
 		const response = {
-			origin: 'PsychoJS.waitForResources',
-			context: 'while waiting for resources to be downloaded'
+			origin: "PsychoJS.waitForResources",
+			context: "while waiting for resources to be downloaded",
 		};
 
 		try
@@ -450,11 +436,9 @@ export class PsychoJS
 		catch (error)
 		{
 			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({error: Object.assign(response, {error})});
+			this._gui.dialog({ error: Object.assign(response, { error }) });
 		}
 	}
-
-
 
 	/**
 	 * Make the attributes of the given object those of PsychoJS and those of
@@ -465,9 +449,9 @@ export class PsychoJS
 	 */
 	importAttributes(obj)
 	{
-		this.logger.debug('import attributes from: ', util.toString(obj));
+		this.logger.debug("import attributes from: ", util.toString(obj));
 
-		if (typeof obj === 'undefined')
+		if (typeof obj === "undefined")
 		{
 			return;
 		}
@@ -478,7 +462,6 @@ export class PsychoJS
 			window[attribute] = obj[attribute];
 		}
 	}
-
 
 	/**
 	 * Close everything and exit nicely at the end of the experiment,
@@ -493,9 +476,9 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async quit({message, isCompleted = false} = {})
+	async quit({ message, isCompleted = false } = {})
 	{
-		this.logger.info('[PsychoJS] Quit.');
+		this.logger.info("[PsychoJS] Quit.");
 
 		this._experiment.experimentEnded = true;
 		this._status = PsychoJS.Status.FINISHED;
@@ -508,17 +491,17 @@ export class PsychoJS
 			// remove the beforeunload listener:
 			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
 			{
-				window.removeEventListener('beforeunload', this.beforeunloadCallback);
+				window.removeEventListener("beforeunload", this.beforeunloadCallback);
 			}
 
 			// save the results and the logs of the experiment:
 			this.gui.dialog({
-				warning: 'Closing the session. Please wait a few moments.',
-				showOK: false
+				warning: "Closing the session. Please wait a few moments.",
+				showOK: false,
 			});
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
-				if (!this._serverMsg.has('__noOutput'))
+				if (!this._serverMsg.has("__noOutput"))
 				{
 					await this._experiment.save();
 					await this._logger.flush();
@@ -532,8 +515,8 @@ export class PsychoJS
 			}
 
 			// thank participant for waiting and either quit or redirect:
-			let text = 'Thank you for your patience.<br/><br/>';
-			text += (typeof message !== 'undefined') ? message : 'Goodbye!';
+			let text = "Thank you for your patience.<br/><br/>";
+			text += (typeof message !== "undefined") ? message : "Goodbye!";
 			const self = this;
 			this._gui.dialog({
 				message: text,
@@ -552,25 +535,23 @@ export class PsychoJS
 					this._window.closeFullScreen();
 
 					// redirect if redirection URLs have been provided:
-					if (isCompleted && typeof self._completionUrl !== 'undefined')
+					if (isCompleted && typeof self._completionUrl !== "undefined")
 					{
 						window.location = self._completionUrl;
 					}
-					else if (!isCompleted && typeof self._cancellationUrl !== 'undefined')
+					else if (!isCompleted && typeof self._cancellationUrl !== "undefined")
 					{
 						window.location = self._cancellationUrl;
 					}
-				}
+				},
 			});
-
 		}
 		catch (error)
 		{
 			console.error(error);
-			this._gui.dialog({error});
+			this._gui.dialog({ error });
 		}
 	}
-
 
 	/**
 	 * Configure PsychoJS for the running experiment.
@@ -583,8 +564,8 @@ export class PsychoJS
 	async _configure(configURL, name)
 	{
 		const response = {
-			origin: 'PsychoJS.configure',
-			context: 'when configuring PsychoJS for the experiment'
+			origin: "PsychoJS.configure",
+			context: "when configuring PsychoJS for the experiment",
 		};
 
 		try
@@ -594,7 +575,7 @@ export class PsychoJS
 			// if the experiment is running from the pavlovia.org server, we read the configuration file:
 			const experimentUrl = window.location.href;
 			// go through each url in allow list
-			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
+			const isHost = this._hosts.some((url) => experimentUrl.indexOf(url) === 0);
 			if (isHost)
 			{
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
@@ -602,49 +583,48 @@ export class PsychoJS
 
 				// legacy experiments had a psychoJsManager block instead of a pavlovia block,
 				// and the URL pointed to https://pavlovia.org/server
-				if ('psychoJsManager' in this._config)
+				if ("psychoJsManager" in this._config)
 				{
 					delete this._config.psychoJsManager;
 					this._config.pavlovia = {
-						URL: 'https://pavlovia.org'
+						URL: "https://pavlovia.org",
 					};
 				}
 
 				// tests for the presence of essential blocks in the configuration:
-				if (!('experiment' in this._config))
+				if (!("experiment" in this._config))
 				{
-					throw 'missing experiment block in configuration';
+					throw "missing experiment block in configuration";
 				}
-				if (!('name' in this._config.experiment))
+				if (!("name" in this._config.experiment))
 				{
-					throw 'missing name in experiment block in configuration';
+					throw "missing name in experiment block in configuration";
 				}
-				if (!('fullpath' in this._config.experiment))
+				if (!("fullpath" in this._config.experiment))
 				{
-					throw 'missing fullpath in experiment block in configuration';
+					throw "missing fullpath in experiment block in configuration";
 				}
-				if (!('pavlovia' in this._config))
+				if (!("pavlovia" in this._config))
 				{
-					throw 'missing pavlovia block in configuration';
+					throw "missing pavlovia block in configuration";
 				}
-				if (!('URL' in this._config.pavlovia))
+				if (!("URL" in this._config.pavlovia))
 				{
-					throw 'missing URL in pavlovia block in configuration';
+					throw "missing URL in pavlovia block in configuration";
 				}
-				if (!('gitlab' in this._config))
+				if (!("gitlab" in this._config))
 				{
-					throw 'missing gitlab block in configuration';
+					throw "missing gitlab block in configuration";
 				}
-				if (!('projectId' in this._config.gitlab))
+				if (!("projectId" in this._config.gitlab))
 				{
-					throw 'missing projectId in gitlab block in configuration';
+					throw "missing projectId in gitlab block in configuration";
 				}
 
 				this._config.environment = ExperimentHandler.Environment.SERVER;
-
 			}
-			else
 			// otherwise we create an ad-hoc configuration:
+			else
 			{
 				this._config = {
 					environment: ExperimentHandler.Environment.LOCAL,
@@ -652,8 +632,8 @@ export class PsychoJS
 						name,
 						saveFormat: ExperimentHandler.SaveFormat.CSV,
 						saveIncompleteResults: true,
-						keys: []
-					}
+						keys: [],
+					},
 				};
 			}
 
@@ -661,23 +641,21 @@ export class PsychoJS
 			this._serverMsg = new Map();
 			util.getUrlParameters().forEach((value, key) =>
 			{
-				if (key.indexOf('__') === 0)
+				if (key.indexOf("__") === 0)
 				{
 					this._serverMsg.set(key, value);
 				}
 			});
 
-
 			this.status = PsychoJS.Status.CONFIGURED;
-			this.logger.debug('configuration:', util.toString(this._config));
+			this.logger.debug("configuration:", util.toString(this._config));
 		}
 		catch (error)
 		{
 			// throw { ...response, error };
-			throw Object.assign(response, {error});
+			throw Object.assign(response, { error });
 		}
 	}
-
 
 	/**
 	 * Get the IP information of the participant, asynchronously.
@@ -688,32 +666,31 @@ export class PsychoJS
 	async _getParticipantIPInfo()
 	{
 		const response = {
-			origin: 'PsychoJS._getParticipantIPInfo',
-			context: 'when getting the IP information of the participant'
+			origin: "PsychoJS._getParticipantIPInfo",
+			context: "when getting the IP information of the participant",
 		};
 
-		this.logger.debug('getting the IP information of the participant');
+		this.logger.debug("getting the IP information of the participant");
 
 		this._IP = {};
 		try
 		{
-			const geoResponse = await jQuery.get('http://www.geoplugin.net/json.gp');
+			const geoResponse = await jQuery.get("http://www.geoplugin.net/json.gp");
 			const geoData = JSON.parse(geoResponse);
 			this._IP = {
 				IP: geoData.geoplugin_request,
 				country: geoData.geoplugin_countryName,
 				latitude: geoData.geoplugin_latitude,
-				longitude: geoData.geoplugin_longitude
+				longitude: geoData.geoplugin_longitude,
 			};
-			this.logger.debug('IP information of the participant: ' + util.toString(this._IP));
+			this.logger.debug("IP information of the participant: " + util.toString(this._IP));
 		}
 		catch (error)
 		{
 			// throw { ...response, error };
-			throw Object.assign(response, {error});
+			throw Object.assign(response, { error });
 		}
 	}
-
 
 	/**
 	 * Capture all errors and display them in a pop-up error box.
@@ -722,40 +699,45 @@ export class PsychoJS
 	 */
 	_captureErrors()
 	{
-		this.logger.debug('capturing all errors and showing them in a pop up window');
+		this.logger.debug("capturing all errors and showing them in a pop up window");
 
 		const self = this;
-		window.onerror = function (message, source, lineno, colno, error)
+		window.onerror = function(message, source, lineno, colno, error)
 		{
 			console.error(error);
 
-			document.body.setAttribute('data-error', JSON.stringify({
-				message: message,
-				source: source,
-				lineno: lineno,
-				colno: colno,
-				error: error
-			}));
-      
-			self._gui.dialog({"error": error});
-      
+			document.body.setAttribute(
+				"data-error",
+				JSON.stringify({
+					message: message,
+					source: source,
+					lineno: lineno,
+					colno: colno,
+					error: error,
+				}),
+			);
+
+			self._gui.dialog({ "error": error });
+
 			return true;
 		};
-		window.onunhandledrejection = function (error)
+		window.onunhandledrejection = function(error)
 		{
 			console.error(error?.reason);
-			if (error?.reason?.stack === undefined) {
+			if (error?.reason?.stack === undefined)
+			{
 				// No stack? Error thrown by PsychoJS; stringify whole error
-				document.body.setAttribute('data-error', JSON.stringify(error?.reason));
-			} else {
-				// Yes stack? Error thrown by JS; stringify stack
-				document.body.setAttribute('data-error', JSON.stringify(error?.reason?.stack));
+				document.body.setAttribute("data-error", JSON.stringify(error?.reason));
 			}
-			self._gui.dialog({error: error?.reason});
+			else
+			{
+				// Yes stack? Error thrown by JS; stringify stack
+				document.body.setAttribute("data-error", JSON.stringify(error?.reason?.stack));
+			}
+			self._gui.dialog({ error: error?.reason });
 			return true;
 		};
 	}
-
 
 	/**
 	 * Make the various Status top level, in order to accommodate PsychoPy's Code Components.
@@ -768,9 +750,7 @@ export class PsychoJS
 			window[status] = PsychoJS.Status[status];
 		}
 	}
-
 }
-
 
 /**
  * PsychoJS status.
@@ -784,14 +764,13 @@ export class PsychoJS
  * STOPPED in PsychoJS, but the Symbol is the same as that of FINISHED.
  */
 PsychoJS.Status = {
-	NOT_CONFIGURED: Symbol.for('NOT_CONFIGURED'),
-	CONFIGURING: Symbol.for('CONFIGURING'),
-	CONFIGURED: Symbol.for('CONFIGURED'),
-	NOT_STARTED: Symbol.for('NOT_STARTED'),
-	STARTED: Symbol.for('STARTED'),
-	PAUSED: Symbol.for('PAUSED'),
-	FINISHED: Symbol.for('FINISHED'),
-	STOPPED: Symbol.for('FINISHED'), //Symbol.for('STOPPED')
-	ERROR: Symbol.for('ERROR')
+	NOT_CONFIGURED: Symbol.for("NOT_CONFIGURED"),
+	CONFIGURING: Symbol.for("CONFIGURING"),
+	CONFIGURED: Symbol.for("CONFIGURED"),
+	NOT_STARTED: Symbol.for("NOT_STARTED"),
+	STARTED: Symbol.for("STARTED"),
+	PAUSED: Symbol.for("PAUSED"),
+	FINISHED: Symbol.for("FINISHED"),
+	STOPPED: Symbol.for("FINISHED"), // Symbol.for('STOPPED')
+	ERROR: Symbol.for("ERROR"),
 };
-
