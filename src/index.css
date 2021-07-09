@@ -1,7 +1,16 @@
+body {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  margin: 0;
+}
+
 /* Project and resource dialogs */
 label,
 input,
 select {
+  box-sizing: border-box;
   display: block;
   padding-bottom: 0.5em;
 }
@@ -10,7 +19,7 @@ input.text,
 select.text {
   margin-bottom: 1em;
   padding: 0.5em;
-  width: 95%;
+  width: 100%;
 }
 
 fieldset {
@@ -32,82 +41,42 @@ a:hover {
 }
 
 .progress {
+  box-sizing: border-box;
   padding: 0.5em 0;
 }
 
 .logo {
   display: block;
   margin: 0 auto 1em;
-  max-width: 100%;
   max-height: 20vh;
+  max-width: 100%;
+}
+
+.ui-dialog {
+  margin: auto;
+  max-width: 88vw;
+  position: relative;
 }
 
 /* Don't display close button in the top right corner of the box */
-.no-close .ui-dialog-titlebar-close {
+.ui-dialog.no-close .ui-dialog-titlebar-close {
   display: none;
 }
 
-.ui-dialog-content {
+.ui-dialog .ui-dialog-content {
   margin-top: 1em;
+  max-height: calc(100vh - 12em) !important;
+  overflow-y: auto;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+  /* Avoid padding related overflow */
+  box-sizing: border-box;
 }
 
 @media only screen and (max-width: 1080px) {
-  .ui-widget {
-    transform: scale(2);
-  }
-
-  .ui-widget .ui-progressbar {
-    transform: scale(1);
-  }
-
-  .ui-dialog-titlebar .ui-button {
-    margin-right: 1em;
-  }
-
-  .ui-dialog-titlebar .ui-dialog-titlebar-close {
-    transform: scale(1);
-  }
-
   .ui-dialog .ui-dialog-buttonpane {
     padding-top: 1em;
-  }
-
-  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
-    transform: scale(1);
-  }
-
-  .ui-dialog .ui-dialog-titlebar {
-    padding: 1em 2em;
-  }
-}
-
-@media only screen and (max-width: 1080px) and (orientation: landscape) {
-  .ui-widget {
-    transform: scale(1.5);
-  }
-
-  .ui-widget .ui-progressbar {
-    transform: scale(1);
-  }
-
-  .ui-dialog-titlebar .ui-button {
-    margin-right: 1em;
-  }
-
-  .ui-dialog-titlebar .ui-dialog-titlebar-close {
-    transform: scale(1);
-  }
-
-  .ui-dialog .ui-dialog-buttonpane {
-    padding-top: 1em;
-  }
-
-  .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset .ui-button {
-    transform: scale(1);
-  }
-
-  .ui-dialog .ui-dialog-titlebar {
-    padding: 1em 2em;
   }
 }
 
@@ -123,8 +92,8 @@ a:hover {
 /* Initialisation message for IE11 */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
   #root::after {
-    font-weight: bold;
     color: #a05000;
     content: "initialising the experiment... | Internet Explorer / Edge [beta]";
+    font-weight: bold;
   }
 }
