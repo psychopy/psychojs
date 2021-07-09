@@ -7,12 +7,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "../core/PsychoJS";
-import * as util from '../util/Util';
-import {ExperimentHandler} from "../data/ExperimentHandler";
-import {AudioClip} from "./AudioClip";
+import {Clock} from "../util/Clock.js";
+import {PsychObject} from "../util/PsychObject.js";
+import {PsychoJS} from "../core/PsychoJS.js";
+import * as util from '../util/Util.js';
+import {ExperimentHandler} from "../data/ExperimentHandler.js";
+import {AudioClip} from "./AudioClip.js";
 
 /**
  * <p>This manager handles the recording of audio signal.</p>

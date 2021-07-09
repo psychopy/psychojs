@@ -7,10 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychObject} from '../util/PsychObject';
-import {PsychoJS} from '../core/PsychoJS';
-import {ExperimentHandler} from '../data/ExperimentHandler';
-import * as util from '../util/Util';
+import {PsychObject} from '../util/PsychObject.js';
+import {PsychoJS} from '../core/PsychoJS.js';
+import {ExperimentHandler} from '../data/ExperimentHandler.js';
+import * as util from '../util/Util.js';
 
 
 /**

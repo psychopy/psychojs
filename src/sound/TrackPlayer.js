@@ -7,7 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {SoundPlayer} from './SoundPlayer';
+import {SoundPlayer} from './SoundPlayer.js';
 
 
 /**
