@@ -9,9 +9,9 @@
 
 
 import * as XLSX from 'xlsx';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
-import * as util from '../util/Util';
+import {PsychObject} from '../util/PsychObject.js';
+import {MonotonicClock} from '../util/Clock.js';
+import * as util from '../util/Util.js';
 
 
 /**
