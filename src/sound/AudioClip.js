@@ -7,11 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychObject} from '../util/PsychObject.js';
-import {PsychoJS} from '../core/PsychoJS.js';
-import {ExperimentHandler} from '../data/ExperimentHandler.js';
-import * as util from '../util/Util.js';
-
+import { PsychoJS } from "../core/PsychoJS.js";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
 
 /**
  * <p>AudioClip encapsulates an audio recording.</p>
@@ -28,20 +27,19 @@ import * as util from '../util/Util.js';
  */
 export class AudioClip extends PsychObject
 {
-
-	constructor({psychoJS, name, sampleRateHz, format, data, autoLog} = {})
+	constructor({ psychoJS, name, sampleRateHz, format, data, autoLog } = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('name', name, 'audioclip');
-		this._addAttribute('format', format);
-		this._addAttribute('sampleRateHz', sampleRateHz);
-		this._addAttribute('data', data);
-		this._addAttribute('autoLog', false, autoLog);
-		this._addAttribute('status', AudioClip.Status.CREATED);
+		this._addAttribute("name", name, "audioclip");
+		this._addAttribute("format", format);
+		this._addAttribute("sampleRateHz", sampleRateHz);
+		this._addAttribute("data", data);
+		this._addAttribute("autoLog", false, autoLog);
+		this._addAttribute("status", AudioClip.Status.CREATED);
 
 		// add a volume attribute, for playback:
-		this._addAttribute('volume', 1.0);
+		this._addAttribute("volume", 1.0);
 
 		if (this._autoLog)
 		{
@@ -51,7 +49,6 @@ export class AudioClip extends PsychObject
 		// decode the blob into an audio buffer:
 		this._decodeAudio();
 	}
-
 
 	/**
 	 * Set the volume of the playback.
@@ -66,7 +63,6 @@ export class AudioClip extends PsychObject
 		this._volume = volume;
 	}
 
-
 	/**
 	 * Start playing the audio clip.
 	 *
@@ -76,7 +72,7 @@ export class AudioClip extends PsychObject
 	 */
 	async startPlayback()
 	{
-		this._psychoJS.logger.debug('request to play the audio clip');
+		this._psychoJS.logger.debug("request to play the audio clip");
 
 		// wait for the decoding to complete:
 		await this._decodeAudio();
@@ -103,7 +99,6 @@ export class AudioClip extends PsychObject
 		this._source.start();
 	}
 
-
 	/**
 	 * Stop playing the audio clip.
 	 *
@@ -119,7 +114,6 @@ export class AudioClip extends PsychObject
 		// stop the playback:
 		this._source.stop();
 	}
-
 
 	/**
 	 * Get the duration of the audio clip, in seconds.
@@ -137,7 +131,6 @@ export class AudioClip extends PsychObject
 		return this._audioBuffer.duration;
 	}
 
-
 	/**
 	 * Upload the audio clip to the pavlovia server.
 	 *
@@ -147,17 +140,18 @@ export class AudioClip extends PsychObject
 	 */
 	upload()
 	{
-		this._psychoJS.logger.debug('request to upload the audio clip to pavlovia.org');
+		this._psychoJS.logger.debug("request to upload the audio clip to pavlovia.org");
 
 		// add a format-dependent audio extension to the name:
 		const filename = this._name + util.extensionFromMimeType(this._format);
 
-
 		// if the audio recording cannot be uploaded, e.g. the experiment is running locally, or
 		// if it is piloting mode, then we offer the audio clip as a file for download:
-		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-			this._psychoJS.config.experiment.status !== 'RUNNING' ||
-			this._psychoJS._serverMsg.has('__pilotToken'))
+		if (
+			this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			|| this._psychoJS.config.experiment.status !== "RUNNING"
+			|| this._psychoJS._serverMsg.has("__pilotToken")
+		)
 		{
 			return this.download(filename);
 		}
@@ -166,8 +160,6 @@ export class AudioClip extends PsychObject
 		return this._psychoJS.serverManager.uploadAudio(this._data, filename);
 	}
 
-
-
 	/**
 	 * Offer the audio clip to the participant as a sound file to download.
 	 *
@@ -175,16 +167,15 @@ export class AudioClip extends PsychObject
 	 * @function
 	 * @public
 	 */
-	download(filename = 'audio.webm')
+	download(filename = "audio.webm")
 	{
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(this._data);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
 		anchor.click();
 		document.body.removeChild(anchor);
 	}
-
 
 	/**
 	 * Transcribe the audio clip.
@@ -196,10 +187,10 @@ export class AudioClip extends PsychObject
 	 * @return {Promise<>} a promise resolving to the transcript and associated
 	 * 	transcription confidence
 	 */
-	async transcribe({engine, languageCode} = {})
+	async transcribe({ engine, languageCode } = {})
 	{
 		const response = {
-			origin: 'AudioClip.transcribe',
+			origin: "AudioClip.transcribe",
 			context: `when transcribing audio clip: ${this._name}`,
 		};
 
@@ -215,11 +206,11 @@ export class AudioClip extends PsychObject
 				transcriptionKey = key.value;
 			}
 		}
-		if (typeof transcriptionKey === 'undefined')
+		if (typeof transcriptionKey === "undefined")
 		{
 			throw {
 				...response,
-				error: `missing key for engine: ${fullEngineName}`
+				error: `missing key for engine: ${fullEngineName}`,
 			};
 		}
 
@@ -235,12 +226,10 @@ export class AudioClip extends PsychObject
 		{
 			throw {
 				...response,
-				error: `unsupported speech-to-text engine: ${engine}`
+				error: `unsupported speech-to-text engine: ${engine}`,
 			};
 		}
-
 	}
-
 
 	/**
 	 * Transcribe the audio clip using the Google Cloud Speech-To-Text Engine.
@@ -272,31 +261,31 @@ export class AudioClip extends PsychObject
 			// query the Google speech-to-text service:
 			const body = {
 				config: {
-					encoding: 'LINEAR16',
+					encoding: "LINEAR16",
 					sampleRateHertz: this._sampleRateHz,
-					languageCode
+					languageCode,
 				},
 				audio: {
-					content: base64Data
+					content: base64Data,
 				},
 			};
 
 			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${transcriptionKey}`;
 
 			const response = await fetch(url, {
-				method: 'POST',
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(body)
+				body: JSON.stringify(body),
 			});
 
 			// convert the response to json:
 			const decodedResponse = await response.json();
-			this._psychoJS.logger.debug('speech.googleapis.com response:', JSON.stringify(decodedResponse));
+			this._psychoJS.logger.debug("speech.googleapis.com response:", JSON.stringify(decodedResponse));
 
 			// TODO deal with more than one results and/or alternatives
-			if (('results' in decodedResponse) && (decodedResponse.results.length > 0))
+			if (("results" in decodedResponse) && (decodedResponse.results.length > 0))
 			{
 				resolve(decodedResponse.results[0].alternatives[0]);
 			}
@@ -304,13 +293,12 @@ export class AudioClip extends PsychObject
 			{
 				// no transcription available:
 				resolve({
-					transcript: '',
-					confidence: -1
+					transcript: "",
+					confidence: -1,
 				});
 			}
 		});
 	}
-
 
 	/**
 	 * Decode the formatted audio data (e.g. webm) into a 32bit float PCM audio buffer.
@@ -318,7 +306,7 @@ export class AudioClip extends PsychObject
 	 */
 	_decodeAudio()
 	{
-		this._psychoJS.logger.debug('request to decode the data of the audio clip');
+		this._psychoJS.logger.debug("request to decode the data of the audio clip");
 
 		// if the audio clip is ready, the PCM audio data is available in _audioData, a Float32Array:
 		if (this._status === AudioClip.Status.READY)
@@ -326,19 +314,17 @@ export class AudioClip extends PsychObject
 			return;
 		}
 
-
 		// if we are already decoding, wait until the process completed:
 		if (this._status === AudioClip.Status.DECODING)
 		{
 			const self = this;
-			return new Promise(function (resolve, reject)
+			return new Promise(function(resolve, reject)
 			{
 				self._decodingCallbacks.push(resolve);
 
 				// self._errorCallback = reject; // TODO
 			}.bind(this));
 		}
-
 
 		// otherwise, start decoding the input formatted audio data:
 		this._status = AudioClip.Status.DECODING;
@@ -348,7 +334,7 @@ export class AudioClip extends PsychObject
 		this._decodingCallbacks = [];
 
 		this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
-			sampleRate: this._sampleRateHz
+			sampleRate: this._sampleRateHz,
 		});
 
 		const reader = new window.FileReader();
@@ -383,11 +369,10 @@ export class AudioClip extends PsychObject
 		reader.onerror = (error) =>
 		{
 			// TODO
-		}
+		};
 
 		reader.readAsArrayBuffer(this._data);
 	}
-
 
 	/**
 	 * Convert an array buffer to a base64 string.
@@ -403,62 +388,64 @@ export class AudioClip extends PsychObject
 	 */
 	_base64ArrayBuffer(arrayBuffer)
 	{
-	let base64 = '';
-	const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+		let base64 = "";
+		const encodings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-	const bytes = new Uint8Array(arrayBuffer);
-	const byteLength = bytes.byteLength;
-	const byteRemainder = byteLength % 3;
-	const mainLength = byteLength - byteRemainder;
+		const bytes = new Uint8Array(arrayBuffer);
+		const byteLength = bytes.byteLength;
+		const byteRemainder = byteLength % 3;
+		const mainLength = byteLength - byteRemainder;
 
-	let a;
-	let b;
-	let c;
-	let d;
-	let chunk;
+		let a;
+		let b;
+		let c;
+		let d;
+		let chunk;
 
-	// Main loop deals with bytes in chunks of 3
-	for (let i = 0; i < mainLength; i += 3) {
-		// Combine the three bytes into a single integer
-		chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+		// Main loop deals with bytes in chunks of 3
+		for (let i = 0; i < mainLength; i += 3)
+		{
+			// Combine the three bytes into a single integer
+			chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
 
-		// Use bitmasks to extract 6-bit segments from the triplet
-		a = (chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
-		b = (chunk & 258048) >> 12; // 258048   = (2^6 - 1) << 12
-		c = (chunk & 4032) >> 6; // 4032     = (2^6 - 1) << 6
-		d = chunk & 63;        // 63       = 2^6 - 1
+			// Use bitmasks to extract 6-bit segments from the triplet
+			a = (chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
+			b = (chunk & 258048) >> 12; // 258048   = (2^6 - 1) << 12
+			c = (chunk & 4032) >> 6; // 4032     = (2^6 - 1) << 6
+			d = chunk & 63; // 63       = 2^6 - 1
 
-		// Convert the raw binary segments to the appropriate ASCII encoding
-		base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+			// Convert the raw binary segments to the appropriate ASCII encoding
+			base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+		}
+
+		// Deal with the remaining bytes and padding
+		if (byteRemainder === 1)
+		{
+			chunk = bytes[mainLength];
+
+			a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
+
+			// Set the 4 least significant bits to zero
+			b = (chunk & 3) << 4; // 3   = 2^2 - 1
+
+			base64 += `${encodings[a]}${encodings[b]}==`;
+		}
+		else if (byteRemainder === 2)
+		{
+			chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
+
+			a = (chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
+			b = (chunk & 1008) >> 4; // 1008  = (2^6 - 1) << 4
+
+			// Set the 2 least significant bits to zero
+			c = (chunk & 15) << 2; // 15    = 2^4 - 1
+
+			base64 += `${encodings[a]}${encodings[b]}${encodings[c]}=`;
+		}
+
+		return base64;
 	}
-
-	// Deal with the remaining bytes and padding
-	if (byteRemainder === 1) {
-		chunk = bytes[mainLength];
-
-		a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
-
-		// Set the 4 least significant bits to zero
-		b = (chunk & 3) << 4; // 3   = 2^2 - 1
-
-		base64 += `${encodings[a]}${encodings[b]}==`;
-	} else if (byteRemainder === 2) {
-		chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1];
-
-		a = (chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
-		b = (chunk & 1008) >> 4; // 1008  = (2^6 - 1) << 4
-
-		// Set the 2 least significant bits to zero
-		c = (chunk & 15) << 2; // 15    = 2^4 - 1
-
-		base64 += `${encodings[a]}${encodings[b]}${encodings[c]}=`;
-	}
-
-	return base64;
 }
-
-}
-
 
 /**
  * Recognition engines.
@@ -472,9 +459,8 @@ AudioClip.Engine = {
 	/**
 	 * Google Cloud Speech-to-Text.
 	 */
-	GOOGLE: Symbol.for('GOOGLE')
+	GOOGLE: Symbol.for("GOOGLE"),
 };
-
 
 /**
  * AudioClip status.
@@ -484,9 +470,9 @@ AudioClip.Engine = {
  * @public
  */
 AudioClip.Status = {
-	CREATED: Symbol.for('CREATED'),
+	CREATED: Symbol.for("CREATED"),
 
-	DECODING: Symbol.for('DECODING'),
+	DECODING: Symbol.for("DECODING"),
 
-	READY: Symbol.for('READY')
+	READY: Symbol.for("READY"),
 };
