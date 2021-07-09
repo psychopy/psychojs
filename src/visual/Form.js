@@ -17,6 +17,7 @@ import {TextStim} from './TextStim';
 import {TextBox} from './TextBox';
 import {VisualStim} from './VisualStim';
 import {Slider} from './Slider';
+import { to_pixiPoint } from "../util/Pixi.js";
 
 
 
@@ -1100,7 +1101,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.scale.x = 1;
 		this._pixi.scale.y = 1;
 		this._pixi.rotation = 0;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = this._depth;

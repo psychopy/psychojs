@@ -13,6 +13,7 @@ import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
+import { to_pixiPoint } from "../util/Pixi.js";
 
 
 /**
@@ -320,7 +321,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;

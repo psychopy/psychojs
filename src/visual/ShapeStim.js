@@ -14,6 +14,7 @@ import {VisualStim} from './VisualStim';
 import {Color} from '../util/Color';
 import {ColorMixin} from '../util/ColorMixin';
 import * as util from '../util/Util';
+import { to_pixiPoint } from "../util/Pixi.js";
 import {WindowMixin} from "../core/WindowMixin";
 
 
@@ -268,7 +269,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		}
 
 		// set polygon position and rotation:
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180.0;
 	}
 

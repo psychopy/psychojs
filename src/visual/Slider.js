@@ -16,6 +16,7 @@ import {WindowMixin} from '../core/WindowMixin';
 import {Clock} from '../util/Clock';
 import * as util from '../util/Util';
 import {PsychoJS} from "../core/PsychoJS";
+import { to_pixiPoint } from "../util/Pixi.js";
 
 
 /**
@@ -691,7 +692,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_getPosition_px()
 	{
-		const position = util.to_pixiPoint(this.pos, this.units, this.win, true);
+		const position = to_pixiPoint(this.pos, this.units, this.win, true);
 		if (this._compact &&
 			(this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1))
 		{
@@ -729,7 +730,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			if (typeof this._markerPos !== 'undefined')
 			{
 				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
-				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+				this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
 				this._marker.alpha = 1;
 			}
 			else

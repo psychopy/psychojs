@@ -7,9 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import * as PIXI from 'pixi.js-legacy';
-
-
 /**
  * Syntactic sugar for Mixins
  *
@@ -611,32 +608,6 @@ export function to_unit(pos, posUnit, win, targetUnit)
 	catch (error)
 	{
 		throw Object.assign(response, {error});
-	}
-}
-
-
-/**
- * Convert a position to a PIXI Point.
- *
- * @name module:util.to_pixiPoint
- * @function
- * @public
- * @param {number[]} pos - the input position
- * @param {string} posUnit - the position units
- * @param {Window} win - the associated Window
- * @param {boolean} [integerCoordinates = false] - whether or not to round the PIXI Point coordinates.
- * @returns {number[]} the position as a PIXI Point
- */
-export function to_pixiPoint(pos, posUnit, win, integerCoordinates = false)
-{
-	const pos_px = to_px(pos, posUnit, win);
-	if (integerCoordinates)
-	{
-		return new PIXI.Point(Math.round(pos_px[0]), Math.round(pos_px[1]));
-	}
-	else
-	{
-		return new PIXI.Point(pos_px[0], pos_px[1]);
 	}
 }
 
