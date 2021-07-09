@@ -1,13 +1,13 @@
-const { buildSync } = require('esbuild');
-const pkg = require('psychojs/package.json');
+const { buildSync } = require("esbuild");
+const pkg = require("psychojs/package.json");
 
 const versionMaybe = process.env.npm_config_outver;
 const dirMaybe = process.env.npm_config_outdir;
-const [,,, dir = dirMaybe || 'out', version = versionMaybe || pkg.version] = process.argv;
+const [, , , dir = dirMaybe || "out", version = versionMaybe || pkg.version] = process.argv;
 
 buildSync({
 	bundle: true,
-	entryPoints: ['src/index.css'],
+	entryPoints: ["src/index.css"],
 	minify: true,
-	outfile: `./${dir}/psychojs-${version}.css`
+	outfile: `./${dir}/psychojs-${version}.css`,
 });
