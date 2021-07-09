@@ -299,6 +299,19 @@ export function toNumerical(obj)
 
 }
 
+/**
+ * Check whether a value looks like a number
+ *
+ * @name module:util.isNumeric
+ * @function
+ * @public
+ * @param {*} input - Some value
+ * @return {boolean} Whether or not the value can be converted into a number
+ */
+export function isNumeric(input) {
+	return Number.isNaN(Number(input)) === false;
+}
+
 
 /**
  * Check whether a point lies within a polygon
