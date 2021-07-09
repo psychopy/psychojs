@@ -8,7 +8,7 @@
   "typescript": {
     "useTabs": true,
     "semiColons": "always",
-    "quoteStyle": "alwaysDouble",
+    "quoteStyle": "preferDouble",
     "newLineKind": "lf",
     "useBraces": "always",
     "bracePosition": "nextLine",
