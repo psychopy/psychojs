@@ -9,12 +9,12 @@
 
 
 import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import {TextInput} from './TextInput';
+import {VisualStim} from './VisualStim.js';
+import {Color} from '../util/Color.js';
+import {ColorMixin} from '../util/ColorMixin.js';
+import {TextInput} from './TextInput.js';
 import {ButtonStim} from './ButtonStim.js';
-import * as util from '../util/Util';
+import * as util from '../util/Util.js';
 
 // TODO finish documenting all options
 /**

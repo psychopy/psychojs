@@ -9,14 +9,14 @@
 
 
 import * as PIXI from 'pixi.js-legacy';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
-import {TrialHandler} from '../data/TrialHandler';
-import {TextStim} from './TextStim';
-import {TextBox} from './TextBox';
-import {VisualStim} from './VisualStim';
-import {Slider} from './Slider';
+import {Color} from '../util/Color.js';
+import {ColorMixin} from '../util/ColorMixin.js';
+import * as util from '../util/Util.js';
+import {TrialHandler} from '../data/TrialHandler.js';
+import {TextStim} from './TextStim.js';
+import {TextBox} from './TextBox.js';
+import {VisualStim} from './VisualStim.js';
+import {Slider} from './Slider.js';
 import { to_pixiPoint } from "../util/Pixi.js";
 
 
