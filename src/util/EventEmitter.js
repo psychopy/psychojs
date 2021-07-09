@@ -8,7 +8,7 @@
  */
 
 
-import * as util from './Util';
+import * as util from './Util.js';
 
 
 /**
