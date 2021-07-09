@@ -12,9 +12,9 @@ PsychoJS is an open-source project. You can contribute by submitting pull reques
 
 ## Motivation
 
-Many studies in behavioural sciences (e.g. psychology, neuroscience, linguistics or mental health) use computers to present stimuli and record responses in a precise manner. These studies are still typically conducted on small numbers of people in laboratory environments equipped with dedicated hardware.
+Many studies in behavioural sciences (e.g., psychology, neuroscience, linguistics or mental health) use computers to present stimuli and record responses in a precise manner. These studies are still typically conducted on small numbers of people in laboratory environments equipped with dedicated hardware.
 
-With high-speed broadband, improved web technologies and smart devices everywhere, studies can now go online without sacrificing too much temporal precision. This is a “game changer”. Data can be collected on larger, more varied, international populations. We can study people in environments they do not find intimidating. Experiments can be run multiple times per day, without data collection becoming impractical.
+With high-speed broadband, improved web technologies and smart devices everywhere, studies can now go online without sacrificing too much temporal precision. This is a "game changer". Data can be collected on larger, more varied, international populations. We can study people in environments they do not find intimidating. Experiments can be run multiple times per day, without data collection becoming impractical.
 
 The idea behind PsychoJS is to make PsychoPy experiments available online, from a web page, so participants can run them on any device equipped with a web browser such as desktops, laptops, or tablets. In some circumstance, they can even use their phone!
 
@@ -31,7 +31,7 @@ We built the PsychoJS library to make the JavaScript experiment files look and b
 
 There are however notable differences between the PsychoJS and PsychoPy libraries, most of which have to do with the way a web browser interprets and runs JavaScript, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJS introduces the concept of Scheduler. As the name indicate, Scheduler's offer a way to organise various PsychoJS along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).
 
-Under the hood PsychoJS relies on [PixiJs](http://www.pixijs.com) to present stimuli and collect responses. PixiJs is a multi-platform, accelerated, 2-D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considerably improving the rendering performance.
+Under the hood PsychoJS relies on [PixiJS](http://www.pixijs.com) to present stimuli and collect responses. PixiJS is a multi-platform, accelerated, 2D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considerably improving the rendering performance.
 
 
 ### Hosting Experiments
