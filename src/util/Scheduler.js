@@ -7,7 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
 /**
  * <p>A scheduler helps run the main loop by managing scheduled functions,
  * called tasks, after each frame is displayed.</p>
@@ -53,7 +52,6 @@ export class Scheduler
 		this._status = Scheduler.Status.STOPPED;
 	}
 
-
 	/**
 	 * Get the status of the scheduler.
 	 *
@@ -65,7 +63,6 @@ export class Scheduler
 	{
 		return this._status;
 	}
-
 
 	/**
 	 * Task to be run by the scheduler.
@@ -87,7 +84,6 @@ export class Scheduler
 		this._argsList.push(args);
 	}
 
-
 	/**
 	 * Condition evaluated when the task is run.
 	 *
@@ -108,7 +104,7 @@ export class Scheduler
 	addConditional(condition, thenScheduler, elseScheduler)
 	{
 		const self = this;
-		let task = function ()
+		let task = function()
 		{
 			if (condition())
 			{
@@ -124,7 +120,6 @@ export class Scheduler
 
 		this.add(task);
 	}
-
 
 	/**
 	 * Start this scheduler.
@@ -173,7 +168,6 @@ export class Scheduler
 		requestAnimationFrame(update);
 	}
 
-
 	/**
 	 * Stop this scheduler.
 	 *
@@ -186,7 +180,6 @@ export class Scheduler
 		this._stopAtNextTask = true;
 		this._stopAtNextUpdate = true;
 	}
-
 
 	/**
 	 * Run the next scheduled tasks, in sequence, until a rendering of the scene is requested.
@@ -209,9 +202,8 @@ export class Scheduler
 			}
 
 			// if there is no current task, we look for the next one in the list or quit if there is none:
-			if (typeof this._currentTask == 'undefined')
+			if (typeof this._currentTask == "undefined")
 			{
-
 				// a task is available in the taskList:
 				if (this._taskList.length > 0)
 				{
@@ -259,14 +251,11 @@ export class Scheduler
 				this._currentTask = undefined;
 				this._currentArgs = undefined;
 			}
-
 		}
 
 		return state;
 	}
-
 }
-
 
 /**
  * Events.
@@ -280,24 +269,23 @@ Scheduler.Event = {
 	/**
 	 * Move onto the next task *without* rendering the scene first.
 	 */
-	NEXT: Symbol.for('NEXT'),
+	NEXT: Symbol.for("NEXT"),
 
 	/**
 	 * Render the scene and repeat the task.
 	 */
-	FLIP_REPEAT: Symbol.for('FLIP_REPEAT'),
+	FLIP_REPEAT: Symbol.for("FLIP_REPEAT"),
 
 	/**
 	 * Render the scene and move onto the next task.
 	 */
-	FLIP_NEXT: Symbol.for('FLIP_NEXT'),
+	FLIP_NEXT: Symbol.for("FLIP_NEXT"),
 
 	/**
 	 * Quit the scheduler.
 	 */
-	QUIT: Symbol.for('QUIT')
+	QUIT: Symbol.for("QUIT"),
 };
-
 
 /**
  * Status.
@@ -311,10 +299,10 @@ Scheduler.Status = {
 	/**
 	 * The Scheduler is running.
 	 */
-	RUNNING: Symbol.for('RUNNING'),
+	RUNNING: Symbol.for("RUNNING"),
 
 	/**
 	 * The Scheduler is stopped.
 	 */
-	STOPPED: Symbol.for('STOPPED')
+	STOPPED: Symbol.for("STOPPED"),
 };
