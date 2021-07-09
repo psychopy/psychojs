@@ -9,12 +9,12 @@
  */
 
 import * as Tone from 'tone';
-import {PsychoJS} from './PsychoJS';
-import {ServerManager} from './ServerManager';
-import {Scheduler} from '../util/Scheduler';
-import {Clock} from '../util/Clock';
-import {ExperimentHandler} from '../data/ExperimentHandler';
-import * as util from '../util/Util';
+import {PsychoJS} from './PsychoJS.js';
+import {ServerManager} from './ServerManager.js';
+import {Scheduler} from '../util/Scheduler.js';
+import {Clock} from '../util/Clock.js';
+import {ExperimentHandler} from '../data/ExperimentHandler.js';
+import * as util from '../util/Util.js';
 
 
 /**

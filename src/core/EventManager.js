@@ -7,8 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {MonotonicClock, Clock} from '../util/Clock';
-import {PsychoJS} from './PsychoJS';
+import {MonotonicClock, Clock} from '../util/Clock.js';
+import {PsychoJS} from './PsychoJS.js';
 
 
 /**

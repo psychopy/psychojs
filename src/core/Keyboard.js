@@ -7,10 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock, MonotonicClock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "./PsychoJS";
-import {EventManager} from "./EventManager";
+import {Clock, MonotonicClock} from "../util/Clock.js";
+import {PsychObject} from "../util/PsychObject.js";
+import {PsychoJS} from "./PsychoJS.js";
+import {EventManager} from "./EventManager.js";
 
 
 /**

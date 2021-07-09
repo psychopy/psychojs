@@ -9,15 +9,15 @@
  */
 
 import log4javascript from 'log4javascript';
-import {Scheduler} from '../util/Scheduler';
-import {ServerManager} from './ServerManager';
-import {ExperimentHandler} from '../data/ExperimentHandler';
-import {EventManager} from './EventManager';
-import {Window} from './Window';
-import {GUI} from './GUI';
-import {MonotonicClock} from '../util/Clock';
-import {Logger} from './Logger';
-import * as util from '../util/Util';
+import {Scheduler} from '../util/Scheduler.js';
+import {ServerManager} from './ServerManager.js';
+import {ExperimentHandler} from '../data/ExperimentHandler.js';
+import {EventManager} from './EventManager.js';
+import {Window} from './Window.js';
+import {GUI} from './GUI.js';
+import {MonotonicClock} from '../util/Clock.js';
+import {Logger} from './Logger.js';
+import * as util from '../util/Util.js';
 // import {Shelf} from "../data/Shelf";
 
 
