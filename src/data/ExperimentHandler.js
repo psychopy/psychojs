@@ -7,12 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as XLSX from 'xlsx';
-import {PsychObject} from '../util/PsychObject.js';
-import {MonotonicClock} from '../util/Clock.js';
-import * as util from '../util/Util.js';
-
+import * as XLSX from "xlsx";
+import { MonotonicClock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
 
 /**
  * <p>An ExperimentHandler keeps track of multiple loops and handlers. It is particularly useful
@@ -29,7 +27,6 @@ import * as util from '../util/Util.js';
  */
 export class ExperimentHandler extends PsychObject
 {
-
 	/**
 	 * Getter for experimentEnded.
 	 *
@@ -54,7 +51,6 @@ export class ExperimentHandler extends PsychObject
 		this._experimentEnded = ended;
 	}
 
-
 	/**
 	 * Legacy experiment getters.
 	 */
@@ -68,16 +64,15 @@ export class ExperimentHandler extends PsychObject
 		return this._trialsData;
 	}
 
-
 	constructor({
-								psychoJS,
-								name,
-								extraInfo
-							} = {})
+		psychoJS,
+		name,
+		extraInfo,
+	} = {})
 	{
 		super(psychoJS, name);
 
-		this._addAttribute('extraInfo', extraInfo);
+		this._addAttribute("extraInfo", extraInfo);
 
 		// loop handlers:
 		this._loops = [];
@@ -90,7 +85,6 @@ export class ExperimentHandler extends PsychObject
 
 		this._experimentEnded = false;
 	}
-
 
 	/**
 	 * Whether or not the current entry (i.e. trial data) is empty.
@@ -105,7 +99,6 @@ export class ExperimentHandler extends PsychObject
 	{
 		return (Object.keys(this._currentTrialData).length > 0);
 	}
-
 
 	/**
 	 * Add a loop.
@@ -125,7 +118,6 @@ export class ExperimentHandler extends PsychObject
 		loop.experimentHandler = this;
 	}
 
-
 	/**
 	 * Remove the given loop from the list of unfinished loops, e.g. when it has completed.
 	 *
@@ -142,7 +134,6 @@ export class ExperimentHandler extends PsychObject
 			this._unfinishedLoops.splice(index, 1);
 		}
 	}
-
 
 	/**
 	 * Add the key/value pair.
@@ -172,7 +163,6 @@ export class ExperimentHandler extends PsychObject
 		this._currentTrialData[key] = value;
 	}
 
-
 	/**
 	 * Inform this ExperimentHandler that the current trial has ended.  Further calls to {@link addData}
 	 * will be associated with the next trial.
@@ -184,7 +174,7 @@ export class ExperimentHandler extends PsychObject
 	 */
 	nextEntry(snapshots)
 	{
-		if (typeof snapshots !== 'undefined')
+		if (typeof snapshots !== "undefined")
 		{
 			// turn single snapshot into a one-element array:
 			if (!Array.isArray(snapshots))
@@ -203,7 +193,6 @@ export class ExperimentHandler extends PsychObject
 					}
 				}
 			}
-
 		}
 		// this is to support legacy generated JavaScript code and does not properly handle
 		// loops within loops:
@@ -236,7 +225,6 @@ export class ExperimentHandler extends PsychObject
 		this._currentTrialData = {};
 	}
 
-
 	/**
 	 * Save the results of the experiment.
 	 *
@@ -254,11 +242,11 @@ export class ExperimentHandler extends PsychObject
 	 * @param {Array.<Object>} [options.sync] - whether or not to communicate with the server in a synchronous manner
 	 */
 	async save({
-							 attributes = [],
-							 sync = false
-						 } = {})
+		attributes = [],
+		sync = false,
+	} = {})
 	{
-		this._psychoJS.logger.info('[PsychoJS] Save experiment results.');
+		this._psychoJS.logger.info("[PsychoJS] Save experiment results.");
 
 		// (*) get attributes:
 		if (attributes.length === 0)
@@ -286,16 +274,14 @@ export class ExperimentHandler extends PsychObject
 			}
 		}
 
-
 		// (*) get various experiment info:
 		const info = this.extraInfo;
-		const __experimentName = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
-		const __participant = ((typeof info.participant === 'string' && info.participant.length > 0) ? info.participant : 'PARTICIPANT');
-		const __session = ((typeof info.session === 'string' && info.session.length > 0) ? info.session : 'SESSION');
-		const __datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
+		const __experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
+		const __participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
+		const __session = ((typeof info.session === "string" && info.session.length > 0) ? info.session : "SESSION");
+		const __datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
 		const gitlabConfig = this._psychoJS.config.gitlab;
-		const __projectId = (typeof gitlabConfig !== 'undefined' && typeof gitlabConfig.projectId !== 'undefined') ? gitlabConfig.projectId : undefined;
-
+		const __projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
 
 		// (*) save to a .csv file:
 		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV)
@@ -304,23 +290,23 @@ export class ExperimentHandler extends PsychObject
 			// newlines, etc.
 			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
 			// prepend BOM
-			const csv = '\ufeff' + XLSX.utils.sheet_to_csv(worksheet);
+			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
-			const key = __participant + '_' + __experimentName + '_' + __datetime + '.csv';
-			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
-				this._psychoJS.config.experiment.status === 'RUNNING' &&
-				!this._psychoJS._serverMsg.has('__pilotToken'))
+			const key = __participant + "_" + __experimentName + "_" + __datetime + ".csv";
+			if (
+				this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
+				&& this._psychoJS.config.experiment.status === "RUNNING"
+				&& !this._psychoJS._serverMsg.has("__pilotToken")
+			)
 			{
 				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv, sync);
 			}
 			else
 			{
-				util.offerDataForDownload(key, csv, 'text/csv');
+				util.offerDataForDownload(key, csv, "text/csv");
 			}
 		}
-
-
 		// (*) save in the database on the remote server:
 		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE)
 		{
@@ -328,7 +314,7 @@ export class ExperimentHandler extends PsychObject
 
 			for (let r = 0; r < this._trialsData.length; r++)
 			{
-				let doc = {__projectId, __experimentName, __participant, __session, __datetime};
+				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
 				for (let h = 0; h < attributes.length; h++)
 				{
 					doc[attributes[h]] = this._trialsData[r][attributes[h]];
@@ -338,21 +324,21 @@ export class ExperimentHandler extends PsychObject
 			}
 
 			// upload data to the pavlovia server or offer them for download:
-			if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &&
-				this._psychoJS.config.experiment.status === 'RUNNING' &&
-				!this._psychoJS._serverMsg.has('__pilotToken'))
+			if (
+				this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
+				&& this._psychoJS.config.experiment.status === "RUNNING"
+				&& !this._psychoJS._serverMsg.has("__pilotToken")
+			)
 			{
-				const key = 'results'; // name of the mongoDB collection
+				const key = "results"; // name of the mongoDB collection
 				return /*await*/ this._psychoJS.serverManager.uploadData(key, JSON.stringify(documents), sync);
 			}
 			else
 			{
-				util.offerDataForDownload('results.json', JSON.stringify(documents), 'application/json');
+				util.offerDataForDownload("results.json", JSON.stringify(documents), "application/json");
 			}
-
 		}
 	}
-
 
 	/**
 	 * Get the attribute names and values for the current trial of a given loop.
@@ -367,20 +353,20 @@ export class ExperimentHandler extends PsychObject
 	static _getLoopAttributes(loop)
 	{
 		// standard trial attributes:
-		const properties = ['thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'stepSizeCurrent', 'ran', 'order'];
+		const properties = ["thisRepN", "thisTrialN", "thisN", "thisIndex", "stepSizeCurrent", "ran", "order"];
 		let attributes = {};
 		const loopName = loop.name;
 		for (const loopProperty in loop)
 		{
 			if (properties.includes(loopProperty))
 			{
-				const key = (loopProperty === 'stepSizeCurrent') ? loopName + '.stepSize' : loopName + '.' + loopProperty;
+				const key = (loopProperty === "stepSizeCurrent") ? loopName + ".stepSize" : loopName + "." + loopProperty;
 				attributes[key] = loop[loopProperty];
 			}
 		}
 
 		// specific trial attributes:
-		if (typeof loop.getCurrentTrial === 'function')
+		if (typeof loop.getCurrentTrial === "function")
 		{
 			const currentTrial = loop.getCurrentTrial();
 			for (const trialProperty in currentTrial)
@@ -404,7 +390,7 @@ export class ExperimentHandler extends PsychObject
 				else:
 						names.append(loopName+'.thisTrial')
 						vals.append(trial)
-						
+
 		// single StairHandler
 		elif hasattr(loop, 'intensities'):
 				names.append(loopName+'.intensity')
@@ -415,9 +401,7 @@ export class ExperimentHandler extends PsychObject
 
 		return attributes;
 	}
-
 }
-
 
 /**
  * Experiment result format
@@ -431,14 +415,13 @@ ExperimentHandler.SaveFormat = {
 	/**
 	 * Results are saved to a .csv file
 	 */
-	CSV: Symbol.for('CSV'),
+	CSV: Symbol.for("CSV"),
 
 	/**
 	 * Results are saved to a database
 	 */
-	DATABASE: Symbol.for('DATABASE')
+	DATABASE: Symbol.for("DATABASE"),
 };
-
 
 /**
  * Experiment environment.
@@ -448,6 +431,6 @@ ExperimentHandler.SaveFormat = {
  * @public
  */
 ExperimentHandler.Environment = {
-	SERVER: Symbol.for('SERVER'),
-	LOCAL: Symbol.for('LOCAL')
+	SERVER: Symbol.for("SERVER"),
+	LOCAL: Symbol.for("LOCAL"),
 };

@@ -9,11 +9,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import seedrandom from 'seedrandom';
-import * as XLSX from 'xlsx';
-import {PsychObject} from '../util/PsychObject.js';
-import * as util from '../util/Util.js';
+import seedrandom from "seedrandom";
+import * as XLSX from "xlsx";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
 
 /**
  * <p>A Trial Handler handles the importing and sequencing of conditions.</p>
@@ -31,7 +30,6 @@ import * as util from '../util/Util.js';
  */
 export class TrialHandler extends PsychObject
 {
-
 	/**
 	 * Getter for experimentHandler.
 	 *
@@ -56,7 +54,6 @@ export class TrialHandler extends PsychObject
 		this._experimentHandler = exp;
 	}
 
-
 	/**
 	 * @constructor
 	 * @public
@@ -64,27 +61,27 @@ export class TrialHandler extends PsychObject
 	 * @todo extraInfo is not taken into account, we use the expInfo of the ExperimentHandler instead
 	 */
 	constructor({
-								psychoJS,
-								trialList = [undefined],
-								nReps,
-								method = TrialHandler.Method.RANDOM,
-								extraInfo = [],
-								seed,
-								name,
-								autoLog = true
-							} = {})
+		psychoJS,
+		trialList = [undefined],
+		nReps,
+		method = TrialHandler.Method.RANDOM,
+		extraInfo = [],
+		seed,
+		name,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('trialList', trialList);
-		this._addAttribute('nReps', nReps);
-		this._addAttribute('method', method);
-		this._addAttribute('extraInfo', extraInfo);
-		this._addAttribute('name', name);
-		this._addAttribute('autoLog', autoLog);
-		this._addAttribute('seed', seed);
+		this._addAttribute("trialList", trialList);
+		this._addAttribute("nReps", nReps);
+		this._addAttribute("method", method);
+		this._addAttribute("extraInfo", extraInfo);
+		this._addAttribute("name", name);
+		this._addAttribute("autoLog", autoLog);
+		this._addAttribute("seed", seed);
 		this._prepareTrialList(trialList);
-		
+
 		// number of stimuli
 		this.nStim = this.trialList.length;
 
@@ -112,7 +109,6 @@ export class TrialHandler extends PsychObject
 		// array of current snapshots:
 		this._snapshots = [];
 
-
 		// setup the trial sequence:
 		this._prepareSequence();
 
@@ -121,17 +117,16 @@ export class TrialHandler extends PsychObject
 		this._finished = false;
 	}
 
-
 	/**
 	 * Helps go through each trial in the sequence one by one, mirrors PsychoPy.
 	 */
-	next() {
+	next()
+	{
 		const trialIterator = this[Symbol.iterator]();
 		const { value } = trialIterator.next();
 
 		return value;
 	}
-
 
 	/**
 	 * Iterator over the trial sequence.
@@ -168,7 +163,7 @@ export class TrialHandler extends PsychObject
 				if (this.thisRepN >= this.nReps)
 				{
 					this.thisTrial = null;
-					return {done: true};
+					return { done: true };
 				}
 
 				this.thisIndex = this._trialSequence[this.thisRepN][this.thisTrialN];
@@ -181,11 +176,10 @@ export class TrialHandler extends PsychObject
 					vals = (self.thisRepN, self.thisTrialN, self.thisTrial)
 					logging.exp(msg % vals, obj=self.thisTrial)*/
 
-				return {value: this.thisTrial, done: false};
-			}
+				return { value: this.thisTrial, done: false };
+			},
 		};
 	}
-
 
 	/**
 	 * Execute the callback for each trial in the sequence.
@@ -207,7 +201,6 @@ export class TrialHandler extends PsychObject
 			callback(result.value);
 		}
 	}
-
 
 	/**
 	 * @typedef {Object} Snapshot
@@ -253,12 +246,12 @@ export class TrialHandler extends PsychObject
 			getCurrentTrial: () => this.getTrial(currentIndex),
 			getTrial: (index = 0) => this.getTrial(index),
 
-			addData: (key, value) => this.addData(key, value)
+			addData: (key, value) => this.addData(key, value),
 		};
 
 		// add to the snapshots the current trial's attributes:
 		const currentTrial = this.getCurrentTrial();
-		const excludedAttributes = ['handler', 'name', 'nStim', 'nRemaining', 'thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'ran', 'finished'];
+		const excludedAttributes = ["handler", "name", "nStim", "nRemaining", "thisRepN", "thisTrialN", "thisN", "thisIndex", "ran", "finished"];
 		const trialAttributes = [];
 		for (const attribute in currentTrial)
 		{
@@ -280,7 +273,6 @@ export class TrialHandler extends PsychObject
 		return snapshot;
 	}
 
-
 	/**
 	 * Setter for the seed attribute.
 	 *
@@ -289,9 +281,9 @@ export class TrialHandler extends PsychObject
 	 */
 	setSeed(seed, log)
 	{
-		this._setAttribute('seed', seed, log);
+		this._setAttribute("seed", seed, log);
 
-		if (typeof seed !== 'undefined')
+		if (typeof seed !== "undefined")
 		{
 			this._randomNumberGenerator = seedrandom(seed);
 		}
@@ -300,7 +292,6 @@ export class TrialHandler extends PsychObject
 			this._randomNumberGenerator = seedrandom();
 		}
 	}
-
 
 	/**
 	 * Set the internal state of this trial handler from the given snapshot.
@@ -312,11 +303,10 @@ export class TrialHandler extends PsychObject
 	static fromSnapshot(snapshot)
 	{
 		// if snapshot is undefined, do nothing:
-		if (typeof snapshot === 'undefined')
+		if (typeof snapshot === "undefined")
 		{
 			return;
 		}
-
 
 		snapshot.handler.nStim = snapshot.nStim;
 		snapshot.handler.nTotal = snapshot.nTotal;
@@ -330,13 +320,12 @@ export class TrialHandler extends PsychObject
 
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
 
-
 		// add the snapshot's trial attributes to a global variable, whose name is derived from
 		// that of the handler: loops -> thisLoop (note the dropped s):
 		let name = snapshot.name;
-		if (name[name.length-1] === 's')
+		if (name[name.length - 1] === "s")
 		{
-			name = name.substr(0, name.length-1);
+			name = name.substr(0, name.length - 1);
 		}
 		name = `this${name[0].toUpperCase()}${name.substr(1)}`;
 
@@ -348,7 +337,6 @@ export class TrialHandler extends PsychObject
 		window[name] = value;
 	}
 
-
 	/**
 	 * Getter for the finished attribute.
 	 *
@@ -359,7 +347,6 @@ export class TrialHandler extends PsychObject
 		return this._finished;
 	}
 
-
 	/**
 	 * Setter for the finished attribute.
 	 *
@@ -368,13 +355,12 @@ export class TrialHandler extends PsychObject
 	set finished(isFinished)
 	{
 		this._finished = isFinished;
-		
-		this._snapshots.forEach( snapshot =>
+
+		this._snapshots.forEach((snapshot) =>
 		{
 			snapshot.finished = isFinished;
 		});
 	}
-
 
 	/**
 	 * Get the trial index.
@@ -387,7 +373,6 @@ export class TrialHandler extends PsychObject
 		return this.thisIndex;
 	}
 
-
 	/**
 	 * Set the trial index.
 	 *
@@ -397,7 +382,6 @@ export class TrialHandler extends PsychObject
 	{
 		this.thisIndex = index;
 	}
-
 
 	/**
 	 * Get the attributes of the trials.
@@ -424,7 +408,6 @@ export class TrialHandler extends PsychObject
 		return Object.keys(this.trialList[0]);
 	}
 
-
 	/**
 	 * Get the current trial.
 	 *
@@ -435,7 +418,6 @@ export class TrialHandler extends PsychObject
 	{
 		return this.trialList[this.thisIndex];
 	}
-
 
 	/**
 	 * Get the nth trial.
@@ -452,7 +434,6 @@ export class TrialHandler extends PsychObject
 
 		return this.trialList[index];
 	}
-
 
 	/**
 	 * Get the nth future or past trial, without advancing through the trial list.
@@ -472,7 +453,6 @@ export class TrialHandler extends PsychObject
 		return this.trialList[this.thisIndex + n];
 	}
 
-
 	/**
 	 * Get the nth previous trial.
 	 * <p> Note: this is useful for comparisons in n-back tasks.</p>
@@ -485,7 +465,6 @@ export class TrialHandler extends PsychObject
 	{
 		return getFutureTrial(-abs(n));
 	}
-
 
 	/**
 	 * Add a key/value pair to data about the current trial held by the experiment handler
@@ -501,7 +480,6 @@ export class TrialHandler extends PsychObject
 			this._experimentHandler.addData(key, value);
 		}
 	}
-
 
 	/**
 	 * Import a list of conditions from a .xls, .xlsx, .odp, or .csv resource.
@@ -542,8 +520,8 @@ export class TrialHandler extends PsychObject
 	{
 		try
 		{
-			let resourceExtension = resourceName.split('.').pop();
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1)
+			let resourceExtension = resourceName.split(".").pop();
+			if (["csv", "odp", "xls", "xlsx"].indexOf(resourceExtension) > -1)
 			{
 				// (*) read conditions from resource:
 				const resourceValue = serverManager.getResource(resourceName, true);
@@ -552,20 +530,20 @@ export class TrialHandler extends PsychObject
 				// which is then read in as a string
 				const decodedResourceMaybe = new Uint8Array(resourceValue);
 				// Could be set to 'buffer' for ASCII .csv
-				const type = resourceExtension === 'csv' ? 'string' : 'array';
-				const decodedResource = type === 'string' ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
+				const type = resourceExtension === "csv" ? "string" : "array";
+				const decodedResource = type === "string" ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
 				const workbook = XLSX.read(decodedResource, { type });
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
 				{
-					throw 'workbook should contain at least one worksheet';
+					throw "workbook should contain at least one worksheet";
 				}
 				const sheetName = workbook.SheetNames[0];
 				const worksheet = workbook.Sheets[sheetName];
 
 				// worksheet to array of arrays (the first array contains the fields):
-				const sheet = XLSX.utils.sheet_to_json(worksheet, {header: 1, blankrows: false});
+				const sheet = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false });
 				const fields = sheet.shift();
 
 				// (*) select conditions:
@@ -574,8 +552,8 @@ export class TrialHandler extends PsychObject
 				// (*) return the selected conditions as an array of 'object as map':
 				// [
 				// 		{field0: value0-0, field1: value0-1, ...}
-				//		{field0: value1-0, field1: value1-1, ...}
-				//		...
+				// 		{field0: value1-0, field1: value1-1, ...}
+				// 		...
 				// ]
 				let trialList = new Array(selectedRows.length - 1);
 				for (let r = 0; r < selectedRows.length; ++r)
@@ -598,7 +576,7 @@ export class TrialHandler extends PsychObject
 							value = arrayMaybe;
 						}
 
-						if (typeof value === 'string')
+						if (typeof value === "string")
 						{
 							const numberMaybe = Number.parseFloat(value);
 
@@ -610,7 +588,7 @@ export class TrialHandler extends PsychObject
 							else
 							{
 								// Parse doubly escaped line feeds
-								value = value.replace(/(\n)/g, '\n');
+								value = value.replace(/(\n)/g, "\n");
 							}
 						}
 
@@ -621,22 +599,20 @@ export class TrialHandler extends PsychObject
 
 				return trialList;
 			}
-
 			else
 			{
-				throw 'extension: ' + resourceExtension + ' currently not supported.';
+				throw "extension: " + resourceExtension + " currently not supported.";
 			}
 		}
 		catch (error)
 		{
 			throw {
-				origin: 'TrialHandler.importConditions',
+				origin: "TrialHandler.importConditions",
 				context: `when importing condition: ${resourceName}`,
-				error
+				error,
 			};
 		}
 	}
-
 
 	/**
 	 * Prepare the trial list.
@@ -647,16 +623,15 @@ export class TrialHandler extends PsychObject
 	_prepareTrialList(trialList)
 	{
 		const response = {
-			origin: 'TrialHandler._prepareTrialList',
-			context: 'when preparing the trial list'
+			origin: "TrialHandler._prepareTrialList",
+			context: "when preparing the trial list",
 		};
 
 		// we treat undefined trialList as a list with a single empty entry:
-		if (typeof trialList === 'undefined')
+		if (typeof trialList === "undefined")
 		{
 			this.trialList = [undefined];
 		}
-
 		// if trialList is an array, we make sure it is not empty:
 		else if (Array.isArray(trialList))
 		{
@@ -665,22 +640,19 @@ export class TrialHandler extends PsychObject
 				this.trialList = [undefined];
 			}
 		}
-
 		// if trialList is a string, we treat it as the name of the condition resource:
-		else if (typeof trialList === 'string')
+		else if (typeof trialList === "string")
 		{
 			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
 		}
-
 		// unknown type:
 		else
 		{
 			throw Object.assign(response, {
-				error: 'unable to prepare trial list: unknown type: ' + (typeof trialList)
+				error: "unable to prepare trial list: unknown type: " + (typeof trialList),
 			});
 		}
 	}
-
 
 	/*
 	 * Prepare the sequence of trials.
@@ -688,7 +660,7 @@ export class TrialHandler extends PsychObject
 	 * <p>The returned sequence is a matrix (an array of arrays) of trial indices
 	 * with nStim columns and nReps rows. Note that this is the transpose of the
 	 * matrix return by PsychoPY.
-	 * 
+	 *
 	 * Example: with 3 trial and 5 repetitions, we get:
 	 *   - sequential:
 	 *      [[0 1 2]
@@ -711,8 +683,8 @@ export class TrialHandler extends PsychObject
 	_prepareSequence()
 	{
 		const response = {
-			origin: 'TrialHandler._prepareSequence',
-			context: 'when preparing a sequence of trials'
+			origin: "TrialHandler._prepareSequence",
+			context: "when preparing a sequence of trials",
 		};
 
 		// get an array of the indices of the elements of trialList :
@@ -722,9 +694,8 @@ export class TrialHandler extends PsychObject
 		{
 			this._trialSequence = Array(this.nReps).fill(indices);
 			// transposed version:
-			//this._trialSequence = indices.reduce( (seq, e) => { seq.push( Array(this.nReps).fill(e) ); return seq; }, [] );
+			// this._trialSequence = indices.reduce( (seq, e) => { seq.push( Array(this.nReps).fill(e) ); return seq; }, [] );
 		}
-
 		else if (this.method === TrialHandler.Method.RANDOM)
 		{
 			this._trialSequence = [];
@@ -733,7 +704,6 @@ export class TrialHandler extends PsychObject
 				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
-
 		else if (this.method === TrialHandler.Method.FULL_RANDOM)
 		{
 			// create a flat sequence with nReps repeats of indices:
@@ -755,14 +725,12 @@ export class TrialHandler extends PsychObject
 		}
 		else
 		{
-			throw Object.assign(response, {error: 'unknown method'});
+			throw Object.assign(response, { error: "unknown method" });
 		}
 
 		return this._trialSequence;
 	}
-
 }
-
 
 /**
  * TrialHandler method
@@ -775,20 +743,20 @@ TrialHandler.Method = {
 	/**
 	 * Conditions are presented in the order they are given.
 	 */
-	SEQUENTIAL: Symbol.for('SEQUENTIAL'),
+	SEQUENTIAL: Symbol.for("SEQUENTIAL"),
 
 	/**
 	 * Conditions are shuffled within each repeat.
 	 */
-	RANDOM: Symbol.for('RANDOM'),
+	RANDOM: Symbol.for("RANDOM"),
 
 	/**
 	 * Conditions are fully randomised across all repeats.
 	 */
-	FULL_RANDOM: Symbol.for('FULL_RANDOM'),
+	FULL_RANDOM: Symbol.for("FULL_RANDOM"),
 
 	/**
 	 * Same as above, but named to reflect PsychoPy boileplate.
 	 */
-	FULLRANDOM: Symbol.for('FULL_RANDOM')
+	FULLRANDOM: Symbol.for("FULL_RANDOM"),
 };
