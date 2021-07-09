@@ -7,10 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import {ShapeStim} from './ShapeStim.js';
-import {Color} from '../util/Color.js';
-
+import { Color } from "../util/Color.js";
+import { ShapeStim } from "./ShapeStim.js";
 
 /**
  * <p>Rectangular visual stimulus.</p>
@@ -39,7 +37,7 @@ import {Color} from '../util/Color.js';
  */
 export class Rect extends ShapeStim
 {
-	constructor({name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
 		super({
 			name,
@@ -56,20 +54,20 @@ export class Rect extends ShapeStim
 			depth,
 			interpolate,
 			autoDraw,
-			autoLog
+			autoLog,
 		});
 
-		this._psychoJS.logger.debug('create a new Rect with name: ', name);
+		this._psychoJS.logger.debug("create a new Rect with name: ", name);
 
 		this._addAttribute(
-			'width',
+			"width",
 			width,
-			0.5
+			0.5,
 		);
 		this._addAttribute(
-			'height',
+			"height",
 			height,
-			0.5
+			0.5,
 		);
 
 		this._updateVertices();
@@ -79,8 +77,6 @@ export class Rect extends ShapeStim
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * Setter for the width attribute.
@@ -92,17 +88,15 @@ export class Rect extends ShapeStim
 	 */
 	setWidth(width, log = false)
 	{
-		this._psychoJS.logger.debug('set the width of Rect: ', this.name, 'to: ', width);
+		this._psychoJS.logger.debug("set the width of Rect: ", this.name, "to: ", width);
 
-		const hasChanged = this._setAttribute('width', width, log);
+		const hasChanged = this._setAttribute("width", width, log);
 
 		if (hasChanged)
 		{
 			this._updateVertices();
 		}
 	}
-
-
 
 	/**
 	 * Setter for the height attribute.
@@ -114,17 +108,15 @@ export class Rect extends ShapeStim
 	 */
 	setHeight(height, log = false)
 	{
-		this._psychoJS.logger.debug('set the height of Rect: ', this.name, 'to: ', height);
+		this._psychoJS.logger.debug("set the height of Rect: ", this.name, "to: ", height);
 
-		const hasChanged = this._setAttribute('height', height, log);
+		const hasChanged = this._setAttribute("height", height, log);
 
 		if (hasChanged)
 		{
 			this._updateVertices();
 		}
 	}
-
-
 
 	/**
 	 * Update the vertices.
@@ -134,7 +126,7 @@ export class Rect extends ShapeStim
 	 */
 	_updateVertices()
 	{
-		this._psychoJS.logger.debug('update the vertices of Rect: ', this.name);
+		this._psychoJS.logger.debug("update the vertices of Rect: ", this.name);
 
 		const halfWidth = this._width / 2.0;
 		const halfHeight = this._height / 2.0;
@@ -143,8 +135,7 @@ export class Rect extends ShapeStim
 			[-halfWidth, -halfHeight],
 			[halfWidth, -halfHeight],
 			[halfWidth, halfHeight],
-			[-halfWidth, halfHeight]
+			[-halfWidth, halfHeight],
 		]);
 	}
-
 }

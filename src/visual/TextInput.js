@@ -24,7 +24,7 @@ export class TextInput extends PIXI.Container
 				outline: "none",
 				text: "",
 				transformOrigin: "0 0",
-				lineHeight: "1"
+				lineHeight: "1",
 			},
 			styles.input,
 		);
@@ -58,7 +58,7 @@ export class TextInput extends PIXI.Container
 		this._restrict_value = "";
 		this._createDOMInput();
 		this.substituteText = !this._multiline;
-		this._setState('DEFAULT');
+		this._setState("DEFAULT");
 	}
 
 	// GETTERS & SETTERS
@@ -638,7 +638,7 @@ export class TextInput extends PIXI.Container
 			}
 			else if (components.length == 4)
 			{
-				let padding = components.map(component =>
+				let padding = components.map((component) =>
 				{
 					return parseFloat(component);
 				});

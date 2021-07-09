@@ -7,14 +7,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim.js';
-import {Color} from '../util/Color.js';
-import {ColorMixin} from '../util/ColorMixin.js';
-import * as util from '../util/Util.js';
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
-
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * @name module:visual.TextStim
@@ -49,9 +47,34 @@ import { to_pixiPoint } from "../util/Pixi.js";
  */
 export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, text, font, pos, color, opacity, depth, contrast, units, ori, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert, clipMask, autoDraw, autoLog} = {})
+	constructor(
+		{
+			name,
+			win,
+			text,
+			font,
+			pos,
+			color,
+			opacity,
+			depth,
+			contrast,
+			units,
+			ori,
+			height,
+			bold,
+			italic,
+			alignHoriz,
+			alignVert,
+			wrapWidth,
+			flipHoriz,
+			flipVert,
+			clipMask,
+			autoDraw,
+			autoLog,
+		} = {},
+	)
 	{
-		super({name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog });
 
 		// callback to deal with text metrics invalidation:
 		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>
@@ -69,80 +92,79 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// text and font:
 		this._addAttribute(
-			'text',
+			"text",
 			text,
-			'Hello World',
-			onChange(true, true, true)
+			"Hello World",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'alignHoriz',
+			"alignHoriz",
 			alignHoriz,
-			'center',
-			onChange(true, true, true)
+			"center",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'alignVert',
+			"alignVert",
 			alignVert,
-			'center',
-			onChange(true, true, true)
+			"center",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'height',
+			"height",
 			height,
 			this._getDefaultLetterHeight(),
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'wrapWidth',
+			"wrapWidth",
 			wrapWidth,
 			this._getDefaultWrapWidth(),
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 
 		// color:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			"white",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
-
 
 		// estimate the bounding box (using TextMetrics):
 		this._estimateBoundingBox();
@@ -152,8 +174,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * Get the metrics estimated for the text and style.
@@ -166,15 +186,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	getTextMetrics()
 	{
-		if (typeof this._textMetrics === 'undefined')
+		if (typeof this._textMetrics === "undefined")
 		{
 			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
 		}
 
 		return this._textMetrics;
 	}
-
-
 
 	/**
 	 * Get the default letter height given the stimulus' units.
@@ -187,19 +205,17 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const height = TextStim._defaultLetterHeightMap.get(this._units);
 
-		if (typeof height === 'undefined')
+		if (typeof height === "undefined")
 		{
 			throw {
-				origin: 'TextStim._getDefaultLetterHeight',
-				context: 'when getting the default height of TextStim: ' + this._name,
-				error: 'no default letter height for unit: ' + this._units
+				origin: "TextStim._getDefaultLetterHeight",
+				context: "when getting the default height of TextStim: " + this._name,
+				error: "no default letter height for unit: " + this._units,
 			};
 		}
 
 		return height;
 	}
-
-
 
 	/**
 	 * Get the default wrap width given the stimulus' units.
@@ -212,19 +228,17 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
 
-		if (typeof wrapWidth === 'undefined')
+		if (typeof wrapWidth === "undefined")
 		{
 			throw {
-				origin: 'TextStim._getDefaultWrapWidth',
-				context: 'when getting the default wrap width of TextStim: ' + this._name,
-				error: 'no default wrap width for unit: ' + this._units
+				origin: "TextStim._getDefaultWrapWidth",
+				context: "when getting the default wrap width of TextStim: " + this._name,
+				error: "no default wrap width for unit: " + this._units,
 			};
 		}
 
 		return wrapWidth;
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -238,11 +252,11 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		// size of the text, irrespective of the orientation:
 		const textMetrics = this.getTextMetrics();
-		const textSize =  util.to_unit(
+		const textSize = util.to_unit(
 			[textMetrics.width, textMetrics.height],
-			'pix',
+			"pix",
 			this._win,
-			this._units
+			this._units,
 		);
 
 		// take the alignment into account:
@@ -251,13 +265,11 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._pos[0] - anchor[0] * textSize[0],
 			this._pos[1] - anchor[1] * textSize[1],
 			textSize[0],
-			textSize[1]
+			textSize[1],
 		);
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text
@@ -270,16 +282,14 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		return new PIXI.TextStyle({
 			fontFamily: this._font,
 			fontSize: Math.round(this._getLengthPix(this._height)),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fontWeight: (this._bold) ? "bold" : "normal",
+			fontStyle: (this._italic) ? "italic" : "normal",
 			fill: this.getContrastedColor(new Color(this._color), this._contrast).hex,
 			align: this._alignHoriz,
-			wordWrap: (typeof this._wrapWidth !== 'undefined'),
-			wordWrapWidth: (typeof this._wrapWidth !== 'undefined') ? this._getHorLengthPix(this._wrapWidth) : 0
+			wordWrap: (typeof this._wrapWidth !== "undefined"),
+			wordWrapWidth: (typeof this._wrapWidth !== "undefined") ? this._getHorLengthPix(this._wrapWidth) : 0,
 		});
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -301,7 +311,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
@@ -326,7 +336,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// update the size attributes:
 		this._size = [
 			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height))
+			this._getLengthUnits(Math.abs(this._pixi.height)),
 		];
 
 		// refine the estimate of the bounding box:
@@ -334,12 +344,10 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._pos[0] - anchor[0] * this._size[0],
 			this._pos[1] - anchor[1] * this._size[1],
 			this._size[0],
-			this._size[1]
+			this._size[1],
 		);
 	}
 
-
-	
 	/**
 	 * Convert the alignment attributes into an anchor.
 	 *
@@ -354,35 +362,32 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 		switch (this._alignHoriz)
 		{
-			case 'left':
+			case "left":
 				anchor.push(0);
 				break;
-			case 'right':
+			case "right":
 				anchor.push(1);
 				break;
 			default:
-			case 'center':
+			case "center":
 				anchor.push(0.5);
 		}
 		switch (this._alignVert)
 		{
-			case 'top':
+			case "top":
 				anchor.push(0);
 				break;
-			case 'bottom':
+			case "bottom":
 				anchor.push(1);
 				break;
 			default:
-			case 'center':
+			case "center":
 				anchor.push(0.5);
 		}
 
 		return anchor;
 	}
-
 }
-
-
 
 /**
  * <p>This map associates units to default letter height.</p>
@@ -392,18 +397,16 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
  * @private
  */
 TextStim._defaultLetterHeightMap = new Map([
-	['cm', 1.0],
-	['deg', 1.0],
-	['degs', 1.0],
-	['degFlatPos', 1.0],
-	['degFlat', 1.0],
-	['norm', 0.1],
-	['height', 0.2],
-	['pix', 20],
-	['pixels', 20]
+	["cm", 1.0],
+	["deg", 1.0],
+	["degs", 1.0],
+	["degFlatPos", 1.0],
+	["degFlat", 1.0],
+	["norm", 0.1],
+	["height", 0.2],
+	["pix", 20],
+	["pixels", 20],
 ]);
-
-
 
 /**
  * <p>This map associates units to default wrap width.</p>
@@ -413,13 +416,13 @@ TextStim._defaultLetterHeightMap = new Map([
  * @private
  */
 TextStim._defaultWrapWidthMap = new Map([
-	['cm', 15.0],
-	['deg', 15.0],
-	['degs', 15.0],
-	['degFlatPos', 15.0],
-	['degFlat', 15.0],
-	['norm', 1],
-	['height', 1],
-	['pix', 500],
-	['pixels', 500]
+	["cm", 15.0],
+	["deg", 15.0],
+	["degs", 15.0],
+	["degFlatPos", 15.0],
+	["degFlat", 15.0],
+	["norm", 1],
+	["height", 1],
+	["pix", 500],
+	["pixels", 500],
 ]);

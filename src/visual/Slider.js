@@ -7,17 +7,15 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim.js';
-import {Color} from '../util/Color.js';
-import {ColorMixin} from '../util/ColorMixin.js';
-import {WindowMixin} from '../core/WindowMixin.js';
-import {Clock} from '../util/Clock.js';
-import * as util from '../util/Util.js';
-import {PsychoJS} from "../core/PsychoJS.js";
+import * as PIXI from "pixi.js-legacy";
+import { PsychoJS } from "../core/PsychoJS.js";
+import { WindowMixin } from "../core/WindowMixin.js";
+import { Clock } from "../util/Clock.js";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
-
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * Slider stimulus.
@@ -70,9 +68,38 @@ import { to_pixiPoint } from "../util/Pixi.js";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, markerColor, lineColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog, dependentStims} = {})
+	constructor(
+		{
+			name,
+			win,
+			pos,
+			size,
+			ori,
+			units,
+			color,
+			markerColor,
+			lineColor,
+			contrast,
+			opacity,
+			style,
+			ticks,
+			labels,
+			granularity,
+			flip,
+			readOnly,
+			font,
+			bold,
+			italic,
+			fontSize,
+			compact,
+			clipMask,
+			autoDraw,
+			autoLog,
+			dependentStims,
+		} = {},
+	)
 	{
-		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog });
 
 		this._needMarkerUpdate = false;
 
@@ -96,119 +123,117 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		};
 
 		this._addAttribute(
-			'style',
+			"style",
 			style,
 			[Slider.Style.RATING],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'ticks',
+			"ticks",
 			ticks,
 			[1, 2, 3, 4, 5],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'labels',
+			"labels",
 			labels,
 			[],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'granularity',
+			"granularity",
 			granularity,
 			0,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'readOnly',
+			"readOnly",
 			readOnly,
-			false
+			false,
 		);
 		this._addAttribute(
-			'compact',
+			"compact",
 			compact,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
 		// font:
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'fontSize',
+			"fontSize",
 			fontSize,
-			(this._units === 'pix') ? 14 : 0.03,
-			this._onChange(true, true)
+			(this._units === "pix") ? 14 : 0.03,
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			true,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'flip',
+			"flip",
 			flip,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
 		// color:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'lightgray',
-			this._onChange(true, false)
+			"lightgray",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'lineColor',
+			"lineColor",
 			lineColor,
-			'lightgray',
-			this._onChange(true, false)
+			"lightgray",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'markerColor',
+			"markerColor",
 			markerColor,
-			'red',
-			this._onChange(true, false)
+			"red",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		this._addAttribute(
-			'dependentStims',
+			"dependentStims",
 			dependentStims,
 			[],
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
-
-
 		// slider rating (which might be different from the visible marker rating):
-		this._addAttribute('rating', undefined);
+		this._addAttribute("rating", undefined);
 
 		// visible marker rating (which might be different from the actual rating):
-		this._addAttribute('markerPos', undefined);
+		this._addAttribute("markerPos", undefined);
 
 		// full history of ratings and response times:
-		this._addAttribute('history', []);
+		this._addAttribute("history", []);
 
 		// various graphical components:
-		this._addAttribute('lineAspectRatio', 0.01);
+		this._addAttribute("lineAspectRatio", 0.01);
 
 		// check for attribute conflicts, missing values, etc.:
 		this._sanitizeAttributes();
@@ -225,8 +250,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Force a refresh of the stimulus.
 	 *
@@ -240,8 +263,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._needMarkerUpdate = true;
 	}
 
-
-
 	/**
 	 * Reset the slider.
 	 *
@@ -250,7 +271,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	reset()
 	{
-		this.psychoJS.logger.debug('reset Slider: ', this._name);
+		this.psychoJS.logger.debug("reset Slider: ", this._name);
 
 		this._markerPos = undefined;
 		this._history = [];
@@ -262,13 +283,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._needUpdate = true;
 
 		// the marker should be invisible when markerPos is undefined:
-		if (typeof this._marker !== 'undefined')
+		if (typeof this._marker !== "undefined")
 		{
 			this._marker.alpha = 0;
 		}
 	}
-
-
 
 	/**
 	 * Get the current value of the rating.
@@ -290,8 +309,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Get the response time of the most recent change to the rating.
 	 *
@@ -312,8 +329,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Setter for the readOnly attribute.
 	 *
@@ -327,7 +342,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	setReadOnly(readOnly = true, log = false)
 	{
-		const hasChanged = this._setAttribute('readOnly', readOnly, log);
+		const hasChanged = this._setAttribute("readOnly", readOnly, log);
 
 		if (hasChanged)
 		{
@@ -344,8 +359,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._needUpdate = true;
 		}
 	}
-
-
 
 	/**
 	 * Setter for the markerPos attribute.
@@ -372,8 +385,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Setter for the rating attribute.
 	 *
@@ -393,59 +404,50 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			rating = this._labels[Math.round(rating)];
 		}
 
-		this._setAttribute('rating', rating, log);
+		this._setAttribute("rating", rating, log);
 	}
 
-
-
 	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
-	set borderColor(color) {
+	set borderColor(color)
+	{
 		this.lineColor = color;
 	}
 
-
-
-	setBorderColor(color) {
+	setBorderColor(color)
+	{
 		this.setLineColor(color);
 	}
 
-
-
-	get borderColor() {
+	get borderColor()
+	{
 		return this.lineColor;
 	}
 
-
-
-	getBorderColor() {
+	getBorderColor()
+	{
 		return this.getLineColor();
 	}
 
-
 	/** Let `fillColor` alias `markerColor` to parallel PsychoPy */
-	set fillColor(color) {
+	set fillColor(color)
+	{
 		this.markerColor = color;
 	}
 
-
-
-	setFillColor(color) {
+	setFillColor(color)
+	{
 		this.setMarkerColor(color);
 	}
 
-
-
-	get fillColor() {
+	get fillColor()
+	{
 		return this.markerColor;
 	}
 
-
-
-	getFillColor() {
+	getFillColor()
+	{
 		return this.getMarkerColor();
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -462,18 +464,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	{
 		// setup the slider's style (taking into account the Window dimension, etc.):
 		this._setupStyle();
-		
+
 		// calculate various values in pixel units:
 		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map((v) => Math.max(1, v));
 		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
 		const pos_px = util.to_px(this._pos, this._units, this._win);
 		const size_px = util.to_px(this._size, this._units, this._win);
 
 		// calculate the position of the ticks:
 		const tickPositions = this._ratingToPos(this._ticks);
-		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		this._tickPositions_px = tickPositions.map((p) => util.to_px(p, this._units, this._win));
 
 		// left, top, right, bottom limits:
 		const limits_px = [0, 0, size_px[0], size_px[1]];
@@ -490,7 +492,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		for (let l = 0; l < this._labels.length; ++l)
 		{
-			const tickPositionIndex = Math.round( l / (this._labels.length - 1) * (this._ticks.length - 1) );
+			const tickPositionIndex = Math.round(l / (this._labels.length - 1) * (this._ticks.length - 1));
 			this._labelPositions_px[l] = this._tickPositions_px[tickPositionIndex];
 			const labelBounds = PIXI.TextMetrics.measureText(this._labels[l].toString(), labelTextStyle);
 
@@ -515,8 +517,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 					}
 
 					// ensure that that labels are not overlapping:
-					if (prevLabelBounds &&
-						(this._labelPositions_px[l - 1][0] + prevLabelBounds.width + tolerance >= this._labelPositions_px[l][0]))
+					if (
+						prevLabelBounds
+						&& (this._labelPositions_px[l - 1][0] + prevLabelBounds.width + tolerance >= this._labelPositions_px[l][0])
+					)
 					{
 						if (prevNonOverlapOffset === 0)
 						{
@@ -576,11 +580,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._getLengthUnits(position_px.x + limits_px[0]),
 			this._getLengthUnits(position_px.y + limits_px[1]),
 			this._getLengthUnits(limits_px[2] - limits_px[0]),
-			this._getLengthUnits(limits_px[3] - limits_px[1])
+			this._getLengthUnits(limits_px[3] - limits_px[1]),
 		);
 	}
-
-
 
 	/**
 	 * Sanitize the slider attributes: check for attribute conflicts, missing values, etc.
@@ -592,9 +594,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	_sanitizeAttributes()
 	{
 		// convert potential string styles into Symbols:
-		this._style.forEach( (style, index) =>
+		this._style.forEach((style, index) =>
 		{
-			if (typeof style === 'string')
+			if (typeof style === "string")
 			{
 				this._style[index] = Symbol.for(style.toUpperCase());
 			}
@@ -606,13 +608,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._isCategorical = (this._ticks.length === 0);
 		if (this._isCategorical)
 		{
-			this._ticks = [...Array(this._labels.length)].map( (_, i) => i );
+			this._ticks = [...Array(this._labels.length)].map((_, i) => i);
 			this._granularity = 1.0;
 		}
-
 	}
-
-
 
 	/**
 	 * Set the current rating.
@@ -629,7 +628,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	recordRating(rating, responseTime = undefined, log = false)
 	{
 		// get response time:
-		if (typeof responseTime === 'undefined')
+		if (typeof responseTime === "undefined")
 		{
 			responseTime = this._responseClock.getTime();
 		}
@@ -640,14 +639,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this.setRating(rating, log);
 
 		// add rating and response time to history:
-		this._history.push({rating: this._rating, responseTime});
-		this.psychoJS.logger.debug('record a new rating: ', this._rating, 'with response time: ', responseTime, 'for Slider: ', this._name);
+		this._history.push({ rating: this._rating, responseTime });
+		this.psychoJS.logger.debug("record a new rating: ", this._rating, "with response time: ", responseTime, "for Slider: ", this._name);
 
 		// update slider:
 		this._needMarkerUpdate = true;
 		this._needUpdate = true;
 	}
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -682,7 +680,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
 	/**
 	 * Estimate the position of the slider, taking the compactness into account.
 	 *
@@ -693,8 +690,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	_getPosition_px()
 	{
 		const position = to_pixiPoint(this.pos, this.units, this.win, true);
-		if (this._compact &&
-			(this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1))
+		if (
+			this._compact
+			&& (this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1)
+		)
 		{
 			if (this._isHorizontal())
 			{
@@ -708,8 +707,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		return position;
 	}
-
-
 
 	/**
 	 * Update the position of the marker if necessary.
@@ -725,9 +722,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 		this._needMarkerUpdate = false;
 
-		if (typeof this._marker !== 'undefined')
+		if (typeof this._marker !== "undefined")
 		{
-			if (typeof this._markerPos !== 'undefined')
+			if (typeof this._markerPos !== "undefined")
 			{
 				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
 				this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
@@ -739,8 +736,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			}
 		}
 	}
-
-
 
 	/**
 	 * Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
@@ -759,17 +754,15 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._setupStyle();
 
-
 		// calculate various values in pixel units:
 		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map((v) => Math.max(1, v));
 		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
 		const tickPositions = this._ratingToPos(this._ticks);
-		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		this._tickPositions_px = tickPositions.map((p) => util.to_px(p, this._units, this._win));
 
-
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			this._pixi.destroy(true);
 		}
@@ -782,7 +775,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._body.interactive = true;
 		this._pixi.addChild(this._body);
 
-
 		// ensure that pointer events will be captured along the slider body, even outside of
 		// marker and labels:
 		if (this._tickType === Slider.Shape.DISC)
@@ -792,7 +784,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				-this._barSize_px[0] / 2 - maxTickSize_px,
 				-this._barSize_px[1] / 2 - maxTickSize_px,
 				this._barSize_px[0] + maxTickSize_px * 2,
-				this._barSize_px[1] + maxTickSize_px * 2);
+				this._barSize_px[1] + maxTickSize_px * 2,
+			);
 		}
 		else
 		{
@@ -800,7 +793,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				-this._barSize_px[0] / 2 - this._tickSize_px[0] / 2,
 				-this._barSize_px[1] / 2 - this._tickSize_px[1] / 2,
 				this._barSize_px[0] + this._tickSize_px[0],
-				this._barSize_px[1] + this._tickSize_px[1]);
+				this._barSize_px[1] + this._tickSize_px[1],
+			);
 		}
 
 		// central bar:
@@ -816,8 +810,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._setupMarker();
 	}
 
-
-
 	/**
 	 * Setup the central bar.
 	 *
@@ -830,7 +822,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		if (this._barLineWidth_px > 0)
 		{
 			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, 1, 0.5);
-			if (typeof this._barFillColor !== 'undefined')
+			if (typeof this._barFillColor !== "undefined")
 			{
 				this._body.beginFill(this._barFillColor.int, 1);
 			}
@@ -838,16 +830,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				Math.round(-this._barSize_px[0] / 2),
 				Math.round(-this._barSize_px[1] / 2),
 				Math.round(this._barSize_px[0]),
-				Math.round(this._barSize_px[1])
+				Math.round(this._barSize_px[1]),
 			);
-			if (typeof this._barFillColor !== 'undefined')
+			if (typeof this._barFillColor !== "undefined")
 			{
 				this._body.endFill();
 			}
 		}
 	}
-
-
 
 	/**
 	 * Setup the marker, and the associated mouse events.
@@ -858,7 +848,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_setupMarker()
 	{
-/*	this is now deprecated and replaced by _body.hitArea
+		/*	this is now deprecated and replaced by _body.hitArea
 		// transparent rectangle necessary to capture pointer events outside of marker and labels:
 		const eventCaptureRectangle = new PIXI.Graphics();
 		eventCaptureRectangle.beginFill(0, 0);
@@ -870,7 +860,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		);
 		eventCaptureRectangle.endFill();
 		this._pixi.addChild(eventCaptureRectangle);
-*/
+		*/
 
 		// marker:
 		this._marker = new PIXI.Graphics();
@@ -927,14 +917,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				Math.round(-this._markerSize_px[0] / 2),
 				Math.round(-this._markerSize_px[1] / 2),
 				this._markerSize_px[0],
-				this._markerSize_px[1]
+				this._markerSize_px[1],
 			);
 			this._marker.endFill();
 
 			// this._marker.lineStyle(1, new Color('white').int, 1, 0.5);
 			// this._marker.drawCircle(0, 0, this._markerSize_px[0] / 3);
 		}
-
 
 		// marker mouse events:
 		const self = this;
@@ -1001,7 +990,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			}
 		};
 
-
 		// (*) slider mouse events outside of marker
 		// note: this only works thanks to eventCaptureRectangle
 		/* not quite right just yet (as of May 2020)
@@ -1034,8 +1022,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			event.stopPropagation();
 		};
 	}
-
-
 
 	/**
 	 * Setup the ticks.
@@ -1072,8 +1058,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text labels.
 	 *
@@ -1084,18 +1068,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	_getTextStyle()
 	{
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		
+
 		return new PIXI.TextStyle({
 			fontFamily: this._font,
 			fontSize: Math.round(this._fontSize_px),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fontWeight: (this._bold) ? "bold" : "normal",
+			fontStyle: (this._italic) ? "italic" : "normal",
 			fill: this.getContrastedColor(this._labelColor, this._contrast).hex,
-			align: 'center',
+			align: "center",
 		});
 	}
-
-
 
 	/**
 	 * Setup the labels.
@@ -1120,8 +1102,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._pixi.addChild(labelText);
 		}
 	}
-
-
 
 	/**
 	 * Apply a particular style to the slider.
@@ -1158,7 +1138,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._tickType = Slider.Shape.LINE;
 		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._lineColor) : skin.TICK_COLOR;
 
-		if (this.markerColor === undefined) {
+		if (this.markerColor === undefined)
+		{
 			this.markerColor = skin.MARKER_COLOR;
 		}
 
@@ -1170,7 +1151,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._labelColor = (!skin.LABEL_COLOR) ? new Color(this._color) : skin.LABEL_COLOR;
 
 		this._labelOri = 0;
-
 
 		// rating:
 		if (this._style.indexOf(Slider.Style.RATING) > -1)
@@ -1184,8 +1164,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._markerType = Slider.Shape.TRIANGLE;
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = this._markerSize.map(s => s * 2);
-		}
+				this._markerSize = this._markerSize.map((s) => s * 2);
+			}
 		}
 
 		// slider:
@@ -1194,9 +1174,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._markerType = Slider.Shape.BOX;
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = (this._isHorizontal()) ?
-					[this._size[0] / (this._ticks[this._ticks.length - 1] - this._ticks[0]), this._size[1]] :
-					[this._size[0], this._size[1] / (this._ticks[this._ticks.length - 1] - this._ticks[0])];
+				this._markerSize = (this._isHorizontal())
+					? [this._size[0] / (this._ticks[this._ticks.length - 1] - this._ticks[0]), this._size[1]]
+					: [this._size[0], this._size[1] / (this._ticks[this._ticks.length - 1] - this._ticks[0])];
 			}
 			this._barSize = [this._size[0], this._size[1]];
 			this._barFillColor = this.getContrastedColor(new Color(this.color), 0.5);
@@ -1235,12 +1215,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = this._markerSize.map(s => s * 0.7);
+				this._markerSize = this._markerSize.map((s) => s * 0.7);
+			}
 		}
 	}
-	}
-
-
 
 	/**
 	 * Convert an array of ratings into an array of [x,y] positions (in Slider units, with 0 at the center of the Slider)
@@ -1260,20 +1238,22 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// in compact mode the circular markers of RADIO sliders must fit within the width:
 			if (this._compact && this._style.indexOf(Slider.Style.RADIO) > -1)
 			{
-				return ratings.map(v => [
-					((v - this._ticks[0]) / range) * (this._size[0] - this._tickSize[1]*2) -
-					(this._size[0] / 2) + this._tickSize[1],
-						0]);
+				return ratings.map((v) => [
+					((v - this._ticks[0]) / range) * (this._size[0] - this._tickSize[1] * 2)
+					- (this._size[0] / 2) + this._tickSize[1],
+					0,
+				]);
 			}
 			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return ratings.map(v => [
+				return ratings.map((v) => [
 					((v - this._ticks[0]) / range - 0.5) * (this._size[0] - this._markerSize[0]),
-					0]);
+					0,
+				]);
 			}
 			else
 			{
-				return ratings.map(v => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
+				return ratings.map((v) => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
 			}
 		}
 		else
@@ -1281,24 +1261,25 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// in compact mode the circular markers of RADIO sliders must fit within the height:
 			if (this._compact && this._style.indexOf(Slider.Style.RADIO) > -1)
 			{
-				return ratings.map(v => [0,
-					((v - this._ticks[0]) / range) * (this._size[1] - this._tickSize[0]*2) -
-					(this._size[1] / 2) + this._tickSize[0]]);
+				return ratings.map((v) => [
+					0,
+					((v - this._ticks[0]) / range) * (this._size[1] - this._tickSize[0] * 2)
+					- (this._size[1] / 2) + this._tickSize[0],
+				]);
 			}
 			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return ratings.map(v => [
+				return ratings.map((v) => [
 					0,
-					((v - this._ticks[0]) / range - 0.5) * (this._size[1] - this._markerSize[1])]);
+					((v - this._ticks[0]) / range - 0.5) * (this._size[1] - this._markerSize[1]),
+				]);
 			}
 			else
 			{
-				return ratings.map(v => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
+				return ratings.map((v) => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
 			}
 		}
 	}
-
-
 
 	/**
 	 * Convert a [x,y] position, in pixel units, relative to the slider, into a rating.
@@ -1339,8 +1320,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Determine whether the slider is horizontal.
 	 *
@@ -1356,8 +1335,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		return (this._size[0] > this._size[1]);
 	}
 
-
-
 	/**
 	 * Calculate the rating once granularity has been taken into account.
 	 *
@@ -1369,7 +1346,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_granularise(rating)
 	{
-		if (typeof rating === 'undefined')
+		if (typeof rating === "undefined")
 		{
 			return undefined;
 		}
@@ -1382,9 +1359,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		return rating;
 	}
-
 }
-
 
 /**
  * Shape of the marker and of the ticks.
@@ -1395,12 +1370,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
  * @public
  */
 Slider.Shape = {
-	DISC: Symbol.for('DISC'),
-	TRIANGLE: Symbol.for('TRIANGLE'),
-	LINE: Symbol.for('LINE'),
-	BOX: Symbol.for('BOX')
+	DISC: Symbol.for("DISC"),
+	TRIANGLE: Symbol.for("TRIANGLE"),
+	LINE: Symbol.for("LINE"),
+	BOX: Symbol.for("BOX"),
 };
-
 
 /**
  * Styles.
@@ -1411,14 +1385,13 @@ Slider.Shape = {
  * @public
  */
 Slider.Style = {
-	RATING: Symbol.for('RATING'),
-	TRIANGLE_MARKER: Symbol.for('TRIANGLE_MARKER'),
-	SLIDER: Symbol.for('SLIDER'),
-	WHITE_ON_BLACK: Symbol.for('WHITE_ON_BLACK'),
-	LABELS_45: Symbol.for('LABELS_45'),
-	RADIO: Symbol.for('RADIO')
+	RATING: Symbol.for("RATING"),
+	TRIANGLE_MARKER: Symbol.for("TRIANGLE_MARKER"),
+	SLIDER: Symbol.for("SLIDER"),
+	WHITE_ON_BLACK: Symbol.for("WHITE_ON_BLACK"),
+	LABELS_45: Symbol.for("LABELS_45"),
+	RADIO: Symbol.for("RADIO"),
 };
-
 
 /**
  * Skin.
@@ -1433,15 +1406,15 @@ Slider.Style = {
 Slider.Skin = {
 	MARKER_SIZE: null,
 	STANDARD: {
-		MARKER_COLOR: new Color('red'),
+		MARKER_COLOR: new Color("red"),
 		BAR_LINE_COLOR: null,
 		TICK_COLOR: null,
-		LABEL_COLOR: null
+		LABEL_COLOR: null,
 	},
 	WHITE_ON_BLACK: {
-		MARKER_COLOR: new Color('white'),
-		BAR_LINE_COLOR: new Color('black'),
-		TICK_COLOR: new Color('black'),
-		LABEL_COLOR: new Color('black')
-	}
+		MARKER_COLOR: new Color("white"),
+		BAR_LINE_COLOR: new Color("black"),
+		TICK_COLOR: new Color("black"),
+		LABEL_COLOR: new Color("black"),
+	},
 };
