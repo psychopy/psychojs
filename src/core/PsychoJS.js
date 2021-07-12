@@ -179,7 +179,7 @@ export class PsychoJS
 		}
 
 		this.logger.info('[PsychoJS] Initialised.');
-		this.logger.info('[PsychoJS] @version 2021.2.0');
+		this.logger.info('[PsychoJS] @version 2021.2.x');
 
 		// Hide #root::after
 		jQuery('#root').addClass('is-ready');
