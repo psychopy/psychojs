@@ -8,6 +8,7 @@
  */
 
 import * as PIXI from "pixi.js-legacy";
+import { to_px } from "./Util.js";
 
 /**
  * Convert a position to a PIXI Point.
