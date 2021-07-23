@@ -7,9 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {SoundPlayer} from './SoundPlayer';
-import {AudioClip} from "./AudioClip";
-
+import { AudioClip } from "./AudioClip.js";
+import { SoundPlayer } from "./SoundPlayer.js";
 
 /**
  * <p>This class handles the playback of an audio clip, e.g. a microphone recording.</p>
@@ -29,27 +28,26 @@ import {AudioClip} from "./AudioClip";
 export class AudioClipPlayer extends SoundPlayer
 {
 	constructor({
-								psychoJS,
-								audioClip,
-								startTime = 0,
-								stopTime = -1,
-								stereo = true,
-								volume = 0,
-								loops = 0
-							} = {})
+		psychoJS,
+		audioClip,
+		startTime = 0,
+		stopTime = -1,
+		stereo = true,
+		volume = 0,
+		loops = 0,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('audioClip', audioClip);
-		this._addAttribute('startTime', startTime);
-		this._addAttribute('stopTime', stopTime);
-		this._addAttribute('stereo', stereo);
-		this._addAttribute('loops', loops);
-		this._addAttribute('volume', volume);
+		this._addAttribute("audioClip", audioClip);
+		this._addAttribute("startTime", startTime);
+		this._addAttribute("stopTime", stopTime);
+		this._addAttribute("stereo", stereo);
+		this._addAttribute("loops", loops);
+		this._addAttribute("volume", volume);
 
 		this._currentLoopIndex = -1;
 	}
-
 
 	/**
 	 * Determine whether this player can play the given sound.
@@ -73,7 +71,7 @@ export class AudioClipPlayer extends SoundPlayer
 				stopTime: sound.stopTime,
 				stereo: sound.stereo,
 				loops: sound.loops,
-				volume: sound.volume
+				volume: sound.volume,
 			});
 			return player;
 		}
@@ -81,7 +79,6 @@ export class AudioClipPlayer extends SoundPlayer
 		// AudioClipPlayer is not an appropriate player for the given sound:
 		return undefined;
 	}
-
 
 	/**
 	 * Get the duration of the AudioClip, in seconds.
@@ -96,7 +93,6 @@ export class AudioClipPlayer extends SoundPlayer
 		return this._audioClip.getDuration();
 	}
 
-
 	/**
 	 * Set the duration of the audio clip.
 	 *
@@ -110,12 +106,11 @@ export class AudioClipPlayer extends SoundPlayer
 		// TODO
 
 		throw {
-			origin: 'AudioClipPlayer.setDuration',
-			context: 'when setting the duration of the playback for audio clip player: ' + this._name,
-			error: 'not implemented yet'
+			origin: "AudioClipPlayer.setDuration",
+			context: "when setting the duration of the playback for audio clip player: " + this._name,
+			error: "not implemented yet",
 		};
 	}
-
 
 	/**
 	 * Set the volume of the playback.
@@ -133,7 +128,6 @@ export class AudioClipPlayer extends SoundPlayer
 		this._audioClip.setVolume((mute) ? 0.0 : volume);
 	}
 
-
 	/**
 	 * Set the number of loops.
 	 *
@@ -150,7 +144,6 @@ export class AudioClipPlayer extends SoundPlayer
 		// TODO
 	}
 
-
 	/**
 	 * Start playing the sound.
 	 *
@@ -162,7 +155,7 @@ export class AudioClipPlayer extends SoundPlayer
 	 */
 	play(loops, fadeDuration = 17)
 	{
-		if (typeof loops !== 'undefined')
+		if (typeof loops !== "undefined")
 		{
 			this.setLoops(loops);
 		}
@@ -176,7 +169,6 @@ export class AudioClipPlayer extends SoundPlayer
 		this._audioClip.startPlayback();
 	}
 
-
 	/**
 	 * Stop playing the sound immediately.
 	 *
@@ -189,5 +181,4 @@ export class AudioClipPlayer extends SoundPlayer
 	{
 		this._audioClip.stopPlayback(fadeDuration);
 	}
-
 }

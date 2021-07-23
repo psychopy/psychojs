@@ -7,12 +7,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import {PsychObject} from '../util/PsychObject';
-import {PsychoJS} from './PsychoJS';
-import * as util from '../util/Util';
-
-
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * <p>MinimalStim is the base class for all stimuli.</p>
@@ -28,7 +25,7 @@ import * as util from '../util/Util';
  */
 export class MinimalStim extends PsychObject
 {
-	constructor({name, win, autoDraw, autoLog} = {})
+	constructor({ name, win, autoDraw, autoLog } = {})
 	{
 		super(win._psychoJS, name);
 
@@ -36,26 +33,24 @@ export class MinimalStim extends PsychObject
 		this._pixi = undefined;
 
 		this._addAttribute(
-			'win',
+			"win",
 			win,
-			undefined
+			undefined,
 		);
 		this._addAttribute(
-			'autoDraw',
+			"autoDraw",
 			autoDraw,
-			false
+			false,
 		);
 		this._addAttribute(
-			'autoLog',
+			"autoLog",
 			autoLog,
-			(typeof win !== 'undefined' && win !== null) ? win.autoLog : false
+			(typeof win !== "undefined" && win !== null) ? win.autoLog : false,
 		);
 
 		this._needUpdate = false;
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
-
-	
 
 	/**
 	 * Setter for the autoDraw attribute.
@@ -68,22 +63,19 @@ export class MinimalStim extends PsychObject
 	 */
 	setAutoDraw(autoDraw, log = false)
 	{
-		this._setAttribute('autoDraw', autoDraw, log);
+		this._setAttribute("autoDraw", autoDraw, log);
 
 		// autoDraw = true: add the stimulus to the draw list if it's not there already
 		if (this._autoDraw)
 		{
 			this.draw();
 		}
-
 		// autoDraw = false: remove the stimulus from the draw list (and from the root container if it's already there)
 		else
 		{
 			this.hide();
 		}
 	}
-
-
 
 	/**
 	 * Draw this stimulus on the next frame draw.
@@ -103,9 +95,9 @@ export class MinimalStim extends PsychObject
 			{
 				// update the stimulus if need be before we add its PIXI representation to the window container:
 				this._updateIfNeeded();
-				if (typeof this._pixi === 'undefined')
+				if (typeof this._pixi === "undefined")
 				{
-					this.psychoJS.logger.warn('the Pixi.js representation of this stimulus is undefined.');
+					this.psychoJS.logger.warn("the Pixi.js representation of this stimulus is undefined.");
 				}
 				else
 				{
@@ -117,7 +109,7 @@ export class MinimalStim extends PsychObject
 			{
 				// the stimulus is already in the list, if it needs to be updated, we remove it
 				// from the window container, update it, then put it back:
-				if (this._needUpdate && typeof this._pixi !== 'undefined')
+				if (this._needUpdate && typeof this._pixi !== "undefined")
 				{
 					this.win._rootContainer.removeChild(this._pixi);
 					this._updateIfNeeded();
@@ -128,8 +120,6 @@ export class MinimalStim extends PsychObject
 
 		this.status = PsychoJS.Status.STARTED;
 	}
-
-
 
 	/**
 	 * Hide this stimulus on the next frame draw.
@@ -148,7 +138,7 @@ export class MinimalStim extends PsychObject
 				this._win._drawList.splice(index, 1);
 
 				// if the stimulus has a pixi representation, remove it from the root container:
-				if (typeof this._pixi !== 'undefined')
+				if (typeof this._pixi !== "undefined")
 				{
 					this._win._rootContainer.removeChild(this._pixi);
 				}
@@ -156,8 +146,6 @@ export class MinimalStim extends PsychObject
 			this.status = PsychoJS.Status.STOPPED;
 		}
 	}
-
-
 
 	/**
 	 * Determine whether an object is inside this stimulus.
@@ -172,13 +160,11 @@ export class MinimalStim extends PsychObject
 	contains(object, units)
 	{
 		throw {
-			origin: 'MinimalStim.contains',
+			origin: "MinimalStim.contains",
 			context: `when determining whether stimulus: ${this._name} contains object: ${util.toString(object)}`,
-			error: 'this method is abstract and should not be called.'
+			error: "this method is abstract and should not be called.",
 		};
 	}
-
-
 
 	/**
 	 * Release the PIXI representation, if there is one.
@@ -191,17 +177,15 @@ export class MinimalStim extends PsychObject
 	 */
 	release(log = false)
 	{
-		this._setAttribute('autoDraw', false, log);
+		this._setAttribute("autoDraw", false, log);
 		this.status = PsychoJS.Status.STOPPED;
 
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			this._pixi.destroy(true);
 			this._pixi = undefined;
 		}
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -216,9 +200,9 @@ export class MinimalStim extends PsychObject
 	_updateIfNeeded()
 	{
 		throw {
-			origin: 'MinimalStim._updateIfNeeded',
-			context: 'when updating stimulus: ' + this._name,
-			error: 'this method is abstract and should not be called.'
+			origin: "MinimalStim._updateIfNeeded",
+			context: "when updating stimulus: " + this._name,
+			error: "this method is abstract and should not be called.",
 		};
 	}
 }

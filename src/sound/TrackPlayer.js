@@ -7,8 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {SoundPlayer} from './SoundPlayer';
-
+import { SoundPlayer } from "./SoundPlayer.js";
 
 /**
  * <p>This class handles the playback of sound tracks.</p>
@@ -30,27 +29,26 @@ import {SoundPlayer} from './SoundPlayer';
 export class TrackPlayer extends SoundPlayer
 {
 	constructor({
-								psychoJS,
-								howl,
-								startTime = 0,
-								stopTime = -1,
-								stereo = true,
-								volume = 0,
-								loops = 0
-							} = {})
+		psychoJS,
+		howl,
+		startTime = 0,
+		stopTime = -1,
+		stereo = true,
+		volume = 0,
+		loops = 0,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('howl', howl);
-		this._addAttribute('startTime', startTime);
-		this._addAttribute('stopTime', stopTime);
-		this._addAttribute('stereo', stereo);
-		this._addAttribute('loops', loops);
-		this._addAttribute('volume', volume);
+		this._addAttribute("howl", howl);
+		this._addAttribute("startTime", startTime);
+		this._addAttribute("stopTime", stopTime);
+		this._addAttribute("stereo", stereo);
+		this._addAttribute("loops", loops);
+		this._addAttribute("volume", volume);
 
 		this._currentLoopIndex = -1;
 	}
-
 
 	/**
 	 * Determine whether this player can play the given sound.
@@ -66,10 +64,10 @@ export class TrackPlayer extends SoundPlayer
 	static accept(sound)
 	{
 		// if the sound's value is a string, we check whether it is the name of a resource:
-		if (typeof sound.value === 'string')
+		if (typeof sound.value === "string")
 		{
 			const howl = sound.psychoJS.serverManager.getResource(sound.value);
-			if (typeof howl !== 'undefined')
+			if (typeof howl !== "undefined")
 			{
 				// build the player:
 				const player = new TrackPlayer({
@@ -79,7 +77,7 @@ export class TrackPlayer extends SoundPlayer
 					stopTime: sound.stopTime,
 					stereo: sound.stereo,
 					loops: sound.loops,
-					volume: sound.volume
+					volume: sound.volume,
 				});
 				return player;
 			}
@@ -88,7 +86,6 @@ export class TrackPlayer extends SoundPlayer
 		// TonePlayer is not an appropriate player for the given sound:
 		return undefined;
 	}
-
 
 	/**
 	 * Get the duration of the sound, in seconds.
@@ -103,7 +100,6 @@ export class TrackPlayer extends SoundPlayer
 		return this._howl.duration();
 	}
 
-
 	/**
 	 * Set the duration of the track.
 	 *
@@ -114,13 +110,12 @@ export class TrackPlayer extends SoundPlayer
 	 */
 	setDuration(duration_s)
 	{
-		if (typeof this._howl !== 'undefined')
+		if (typeof this._howl !== "undefined")
 		{
 			// Unfortunately Howler.js provides duration setting method
 			this._howl._duration = duration_s;
 		}
 	}
-
 
 	/**
 	 * Set the volume of the tone.
@@ -138,7 +133,6 @@ export class TrackPlayer extends SoundPlayer
 		this._howl.volume(volume);
 		this._howl.mute(mute);
 	}
-
 
 	/**
 	 * Set the number of loops.
@@ -163,7 +157,6 @@ export class TrackPlayer extends SoundPlayer
 		}
 	}
 
-
 	/**
 	 * Start playing the sound.
 	 *
@@ -175,7 +168,7 @@ export class TrackPlayer extends SoundPlayer
 	 */
 	play(loops, fadeDuration = 17)
 	{
-		if (typeof loops !== 'undefined')
+		if (typeof loops !== "undefined")
 		{
 			this.setLoops(loops);
 		}
@@ -184,7 +177,7 @@ export class TrackPlayer extends SoundPlayer
 		if (loops > 0)
 		{
 			const self = this;
-			this._howl.on('end', (event) =>
+			this._howl.on("end", (event) =>
 			{
 				++this._currentLoopIndex;
 				if (self._currentLoopIndex > self._loops)
@@ -205,7 +198,6 @@ export class TrackPlayer extends SoundPlayer
 		this._howl.fade(0, this._volume, fadeDuration, this._id);
 	}
 
-
 	/**
 	 * Stop playing the sound immediately.
 	 *
@@ -216,11 +208,11 @@ export class TrackPlayer extends SoundPlayer
 	 */
 	stop(fadeDuration = 17)
 	{
-		this._howl.once('fade', (id) => {
+		this._howl.once("fade", (id) =>
+		{
 			this._howl.stop(id);
-			this._howl.off('end');
+			this._howl.off("end");
 		});
 		this._howl.fade(this._howl.volume(), 0, fadeDuration, this._id);
 	}
-
 }

@@ -7,9 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {MonotonicClock, Clock} from '../util/Clock';
-import {PsychoJS} from './PsychoJS';
-
+import { Clock, MonotonicClock } from "../util/Clock.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * @class
@@ -22,7 +21,6 @@ import {PsychoJS} from './PsychoJS';
  */
 export class EventManager
 {
-
 	constructor(psychoJS)
 	{
 		this._psychoJS = psychoJS;
@@ -47,13 +45,12 @@ export class EventManager
 				pressed: [0, 0, 0],
 				clocks: [new Clock(), new Clock(), new Clock()],
 				// time elapsed from last reset of the button.Clocks:
-				times: [0.0, 0.0, 0.0]
+				times: [0.0, 0.0, 0.0],
 			},
 			// clock reset when mouse is moved:
-			moveClock: new Clock()
+			moveClock: new Clock(),
 		};
 	}
-
 
 	/**
 	 * Get the list of keys pressed by the participant.
@@ -69,9 +66,9 @@ export class EventManager
 	 * @return {string[]} the list of keys that were pressed.
 	 */
 	getKeys({
-						keyList = null,
-						timeStamped = false
-					} = {})
+		keyList = null,
+		timeStamped = false,
+	} = {})
 	{
 		if (keyList != null)
 		{
@@ -123,7 +120,6 @@ export class EventManager
 		return keys;
 	}
 
-
 	/**
 	 * @typedef EventManager.ButtonInfo
 	 * @property {Array.number} pressed - the status of each mouse button [left, center, right]: 1 for pressed, 0 for released
@@ -151,7 +147,6 @@ export class EventManager
 		return this._mouseInfo;
 	}
 
-
 	/**
 	 * Clear all events from the event buffer.
 	 *
@@ -166,7 +161,6 @@ export class EventManager
 		this.clearKeys();
 	}
 
-
 	/**
 	 * Clear all keys from the key buffer.
 	 *
@@ -178,7 +172,6 @@ export class EventManager
 	{
 		this._keyBuffer = [];
 	}
-
 
 	/**
 	 * Start the move clock.
@@ -193,7 +186,6 @@ export class EventManager
 	{
 	}
 
-
 	/**
 	 * Stop the move clock.
 	 *
@@ -207,7 +199,6 @@ export class EventManager
 	{
 	}
 
-
 	/**
 	 * Reset the move clock.
 	 *
@@ -220,7 +211,6 @@ export class EventManager
 	resetMoveClock()
 	{
 	}
-
 
 	/**
 	 * Add various mouse listeners to the Pixi renderer of the {@link Window}.
@@ -246,7 +236,6 @@ export class EventManager
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
-
 		renderer.view.addEventListener("touchstart", (event) =>
 		{
 			event.preventDefault();
@@ -261,7 +250,6 @@ export class EventManager
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
-
 		renderer.view.addEventListener("pointerup", (event) =>
 		{
 			event.preventDefault();
@@ -272,7 +260,6 @@ export class EventManager
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
-
 
 		renderer.view.addEventListener("touchend", (event) =>
 		{
@@ -288,7 +275,6 @@ export class EventManager
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
-
 		renderer.view.addEventListener("pointermove", (event) =>
 		{
 			event.preventDefault();
@@ -296,7 +282,6 @@ export class EventManager
 			self._mouseInfo.moveClock.reset();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 		}, false);
-
 
 		renderer.view.addEventListener("touchmove", (event) =>
 		{
@@ -309,18 +294,15 @@ export class EventManager
 			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
 		}, false);
 
-
 		// (*) wheel
-		renderer.view.addEventListener("wheel", event =>
+		renderer.view.addEventListener("wheel", (event) =>
 		{
 			self._mouseInfo.wheelRel[0] += event.deltaX;
 			self._mouseInfo.wheelRel[1] += event.deltaY;
 
 			this._psychoJS.experimentLogger.data("Mouse: wheel shift=(" + event.deltaX + "," + event.deltaY + "), pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
-
 	}
-
 
 	/**
 	 * Add key listeners to the document.
@@ -336,14 +318,14 @@ export class EventManager
 		// add a keydown listener
 		// note: IE11 is not happy with document.addEventListener
 		window.addEventListener("keydown", (event) =>
-//		document.addEventListener("keydown", (event) =>
+		// 		document.addEventListener("keydown", (event) =>
 		{
 			const timestamp = MonotonicClock.getReferenceTime();
 
 			let code = event.code;
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
-			if (typeof code === 'undefined')
+			if (typeof code === "undefined")
 			{
 				code = EventManager.keycode2w3c(event.keyCode);
 			}
@@ -352,16 +334,14 @@ export class EventManager
 				code,
 				key: event.key,
 				keyCode: event.keyCode,
-				timestamp
+				timestamp,
 			});
-			self._psychoJS.logger.trace('keydown: ', event.key);
-			self._psychoJS.experimentLogger.data('Keydown: ' + event.key);
+			self._psychoJS.logger.trace("keydown: ", event.key);
+			self._psychoJS.experimentLogger.data("Keydown: " + event.key);
 
 			event.stopPropagation();
 		});
-
 	}
-
 
 	/**
 	 * Convert a keylist that uses pyglet key names to one that uses W3C KeyboardEvent.code values.
@@ -378,7 +358,7 @@ export class EventManager
 		let w3cKeyList = [];
 		for (let i = 0; i < pygletKeyList.length; i++)
 		{
-			if (typeof EventManager._pygletMap[pygletKeyList[i]] === 'undefined')
+			if (typeof EventManager._pygletMap[pygletKeyList[i]] === "undefined")
 			{
 				w3cKeyList.push(pygletKeyList[i]);
 			}
@@ -390,7 +370,6 @@ export class EventManager
 
 		return w3cKeyList;
 	}
-
 
 	/**
 	 * Convert a W3C Key Code into a pyglet key.
@@ -410,10 +389,9 @@ export class EventManager
 		}
 		else
 		{
-			return 'N/A';
+			return "N/A";
 		}
 	}
-
 
 	/**
 	 * Convert a keycode to a W3C UI Event code.
@@ -431,7 +409,6 @@ export class EventManager
 		return EventManager._keycodeMap[keycode];
 	}
 }
-
 
 /**
  * <p>This map provides support for browsers that have not yet
@@ -522,9 +499,8 @@ EventManager._keycodeMap = {
 	39: "ArrowRight",
 	40: "ArrowDown",
 	27: "Escape",
-	32: "Space"
+	32: "Space",
 };
-
 
 /**
  * This map associates pyglet key names to the corresponding W3C KeyboardEvent codes values.
@@ -625,9 +601,8 @@ EventManager._pygletMap = {
 	"num_multiply": "NumpadMultiply",
 	"num_divide": "NumpadDivide",
 	"num_equal": "NumpadEqual",
-	"num_numlock": "NumpadNumlock"
+	"num_numlock": "NumpadNumlock",
 };
-
 
 /**
  * <p>This map associates W3C KeyboardEvent.codes to the corresponding pyglet key names.
@@ -638,7 +613,6 @@ EventManager._pygletMap = {
  * @type {Object.<String,String>}
  */
 EventManager._reversePygletMap = {};
-
 
 /**
  * Utility class used by the experiment scripts to keep track of a clock and of the current status (whether or not we are currently checking the keyboard)
@@ -656,8 +630,8 @@ export class BuilderKeyResponse
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 		this.keys = []; // the key(s) pressed
-		this.corr = 0;  // was the resp correct this trial? (0=no, 1=yes)
-		this.rt = [];  // response time(s)
+		this.corr = 0; // was the resp correct this trial? (0=no, 1=yes)
+		this.rt = []; // response time(s)
 		this.clock = new Clock(); // we'll use this to measure the rt
 	}
 }

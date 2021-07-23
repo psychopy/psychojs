@@ -7,12 +7,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {MinimalStim} from '../core/MinimalStim';
-import {WindowMixin} from '../core/WindowMixin';
-import * as util from '../util/Util';
-
+import * as PIXI from "pixi.js-legacy";
+import { MinimalStim } from "../core/MinimalStim.js";
+import { WindowMixin } from "../core/WindowMixin.js";
+import * as util from "../util/Util.js";
 
 /**
  * Base class for all visual stimuli.
@@ -36,63 +34,60 @@ import * as util from '../util/Util';
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
-	constructor({name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog} = {})
+	constructor({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog } = {})
 	{
-		super({win, name, autoDraw, autoLog});
+		super({ win, name, autoDraw, autoLog });
 
 		this._addAttribute(
-			'units',
+			"units",
 			units,
-			(typeof win !== 'undefined' && win !== null) ? win.units : 'height',
-			this._onChange(true, true)
+			(typeof win !== "undefined" && win !== null) ? win.units : "height",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'pos',
+			"pos",
 			pos,
-			[0, 0]
+			[0, 0],
 		);
 		this._addAttribute(
-			'size',
+			"size",
 			size,
-			undefined
+			undefined,
 		);
 		this._addAttribute(
-			'ori',
+			"ori",
 			ori,
-			0.0
+			0.0,
 		);
 		this._addAttribute(
-			'opacity',
+			"opacity",
 			opacity,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'depth',
+			"depth",
 			depth,
 			0,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'clipMask',
+			"clipMask",
 			clipMask,
 			null,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
 		// bounding box of the stimulus, in stimulus units
 		// note: boundingBox does not take the orientation into account
-		this._addAttribute('boundingBox', PIXI.Rectangle.EMPTY);
+		this._addAttribute("boundingBox", PIXI.Rectangle.EMPTY);
 
-		
 		// the stimulus need to be updated:
 		this._needUpdate = true;
 
 		// the PIXI representation also needs to be updated:
 		this._needPixiUpdate = true;
 	}
-
-
 
 	/**
 	 * Force a refresh of the stimulus.
@@ -107,8 +102,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		this._onChange(true, true)();
 	}
 
-
-
 	/**
 	 * Setter for the size attribute.
 	 *
@@ -120,7 +113,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	setSize(size, log = false)
 	{
 		// size is either undefined, null, or a tuple of numbers:
-		if (typeof size !== 'undefined' && size !== null)
+		if (typeof size !== "undefined" && size !== null)
 		{
 			size = util.toNumerical(size);
 			if (!Array.isArray(size))
@@ -129,15 +122,13 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			}
 		}
 
-		const hasChanged = this._setAttribute('size', size, log);
+		const hasChanged = this._setAttribute("size", size, log);
 
 		if (hasChanged)
 		{
 			this._onChange(true, true)();
 		}
 	}
-
-
 
 	/**
 	 * Setter for the orientation attribute.
@@ -149,19 +140,16 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	setOri(ori, log = false)
 	{
-		const hasChanged = this._setAttribute('ori', ori, log);
+		const hasChanged = this._setAttribute("ori", ori, log);
 
 		if (hasChanged)
 		{
 			let radians = -ori * 0.017453292519943295;
-			this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)],
-				[Math.sin(radians), Math.cos(radians)]];
+			this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)], [Math.sin(radians), Math.cos(radians)]];
 
 			this._onChange(true, true)();
 		}
 	}
-
-
 
 	/**
 	 * Setter for the position attribute.
@@ -174,19 +162,17 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	setPos(pos, log = false)
 	{
 		const prevPos = this._pos;
-		const hasChanged = this._setAttribute('pos', util.toNumerical(pos), log);
+		const hasChanged = this._setAttribute("pos", util.toNumerical(pos), log);
 
 		if (hasChanged)
 		{
 			this._needUpdate = true;
-			
+
 			// update the bounding box, without calling _estimateBoundingBox:
 			this._boundingBox.x += this._pos[0] - prevPos[0];
 			this._boundingBox.y += this._pos[1] - prevPos[1];
 		}
 	}
-
-
 
 	/**
 	 * Determine whether an object is inside the bounding box of the stimulus.
@@ -202,20 +188,18 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		// get the position of the object, in pixel coordinates:
 		const objectPos_px = util.getPositionFromObject(object, units);
 
-		if (typeof objectPos_px === 'undefined')
+		if (typeof objectPos_px === "undefined")
 		{
 			throw {
-				origin: 'VisualStim.contains',
-				context: 'when determining whether VisualStim: ' + this._name + ' contains object: ' + util.toString(object),
-				error: 'unable to determine the position of the object'
+				origin: "VisualStim.contains",
+				context: "when determining whether VisualStim: " + this._name + " contains object: " + util.toString(object),
+				error: "unable to determine the position of the object",
 			};
 		}
 
 		// test for inclusion:
 		return this._getBoundingBox_px().contains(objectPos_px[0], objectPos_px[1]);
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -227,13 +211,11 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	_estimateBoundingBox()
 	{
 		throw {
-			origin: 'VisualStim._estimateBoundingBox',
+			origin: "VisualStim._estimateBoundingBox",
 			context: `when estimating the bounding box of visual stimulus: ${this._name}`,
-			error: 'this method is abstract and should not be called.'
+			error: "this method is abstract and should not be called.",
 		};
 	}
-
-
 
 	/**
 	 * Get the bounding box in pixel coordinates
@@ -245,36 +227,34 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	_getBoundingBox_px()
 	{
-		if (this._units === 'pix')
+		if (this._units === "pix")
 		{
 			return this._boundingBox.clone();
 		}
-		else if (this._units === 'norm')
+		else if (this._units === "norm")
 		{
 			return new PIXI.Rectangle(
 				this._boundingBox.x * this._win.size[0] / 2,
 				this._boundingBox.y * this._win.size[1] / 2,
 				this._boundingBox.width * this._win.size[0] / 2,
-				this._boundingBox.height * this._win.size[1] / 2
+				this._boundingBox.height * this._win.size[1] / 2,
 			);
 		}
-		else if (this._units === 'height')
+		else if (this._units === "height")
 		{
 			const minSize = Math.min(this._win.size[0], this._win.size[1]);
 			return new PIXI.Rectangle(
 				this._boundingBox.x * minSize,
 				this._boundingBox.y * minSize,
 				this._boundingBox.width * minSize,
-				this._boundingBox.height * minSize
+				this._boundingBox.height * minSize,
 			);
 		}
 		else
 		{
-			throw Object.assign(response, {error: `unknown units: ${this._units}`});
+			throw Object.assign(response, { error: `unknown units: ${this._units}` });
 		}
 	}
-
-
 
 	/**
 	 * Generate a callback that prepares updates to the stimulus.
@@ -302,5 +282,4 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			}
 		};
 	}
-
 }

@@ -7,11 +7,11 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import * as PIXI from 'pixi.js-legacy';
-import {Color} from '../util/Color';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
-import {Logger} from "./Logger";
+import * as PIXI from "pixi.js-legacy";
+import { MonotonicClock } from "../util/Clock.js";
+import { Color } from "../util/Color.js";
+import { PsychObject } from "../util/PsychObject.js";
+import { Logger } from "./Logger.js";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -32,7 +32,6 @@ import {Logger} from "./Logger";
  */
 export class Window extends PsychObject
 {
-
 	/**
 	 * Getter for monitorFramePeriod.
 	 *
@@ -46,14 +45,14 @@ export class Window extends PsychObject
 	}
 
 	constructor({
-								psychoJS,
-								name,
-								fullscr = false,
-								color = new Color('black'),
-								units = 'pix',
-								waitBlanking = false,
-								autoLog = true
-							} = {})
+		psychoJS,
+		name,
+		fullscr = false,
+		color = new Color("black"),
+		units = "pix",
+		waitBlanking = false,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS, name);
 
@@ -63,13 +62,12 @@ export class Window extends PsychObject
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttribute('fullscr', fullscr);
-		this._addAttribute('color', color);
-		this._addAttribute('units', units);
-		this._addAttribute('waitBlanking', waitBlanking);
-		this._addAttribute('autoLog', autoLog);
-		this._addAttribute('size', []);
-
+		this._addAttribute("fullscr", fullscr);
+		this._addAttribute("color", color);
+		this._addAttribute("units", units);
+		this._addAttribute("waitBlanking", waitBlanking);
+		this._addAttribute("autoLog", autoLog);
+		this._addAttribute("size", []);
 
 		// setup PIXI:
 		this._setupPixi();
@@ -78,15 +76,14 @@ export class Window extends PsychObject
 
 		this._flipCallbacks = [];
 
-
 		// fullscreen listener:
 		this._windowAlreadyInFullScreen = false;
 		const self = this;
-		document.addEventListener('fullscreenchange', (event) =>
+		document.addEventListener("fullscreenchange", (event) =>
 		{
 			self._windowAlreadyInFullScreen = !!document.fullscreenElement;
 
-			console.log('windowAlreadyInFullScreen:', self._windowAlreadyInFullScreen);
+			console.log("windowAlreadyInFullScreen:", self._windowAlreadyInFullScreen);
 
 			// the Window and all of the stimuli need to be updated:
 			self._needUpdate = true;
@@ -96,13 +93,11 @@ export class Window extends PsychObject
 			}
 		});
 
-
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
 
 	/**
 	 * Close the window.
@@ -126,20 +121,19 @@ export class Window extends PsychObject
 		}
 
 		// destroy the renderer and the WebGL context:
-		if (typeof this._renderer.gl !== 'undefined')
+		if (typeof this._renderer.gl !== "undefined")
 		{
-			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
+			const extension = this._renderer.gl.getExtension("WEBGL_lose_context");
 			extension.loseContext();
 		}
 
 		this._renderer.destroy();
 
-		window.removeEventListener('resize', this._resizeCallback);
-		window.removeEventListener('orientationchange', this._resizeCallback);
+		window.removeEventListener("resize", this._resizeCallback);
+		window.removeEventListener("orientationchange", this._resizeCallback);
 
 		this._renderer = null;
 	}
-
 
 	/**
 	 * Estimate the frame rate.
@@ -158,7 +152,6 @@ export class Window extends PsychObject
 		return fps;
 	}
 
-
 	/**
 	 * Take the browser full screen if possible.
 	 *
@@ -173,38 +166,36 @@ export class Window extends PsychObject
 		// test whether the window is already fullscreen.
 		// this._windowAlreadyInFullScreen = (!window.screenTop && !window.screenY);
 
-		if (this.fullscr/* && !this._windowAlreadyInFullScreen*/)
+		if (this.fullscr /* && !this._windowAlreadyInFullScreen*/)
 		{
-			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'to full screen.');
+			this._psychoJS.logger.debug("Resizing Window: ", this._name, "to full screen.");
 
-			if (typeof document.documentElement.requestFullscreen === 'function')
+			if (typeof document.documentElement.requestFullscreen === "function")
 			{
 				document.documentElement.requestFullscreen()
 					.catch(() =>
 					{
-						this.psychoJS.logger.warn('Unable to go fullscreen.');
+						this.psychoJS.logger.warn("Unable to go fullscreen.");
 					});
 			}
-			else if (typeof document.documentElement.mozRequestFullScreen === 'function')
+			else if (typeof document.documentElement.mozRequestFullScreen === "function")
 			{
 				document.documentElement.mozRequestFullScreen();
 			}
-			else if (typeof document.documentElement.webkitRequestFullscreen === 'function')
+			else if (typeof document.documentElement.webkitRequestFullscreen === "function")
 			{
 				document.documentElement.webkitRequestFullscreen();
 			}
-			else if (typeof document.documentElement.msRequestFullscreen === 'function')
+			else if (typeof document.documentElement.msRequestFullscreen === "function")
 			{
 				document.documentElement.msRequestFullscreen();
 			}
 			else
 			{
-				this.psychoJS.logger.warn('Unable to go fullscreen.');
+				this.psychoJS.logger.warn("Unable to go fullscreen.");
 			}
 		}
-
 	}
-
 
 	/**
 	 * Take the browser back from full screen if needed.
@@ -217,36 +208,34 @@ export class Window extends PsychObject
 	{
 		if (this.fullscr)
 		{
-			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'back from full screen.');
+			this._psychoJS.logger.debug("Resizing Window: ", this._name, "back from full screen.");
 
-			if (typeof document.exitFullscreen === 'function')
+			if (typeof document.exitFullscreen === "function")
 			{
 				document.exitFullscreen()
 					.catch(() =>
 					{
-						this.psychoJS.logger.warn('Unable to close fullscreen.');
+						this.psychoJS.logger.warn("Unable to close fullscreen.");
 					});
 			}
-			else if (typeof document.mozCancelFullScreen === 'function')
+			else if (typeof document.mozCancelFullScreen === "function")
 			{
 				document.mozCancelFullScreen();
 			}
-			else if (typeof document.webkitExitFullscreen === 'function')
+			else if (typeof document.webkitExitFullscreen === "function")
 			{
 				document.webkitExitFullscreen();
 			}
-			else if (typeof document.msExitFullscreen === 'function')
+			else if (typeof document.msExitFullscreen === "function")
 			{
 				document.msExitFullscreen();
 			}
 			else
 			{
-				this.psychoJS.logger.warn('Unable to close fullscreen.');
+				this.psychoJS.logger.warn("Unable to close fullscreen.");
 			}
 		}
-
 	}
-
 
 	/**
 	 * Log a message.
@@ -262,14 +251,13 @@ export class Window extends PsychObject
 	 * @param {Object} [obj] the object associated with the message
 	 */
 	logOnFlip({
-							msg,
-							level = Logger.ServerLevel.EXP,
-							obj
-						} = {})
+		msg,
+		level = Logger.ServerLevel.EXP,
+		obj,
+	} = {})
 	{
-		this._msgToBeLogged.push({msg, level, obj});
+		this._msgToBeLogged.push({ msg, level, obj });
 	}
-
 
 	/**
 	 * Callback function for callOnFlip.
@@ -291,9 +279,8 @@ export class Window extends PsychObject
 	 */
 	callOnFlip(flipCallback, ...flipCallbackArgs)
 	{
-		this._flipCallbacks.push({function: flipCallback, arguments: flipCallbackArgs});
+		this._flipCallbacks.push({ function: flipCallback, arguments: flipCallbackArgs });
 	}
-
 
 	/**
 	 * Render the stimuli onto the canvas.
@@ -309,13 +296,12 @@ export class Window extends PsychObject
 			return;
 		}
 
-
 		this._frameCount++;
 
 		// render the PIXI container:
 		this._renderer.render(this._rootContainer);
 
-		if (typeof this._renderer.gl !== 'undefined')
+		if (typeof this._renderer.gl !== "undefined")
 		{
 			// this is to make sure that the GPU is done rendering, it may not be necessary
 			// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
@@ -331,7 +317,7 @@ export class Window extends PsychObject
 		// call the callOnFlip functions and remove them:
 		for (let callback of this._flipCallbacks)
 		{
-			callback['function'](...callback['arguments']);
+			callback["function"](...callback["arguments"]);
 		}
 		this._flipCallbacks = [];
 
@@ -341,7 +327,6 @@ export class Window extends PsychObject
 		// prepare the scene for the next animation frame:
 		this._refresh();
 	}
-
 
 	/**
 	 * Update this window, if need be.
@@ -367,7 +352,6 @@ export class Window extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Recompute this window's draw list and _container children for the next animation frame.
 	 *
@@ -383,7 +367,7 @@ export class Window extends PsychObject
 		// update it, then put it back
 		for (const stimulus of this._drawList)
 		{
-			if (stimulus._needUpdate && typeof stimulus._pixi !== 'undefined')
+			if (stimulus._needUpdate && typeof stimulus._pixi !== "undefined")
 			{
 				this._rootContainer.removeChild(stimulus._pixi);
 				stimulus._updateIfNeeded();
@@ -391,7 +375,6 @@ export class Window extends PsychObject
 			}
 		}
 	}
-
 
 	/**
 	 * Force an update of all stimuli in this window's drawlist.
@@ -411,7 +394,6 @@ export class Window extends PsychObject
 
 		this._refresh();
 	}
-
 
 	/**
 	 * Setup PIXI.
@@ -434,10 +416,10 @@ export class Window extends PsychObject
 			width: this._size[0],
 			height: this._size[1],
 			backgroundColor: this.color.int,
-			resolution: window.devicePixelRatio
+			resolution: window.devicePixelRatio,
 		});
-		this._renderer.view.style.transform = 'translatez(0)';
-		this._renderer.view.style.position = 'absolute';
+		this._renderer.view.style.transform = "translatez(0)";
+		this._renderer.view.style.position = "absolute";
 		document.body.appendChild(this._renderer.view);
 
 		// we also change the background color of the body since the dialog popup may be longer than the window's height:
@@ -459,10 +441,9 @@ export class Window extends PsychObject
 			Window._resizePixiRenderer(this, e);
 			this._fullRefresh();
 		};
-		window.addEventListener('resize', this._resizeCallback);
-		window.addEventListener('orientationchange', this._resizeCallback);
+		window.addEventListener("resize", this._resizeCallback);
+		window.addEventListener("orientationchange", this._resizeCallback);
 	}
-
 
 	/**
 	 * Adjust the size of the renderer and the position of the root container
@@ -476,17 +457,17 @@ export class Window extends PsychObject
 	 */
 	static _resizePixiRenderer(pjsWindow, event)
 	{
-		pjsWindow._psychoJS.logger.debug('resizing Window: ', pjsWindow._name, 'event:', JSON.stringify(event));
+		pjsWindow._psychoJS.logger.debug("resizing Window: ", pjsWindow._name, "event:", JSON.stringify(event));
 
 		// update the size of the PsychoJS Window:
 		pjsWindow._size[0] = window.innerWidth;
 		pjsWindow._size[1] = window.innerHeight;
 
 		// update the PIXI renderer:
-		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + 'px';
-		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + 'px';
-		pjsWindow._renderer.view.style.left = '0px';
-		pjsWindow._renderer.view.style.top = '0px';
+		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + "px";
+		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + "px";
+		pjsWindow._renderer.view.style.left = "0px";
+		pjsWindow._renderer.view.style.top = "0px";
 		pjsWindow._renderer.resize(pjsWindow._size[0], pjsWindow._size[1]);
 
 		// setup the container such that (0,0) is at the centre of the window
@@ -495,7 +476,6 @@ export class Window extends PsychObject
 		pjsWindow._rootContainer.position.y = pjsWindow._size[1] / 2.0;
 		pjsWindow._rootContainer.scale.y = -1;
 	}
-
 
 	/**
 	 * Send all logged messages to the {@link Logger}.
@@ -514,5 +494,4 @@ export class Window extends PsychObject
 
 		this._msgToBeLogged = [];
 	}
-
 }

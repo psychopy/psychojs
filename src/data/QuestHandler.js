@@ -10,11 +10,11 @@
 
 
 
-import {TrialHandler} from "./TrialHandler";
+import {TrialHandler} from "./TrialHandler.js";
 
 /**
  * <p>A Trial Handler that implements the Quest algorithm for quick measurement of
-    psychophysical thresholds.QuestHandler relies on the [jsQuest]{@link https://github.com/kurokida/jsQUEST} library, a port of Prof Dennis Pelli's QUEST algorithm by [Daiichiro Kuroki]{@link https://github.com/kurokida}.</p>
+    psychophysical thresholds. QuestHandler relies on the [jsQuest]{@link https://github.com/kurokida/jsQUEST} library, a port of Prof Dennis Pelli's QUEST algorithm by [Daiichiro Kuroki]{@link https://github.com/kurokida}.</p>
  *
  * @class module.data.QuestHandler
  * @extends TrialHandler

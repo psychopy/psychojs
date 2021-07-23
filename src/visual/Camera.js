@@ -7,11 +7,11 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "../core/PsychoJS";
-import * as util from '../util/Util';
-import {ExperimentHandler} from "../data/ExperimentHandler";
+import {Clock} from "../util/Clock.js";
+import {PsychObject} from "../util/PsychObject.js";
+import {PsychoJS} from "../core/PsychoJS.js";
+import * as util from "../util/Util.js";
+import {ExperimentHandler} from "../data/ExperimentHandler.js";
 // import {VideoClip} from "./VideoClip";
 
 
@@ -25,20 +25,25 @@ import {ExperimentHandler} from "../data/ExperimentHandler";
  * @param {string} [options.format='video/webm;codecs=vp9'] the video format
  * @param {Clock} [options.clock= undefined] - an optional clock
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ *
+ * @todo add video constraints as parameter
  */
 export class Camera extends PsychObject
 {
-
+	/**
+	 * @constructor
+	 * @public
+	 */
 	constructor({win, name, format, clock, autoLog} = {})
 	{
 		super(win._psychoJS);
 
-		this._addAttribute('win', win, undefined);
-		this._addAttribute('name', name, 'camera');
-		this._addAttribute('format', format, 'video/webm;codecs=vp9', this._onChange);
-		this._addAttribute('clock', clock, new Clock());
-		this._addAttribute('autoLog', autoLog, false);
-		this._addAttribute('status', PsychoJS.Status.NOT_STARTED);
+		this._addAttribute("win", win, undefined);
+		this._addAttribute("name", name, "camera");
+		this._addAttribute("format", format, "video/webm;codecs=vp9", this._onChange);
+		this._addAttribute("clock", clock, new Clock());
+		this._addAttribute("autoLog", autoLog, false);
+		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);
 
 		// prepare the recording:
 		this._prepareRecording();
@@ -54,6 +59,7 @@ export class Camera extends PsychObject
 	 * Get the underlying video stream.
 	 *
 	 * @name module:visual.Camera#getStream
+	 * @function
 	 * @public
 	 * @returns {MediaStream} the video stream
 	 */
@@ -67,6 +73,7 @@ export class Camera extends PsychObject
 	 * Get a video element pointing to the Camera stream.
 	 *
 	 * @name module:visual.Camera#getVideo
+	 * @function
 	 * @public
 	 * @returns {HTMLVideoElement} a video element
 	 */
@@ -76,7 +83,7 @@ export class Camera extends PsychObject
 		// several stimuli and one of them might pause the feed
 
 		// create a video with the appropriate size:
-		const video = document.createElement('video');
+		const video = document.createElement("video");
 		this._videos.push(video);
 
 		video.width = this._streamSettings.width;
@@ -101,6 +108,7 @@ export class Camera extends PsychObject
 	 * Submit a request to start the recording.
 	 *
 	 * @name module:visual.Camera#start
+	 * @function
 	 * @public
 	 * @return {Promise} promise fulfilled when the recording actually started
 	 */
@@ -116,13 +124,13 @@ export class Camera extends PsychObject
 
 		if (this._status !== PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to start video recording');
+			this._psychoJS.logger.debug("request to start video recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record video';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record video";
 				}
 
 				this._recorder.start();
@@ -138,12 +146,12 @@ export class Camera extends PsychObject
 			}
 			catch (error)
 			{
-				this._psychoJS.logger.error('unable to start the video recording: ' + JSON.stringify(error));
+				this._psychoJS.logger.error("unable to start the video recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Camera.start',
-					context: 'when starting the video recording for camera: ' + this._name,
+					origin: "Camera.start",
+					context: "when starting the video recording for camera: " + this._name,
 					error
 				};
 			}
@@ -157,6 +165,7 @@ export class Camera extends PsychObject
 	 * Submit a request to stop the recording.
 	 *
 	 * @name module:visual.Camera#stop
+	 * @function
 	 * @public
 	 * @param {Object} options
 	 * @param {string} [options.filename] the name of the file to which the video recording
@@ -168,7 +177,7 @@ export class Camera extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to stop video recording');
+			this._psychoJS.logger.debug("request to stop video recording");
 
 			// stop the videos:
 			for (const video of this._videos)
@@ -201,6 +210,7 @@ export class Camera extends PsychObject
 	 * Submit a request to pause the recording.
 	 *
 	 * @name module:visual.Camera#pause
+	 * @function
 	 * @public
 	 * @return {Promise} promise fulfilled when the recording actually paused
 	 */
@@ -208,13 +218,13 @@ export class Camera extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to pause video recording');
+			this._psychoJS.logger.debug("request to pause video recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record video';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record video";
 				}
 
 				// note: calling the pause method of the MediaRecorder raises a pause event
@@ -230,12 +240,12 @@ export class Camera extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to pause the video recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to pause the video recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Camera.pause',
-					context: 'when pausing the video recording for camera: ' + this._name,
+					origin: "Camera.pause",
+					context: "when pausing the video recording for camera: " + this._name,
 					error
 				};
 			}
@@ -250,6 +260,7 @@ export class Camera extends PsychObject
 	 * <p>resume has no effect if the recording was not previously paused.</p>
 	 *
 	 * @name module:visual.Camera#resume
+	 * @function
 	 * @param {Object} options
 	 * @param {boolean} [options.clear= false] whether or not to empty the video buffer before
 	 * 	resuming the recording
@@ -259,13 +270,13 @@ export class Camera extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to resume video recording');
+			this._psychoJS.logger.debug("request to resume video recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record video';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record video";
 				}
 
 				// empty the audio buffer is needed:
@@ -287,12 +298,12 @@ export class Camera extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to resume the video recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to resume the video recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Camera.resume',
-					context: 'when resuming the video recording for camera: ' + this._name,
+					origin: "Camera.resume",
+					context: "when resuming the video recording for camera: " + this._name,
 					error
 				};
 			}
@@ -305,6 +316,7 @@ export class Camera extends PsychObject
 	 * Submit a request to flush the recording.
 	 *
 	 * @name module:visual.Camera#flush
+	 * @function
 	 * @public
 	 * @return {Promise} promise fulfilled when the data has actually been made available
 	 */
@@ -312,7 +324,7 @@ export class Camera extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to flush video recording');
+			this._psychoJS.logger.debug("request to flush video recording");
 
 			// note: calling the requestData method of the MediaRecorder will raise a
 			// dataavailable event
@@ -336,13 +348,13 @@ export class Camera extends PsychObject
 	 * @name module:visual.Camera#download
 	 * @function
 	 * @public
-	 * @param {string} filename the filename
+	 * @param {string} filename - the filename of the video file
 	 */
-	download(filename = 'video.webm')
+	download(filename = "video.webm")
 	{
 		const videoBlob = new Blob(this._videoBuffer);
 
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(videoBlob);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
@@ -362,7 +374,7 @@ export class Camera extends PsychObject
 	async upload({tag} = {})
 	{
 		// default tag: the name of this Camera object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
@@ -374,16 +386,15 @@ export class Camera extends PsychObject
 		// if the video recording cannot be uploaded, e.g. the experiment is running locally, or
 		// if it is piloting mode, then we offer the video recording as a file for download:
 		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-			this._psychoJS.config.experiment.status !== 'RUNNING' ||
-			this._psychoJS._serverMsg.has('__pilotToken'))
+			this._psychoJS.config.experiment.status !== "RUNNING" ||
+			this._psychoJS._serverMsg.has("__pilotToken"))
 		{
 			return this.download(tag);
 		}
 
 		// upload the blob:
-		// TODO uploadAudio -> uploadAudioVideo
 		const videoBlob = new Blob(this._videoBuffer);
-		return this._psychoJS.serverManager.uploadAudio(videoBlob, tag);
+		return this._psychoJS.serverManager.uploadAudioVideo(videoBlob, tag);
 	}
 
 
@@ -399,22 +410,12 @@ export class Camera extends PsychObject
 	async getRecording({tag, flush = false} = {})
 	{
 		// default tag: the name of this Microphone object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
 
 		// TODO
-/*
-		const videoClip = new VideoClip({
-			psychoJS: this._psychoJS,
-			name: tag,
-			format: this._format,
-			data: new Blob(this._videoBuffer)
-		});
-
-		return videoClip;
-*/
 	}
 
 
@@ -455,16 +456,9 @@ export class Camera extends PsychObject
 		this._videos = [];
 
 		// create a new stream with ideal dimensions:
+		// TODO use size constraints
 		this._stream = await navigator.mediaDevices.getUserMedia({
 			video: true
-			/*video: {
-				width: {
-					ideal: 640 //1920
-				},
-				height: {
-					ideal: 480 //1080
-				}
-			}*/
 		});
 
 		// check the actual width and height:
@@ -474,7 +468,7 @@ export class Camera extends PsychObject
 
 		// check that the specified format is supported, use default if it is not:
 		let options;
-		if (typeof this._format === 'string' && MediaRecorder.isTypeSupported(this._format))
+		if (typeof this._format === "string" && MediaRecorder.isTypeSupported(this._format))
 		{
 			options = { type: this._format };
 		}
@@ -499,7 +493,7 @@ export class Camera extends PsychObject
 			self._videoBuffer.length = 0;
 			self._clock.reset();
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('video recording started');
+			self._psychoJS.logger.debug("video recording started");
 
 			// resolve the Microphone.start promise:
 			if (self._startCallback)
@@ -512,7 +506,7 @@ export class Camera extends PsychObject
 		this._recorder.onpause = () =>
 		{
 			self._status = PsychoJS.Status.PAUSED;
-			self._psychoJS.logger.debug('video recording paused');
+			self._psychoJS.logger.debug("video recording paused");
 
 			// resolve the Microphone.pause promise:
 			if (self._pauseCallback)
@@ -525,7 +519,7 @@ export class Camera extends PsychObject
 		this._recorder.onresume = () =>
 		{
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('video recording resumed');
+			self._psychoJS.logger.debug("video recording resumed");
 
 			// resolve the Microphone.resume promise:
 			if (self._resumeCallback)
@@ -541,7 +535,7 @@ export class Camera extends PsychObject
 
 			// add data to the buffer:
 			self._videoBuffer.push(data);
-			self._psychoJS.logger.debug('video data added to the buffer');
+			self._psychoJS.logger.debug("video data added to the buffer");
 
 			// resolve the data available promise, if needed:
 			if (self._dataAvailableCallback)
@@ -553,7 +547,7 @@ export class Camera extends PsychObject
 		// called upon Camera.stop(), after data has been made available:
 		this._recorder.onstop = () =>
 		{
-			self._psychoJS.logger.debug('video recording stopped');
+			self._psychoJS.logger.debug("video recording stopped");
 			self._status = PsychoJS.Status.NOT_STARTED;
 
 			// resolve the Microphone.stop promise:
@@ -565,7 +559,7 @@ export class Camera extends PsychObject
 			// treat stop options if there are any:
 
 			// download to a file, immediately offered to the participant:
-			if (typeof self._stopOptions.filename === 'string')
+			if (typeof self._stopOptions.filename === "string")
 			{
 				self.download(self._stopOptions.filename);
 			}
@@ -575,7 +569,7 @@ export class Camera extends PsychObject
 		this._recorder.onerror = (event) =>
 		{
 			// TODO
-			self._psychoJS.logger.error('video recording error: ' + JSON.stringify(event));
+			self._psychoJS.logger.error("video recording error: " + JSON.stringify(event));
 			self._status = PsychoJS.Status.ERROR;
 		};
 

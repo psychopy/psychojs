@@ -7,13 +7,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
-
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * Image Stimulus.
@@ -45,53 +44,53 @@ import * as util from '../util/Util';
  */
 export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog} = {})
+	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
-		super({name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
 
 		this._addAttribute(
-			'image',
-			image
+			"image",
+			image,
 		);
 		this._addAttribute(
-			'mask',
-			mask
+			"mask",
+			mask,
 		);
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			"white",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'texRes',
+			"texRes",
 			texRes,
 			128,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'interpolate',
+			"interpolate",
 			interpolate,
 			false,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
 		// estimate the bounding box:
@@ -102,8 +101,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * Setter for the image attribute.
@@ -116,22 +113,22 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	setImage(image, log = false)
 	{
 		const response = {
-			origin: 'ImageStim.setImage',
-			context: 'when setting the image of ImageStim: ' + this._name
+			origin: "ImageStim.setImage",
+			context: "when setting the image of ImageStim: " + this._name,
 		};
 
 		try
 		{
 			// image is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
-			if (typeof image === 'undefined')
+			if (typeof image === "undefined")
 			{
-				this.psychoJS.logger.warn('setting the image of ImageStim: ' + this._name + ' with argument: undefined.');
-				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: undefined');
+				this.psychoJS.logger.warn("setting the image of ImageStim: " + this._name + " with argument: undefined.");
+				this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: undefined");
 			}
 			else
 			{
 				// image is a string: it should be the name of a resource, which we load
-				if (typeof image === 'string')
+				if (typeof image === "string")
 				{
 					image = this.psychoJS.serverManager.getResource(image);
 				}
@@ -139,16 +136,16 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				// image should now be an actual HTMLImageElement: we raise an error if it is not
 				if (!(image instanceof HTMLImageElement))
 				{
-					throw 'the argument: ' + image.toString() + ' is not an image" }';
+					throw "the argument: " + image.toString() + ' is not an image" }';
 				}
 
-				this.psychoJS.logger.debug('set the image of ImageStim: ' + this._name + ' as: src= ' + image.src + ', size= ' + image.width + 'x' + image.height);
+				this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: src= " + image.src + ", size= " + image.width + "x" + image.height);
 			}
 
 			const existingImage = this.getImage();
 			const hasChanged = existingImage ? existingImage.src !== image.src : true;
 
-			this._setAttribute('image', image, log);
+			this._setAttribute("image", image, log);
 
 			if (hasChanged)
 			{
@@ -157,11 +154,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 		catch (error)
 		{
-			throw Object.assign(response, {error});
+			throw Object.assign(response, { error });
 		}
 	}
-
-
 
 	/**
 	 * Setter for the mask attribute.
@@ -174,22 +169,22 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	setMask(mask, log = false)
 	{
 		const response = {
-			origin: 'ImageStim.setMask',
-			context: 'when setting the mask of ImageStim: ' + this._name
+			origin: "ImageStim.setMask",
+			context: "when setting the mask of ImageStim: " + this._name,
 		};
 
 		try
 		{
 			// mask is undefined: that's fine but we raise a warning in case this is a sympton of an actual problem
-			if (typeof mask === 'undefined')
+			if (typeof mask === "undefined")
 			{
-				this.psychoJS.logger.warn('setting the mask of ImageStim: ' + this._name + ' with argument: undefined.');
-				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: undefined');
+				this.psychoJS.logger.warn("setting the mask of ImageStim: " + this._name + " with argument: undefined.");
+				this.psychoJS.logger.debug("set the mask of ImageStim: " + this._name + " as: undefined");
 			}
 			else
 			{
 				// mask is a string: it should be the name of a resource, which we load
-				if (typeof mask === 'string')
+				if (typeof mask === "string")
 				{
 					mask = this.psychoJS.serverManager.getResource(mask);
 				}
@@ -197,23 +192,21 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				// mask should now be an actual HTMLImageElement: we raise an error if it is not
 				if (!(mask instanceof HTMLImageElement))
 				{
-					throw 'the argument: ' + mask.toString() + ' is not an image" }';
+					throw "the argument: " + mask.toString() + ' is not an image" }';
 				}
 
-				this.psychoJS.logger.debug('set the mask of ImageStim: ' + this._name + ' as: src= ' + mask.src + ', size= ' + mask.width + 'x' + mask.height);
+				this.psychoJS.logger.debug("set the mask of ImageStim: " + this._name + " as: src= " + mask.src + ", size= " + mask.width + "x" + mask.height);
 			}
 
-			this._setAttribute('mask', mask, log);
+			this._setAttribute("mask", mask, log);
 
 			this._onChange(true, false)();
 		}
 		catch (error)
 		{
-			throw Object.assign(response, {error});
+			throw Object.assign(response, { error });
 		}
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -226,20 +219,18 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	_estimateBoundingBox()
 	{
 		const size = this._getDisplaySize();
-		if (typeof size !== 'undefined')
+		if (typeof size !== "undefined")
 		{
 			this._boundingBox = new PIXI.Rectangle(
 				this._pos[0] - size[0] / 2,
 				this._pos[1] - size[1] / 2,
 				size[0],
-				size[1]
+				size[1],
 			);
 		}
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -260,14 +251,14 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
 
 			// no image to draw: return immediately
-			if (typeof this._image === 'undefined')
+			if (typeof this._image === "undefined")
 			{
 				return;
 			}
@@ -278,7 +269,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			this._pixi = PIXI.Sprite.from(this._texture);
 
 			// add a mask if need be:
-			if (typeof this._mask !== 'undefined')
+			if (typeof this._mask !== "undefined")
 			{
 				this._pixi.mask = PIXI.Sprite.from(this._mask);
 
@@ -320,7 +311,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
@@ -328,8 +319,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
 	}
-
-
 
 	/**
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
@@ -343,18 +332,16 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		let displaySize = this.size;
 
-		if (typeof displaySize === 'undefined')
+		if (typeof displaySize === "undefined")
 		{
 			// use the size of the texture, if we have access to it:
-			if (typeof this._texture !== 'undefined' && this._texture.width > 0)
+			if (typeof this._texture !== "undefined" && this._texture.width > 0)
 			{
 				const textureSize = [this._texture.width, this._texture.height];
-				displaySize = util.to_unit(textureSize, 'pix', this.win, this.units);
+				displaySize = util.to_unit(textureSize, "pix", this.win, this.units);
 			}
 		}
 
 		return displaySize;
 	}
-
-
 }

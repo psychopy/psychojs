@@ -8,12 +8,11 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychoJS} from '../core/PsychoJS';
-import {PsychObject} from '../util/PsychObject';
-import {TonePlayer} from './TonePlayer';
-import {TrackPlayer} from './TrackPlayer';
-import {AudioClipPlayer} from './AudioClipPlayer';
-
+import { PsychoJS } from "../core/PsychoJS.js";
+import { PsychObject } from "../util/PsychObject.js";
+import { AudioClipPlayer } from "./AudioClipPlayer.js";
+import { TonePlayer } from "./TonePlayer.js";
+import { TrackPlayer } from "./TrackPlayer.js";
 
 /**
  * <p>This class handles sound playing (tones and tracks)</p>
@@ -54,42 +53,41 @@ import {AudioClipPlayer} from './AudioClipPlayer';
 export class Sound extends PsychObject
 {
 	constructor({
-								name,
-								win,
-								value = 'C',
-								octave = 4,
-								secs = 0.5,
-								startTime = 0,
-								stopTime = -1,
-								stereo = true,
-								volume = 1.0,
-								loops = 0,
-								//hamming = true,
-								autoLog = true
-							} = {})
+		name,
+		win,
+		value = "C",
+		octave = 4,
+		secs = 0.5,
+		startTime = 0,
+		stopTime = -1,
+		stereo = true,
+		volume = 1.0,
+		loops = 0,
+		// hamming = true,
+		autoLog = true,
+	} = {})
 	{
 		super(win._psychoJS, name);
 
 		// the SoundPlayer, e.g. TonePlayer:
 		this._player = undefined;
 
-		this._addAttribute('win', win);
-		this._addAttribute('value', value);
-		this._addAttribute('octave', octave);
-		this._addAttribute('secs', secs);
-		this._addAttribute('startTime', startTime);
-		this._addAttribute('stopTime', stopTime);
-		this._addAttribute('stereo', stereo);
-		this._addAttribute('volume', volume);
-		this._addAttribute('loops', loops);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("win", win);
+		this._addAttribute("value", value);
+		this._addAttribute("octave", octave);
+		this._addAttribute("secs", secs);
+		this._addAttribute("startTime", startTime);
+		this._addAttribute("stopTime", stopTime);
+		this._addAttribute("stereo", stereo);
+		this._addAttribute("volume", volume);
+		this._addAttribute("loops", loops);
+		this._addAttribute("autoLog", autoLog);
 
 		// identify an appropriate player:
 		this._getPlayer();
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
-
 
 	/**
 	 * Start playing the sound.
@@ -107,7 +105,6 @@ export class Sound extends PsychObject
 		this._player.play(loops);
 	}
 
-
 	/**
 	 * Stop playing the sound immediately.
 	 *
@@ -116,13 +113,12 @@ export class Sound extends PsychObject
 	 * @param {boolean} [options.log= true] - whether or not to log
 	 */
 	stop({
-				 log = true
-			 } = {})
+		log = true,
+	} = {})
 	{
 		this._player.stop();
 		this.status = PsychoJS.Status.STOPPED;
 	}
-
 
 	/**
 	 * Get the duration of the sound, in seconds.
@@ -135,7 +131,6 @@ export class Sound extends PsychObject
 		return this._player.getDuration();
 	}
 
-
 	/**
 	 * Set the playing volume of the sound.
 	 *
@@ -146,14 +141,13 @@ export class Sound extends PsychObject
 	 */
 	setVolume(volume, mute = false, log = true)
 	{
-		this._setAttribute('volume', volume, log);
+		this._setAttribute("volume", volume, log);
 
-		if (typeof this._player !== 'undefined')
+		if (typeof this._player !== "undefined")
 		{
 			this._player.setVolume(volume, mute);
 		}
 	}
-
 
 	/**
 	 * Set the sound value on demand past initialisation.
@@ -166,9 +160,9 @@ export class Sound extends PsychObject
 	{
 		if (sound instanceof Sound)
 		{
-			this._setAttribute('value', sound.value, log);
+			this._setAttribute("value", sound.value, log);
 
-			if (typeof this._player !== 'undefined')
+			if (typeof this._player !== "undefined")
 			{
 				this._player = this._player.constructor.accept(this);
 			}
@@ -178,12 +172,11 @@ export class Sound extends PsychObject
 		}
 
 		throw {
-			origin: 'Sound.setSound',
-			context: 'when replacing the current sound',
-			error: 'invalid input, need an instance of the Sound class.'
+			origin: "Sound.setSound",
+			context: "when replacing the current sound",
+			error: "invalid input, need an instance of the Sound class.",
 		};
 	}
-
 
 	/**
 	 * Set the number of loops.
@@ -194,14 +187,13 @@ export class Sound extends PsychObject
 	 */
 	setLoops(loops = 0, log = true)
 	{
-		this._setAttribute('loops', loops, log);
+		this._setAttribute("loops", loops, log);
 
-		if (typeof this._player !== 'undefined')
+		if (typeof this._player !== "undefined")
 		{
 			this._player.setLoops(loops);
 		}
 	}
-
 
 	/**
 	 * Set the duration (in seconds)
@@ -212,14 +204,13 @@ export class Sound extends PsychObject
 	 */
 	setSecs(secs = 0.5, log = true)
 	{
-		this._setAttribute('secs', secs, log);
+		this._setAttribute("secs", secs, log);
 
-		if (typeof this._player !== 'undefined')
+		if (typeof this._player !== "undefined")
 		{
 			this._player.setDuration(secs);
 		}
 	}
-
 
 	/**
 	 * Identify the appropriate player for the sound.
@@ -231,26 +222,24 @@ export class Sound extends PsychObject
 	_getPlayer()
 	{
 		const acceptFns = [
-			sound => TonePlayer.accept(sound),
-			sound => TrackPlayer.accept(sound),
-			sound => AudioClipPlayer.accept(sound)
+			(sound) => TonePlayer.accept(sound),
+			(sound) => TrackPlayer.accept(sound),
+			(sound) => AudioClipPlayer.accept(sound),
 		];
 
 		for (const acceptFn of acceptFns)
 		{
 			this._player = acceptFn(this);
-			if (typeof this._player !== 'undefined')
+			if (typeof this._player !== "undefined")
 			{
 				return this._player;
 			}
 		}
 
 		throw {
-			origin: 'SoundPlayer._getPlayer',
-			context: 'when finding a player for the sound',
-			error: 'could not find an appropriate player.'
+			origin: "SoundPlayer._getPlayer",
+			context: "when finding a player for the sound",
+			error: "could not find an appropriate player.",
 		};
 	}
-
-
 }

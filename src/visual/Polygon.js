@@ -7,10 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import {ShapeStim} from './ShapeStim';
-import {Color} from '../util/Color';
-
+import { Color } from "../util/Color.js";
+import { ShapeStim } from "./ShapeStim.js";
 
 /**
  * <p>Polygonal visual stimulus.</p>
@@ -39,7 +37,7 @@ import {Color} from '../util/Color';
  */
 export class Polygon extends ShapeStim
 {
-	constructor({name, win, lineWidth, lineColor, fillColor, opacity, edges, radius, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, edges, radius, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
 		super({
 			name,
@@ -56,20 +54,20 @@ export class Polygon extends ShapeStim
 			depth,
 			interpolate,
 			autoDraw,
-			autoLog
+			autoLog,
 		});
 
-		this._psychoJS.logger.debug('create a new Polygon with name: ', name);
+		this._psychoJS.logger.debug("create a new Polygon with name: ", name);
 
 		this._addAttribute(
-			'edges',
+			"edges",
 			edges,
-			3
+			3,
 		);
 		this._addAttribute(
-			'radius',
+			"radius",
 			radius,
-			0.5
+			0.5,
 		);
 
 		this._updateVertices();
@@ -79,8 +77,6 @@ export class Polygon extends ShapeStim
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * Setter for the radius attribute.
@@ -92,15 +88,13 @@ export class Polygon extends ShapeStim
 	 */
 	setRadius(radius, log = false)
 	{
-		const hasChanged = this._setAttribute('radius', radius, log);
+		const hasChanged = this._setAttribute("radius", radius, log);
 
 		if (hasChanged)
 		{
 			this._updateVertices();
 		}
 	}
-
-
 
 	/**
 	 * Setter for the edges attribute.
@@ -112,15 +106,13 @@ export class Polygon extends ShapeStim
 	 */
 	setEdges(edges, log = false)
 	{
-		const hasChanged = this._setAttribute('edges', Math.round(edges), log);
+		const hasChanged = this._setAttribute("edges", Math.round(edges), log);
 
 		if (hasChanged)
 		{
 			this._updateVertices();
 		}
 	}
-
-
 
 	/**
 	 * Update the vertices.
@@ -130,7 +122,7 @@ export class Polygon extends ShapeStim
 	 */
 	_updateVertices()
 	{
-		this._psychoJS.logger.debug('update the vertices of Polygon: ', this.name);
+		this._psychoJS.logger.debug("update the vertices of Polygon: ", this.name);
 
 		const angle = 2.0 * Math.PI / this._edges;
 		const vertices = [];
@@ -141,5 +133,4 @@ export class Polygon extends ShapeStim
 
 		this.setVertices(vertices);
 	}
-
 }
