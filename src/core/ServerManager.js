@@ -429,15 +429,14 @@ export class ServerManager extends PsychObject
 				}
 
 				// whether all resources have been requested:
-				const allResources = (resources.length === 1 && resources[0] === ServerManager.ALL_RESOURCES);
+				const allResources = (resources.length === 1 &&
+					resources[0] === ServerManager.ALL_RESOURCES);
 
 				// if the experiment is hosted on the pavlovia.org server and
 				// resources is [ServerManager.ALL_RESOURCES], then we register all the resources
 				// in the "resources" sub-directory
-				if (
-					this._psychoJS.config.environment === ExperimentHandler.Environment.SERVER
-					&& allResources
-				)
+				if (this._psychoJS.config.environment === ExperimentHandler.Environment.SERVER &&
+					allResources)
 				{
 					// list the resources from the resources directory of the experiment on the server:
 					const serverResponse = await this._listResources();
@@ -465,10 +464,8 @@ export class ServerManager extends PsychObject
 				{
 					// we cannot ask for all resources to be registered locally, since we cannot list
 					// them:
-					if (
-						this._psychoJS.config.environment === ExperimentHandler.Environment.LOCAL
-						&& allResources
-					)
+					if (this._psychoJS.config.environment === ExperimentHandler.Environment.LOCAL &&
+						allResources)
 					{
 						throw "resources must be manually specified when the experiment is running locally: ALL_RESOURCES cannot be used";
 					}
@@ -759,14 +756,14 @@ export class ServerManager extends PsychObject
 	/**
 	 * Asynchronously upload audio data to the pavlovia server.
 	 *
-	 * @name module:core.ServerManager#uploadAudio
+	 * @name module:core.ServerManager#uploadAudioVideo
 	 * @function
 	 * @public
 	 * @param {Blob} audioBlob - the audio blob to be uploaded
 	 * @param {string} tag - additional tag
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudio(audioBlob, tag)
+	async uploadAudioVideo(audioBlob, tag)
 	{
 		const response = {
 			origin: "ServerManager.uploadAudio",
@@ -805,11 +802,11 @@ export class ServerManager extends PsychObject
 			// query the pavlovia server:
 			const response = await fetch(url, {
 				method: "POST",
-				mode: "cors", // no-cors, *cors, same-origin
-				cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-				credentials: "same-origin", // include, *same-origin, omit
-				redirect: "follow", // manual, *follow, error
-				referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				redirect: "follow",
+				referrerPolicy: "no-referrer",
 				body: formData,
 			});
 			const jsonResponse = await response.json();

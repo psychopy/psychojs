@@ -7,17 +7,19 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychoJS} from "../core/PsychoJS";
-import * as util from '../util/Util';
-import {Color} from '../util/Color';
-import {Camera} from "./Camera";
-import {VisualStim} from "./VisualStim";
+import {PsychoJS} from "../core/PsychoJS.js";
+import * as util from "../util/Util.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import {Color} from "../util/Color.js";
+import {Camera} from "./Camera.js";
+import {VisualStim} from "./VisualStim.js";
 import * as PIXI from "pixi.js-legacy";
 
 
 /**
- * <p>This manager handles the detecting of faces in video streams.</p>
- * <p>The detection is performed using the Face-API library: https://github.com/justadudewhohacks/face-api.js</p>
+ * <p>This manager handles the detecting of faces in video streams. FaceDetector relies on the
+ * [Face-API library]{@link https://github.com/justadudewhohacks/face-api.js} developed by
+ * [Vincent Muehler]{@link https://github.com/justadudewhohacks}</p>
  *
  * @name module:visual.FaceDetector
  * @class
@@ -39,17 +41,20 @@ import * as PIXI from "pixi.js-legacy";
  */
 export class FaceDetector extends VisualStim
 {
-
+	/**
+	 * @constructor
+	 * @public
+	 */
 	constructor({name, win, input, modelDir, faceApiUrl, units, ori, opacity, pos, size, autoDraw, autoLog} = {})
 	{
 		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
 
 		// TODO deal with onChange (see MovieStim and Camera)
-		this._addAttribute('input', input, undefined);
-		this._addAttribute('faceApiUrl', faceApiUrl, 'face-api.js');
-		this._addAttribute('modelDir', modelDir, 'models');
-		this._addAttribute('autoLog', autoLog, false);
-		this._addAttribute('status', PsychoJS.Status.NOT_STARTED);
+		this._addAttribute("input", input, undefined);
+		this._addAttribute("faceApiUrl", faceApiUrl, "face-api.js");
+		this._addAttribute("modelDir", modelDir, "models");
+		this._addAttribute("autoLog", autoLog, false);
+		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);
 
 		// init face-api:
 		this._initFaceApi();
@@ -65,6 +70,7 @@ export class FaceDetector extends VisualStim
 	 * Setter for the video attribute.
 	 *
 	 * @name module:visual.FaceDetector#setCamera
+	 * @function
 	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} input - the name of a
 	 * movie resource or a HTMLVideoElement or a Camera component
@@ -73,23 +79,23 @@ export class FaceDetector extends VisualStim
 	setInput(input, log = false)
 	{
 		const response = {
-			origin: 'FaceDetector.setInput',
-			context: 'when setting the video of FaceDetector: ' + this._name
+			origin: "FaceDetector.setInput",
+			context: "when setting the video of FaceDetector: " + this._name
 		};
 
 		try
 		{
 			// movie is undefined: that's fine but we raise a warning in case this is
 			// a symptom of an actual problem
-			if (typeof input === 'undefined')
+			if (typeof input === "undefined")
 			{
-				this.psychoJS.logger.warn('setting the movie of MovieStim: ' + this._name + ' with argument: undefined.');
-				this.psychoJS.logger.debug('set the movie of MovieStim: ' + this._name + ' as: undefined');
+				this.psychoJS.logger.warn("setting the movie of MovieStim: " + this._name + " with argument: undefined.");
+				this.psychoJS.logger.debug("set the movie of MovieStim: " + this._name + " as: undefined");
 			}
 			else
 			{
 				// if movie is a string, then it should be the name of a resource, which we get:
-				if (typeof input === 'string')
+				if (typeof input === "string")
 				{
 					// TODO create a movie with that resource, and use the movie as input
 				}
@@ -106,7 +112,7 @@ export class FaceDetector extends VisualStim
 				// check that video is now an HTMLVideoElement
 				if (!(input instanceof HTMLVideoElement))
 				{
-					throw input.toString() + ' is not a video';
+					throw input.toString() + " is not a video";
 				}
 
 				this.psychoJS.logger.debug(`set the video of FaceDetector: ${this._name} as: src= ${input.src}, size= ${input.videoWidth}x${input.videoHeight}, duration= ${input.duration}s`);
@@ -123,7 +129,7 @@ export class FaceDetector extends VisualStim
 				}
 			}
 
-			this._setAttribute('input', input, log);
+			this._setAttribute("input", input, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
@@ -138,6 +144,7 @@ export class FaceDetector extends VisualStim
 	 * Start detecting faces.
 	 *
 	 * @name module:visual.FaceDetector#start
+	 * @function
 	 * @public
 	 * @param {number} period - the detection period, in ms (e.g. 100 ms for 10Hz)
 	 * @param detectionCallback - the callback triggered when detection results are available
@@ -147,7 +154,7 @@ export class FaceDetector extends VisualStim
 	{
 		this.status = PsychoJS.Status.STARTED;
 
-		if (typeof this._detectionId !== 'undefined')
+		if (typeof this._detectionId !== "undefined")
 		{
 			clearInterval(this._detectionId);
 			this._detectionId = undefined;
@@ -176,6 +183,7 @@ export class FaceDetector extends VisualStim
 	 * Stop detecting faces.
 	 *
 	 * @name module:visual.FaceDetector#stop
+	 * @function
 	 * @public
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -183,7 +191,7 @@ export class FaceDetector extends VisualStim
 	{
 		this.status = PsychoJS.Status.NOT_STARTED;
 
-		if (typeof this._detectionId !== 'undefined')
+		if (typeof this._detectionId !== "undefined")
 		{
 			clearInterval(this._detectionId);
 			this._detectionId = undefined;
@@ -195,16 +203,17 @@ export class FaceDetector extends VisualStim
 	 * Init the Face-API library.
 	 *
 	 * @name module:visual.FaceDetector#_initFaceApi
-	 * @private
+	 * @function
+	 * @protected
 	 */
 	async _initFaceApi()
 	{/*
 		// load the library:
 		await this._psychoJS.serverManager.prepareResources([
 			{
-				'name': 'face-api.js',
-				'path': this.faceApiUrl,
-				'download': true
+				"name": "face-api.js",
+				"path": this.faceApiUrl,
+				"download": true
 			}
 		]);*/
 
@@ -220,7 +229,8 @@ export class FaceDetector extends VisualStim
 	 * Update the visual representation of the detected faces, if necessary.
 	 *
 	 * @name module:visual.FaceDetector#_updateIfNeeded
-	 * @private
+	 * @function
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -234,7 +244,7 @@ export class FaceDetector extends VisualStim
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
@@ -246,7 +256,7 @@ export class FaceDetector extends VisualStim
 			this._pixi.addChild(this._body);
 
 			const size_px = util.to_px(this.size, this.units, this.win);
-			if (typeof this._detections !== 'undefined')
+			if (typeof this._detections !== "undefined")
 			{
 				for (const detection of this._detections)
 				{
@@ -256,7 +266,7 @@ export class FaceDetector extends VisualStim
 
 					for (const position of landmarks.positions)
 					{
-						this._body.beginFill(new Color('red').int, this._opacity);
+						this._body.beginFill(new Color("red").int, this._opacity);
 						this._body.drawCircle(
 							position._x / imageWidth * size_px[0] - size_px[0] / 2,
 							position._y / imageHeight * size_px[1] - size_px[1] / 2,
@@ -273,7 +283,7 @@ export class FaceDetector extends VisualStim
 		this._pixi.scale.y = -1;
 
 		this._pixi.rotation = this.ori * Math.PI / 180;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
 	}
@@ -290,15 +300,6 @@ export class FaceDetector extends VisualStim
 	_estimateBoundingBox()
 	{
 		// TODO
-
-		/*this._boundingBox = new PIXI.Rectangle(
-			this._pos[0] + this._getLengthUnits(limits_px[0]),
-			this._pos[1] + this._getLengthUnits(limits_px[1]),
-			this._getLengthUnits(limits_px[2] - limits_px[0]),
-			this._getLengthUnits(limits_px[3] - limits_px[1])
-		);*/
-
-		// TODO take the orientation into account
 	}
 
 }
