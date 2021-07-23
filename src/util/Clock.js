@@ -7,7 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
 /**
  * <p>MonotonicClock offers a convenient way to keep track of time during experiments. An experiment can have as many independent clocks as needed, e.g. one to time responses, another one to keep track of stimuli, etc.</p>
  *
@@ -22,7 +21,6 @@ export class MonotonicClock
 		this._timeAtLastReset = startTime;
 	}
 
-
 	/**
 	 * Get the current time on this clock.
 	 *
@@ -36,7 +34,6 @@ export class MonotonicClock
 		return MonotonicClock.getReferenceTime() - this._timeAtLastReset;
 	}
 
-
 	/**
 	 * Get the current offset being applied to the high resolution timebase used by this Clock.
 	 *
@@ -49,7 +46,6 @@ export class MonotonicClock
 	{
 		return this._timeAtLastReset;
 	}
-
 
 	/**
 	 * Get the time elapsed since the reference point.
@@ -65,7 +61,6 @@ export class MonotonicClock
 		// return (new Date().getTime()) / 1000.0 - MonotonicClock._referenceTime;
 	}
 
-
 	/**
 	 * Get the current timestamp with language-sensitive formatting rules applied.
 	 *
@@ -79,18 +74,18 @@ export class MonotonicClock
 	 * @param {object} options - An object with detailed date and time styling information.
 	 * @return {string} The current timestamp in the chosen format.
 	 */
-	static getDate(locales = 'en-CA', optionsMaybe)
+	static getDate(locales = "en-CA", optionsMaybe)
 	{
 		const date = new Date();
 		const options = Object.assign({
 			hour12: false,
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric',
-			fractionalSecondDigits: 3
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "numeric",
+			minute: "numeric",
+			second: "numeric",
+			fractionalSecondDigits: 3,
 		}, optionsMaybe);
 
 		const dateTimeFormat = new Intl.DateTimeFormat(locales, options);
@@ -114,14 +109,13 @@ export class MonotonicClock
 		// yyyy-mm-dd, hh:mm:ss.sss
 		return MonotonicClock.getDate()
 			// yyyy-mm-dd_hh:mm:ss.sss
-			.replace(', ', '_')
+			.replace(", ", "_")
 			// yyyy-mm-dd_hh[h]mm:ss.sss
-			.replace(':', 'h')
+			.replace(":", "h")
 			// yyyy-mm-dd_hh[h]mm.ss.sss
-			.replace(':', '.');
+			.replace(":", ".");
 	}
 }
-
 
 /**
  * The clock's referenceTime is the time when the module was loaded (in seconds).
@@ -134,7 +128,6 @@ export class MonotonicClock
 MonotonicClock._referenceTime = performance.now() / 1000.0;
 
 // MonotonicClock._referenceTime = new Date().getTime() / 1000.0;
-
 
 /**
  * <p>Clock is a MonotonicClock that also offers the possibility of being reset.</p>
@@ -164,7 +157,6 @@ export class Clock extends MonotonicClock
 		this._timeAtLastReset = MonotonicClock.getReferenceTime() + newTime;
 	}
 
-
 	/**
 	 * Add more time to the clock's 'start' time (t0).
 	 *
@@ -181,7 +173,6 @@ export class Clock extends MonotonicClock
 		this._timeAtLastReset += deltaTime;
 	}
 }
-
 
 /**
  * <p>CountdownTimer is a clock counts down from the time of last reset.</p.
@@ -205,7 +196,6 @@ export class CountdownTimer extends Clock
 		}
 	}
 
-
 	/**
 	 * Add more time to the clock's 'start' time (t0).
 	 *
@@ -222,7 +212,6 @@ export class CountdownTimer extends Clock
 		this._timeAtLastReset += deltaTime;
 	}
 
-
 	/**
 	 * Reset the time on the countdown.
 	 *
@@ -234,7 +223,7 @@ export class CountdownTimer extends Clock
 	 */
 	reset(newTime = undefined)
 	{
-		if (typeof newTime == 'undefined')
+		if (typeof newTime == "undefined")
 		{
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + this._countdown_duration;
 		}
@@ -244,7 +233,6 @@ export class CountdownTimer extends Clock
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + newTime;
 		}
 	}
-
 
 	/**
 	 * Get the time currently left on the countdown.
@@ -259,4 +247,3 @@ export class CountdownTimer extends Clock
 		return this._timeAtLastReset - MonotonicClock.getReferenceTime();
 	}
 }
-

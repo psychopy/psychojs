@@ -7,12 +7,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "../core/PsychoJS";
-import * as util from '../util/Util';
-import {ExperimentHandler} from "../data/ExperimentHandler";
-import {AudioClip} from "./AudioClip";
+import { PsychoJS } from "../core/PsychoJS.js";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { Clock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
+import { AudioClip } from "./AudioClip.js";
 
 /**
  * <p>This manager handles the recording of audio signal.</p>
@@ -29,18 +29,17 @@ import {AudioClip} from "./AudioClip";
  */
 export class Microphone extends PsychObject
 {
-
-	constructor({win, name, format, sampleRateHz, clock, autoLog} = {})
+	constructor({ win, name, format, sampleRateHz, clock, autoLog } = {})
 	{
 		super(win._psychoJS);
 
-		this._addAttribute('win', win, undefined);
-		this._addAttribute('name', name, 'microphone');
-		this._addAttribute('format', format, 'audio/webm;codecs=opus', this._onChange);
-		this._addAttribute('sampleRateHz', sampleRateHz, 48000, this._onChange);
-		this._addAttribute('clock', clock, new Clock());
-		this._addAttribute('autoLog', autoLog, false);
-		this._addAttribute('status', PsychoJS.Status.NOT_STARTED);
+		this._addAttribute("win", win, undefined);
+		this._addAttribute("name", name, "microphone");
+		this._addAttribute("format", format, "audio/webm;codecs=opus", this._onChange);
+		this._addAttribute("sampleRateHz", sampleRateHz, 48000, this._onChange);
+		this._addAttribute("clock", clock, new Clock());
+		this._addAttribute("autoLog", autoLog, autoLog);
+		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);
 
 		// prepare the recording:
 		this._prepareRecording();
@@ -50,7 +49,6 @@ export class Microphone extends PsychObject
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
 
 	/**
 	 * Submit a request to start the recording.
@@ -68,19 +66,18 @@ export class Microphone extends PsychObject
 		// with a new recording:
 		if (this._status === PsychoJS.Status.PAUSED)
 		{
-			return this.resume({clear: true});
+			return this.resume({ clear: true });
 		}
-
 
 		if (this._status !== PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to start audio recording');
+			this._psychoJS.logger.debug("request to start audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				this._recorder.start();
@@ -96,20 +93,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				this._psychoJS.logger.error('unable to start the audio recording: ' + JSON.stringify(error));
+				this._psychoJS.logger.error("unable to start the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.start',
-					context: 'when starting the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.start",
+					context: "when starting the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
-
 	}
-
 
 	/**
 	 * Submit a request to stop the recording.
@@ -122,14 +116,14 @@ export class Microphone extends PsychObject
 	 * @return {Promise} promise fulfilled when the recording actually stopped, and the recorded
 	 * 	data was made available
 	 */
-	stop({filename} = {})
+	stop({ filename } = {})
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to stop audio recording');
+			this._psychoJS.logger.debug("request to stop audio recording");
 
 			this._stopOptions = {
-				filename
+				filename,
 			};
 
 			// note: calling the stop method of the MediaRecorder will first raise a dataavailable event,
@@ -148,7 +142,6 @@ export class Microphone extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Submit a request to pause the recording.
 	 *
@@ -160,13 +153,13 @@ export class Microphone extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to pause audio recording');
+			this._psychoJS.logger.debug("request to pause audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				// note: calling the pause method of the MediaRecorder raises a pause event
@@ -182,19 +175,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to pause the audio recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to pause the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.pause',
-					context: 'when pausing the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.pause",
+					context: "when pausing the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
 	}
-
 
 	/**
 	 * Submit a request to resume the recording.
@@ -207,17 +198,17 @@ export class Microphone extends PsychObject
 	 * 	resuming the recording
 	 * @return {Promise} promise fulfilled when the recording actually resumed
 	 */
-	resume({clear = false } = {})
+	resume({ clear = false } = {})
 	{
 		if (this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to resume audio recording');
+			this._psychoJS.logger.debug("request to resume audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				// empty the audio buffer is needed:
@@ -239,19 +230,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to resume the audio recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to resume the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.resume',
-					context: 'when resuming the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.resume",
+					context: "when resuming the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
 	}
-
 
 	/**
 	 * Submit a request to flush the recording.
@@ -264,7 +253,7 @@ export class Microphone extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to flush audio recording');
+			this._psychoJS.logger.debug("request to flush audio recording");
 
 			// note: calling the requestData method of the MediaRecorder will raise a
 			// dataavailable event
@@ -281,7 +270,6 @@ export class Microphone extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Offer the audio recording to the participant as a sound file to download.
 	 *
@@ -290,18 +278,17 @@ export class Microphone extends PsychObject
 	 * @public
 	 * @param {string} filename the filename
 	 */
-	download(filename = 'audio.webm')
+	download(filename = "audio.webm")
 	{
 		const audioBlob = new Blob(this._audioBuffer);
 
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(audioBlob);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
 		anchor.click();
 		document.body.removeChild(anchor);
 	}
-
 
 	/**
 	 * Upload the audio recording to the pavlovia server.
@@ -311,10 +298,10 @@ export class Microphone extends PsychObject
 	 * @public
 	 * @param {string} tag an optional tag for the audio file
 	 */
-	async upload({tag} = {})
+	async upload({ tag } = {})
 	{
 		// default tag: the name of this Microphone object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
@@ -322,12 +309,13 @@ export class Microphone extends PsychObject
 		// add a format-dependent audio extension to the tag:
 		tag += util.extensionFromMimeType(this._format);
 
-
 		// if the audio recording cannot be uploaded, e.g. the experiment is running locally, or
 		// if it is piloting mode, then we offer the audio recording as a file for download:
-		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-			this._psychoJS.config.experiment.status !== 'RUNNING' ||
-			this._psychoJS._serverMsg.has('__pilotToken'))
+		if (
+			this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			|| this._psychoJS.config.experiment.status !== "RUNNING"
+			|| this._psychoJS._serverMsg.has("__pilotToken")
+		)
 		{
 			return this.download(tag);
 		}
@@ -336,7 +324,6 @@ export class Microphone extends PsychObject
 		const audioBlob = new Blob(this._audioBuffer);
 		return this._psychoJS.serverManager.uploadAudio(audioBlob, tag);
 	}
-
 
 	/**
 	 * Get the current audio recording as an AudioClip in the given format.
@@ -347,26 +334,24 @@ export class Microphone extends PsychObject
  	 * @param {string} tag an optional tag for the audio clip
 	 * @param {boolean} [flush=false] whether or not to first flush the recording
 	 */
-	async getRecording({tag, flush = false} = {})
+	async getRecording({ tag, flush = false } = {})
 	{
 		// default tag: the name of this Microphone object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
-
 
 		const audioClip = new AudioClip({
 			psychoJS: this._psychoJS,
 			name: tag,
 			format: this._format,
 			sampleRateHz: this._sampleRateHz,
-			data: new Blob(this._audioBuffer)
+			data: new Blob(this._audioBuffer),
 		});
 
 		return audioClip;
 	}
-
 
 	/**
 	 * Callback for changes to the recording settings.
@@ -389,7 +374,6 @@ export class Microphone extends PsychObject
 		this.start();
 	}
 
-
 	/**
 	 * Prepare the recording.
 	 *
@@ -409,15 +393,15 @@ export class Microphone extends PsychObject
 				advanced: [
 					{
 						channelCount: 1,
-						sampleRate: this._sampleRateHz
-					}
-				]
-			}
+						sampleRate: this._sampleRateHz,
+					},
+				],
+			},
 		});
 
 		// check that the specified format is supported, use default if it is not:
 		let options;
-		if (typeof this._format === 'string' && MediaRecorder.isTypeSupported(this._format))
+		if (typeof this._format === "string" && MediaRecorder.isTypeSupported(this._format))
 		{
 			options = { type: this._format };
 		}
@@ -427,7 +411,6 @@ export class Microphone extends PsychObject
 		}
 
 		this._recorder = new MediaRecorder(stream, options);
-
 
 		// setup the callbacks:
 		const self = this;
@@ -440,7 +423,7 @@ export class Microphone extends PsychObject
 			self._audioBuffer.length = 0;
 			self._clock.reset();
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('audio recording started');
+			self._psychoJS.logger.debug("audio recording started");
 
 			// resolve the Microphone.start promise:
 			if (self._startCallback)
@@ -453,7 +436,7 @@ export class Microphone extends PsychObject
 		this._recorder.onpause = () =>
 		{
 			self._status = PsychoJS.Status.PAUSED;
-			self._psychoJS.logger.debug('audio recording paused');
+			self._psychoJS.logger.debug("audio recording paused");
 
 			// resolve the Microphone.pause promise:
 			if (self._pauseCallback)
@@ -466,7 +449,7 @@ export class Microphone extends PsychObject
 		this._recorder.onresume = () =>
 		{
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('audio recording resumed');
+			self._psychoJS.logger.debug("audio recording resumed");
 
 			// resolve the Microphone.resume promise:
 			if (self._resumeCallback)
@@ -482,7 +465,7 @@ export class Microphone extends PsychObject
 
 			// add data to the buffer:
 			self._audioBuffer.push(data);
-			self._psychoJS.logger.debug('audio data added to the buffer');
+			self._psychoJS.logger.debug("audio data added to the buffer");
 
 			// resolve the data available promise, if needed:
 			if (self._dataAvailableCallback)
@@ -494,7 +477,7 @@ export class Microphone extends PsychObject
 		// called upon Microphone.stop(), after data has been made available:
 		this._recorder.onstop = () =>
 		{
-			self._psychoJS.logger.debug('audio recording stopped');
+			self._psychoJS.logger.debug("audio recording stopped");
 			self._status = PsychoJS.Status.NOT_STARTED;
 
 			// resolve the Microphone.stop promise:
@@ -506,7 +489,7 @@ export class Microphone extends PsychObject
 			// treat stop options if there are any:
 
 			// download to a file, immediately offered to the participant:
-			if (typeof self._stopOptions.filename === 'string')
+			if (typeof self._stopOptions.filename === "string")
 			{
 				self.download(self._stopOptions.filename);
 			}
@@ -516,12 +499,8 @@ export class Microphone extends PsychObject
 		this._recorder.onerror = (event) =>
 		{
 			// TODO
-			self._psychoJS.logger.error('audio recording error: ' + JSON.stringify(event));
+			self._psychoJS.logger.error("audio recording error: " + JSON.stringify(event));
 			self._status = PsychoJS.Status.ERROR;
 		};
-
 	}
-
 }
-
-

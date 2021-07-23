@@ -7,9 +7,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import * as PIXI from 'pixi.js-legacy';
-
-
 /**
  * Syntactic sugar for Mixins
  *
@@ -45,7 +42,6 @@ class MixinBuilder
 	}
 }
 
-
 /**
  * Convert the resulting value of a promise into a tupple.
  *
@@ -59,10 +55,9 @@ class MixinBuilder
 export function promiseToTupple(promise)
 {
 	return promise
-		.then(data => [null, data])
-		.catch(error => [error, null]);
+		.then((data) => [null, data])
+		.catch((error) => [error, null]);
 }
-
 
 /**
  * Get a Universally Unique Identifier (RFC4122 version 4)
@@ -75,13 +70,12 @@ export function promiseToTupple(promise)
  */
 export function makeUuid()
 {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c)
+	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c)
 	{
-		const r = Math.random() * 16 | 0, v = (c === 'x') ? r : (r & 0x3 | 0x8);
+		const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
 		return v.toString(16);
 	});
 }
-
 
 /**
  * Get the error stack of the calling, exception-throwing function.
@@ -95,7 +89,7 @@ export function getErrorStack()
 {
 	try
 	{
-		throw Error('');
+		throw Error("");
 	}
 	catch (error)
 	{
@@ -103,10 +97,9 @@ export function getErrorStack()
 		let stack = error.stack.split("\n");
 		stack.splice(1, 1);
 
-		return JSON.stringify(stack.join('\n'));
+		return JSON.stringify(stack.join("\n"));
 	}
 }
-
 
 /**
  * Test if x is an 'empty' value.
@@ -119,7 +112,7 @@ export function getErrorStack()
  */
 export function isEmpty(x)
 {
-	if (typeof x === 'undefined')
+	if (typeof x === "undefined")
 	{
 		return true;
 	}
@@ -131,14 +124,13 @@ export function isEmpty(x)
 	{
 		return true;
 	}
-	if (x.length === 1 && typeof x[0] === 'undefined')
+	if (x.length === 1 && typeof x[0] === "undefined")
 	{
 		return true;
 	}
 
 	return false;
 }
-
 
 /**
  * Detect the user's browser.
@@ -155,70 +147,69 @@ export function isEmpty(x)
 export function detectBrowser()
 {
 	// Opera 8.0+
-	const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	const isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(" OPR/") >= 0;
 	if (isOpera)
 	{
-		return 'Opera';
+		return "Opera";
 	}
 
 	// Firefox 1.0+
-	const isFirefox = (typeof InstallTrigger !== 'undefined');
+	const isFirefox = (typeof InstallTrigger !== "undefined");
 	if (isFirefox)
 	{
-		return 'Firefox';
+		return "Firefox";
 	}
 
-	// Safari 3.0+ "[object HTMLElementConstructor]" 
-	const isSafari = /constructor/i.test(window.HTMLElement) || (function (p)
+	// Safari 3.0+ "[object HTMLElementConstructor]"
+	const isSafari = /constructor/i.test(window.HTMLElement) || (function(p)
 	{
 		return p.toString() === "[object SafariRemoteNotification]";
-	})(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
+	})(!window["safari"] || (typeof safari !== "undefined" && safari.pushNotification));
 	if (isSafari)
 	{
-		return 'Safari';
+		return "Safari";
 	}
 
 	// Internet Explorer 6-11
 	// const isIE6 = !window.XMLHttpRequest;
 	// const isIE7 = document.all && window.XMLHttpRequest && !XDomainRequest && !window.opera;
 	// const isIE8 = document.documentMode==8;
-	const isIE = /*@cc_on!@*/false || !!document.documentMode;
+	const isIE = /*@cc_on!@*/ false || !!document.documentMode;
 	if (isIE)
 	{
-		return 'IE';
+		return "IE";
 	}
 
 	// Edge 20+
 	const isEdge = !isIE && !!window.StyleMedia;
 	if (isEdge)
 	{
-		return 'Edge';
+		return "Edge";
 	}
 
 	// Chrome 1+
 	const isChrome = window.chrome;
 	if (isChrome)
 	{
-		return 'Chrome';
+		return "Chrome";
 	}
 
 	// Chromium-based Edge:
 	const isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") !== -1);
 	if (isEdgeChromium)
 	{
-		return 'EdgeChromium';
+		return "EdgeChromium";
 	}
 
 	// Blink engine detection
 	const isBlink = (isChrome || isOpera) && !!window.CSS;
 	if (isBlink)
 	{
-		return 'Blink';
+		return "Blink";
 	}
 
-	return 'unknown';
+	return "unknown";
 }
-
 
 /**
  * Convert obj to its numerical form.
@@ -239,24 +230,23 @@ export function detectBrowser()
 export function toNumerical(obj)
 {
 	const response = {
-		origin: 'util.toNumerical',
-		context: 'when converting an object to its numerical form'
+		origin: "util.toNumerical",
+		context: "when converting an object to its numerical form",
 	};
 
 	try
 	{
-
 		if (obj === null)
 		{
-			throw 'unable to convert null to a number';
+			throw "unable to convert null to a number";
 		}
 
-		if (typeof obj === 'undefined')
+		if (typeof obj === "undefined")
 		{
-			throw 'unable to convert undefined to a number';
+			throw "unable to convert undefined to a number";
 		}
 
-		if (typeof obj === 'number')
+		if (typeof obj === "number")
 		{
 			return obj;
 		}
@@ -285,20 +275,32 @@ export function toNumerical(obj)
 			return arrayMaybe.map(convertToNumber);
 		}
 
-		if (typeof obj === 'string')
+		if (typeof obj === "string")
 		{
 			return convertToNumber(obj);
 		}
 
-		throw 'unable to convert the object to a number';
+		throw "unable to convert the object to a number";
 	}
 	catch (error)
 	{
 		throw Object.assign(response, { error });
 	}
-
 }
 
+/**
+ * Check whether a value looks like a number
+ *
+ * @name module:util.isNumeric
+ * @function
+ * @public
+ * @param {*} input - Some value
+ * @return {boolean} Whether or not the value can be converted into a number
+ */
+export function isNumeric(input)
+{
+	return Number.isNaN(Number(input)) === false;
+}
 
 /**
  * Check whether a point lies within a polygon
@@ -331,7 +333,6 @@ export function IsPointInsidePolygon(point, vertices)
 	return isInside;
 }
 
-
 /**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
@@ -345,7 +346,8 @@ export function IsPointInsidePolygon(point, vertices)
  */
 export function shuffle(array, randomNumberGenerator = undefined)
 {
-	if (randomNumberGenerator === undefined) {
+	if (randomNumberGenerator === undefined)
+	{
 		randomNumberGenerator = Math.random;
 	}
 	for (let i = array.length - 1; i > 0; i--)
@@ -355,8 +357,6 @@ export function shuffle(array, randomNumberGenerator = undefined)
 	}
 	return array;
 }
-
-
 
 /**
  * Get the position of the object, in pixel units
@@ -371,21 +371,21 @@ export function shuffle(array, randomNumberGenerator = undefined)
 export function getPositionFromObject(object, units)
 {
 	const response = {
-		origin: 'util.getPositionFromObject',
-		context: 'when getting the position of an object'
+		origin: "util.getPositionFromObject",
+		context: "when getting the position of an object",
 	};
 
 	try
 	{
-		if (typeof object === 'undefined')
+		if (typeof object === "undefined")
 		{
-			throw 'cannot get the position of an undefined object';
+			throw "cannot get the position of an undefined object";
 		}
 
 		let objectWin = undefined;
 
 		// the object has a getPos function:
-		if (typeof object.getPos === 'function')
+		if (typeof object.getPos === "function")
 		{
 			units = object.units;
 			objectWin = object.win;
@@ -397,11 +397,9 @@ export function getPositionFromObject(object, units)
 	}
 	catch (error)
 	{
-		throw Object.assign(response, {error});
+		throw Object.assign(response, { error });
 	}
 }
-
-
 
 /**
  * Convert the position to pixel units.
@@ -418,28 +416,28 @@ export function getPositionFromObject(object, units)
 export function to_px(pos, posUnit, win, integerCoordinates = false)
 {
 	const response = {
-		origin: 'util.to_px',
-		context: 'when converting a position to pixel units'
+		origin: "util.to_px",
+		context: "when converting a position to pixel units",
 	};
 
 	let pos_px;
 
-	if (posUnit === 'pix')
+	if (posUnit === "pix")
 	{
 		pos_px = pos;
 	}
-	else if (posUnit === 'norm')
+	else if (posUnit === "norm")
 	{
 		pos_px = [pos[0] * win.size[0] / 2.0, pos[1] * win.size[1] / 2.0];
 	}
-	else if (posUnit === 'height')
+	else if (posUnit === "height")
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		pos_px = [pos[0] * minSize, pos[1] * minSize];
 	}
 	else
 	{
-		throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+		throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 	}
 
 	if (integerCoordinates)
@@ -451,7 +449,6 @@ export function to_px(pos, posUnit, win, integerCoordinates = false)
 		return pos_px;
 	}
 }
-
 
 /**
  * Convert the position to norm units.
@@ -466,25 +463,24 @@ export function to_px(pos, posUnit, win, integerCoordinates = false)
  */
 export function to_norm(pos, posUnit, win)
 {
-	const response = {origin: 'util.to_norm', context: 'when converting a position to norm units'};
+	const response = { origin: "util.to_norm", context: "when converting a position to norm units" };
 
-	if (posUnit === 'norm')
+	if (posUnit === "norm")
 	{
 		return pos;
 	}
-	if (posUnit === 'pix')
+	if (posUnit === "pix")
 	{
 		return [pos[0] / (win.size[0] / 2.0), pos[1] / (win.size[1] / 2.0)];
 	}
-	if (posUnit === 'height')
+	if (posUnit === "height")
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		return [pos[0] * minSize / (win.size[0] / 2.0), pos[1] * minSize / (win.size[1] / 2.0)];
 	}
 
-	throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
-
 
 /**
  * Convert the position to height units.
@@ -500,28 +496,27 @@ export function to_norm(pos, posUnit, win)
 export function to_height(pos, posUnit, win)
 {
 	const response = {
-		origin: 'util.to_height',
-		context: 'when converting a position to height units'
+		origin: "util.to_height",
+		context: "when converting a position to height units",
 	};
 
-	if (posUnit === 'height')
+	if (posUnit === "height")
 	{
 		return pos;
 	}
-	if (posUnit === 'pix')
+	if (posUnit === "pix")
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		return [pos[0] / minSize, pos[1] / minSize];
 	}
-	if (posUnit === 'norm')
+	if (posUnit === "norm")
 	{
 		const minSize = Math.min(win.size[0], win.size[1]);
 		return [pos[0] * win.size[0] / 2.0 / minSize, pos[1] * win.size[1] / 2.0 / minSize];
 	}
 
-	throw Object.assign(response, {error: `unknown position units: ${posUnit}`});
+	throw Object.assign(response, { error: `unknown position units: ${posUnit}` });
 }
-
 
 /**
  * Convert the position to window units.
@@ -536,19 +531,19 @@ export function to_height(pos, posUnit, win)
  */
 export function to_win(pos, posUnit, win)
 {
-	const response = {origin: 'util.to_win', context: 'when converting a position to window units'};
+	const response = { origin: "util.to_win", context: "when converting a position to window units" };
 
 	try
 	{
-		if (win._units === 'pix')
+		if (win._units === "pix")
 		{
 			return to_px(pos, posUnit, win);
 		}
-		if (win._units === 'norm')
+		if (win._units === "norm")
 		{
 			return to_norm(pos, posUnit, win);
 		}
-		if (win._units === 'height')
+		if (win._units === "height")
 		{
 			return to_height(pos, posUnit, win);
 		}
@@ -557,10 +552,9 @@ export function to_win(pos, posUnit, win)
 	}
 	catch (error)
 	{
-		throw Object.assign(response, {response, error});
+		throw Object.assign(response, { response, error });
 	}
 }
-
 
 /**
  * Convert the position to given units.
@@ -576,19 +570,19 @@ export function to_win(pos, posUnit, win)
  */
 export function to_unit(pos, posUnit, win, targetUnit)
 {
-	const response = {origin: 'util.to_unit', context: 'when converting a position to different units'};
+	const response = { origin: "util.to_unit", context: "when converting a position to different units" };
 
 	try
 	{
-		if (targetUnit === 'pix')
+		if (targetUnit === "pix")
 		{
 			return to_px(pos, posUnit, win);
 		}
-		if (targetUnit === 'norm')
+		if (targetUnit === "norm")
 		{
 			return to_norm(pos, posUnit, win);
 		}
-		if (targetUnit === 'height')
+		if (targetUnit === "height")
 		{
 			return to_height(pos, posUnit, win);
 		}
@@ -597,36 +591,9 @@ export function to_unit(pos, posUnit, win, targetUnit)
 	}
 	catch (error)
 	{
-		throw Object.assign(response, {error});
+		throw Object.assign(response, { error });
 	}
 }
-
-
-/**
- * Convert a position to a PIXI Point.
- *
- * @name module:util.to_pixiPoint
- * @function
- * @public
- * @param {number[]} pos - the input position
- * @param {string} posUnit - the position units
- * @param {Window} win - the associated Window
- * @param {boolean} [integerCoordinates = false] - whether or not to round the PIXI Point coordinates.
- * @returns {number[]} the position as a PIXI Point
- */
-export function to_pixiPoint(pos, posUnit, win, integerCoordinates = false)
-{
-	const pos_px = to_px(pos, posUnit, win);
-	if (integerCoordinates)
-	{
-		return new PIXI.Point(Math.round(pos_px[0]), Math.round(pos_px[1]));
-	}
-	else
-	{
-		return new PIXI.Point(pos_px[0], pos_px[1]);
-	}
-}
-
 
 /**
  * Convert an object to its string representation, taking care of symbols.
@@ -641,23 +608,23 @@ export function to_pixiPoint(pos, posUnit, win, integerCoordinates = false)
  */
 export function toString(object)
 {
-	if (typeof object === 'undefined')
+	if (typeof object === "undefined")
 	{
-		return 'undefined';
+		return "undefined";
 	}
 
 	if (!object)
 	{
-		return 'null';
+		return "null";
 	}
 
-	if (typeof object === 'string')
+	if (typeof object === "string")
 	{
 		return object;
 	}
 
 	// if the object is a class and has a toString method:
-	if (object.constructor.toString().substring(0, 5) === 'class' && typeof object.toString === 'function')
+	if (object.constructor.toString().substring(0, 5) === "class" && typeof object.toString === "function")
 	{
 		return object.toString();
 	}
@@ -666,7 +633,7 @@ export function toString(object)
 	{
 		const symbolReplacer = (key, value) =>
 		{
-			if (typeof value === 'symbol')
+			if (typeof value === "symbol")
 			{
 				value = Symbol.keyFor(value);
 			}
@@ -676,29 +643,27 @@ export function toString(object)
 	}
 	catch (e)
 	{
-		return 'Object (circular)';
+		return "Object (circular)";
 	}
 }
 
-
 if (!String.prototype.format)
 {
-	String.prototype.format = function ()
+	String.prototype.format = function()
 	{
 		var args = arguments;
 		return this
-			.replace(/{(\d+)}/g, function (match, number)
+			.replace(/{(\d+)}/g, function(match, number)
 			{
-				return typeof args[number] != 'undefined' ? args[number] : match;
+				return typeof args[number] != "undefined" ? args[number] : match;
 			})
-			.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function (match, name)
+			.replace(/{([$_a-zA-Z][$_a-zA-Z0-9]*)}/g, function(match, name)
 			{
-				//console.log("n=" + name + " args[0][name]=" + args[0][name]);
+				// console.log("n=" + name + " args[0][name]=" + args[0][name]);
 				return args.length > 0 && args[0][name] !== undefined ? args[0][name] : match;
 			});
 	};
 }
-
 
 /**
  * Get the most informative error from the server response from a jquery server request.
@@ -712,24 +677,23 @@ if (!String.prototype.format)
  */
 export function getRequestError(jqXHR, textStatus, errorThrown)
 {
-	let errorMsg = 'unknown error';
+	let errorMsg = "unknown error";
 
-	if (typeof jqXHR.responseJSON !== 'undefined')
+	if (typeof jqXHR.responseJSON !== "undefined")
 	{
 		errorMsg = jqXHR.responseJSON;
 	}
-	else if (typeof jqXHR.responseText !== 'undefined')
+	else if (typeof jqXHR.responseText !== "undefined")
 	{
 		errorMsg = jqXHR.responseText;
 	}
-	else if (typeof errorThrown !== 'undefined')
+	else if (typeof errorThrown !== "undefined")
 	{
 		errorMsg = errorThrown;
 	}
 
 	return errorMsg;
 }
-
 
 /**
  * Test whether an object is either an integer or the string representation of an integer.
@@ -751,7 +715,6 @@ export function isInt(obj)
 	const x = parseFloat(obj);
 	return (x | 0) === x;
 }
-
 
 /**
  * Get the URL parameters.
@@ -779,7 +742,6 @@ export function getUrlParameters()
 	return urlMap;*/
 }
 
-
 /**
  * Add info extracted from the URL to the given dictionary.
  *
@@ -800,7 +762,7 @@ export function addInfoFromUrl(info)
 	// for (const [key, value] of infoFromUrl)
 	infoFromUrl.forEach((value, key) =>
 	{
-		if (key.indexOf('__') !== 0)
+		if (key.indexOf("__") !== 0)
 		{
 			info[key] = value;
 		}
@@ -808,7 +770,6 @@ export function addInfoFromUrl(info)
 
 	return info;
 }
-
 
 /**
  * Select values from an array.
@@ -832,28 +793,30 @@ export function addInfoFromUrl(info)
  */
 export function selectFromArray(array, selection)
 {
-
 	// if selection is an integer, or a string representing an integer, we treat it as an index in the array
 	// and return that entry:
 	if (isInt(selection))
 	{
 		return [array[parseInt(selection)]];
-	}// if selection is an array, we treat it as a list of indices
+	}
+	// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
 	{
 		// Pick out `array` items matching indices contained in `selection` in order
-		return selection.map(i => array[i]);
-	}// if selection is a string, we decode it:
-	else if (typeof selection === 'string')
+		return selection.map((i) => array[i]);
+	}
+	// if selection is a string, we decode it:
+	else if (typeof selection === "string")
 	{
-		if (selection.indexOf(',') > -1)
+		if (selection.indexOf(",") > -1)
 		{
-			return selection.split(',').map(a => selectFromArray(array, a));
-		}// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
-		else if (selection.indexOf(':') > -1)
+			return selection.split(",").map((a) => selectFromArray(array, a));
+		}
+		// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
+		else if (selection.indexOf(":") > -1)
 		{
-			let sliceParams = selection.split(':').map(a => parseInt(a));
+			let sliceParams = selection.split(":").map((a) => parseInt(a));
 			if (sliceParams.length === 3)
 			{
 				return sliceArray(array, sliceParams[0], sliceParams[2], sliceParams[1]);
@@ -864,17 +827,15 @@ export function selectFromArray(array, selection)
 			}
 		}
 	}
-
 	else
 	{
 		throw {
-			origin: 'selectFromArray',
-			context: 'when selecting entries from an array',
-			error: 'unknown selection type: ' + (typeof selection)
+			origin: "selectFromArray",
+			context: "when selecting entries from an array",
+			error: "unknown selection type: " + (typeof selection),
 		};
 	}
 }
-
 
 /**
  * Recursively flatten an array of arrays.
@@ -893,10 +854,9 @@ export function flattenArray(array)
 			flat.push((Array.isArray(next) && Array.isArray(next[0])) ? flattenArray(next) : next);
 			return flat;
 		},
-		[]
+		[],
 	);
 }
-
 
 /**
  * Slice an array.
@@ -944,7 +904,6 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 	}
 }
 
-
 /**
  * Offer data as download in the browser.
  *
@@ -957,14 +916,14 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
  */
 export function offerDataForDownload(filename, data, type)
 {
-	const blob = new Blob([data], {type});
+	const blob = new Blob([data], { type });
 	if (window.navigator.msSaveOrOpenBlob)
 	{
 		window.navigator.msSaveBlob(blob, filename);
 	}
 	else
 	{
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(blob);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
@@ -972,7 +931,6 @@ export function offerDataForDownload(filename, data, type)
 		document.body.removeChild(anchor);
 	}
 }
-
 
 /**
  * Convert a string representing a JSON array, e.g. "[1, 2]" into an array, e.g. ["1","2"].
@@ -1007,14 +965,13 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 
 	// Reformat content for each match
 	const matches = matchesMaybe.map((data) =>
-		{
-			return data
-				// Remove the square brackets
-				.replace(/[\[\]]+/g, '')
-				// Eat up space after comma
-				.split(/[, ]+/);
-		}
-	);
+	{
+		return data
+			// Remove the square brackets
+			.replace(/[\[\]]+/g, "")
+			// Eat up space after comma
+			.split(/[, ]+/);
+	});
 
 	if (max < 2)
 	{
@@ -1023,7 +980,6 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 
 	return matches;
 }
-
 
 /**
  * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
@@ -1040,7 +996,7 @@ export function randint(min = 0, max)
 	let lo = min;
 	let hi = max;
 
-	if (typeof max === 'undefined')
+	if (typeof max === "undefined")
 	{
 		hi = lo;
 		lo = 0;
@@ -1049,15 +1005,14 @@ export function randint(min = 0, max)
 	if (hi < lo)
 	{
 		throw {
-			origin: 'util.randint',
-			context: 'when generating a random integer',
-			error: 'min should be <= max'
+			origin: "util.randint",
+			context: "when generating a random integer",
+			error: "min should be <= max",
 		};
 	}
 
 	return Math.floor(Math.random() * (hi - lo)) + lo;
 }
-
 
 /**
  * Round to a certain number of decimal places.
@@ -1076,7 +1031,6 @@ export function round(input, places = 0)
 {
 	return +(Math.round(`${input}e+${places}`) + `e-${places}`);
 }
-
 
 /**
  * Calculate the sum of the elements in the input array.
@@ -1101,13 +1055,12 @@ export function sum(input = [], start = 0)
 
 	return input
 		// type cast everything as a number
-		.map(value => Number(value))
+		.map((value) => Number(value))
 		// drop non numeric looking entries (note: needs transpiling for IE11)
-		.filter(value => Number.isNaN(value) === false)
+		.filter((value) => Number.isNaN(value) === false)
 		// add up each successive entry, starting with start
 		.reduce(add, start);
 }
-
 
 /**
  * Calculate the average of the elements in the input array.
@@ -1135,10 +1088,9 @@ export function average(input = [])
 	return sum(input, 0) / input.length;
 }
 
-
 /**
  * Sort the elements of the input array, in increasing alphabetical or numerical order.
- * 
+ *
  * @name module:util.sort
  * @function
  * @public
@@ -1150,44 +1102,43 @@ export function average(input = [])
 export function sort(input)
 {
 	const response = {
-		origin: 'util.sort',
-		context: 'when sorting the elements of an array'
+		origin: "util.sort",
+		context: "when sorting the elements of an array",
 	};
 
 	try
 	{
 		if (!Array.isArray(input))
 		{
-			throw 'the input argument should be an array';
+			throw "the input argument should be an array";
 		}
 
 		// check the type and consistency of the array, and sort it accordingly:
-		const isNumberArray = input.every(element => typeof element === "number");
+		const isNumberArray = input.every((element) => typeof element === "number");
 		if (isNumberArray)
 		{
 			return input.sort((a, b) => (a - b));
 		}
 
-		const isStringArray = input.every(element => typeof element === "string");
+		const isStringArray = input.every((element) => typeof element === "string");
 		if (isStringArray)
 		{
 			return input.sort();
 		}
-		
-		throw 'the input array should either consist entirely of strings or of numbers';
+
+		throw "the input array should either consist entirely of strings or of numbers";
 	}
 	catch (error)
 	{
-		throw {...response, error};
-	}	
- }
- 
- 
+		throw { ...response, error };
+	}
+}
+
 /**
  * Create a sequence of integers.
- * 
+ *
  * The sequence is such that the integer at index i is: start + step * i, with i >= 0 and start + step * i < stop
- * 
+ *
  * <p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.</p>
  *
  * @name module:util.range
@@ -1201,8 +1152,8 @@ export function sort(input)
 export function range(...args)
 {
 	const response = {
-		origin: 'util.range',
-		context: 'when building a range of numbers'
+		origin: "util.range",
+		context: "when building a range of numbers",
 	};
 
 	try
@@ -1212,9 +1163,10 @@ export function range(...args)
 		switch (args.length)
 		{
 			case 0:
-				throw 'at least one argument is required';
+				throw "at least one argument is required";
 
 			// 1 arg: start = 0, stop = arg, step = 1
+
 			case 1:
 				start = 0;
 				stop = args[0];
@@ -1222,6 +1174,7 @@ export function range(...args)
 				break;
 
 			// 2 args: start = arg1, stop = arg2
+
 			case 2:
 				start = args[0];
 				stop = args[1];
@@ -1229,6 +1182,7 @@ export function range(...args)
 				break;
 
 			// 3 args:
+
 			case 3:
 				start = args[0];
 				stop = args[1];
@@ -1236,17 +1190,20 @@ export function range(...args)
 				break;
 
 			default:
-				throw 'range requires at least one and at most 3 arguments'
+				throw "range requires at least one and at most 3 arguments";
 		}
 
-		if (!Number.isInteger(start)) {
-			throw 'start should be an integer';
+		if (!Number.isInteger(start))
+		{
+			throw "start should be an integer";
 		}
-		if (!Number.isInteger(stop)) {
-			throw 'stop should be an integer';
+		if (!Number.isInteger(stop))
+		{
+			throw "stop should be an integer";
 		}
-		if (!Number.isInteger(step)) {
-			throw 'step should be an integer';
+		if (!Number.isInteger(step))
+		{
+			throw "step should be an integer";
 		}
 
 		// if start >= stop, the range is empty:
@@ -1264,14 +1221,13 @@ export function range(...args)
 	}
 	catch (error)
 	{
-		throw {...response, error};
+		throw { ...response, error };
 	}
 }
 
-
 /**
  * Create a boolean function that compares an input element to the given value.
- * 
+ *
  * @name module:util._match
  * @function
  * @private
@@ -1281,16 +1237,16 @@ export function range(...args)
 function _match(value)
 {
 	const response = {
-		origin: 'util._match',
-		context: 'when creating a function that compares an input element to the given value'
+		origin: "util._match",
+		context: "when creating a function that compares an input element to the given value",
 	};
 
 	try
 	{
 		// function:
-		if (typeof value === 'function')
+		if (typeof value === "function")
 		{
-			throw 'the value cannot be a function';
+			throw "the value cannot be a function";
 		}
 
 		// NaN:
@@ -1306,19 +1262,19 @@ function _match(value)
 		}
 
 		// object: we compare using JSON.stringify
-		if (typeof value === 'object')
+		if (typeof value === "object")
 		{
 			const jsonValue = JSON.stringify(value);
-			if (typeof jsonValue === 'undefined')
+			if (typeof jsonValue === "undefined")
 			{
-				throw 'value could not be converted to a JSON string';
+				throw "value could not be converted to a JSON string";
 			}
 
 			return (element) =>
 			{
 				const jsonElement = JSON.stringify(element);
 				return (jsonElement === jsonValue);
-			}
+			};
 		}
 
 		// everything else:
@@ -1326,16 +1282,15 @@ function _match(value)
 	}
 	catch (error)
 	{
-		throw {...response, error};
-	}	
- }
- 
+		throw { ...response, error };
+	}
+}
 
- /**
+/**
   * Count the number of elements in the input array that match the given value.
-  * 
+  *
   * <p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
-  * 
+  *
   * @name module:util.count
   * @function
   * @public
@@ -1343,44 +1298,43 @@ function _match(value)
   * @param {Number|string|object|null} value the matching value
   * @returns the number of matching elements
   */
- export function count(input, value)
- {
+export function count(input, value)
+{
 	const response = {
-		origin: 'util.count',
-		context: 'when counting how many elements in the input array match the given value'
+		origin: "util.count",
+		context: "when counting how many elements in the input array match the given value",
 	};
 
 	try
 	{
 		if (!Array.isArray(input))
 		{
-			throw 'the input argument should be an array';
+			throw "the input argument should be an array";
 		}
 
 		const match = _match(value);
 
 		let nbMatches = 0;
-		input.forEach(element =>
+		input.forEach((element) =>
+		{
+			if (match(element))
 			{
-				if (match(element))
-				{
-					++ nbMatches;
-				}
-			});
+				++nbMatches;
+			}
+		});
 		return nbMatches;
 	}
 	catch (error)
 	{
-		throw {...response, error};
+		throw { ...response, error };
 	}
- }
- 
+}
 
-  /**
+/**
   * Get the index in the input array of the first element that matches the given value.
-  * 
+  *
   * <p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
-  * 
+  *
   * @name module:util.index
   * @function
   * @public
@@ -1389,18 +1343,18 @@ function _match(value)
   * @returns the index of the first element that matches the value
   * @throws if the input array does not contain any matching element
   */
- export function index(input, value)
- {
+export function index(input, value)
+{
 	const response = {
-		origin: 'util.index',
-		context: 'when getting the index in the input array of the first element that matches the given value'
+		origin: "util.index",
+		context: "when getting the index in the input array of the first element that matches the given value",
 	};
 
 	try
 	{
 		if (!Array.isArray(input))
 		{
-			throw 'the input argument should be an array';
+			throw "the input argument should be an array";
 		}
 
 		const match = _match(value);
@@ -1408,18 +1362,16 @@ function _match(value)
 
 		if (index === -1)
 		{
-			throw 'no element in the input array matches the value';
+			throw "no element in the input array matches the value";
 		}
 
 		return index;
-
 	}
 	catch (error)
 	{
-		throw {...response, error};
+		throw { ...response, error };
 	}
- }
-
+}
 
 /**
  * Return the file extension corresponding to an audio mime type.
@@ -1434,25 +1386,25 @@ function _match(value)
  */
 export function extensionFromMimeType(mimeType)
 {
-	if (typeof mimeType !== 'string')
+	if (typeof mimeType !== "string")
 	{
-		return '.dat';
+		return ".dat";
 	}
 
-	if (mimeType.indexOf('audio/webm') === 0)
+	if (mimeType.indexOf("audio/webm") === 0)
 	{
-		return '.webm';
+		return ".webm";
 	}
 
-	if (mimeType.indexOf('audio/ogg') === 0)
+	if (mimeType.indexOf("audio/ogg") === 0)
 	{
-		return '.ogg';
+		return ".ogg";
 	}
 
-	if (mimeType.indexOf('audio/wav') === 0)
+	if (mimeType.indexOf("audio/wav") === 0)
 	{
-		return '.wav';
+		return ".wav";
 	}
 
-	return '.dat';
+	return ".dat";
 }

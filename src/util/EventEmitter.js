@@ -7,9 +7,7 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as util from './Util';
-
+import * as util from "./Util.js";
 
 /**
  * <p>EventEmitter implements the classic observer/observable pattern.</p>
@@ -34,14 +32,12 @@ export class EventEmitter
 		this._onceUuids = new Map();
 	}
 
-
 	/**
 	 * Listener called when this instance emits an event for which it is registered.
 	 *
 	 * @callback module:util.EventEmitter~Listener
 	 * @param {object} data - the data passed to the listener
 	 */
-
 
 	/**
 	 * Register a new listener for events with the given name emitted by this instance.
@@ -56,9 +52,9 @@ export class EventEmitter
 	on(name, listener)
 	{
 		// check that the listener is a function:
-		if (typeof listener !== 'function')
+		if (typeof listener !== "function")
 		{
-			throw new TypeError('listener must be a function');
+			throw new TypeError("listener must be a function");
 		}
 
 		// generate a new uuid:
@@ -69,11 +65,10 @@ export class EventEmitter
 		{
 			this._listeners.set(name, []);
 		}
-		this._listeners.get(name).push({uuid, listener});
+		this._listeners.get(name).push({ uuid, listener });
 
 		return uuid;
 	}
-
 
 	/**
 	 * Register a new listener for the given event name, and remove it as soon as the event has been emitted.
@@ -98,7 +93,6 @@ export class EventEmitter
 		return uuid;
 	}
 
-
 	/**
 	 * Remove the listener with the given uuid associated to the given event name.
 	 *
@@ -114,12 +108,11 @@ export class EventEmitter
 
 		if (relevantUuidListeners && relevantUuidListeners.length)
 		{
-			this._listeners.set(name, relevantUuidListeners.filter(uuidlistener => (uuidlistener.uuid != uuid)));
+			this._listeners.set(name, relevantUuidListeners.filter((uuidlistener) => (uuidlistener.uuid != uuid)));
 			return true;
 		}
 		return false;
 	}
-
 
 	/**
 	 * Emit an event with a given name and associated data.
@@ -138,11 +131,11 @@ export class EventEmitter
 		{
 			let onceUuids = this._onceUuids.get(name);
 			let self = this;
-			relevantUuidListeners.forEach(({uuid, listener}) =>
+			relevantUuidListeners.forEach(({ uuid, listener }) =>
 			{
 				listener(data);
 
-				if (typeof onceUuids !== 'undefined' && onceUuids.includes(uuid))
+				if (typeof onceUuids !== "undefined" && onceUuids.includes(uuid))
 				{
 					self.off(name, uuid);
 				}
@@ -152,6 +145,4 @@ export class EventEmitter
 
 		return false;
 	}
-
-
 }

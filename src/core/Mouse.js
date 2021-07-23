@@ -8,10 +8,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychoJS} from './PsychoJS';
-import {PsychObject} from '../util/PsychObject';
-import * as util from '../util/Util';
-
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * <p>This manager handles the interactions between the experiment's stimuli and the mouse.</p>
@@ -29,12 +28,11 @@ import * as util from '../util/Util';
  */
 export class Mouse extends PsychObject
 {
-
 	constructor({
-								name,
-								win,
-								autoLog = true
-							} = {})
+		name,
+		win,
+		autoLog = true,
+	} = {})
 	{
 		super(win._psychoJS, name);
 
@@ -45,14 +43,13 @@ export class Mouse extends PsychObject
 
 		const units = win.units;
 		const visible = 1;
-		this._addAttribute('win', win);
-		this._addAttribute('units', units);
-		this._addAttribute('visible', visible);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("win", win);
+		this._addAttribute("units", units);
+		this._addAttribute("visible", visible);
+		this._addAttribute("autoLog", autoLog);
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
-
 
 	/**
 	 * Get the current position of the mouse in mouse/Window units.
@@ -73,11 +70,10 @@ export class Mouse extends PsychObject
 		pos_px[1] = this.win.size[1] / 2 - pos_px[1];
 
 		// convert to window units:
-		this._lastPos = util.to_win(pos_px, 'pix', this._win);
+		this._lastPos = util.to_win(pos_px, "pix", this._win);
 
 		return this._lastPos;
 	}
-
 
 	/**
 	 * Get the position of the mouse relative to that at the last call to getRel
@@ -90,7 +86,7 @@ export class Mouse extends PsychObject
 	 */
 	getRel()
 	{
-		if (typeof this._lastPos === 'undefined')
+		if (typeof this._lastPos === "undefined")
 		{
 			return this.getPos();
 		}
@@ -102,7 +98,6 @@ export class Mouse extends PsychObject
 			return [-lastPos[0] + pos[0], -lastPos[1] + pos[1]];
 		}
 	}
-
 
 	/**
 	 * Get the travel of the mouse scroll wheel since the last call to getWheelRel.
@@ -121,12 +116,11 @@ export class Mouse extends PsychObject
 		const wheelRel_px = mouseInfo.wheelRel.slice();
 
 		// convert to window units:
-		const wheelRel = util.to_win(wheelRel_px, 'pix', this._win);
+		const wheelRel = util.to_win(wheelRel_px, "pix", this._win);
 
 		mouseInfo.wheelRel = [0, 0];
 		return wheelRel;
 	}
-
 
 	/**
 	 * Get the status of each button (pressed or released) and, optionally, the time elapsed between  the last call to [clickReset]{@link module:core.Mouse#clickReset} and the pressing or releasing of the buttons.
@@ -153,7 +147,6 @@ export class Mouse extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Helper method for checking whether a stimulus has had any button presses within bounds.
 	 *
@@ -170,14 +163,14 @@ export class Mouse extends PsychObject
 	isPressedIn(...args)
 	{
 		// Look for options given in object literal form, cut out falsy inputs
-		const [{ shape: shapeMaybe, buttons: buttonsMaybe } = {}] = args.filter(v => !!v);
+		const [{ shape: shapeMaybe, buttons: buttonsMaybe } = {}] = args.filter((v) => !!v);
 
 		// Helper to check if some object features a certain key
-		const hasKey = key => object => !!(object && object[key]);
+		const hasKey = (key) => (object) => !!(object && object[key]);
 
 		// Shapes are expected to be instances of stimuli, or at
 		// the very least objects featuring a `contains()` method
-		const isShape = hasKey('contains');
+		const isShape = hasKey("contains");
 
 		// Go through arguments array looking for a shape if options object offers none
 		const shapeFound = isShape(shapeMaybe) ? shapeMaybe : args.find(isShape);
@@ -187,30 +180,29 @@ export class Mouse extends PsychObject
 		// Buttons values may be extracted from an object
 		// featuring the `buttons` key, or found as integers
 		// in the arguments array
-		const hasButtons = hasKey('buttons');
+		const hasButtons = hasKey("buttons");
 		const { isInteger } = Number;
 		// Prioritize buttons value given as part of an options object,
 		// then look for the first occurrence in the arguments array of either
 		// an integer or an extra object with a `buttons` key
-		const buttonsFound = isInteger(buttonsMaybe) ? buttonsMaybe : args.find(o => hasButtons(o) || isInteger(o));
+		const buttonsFound = isInteger(buttonsMaybe) ? buttonsMaybe : args.find((o) => hasButtons(o) || isInteger(o));
 		// Worst case scenario `wanted` ends up being an empty object
 		const { buttons: wanted = buttonsFound || buttonsMaybe } = buttonsFound || {};
 
 		// Will throw if stimulus is falsy or non-object like
-		if (typeof shape.contains === 'function')
+		if (typeof shape.contains === "function")
 		{
 			const mouseInfo = this.psychoJS.eventManager.getMouseInfo();
 			const { pressed } = mouseInfo.buttons;
 
 			// If no specific button wanted, any pressed will do
-			const hasButtonPressed = isInteger(wanted) ? pressed[wanted] > 0 : pressed.some(v => v > 0);
+			const hasButtonPressed = isInteger(wanted) ? pressed[wanted] > 0 : pressed.some((v) => v > 0);
 
 			return hasButtonPressed && shape.contains(this);
 		}
 
 		return false;
 	}
-
 
 	/**
 	 * Determine whether the mouse has moved beyond a certain distance.
@@ -240,24 +232,26 @@ export class Mouse extends PsychObject
 	mouseMoved(distance, reset = false)
 	{
 		// make sure that _lastPos is defined:
-		if (typeof this._lastPos === 'undefined')
+		if (typeof this._lastPos === "undefined")
 		{
 			this.getPos();
 		}
 		this._prevPos = this._lastPos.slice();
 		this.getPos();
 
-		if (typeof reset === 'boolean' && reset == false)
+		if (typeof reset === "boolean" && reset == false)
 		{
-			if (typeof distance === 'undefined')
+			if (typeof distance === "undefined")
 			{
 				return (this._prevPos[0] != this._lastPos[0]) || (this._prevPos[1] != this._lastPos[1]);
 			}
 			else
 			{
-				if (typeof distance === 'number')
+				if (typeof distance === "number")
 				{
-					this._movedistance = Math.sqrt((this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]));
+					this._movedistance = Math.sqrt(
+						(this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]),
+					);
 					return (this._movedistance > distance);
 				}
 				if (this._prevPos[0] + distance[0] - this._lastPos[0] > 0.0)
@@ -271,21 +265,18 @@ export class Mouse extends PsychObject
 				return false;
 			}
 		}
-
-		else if (typeof reset === 'boolean' && reset == true)
+		else if (typeof reset === "boolean" && reset == true)
 		{
 			// reset the moveClock:
 			this.psychoJS.eventManager.getMouseInfo().moveClock.reset();
 			return false;
 		}
-
-		else if (reset === 'here')
+		else if (reset === "here")
 		{
 			// set to wherever we are
 			this._prevPos = this._lastPos.clone();
 			return false;
 		}
-
 		else if (reset instanceof Array)
 		{
 			// an (x,y) array
@@ -294,35 +285,36 @@ export class Mouse extends PsychObject
 			if (!distance)
 			{
 				return false;
-			}// just resetting prevPos, not checking distance
+			}
+			// just resetting prevPos, not checking distance
 			else
 			{
 				// checking distance of current pos to newly reset prevposition
-				if (typeof distance === 'number')
+				if (typeof distance === "number")
 				{
-					this._movedistance = Math.sqrt((this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]));
+					this._movedistance = Math.sqrt(
+						(this._prevPos[0] - this._lastPos[0]) * (this._prevPos[0] - this._lastPos[0]) + (this._prevPos[1] - this._lastPos[1]) * (this._prevPos[1] - this._lastPos[1]),
+					);
 					return (this._movedistance > distance);
 				}
 
 				if (Math.abs(this._lastPos[0] - this._prevPos[0]) > distance[0])
 				{
 					return true;
-				}  // moved on X-axis
+				} // moved on X-axis
 				if (Math.abs(this._lastPos[1] - this._prevPos[1]) > distance[1])
 				{
 					return true;
-				}  // moved on Y-axis
+				} // moved on Y-axis
 
 				return false;
 			}
 		}
-
 		else
 		{
 			return false;
 		}
 	}
-
 
 	/**
 	 * Get the amount of time elapsed since the last mouse movement.
@@ -336,7 +328,6 @@ export class Mouse extends PsychObject
 	{
 		return this.psychoJS.eventManager.getMouseInfo().moveClock.getTime();
 	}
-
 
 	/**
 	 * Reset the clocks associated to the given mouse buttons.
@@ -355,7 +346,4 @@ export class Mouse extends PsychObject
 			mouseInfo.buttons.times[b] = 0.0;
 		}
 	}
-
-
 }
-

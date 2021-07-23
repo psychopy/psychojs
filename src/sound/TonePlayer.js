@@ -7,9 +7,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import * as Tone from 'tone';
-import {SoundPlayer} from './SoundPlayer';
-
+import * as Tone from "tone";
+import { isNumeric } from "../util/Util.js";
+import { SoundPlayer } from "./SoundPlayer.js";
 
 /**
  * <p>This class handles the playing of tones.</p>
@@ -27,23 +27,23 @@ import {SoundPlayer} from './SoundPlayer';
 export class TonePlayer extends SoundPlayer
 {
 	constructor({
-								psychoJS,
-								note = 'C4',
-								duration_s = 0.5,
-								volume = 1.0,
-								loops = 0,
-								soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
-								autoLog = true
-							} = {})
+		psychoJS,
+		note = "C4",
+		duration_s = 0.5,
+		volume = 1.0,
+		loops = 0,
+		soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('note', note);
-		this._addAttribute('duration_s', duration_s);
-		this._addAttribute('volume', volume);
-		this._addAttribute('loops', loops);
-		this._addAttribute('soundLibrary', soundLibrary);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("note", note);
+		this._addAttribute("duration_s", duration_s);
+		this._addAttribute("volume", volume);
+		this._addAttribute("loops", loops);
+		this._addAttribute("soundLibrary", soundLibrary);
+		this._addAttribute("autoLog", autoLog);
 
 		// initialise the sound library:
 		this._initSoundLibrary();
@@ -56,7 +56,6 @@ export class TonePlayer extends SoundPlayer
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
 
 	/**
 	 * Determine whether this player can play the given sound.
@@ -74,39 +73,39 @@ export class TonePlayer extends SoundPlayer
 	static accept(sound)
 	{
 		// if the sound's value is an integer, we interpret it as a frequency:
-		if ($.isNumeric(sound.value))
+		if (isNumeric(sound.value))
 		{
 			return new TonePlayer({
 				psychoJS: sound.psychoJS,
 				note: sound.value,
 				duration_s: sound.secs,
 				volume: sound.volume,
-				loops: sound.loops
+				loops: sound.loops,
 			});
 		}
 
 		// if the sound's value is a string, we check whether it is a note:
-		if (typeof sound.value === 'string')
+		if (typeof sound.value === "string")
 		{
 			// mapping between the PsychoPY notes and the standard ones:
 			let psychopyToToneMap = new Map();
-			for (const note of ['A', 'B', 'C', 'D', 'E', 'F', 'G'])
+			for (const note of ["A", "B", "C", "D", "E", "F", "G"])
 			{
 				psychopyToToneMap.set(note, note);
-				psychopyToToneMap.set(note + 'fl', note + 'b');
-				psychopyToToneMap.set(note + 'sh', note + '#');
+				psychopyToToneMap.set(note + "fl", note + "b");
+				psychopyToToneMap.set(note + "sh", note + "#");
 			}
 
 			// check whether the sound's value is a recognised note:
 			const note = psychopyToToneMap.get(sound.value);
-			if (typeof note !== 'undefined')
+			if (typeof note !== "undefined")
 			{
 				return new TonePlayer({
 					psychoJS: sound.psychoJS,
 					note: note + sound.octave,
 					duration_s: sound.secs,
 					volume: sound.volume,
-					loops: sound.loops
+					loops: sound.loops,
 				});
 			}
 		}
@@ -114,7 +113,6 @@ export class TonePlayer extends SoundPlayer
 		// TonePlayer is not an appropriate player for the given sound:
 		return undefined;
 	}
-
 
 	/**
 	 * Get the duration of the sound.
@@ -129,7 +127,6 @@ export class TonePlayer extends SoundPlayer
 		return this.duration_s;
 	}
 
-
 	/**
 	 * Set the duration of the tone.
 	 *
@@ -143,7 +140,6 @@ export class TonePlayer extends SoundPlayer
 		this.duration_s = duration_s;
 	}
 
-
 	/**
 	 * Set the number of loops.
 	 *
@@ -156,7 +152,6 @@ export class TonePlayer extends SoundPlayer
 	{
 		this._loops = loops;
 	}
-
 
 	/**
 	 * Set the volume of the tone.
@@ -173,7 +168,7 @@ export class TonePlayer extends SoundPlayer
 
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
-			if (typeof this._volumeNode !== 'undefined')
+			if (typeof this._volumeNode !== "undefined")
 			{
 				this._volumeNode.mute = mute;
 				this._volumeNode.volume.value = -60 + volume * 66;
@@ -190,7 +185,6 @@ export class TonePlayer extends SoundPlayer
 		}
 	}
 
-
 	/**
 	 * Start playing the sound.
 	 *
@@ -201,7 +195,7 @@ export class TonePlayer extends SoundPlayer
 	 */
 	play(loops)
 	{
-		if (typeof loops !== 'undefined')
+		if (typeof loops !== "undefined")
 		{
 			this._loops = loops;
 		}
@@ -222,7 +216,7 @@ export class TonePlayer extends SoundPlayer
 			playToneCallback = () =>
 			{
 				self._webAudioOscillator = self._audioContext.createOscillator();
-				self._webAudioOscillator.type = 'sine';
+				self._webAudioOscillator.type = "sine";
 				self._webAudioOscillator.frequency.value = 440;
 				self._webAudioOscillator.connect(self._audioContext.destination);
 				const contextCurrentTime = self._audioContext.currentTime;
@@ -236,7 +230,6 @@ export class TonePlayer extends SoundPlayer
 		{
 			playToneCallback();
 		}
-
 		// repeat forever:
 		else if (this.loops === -1)
 		{
@@ -244,21 +237,20 @@ export class TonePlayer extends SoundPlayer
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				Infinity
+				Infinity,
 			);
 		}
-		else
 		// repeat this._loops times:
+		else
 		{
 			this._toneId = Tone.Transport.scheduleRepeat(
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				this.duration_s * (this._loops + 1)
+				this.duration_s * (this._loops + 1),
 			);
 		}
 	}
-
 
 	/**
 	 * Stop playing the sound immediately.
@@ -287,7 +279,6 @@ export class TonePlayer extends SoundPlayer
 		}
 	}
 
-
 	/**
 	 * Initialise the sound library.
 	 *
@@ -301,24 +292,24 @@ export class TonePlayer extends SoundPlayer
 	_initSoundLibrary()
 	{
 		const response = {
-			origin: 'TonePlayer._initSoundLibrary',
-			context: 'when initialising the sound library'
+			origin: "TonePlayer._initSoundLibrary",
+			context: "when initialising the sound library",
 		};
 
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			// check that Tone.js is available:
-			if (typeof Tone === 'undefined')
+			if (typeof Tone === "undefined")
 			{
 				throw Object.assign(response, {
-					error: "Tone.js is not available. A different sound library must be selected. Please contact the experiment designer."
+					error: "Tone.js is not available. A different sound library must be selected. Please contact the experiment designer.",
 				});
 			}
 
 			// start the Tone Transport if it has not started already:
-			if (typeof Tone !== 'undefined' && Tone.Transport.state !== 'started')
+			if (typeof Tone !== "undefined" && Tone.Transport.state !== "started")
 			{
-				this.psychoJS.logger.info('[PsychoJS] start Tone Transport');
+				this.psychoJS.logger.info("[PsychoJS] start Tone Transport");
 				Tone.Transport.start(Tone.now());
 
 				// this is necessary to prevent Tone from introducing a delay when triggering a note
@@ -329,14 +320,14 @@ export class TonePlayer extends SoundPlayer
 			// create a synth: we use a triangular oscillator with hardly any envelope:
 			this._synthOtions = {
 				oscillator: {
-					type: 'square' //'triangle'
+					type: "square", // 'triangle'
 				},
 				envelope: {
 					attack: 0.001, // 1ms
-					decay: 0.001,  // 1ms
+					decay: 0.001, // 1ms
 					sustain: 1,
-					release: 0.001 // 1ms
-				}
+					release: 0.001, // 1ms
+				},
 			};
 			this._synth = new Tone.Synth(this._synthOtions);
 
@@ -345,7 +336,7 @@ export class TonePlayer extends SoundPlayer
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
-			if (typeof this._volumeNode.toDestination === 'function')
+			if (typeof this._volumeNode.toDestination === "function")
 			{
 				this._volumeNode.toDestination();
 			}
@@ -357,15 +348,15 @@ export class TonePlayer extends SoundPlayer
 		else
 		{
 			// create an AudioContext:
-			if (typeof this._audioContext === 'undefined')
+			if (typeof this._audioContext === "undefined")
 			{
 				const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 				// if AudioContext is not available (e.g. on IE), we throw an exception:
-				if (typeof AudioContext === 'undefined')
+				if (typeof AudioContext === "undefined")
 				{
 					throw Object.assign(response, {
-						error: `AudioContext is not available on your browser, ${this._psychoJS.browser}, please contact the experiment designer.`
+						error: `AudioContext is not available on your browser, ${this._psychoJS.browser}, please contact the experiment designer.`,
 					});
 				}
 
@@ -373,15 +364,13 @@ export class TonePlayer extends SoundPlayer
 			}
 		}
 	}
-
 }
-
 
 /**
  *
  * @type {{TONE_JS: *, AUDIO_CONTEXT: *}}
  */
 TonePlayer.SoundLibrary = {
-	AUDIO_CONTEXT: Symbol.for('AUDIO_CONTEXT'),
-	TONE_JS: Symbol.for('TONE_JS')
+	AUDIO_CONTEXT: Symbol.for("AUDIO_CONTEXT"),
+	TONE_JS: Symbol.for("TONE_JS"),
 };

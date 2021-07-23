@@ -7,13 +7,14 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import * as util from '../util/Util';
-import {PsychoJS} from "../core/PsychoJS";
-import {Camera} from "./Camera";
+import * as PIXI from "pixi.js-legacy";
+import { PsychoJS } from "../core/PsychoJS.js";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
+import {Camera} from "./Camera.js";
 
 
 /**
@@ -49,90 +50,87 @@ import {Camera} from "./Camera";
  */
 export class MovieStim extends VisualStim
 {
-	constructor({name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog} = {})
+	constructor({ name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
 	{
-		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
 
-		this.psychoJS.logger.debug('create a new MovieStim with name: ', name);
+		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
 		// movie and movie control:
 		this._addAttribute(
-			'movie',
-			movie
+			"movie",
+			movie,
 		);
 		this._addAttribute(
-			'volume',
+			"volume",
 			volume,
 			1.0,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'noAudio',
+			"noAudio",
 			noAudio,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'autoPlay',
+			"autoPlay",
 			autoPlay,
 			true,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'interpolate',
+			"interpolate",
 			interpolate,
 			false,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		// colors:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			"white",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'loop',
+			"loop",
 			loop,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
-
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
 
 		// check whether the fastSeek method on HTMLVideoElement is implemented:
-		const videoElement = document.createElement('video');
-		this._hasFastSeek = (typeof videoElement.fastSeek === 'function');
+		const videoElement = document.createElement("video");
+		this._hasFastSeek = (typeof videoElement.fastSeek === "function");
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * Setter for the movie attribute.
@@ -146,8 +144,8 @@ export class MovieStim extends VisualStim
 	setMovie(movie, log = false)
 	{
 		const response = {
-			origin: 'MovieStim.setMovie',
-			context: 'when setting the movie of MovieStim: ' + this._name
+			origin: "MovieStim.setMovie",
+			context: "when setting the movie of MovieStim: " + this._name,
 		};
 
 		try
@@ -164,7 +162,7 @@ export class MovieStim extends VisualStim
 			else
 			{
 				// if movie is a string, then it should be the name of a resource, which we get:
-				if (typeof movie === 'string')
+				if (typeof movie === "string")
 				{
 					movie = this.psychoJS.serverManager.getResource(movie);
 				}
@@ -181,7 +179,7 @@ export class MovieStim extends VisualStim
 				// check that movie is now an HTMLVideoElement
 				if (!(movie instanceof HTMLVideoElement))
 				{
-					throw movie.toString() + ' is not a video';
+					throw movie.toString() + " is not a video";
 				}
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
@@ -198,18 +196,15 @@ export class MovieStim extends VisualStim
 				}
 			}
 
-
-			this._setAttribute('movie', movie, log);
+			this._setAttribute("movie", movie, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
 		catch (error)
 		{
-			throw Object.assign(response, {error});
+			throw Object.assign(response, { error });
 		}
 	}
-
-
 
 	/**
 	 * Reset the stimulus.
@@ -222,8 +217,6 @@ export class MovieStim extends VisualStim
 		this._movie.pause();
 		this.seek(0, log);
 	}
-
-
 
 	/**
 	 * Start playing the movie.
@@ -239,17 +232,16 @@ export class MovieStim extends VisualStim
 
 		if (playPromise !== undefined)
 		{
-			playPromise.catch((error) => {
+			playPromise.catch((error) =>
+			{
 				throw {
-					origin: 'MovieStim.play',
+					origin: "MovieStim.play",
 					context: `when attempting to play MovieStim: ${this._name}`,
-					error
+					error,
 				};
 			});
 		}
 	}
-
-
 
 	/**
 	 * Pause the movie.
@@ -262,8 +254,6 @@ export class MovieStim extends VisualStim
 		this._movie.pause();
 	}
 
-
-
 	/**
 	 * Stop the movie and reset to 0s.
 	 *
@@ -275,8 +265,6 @@ export class MovieStim extends VisualStim
 		this._movie.pause();
 		this.seek(0, log);
 	}
-
-
 
 	/**
 	 * Jump to a specific timepoint
@@ -291,9 +279,9 @@ export class MovieStim extends VisualStim
 		if (timePoint < 0 || timePoint > this._movie.duration)
 		{
 			throw {
-				origin: 'MovieStim.seek',
+				origin: "MovieStim.seek",
 				context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
-				error: `the timepoint does not belong to [0, ${this._movie.duration}`
+				error: `the timepoint does not belong to [0, ${this._movie.duration}`,
 			};
 		}
 
@@ -310,15 +298,13 @@ export class MovieStim extends VisualStim
 			catch (error)
 			{
 				throw {
-					origin: 'MovieStim.seek',
+					origin: "MovieStim.seek",
 					context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
-					error
+					error,
 				};
 			}
 		}
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -331,20 +317,18 @@ export class MovieStim extends VisualStim
 	_estimateBoundingBox()
 	{
 		const size = this._getDisplaySize();
-		if (typeof size !== 'undefined')
+		if (typeof size !== "undefined")
 		{
 			this._boundingBox = new PIXI.Rectangle(
 				this._pos[0] - size[0] / 2,
 				this._pos[1] - size[1] / 2,
 				size[0],
-				size[1]
+				size[1],
 			);
 		}
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -365,20 +349,20 @@ export class MovieStim extends VisualStim
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				// Leave original video in place
 				// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
 				this._pixi.destroy({
 					children: true,
 					texture: true,
-					baseTexture: false
+					baseTexture: false,
 				});
 			}
 			this._pixi = undefined;
 
 			// no movie to draw: return immediately
-			if (typeof this._movie === 'undefined')
+			if (typeof this._movie === "undefined")
 			{
 				return;
 			}
@@ -416,7 +400,7 @@ export class MovieStim extends VisualStim
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (movie centered on pos):
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
@@ -424,8 +408,6 @@ export class MovieStim extends VisualStim
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
 	}
-
-
 
 	/**
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
@@ -439,18 +421,16 @@ export class MovieStim extends VisualStim
 	{
 		let displaySize = this.size;
 
-		if (typeof displaySize === 'undefined')
+		if (typeof displaySize === "undefined")
 		{
 			// use the size of the texture, if we have access to it:
-			if (typeof this._texture !== 'undefined' && this._texture.width > 0)
+			if (typeof this._texture !== "undefined" && this._texture.width > 0)
 			{
 				const textureSize = [this._texture.width, this._texture.height];
-				displaySize = util.to_unit(textureSize, 'pix', this.win, this.units);
+				displaySize = util.to_unit(textureSize, "pix", this.win, this.units);
 			}
 		}
 
 		return displaySize;
 	}
-
-
 }

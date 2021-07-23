@@ -7,14 +7,13 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import {TextInput} from './TextInput';
-import {ButtonStim} from './ButtonStim.js';
-import * as util from '../util/Util';
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import * as util from "../util/Util.js";
+import { ButtonStim } from "./ButtonStim.js";
+import { TextInput } from "./TextInput.js";
+import { VisualStim } from "./VisualStim.js";
 
 // TODO finish documenting all options
 /**
@@ -50,122 +49,154 @@ import * as util from '../util/Util';
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, multiline, autofocus, clipMask, autoDraw, autoLog} = {})
+	constructor(
+		{
+			name,
+			win,
+			pos,
+			anchor,
+			size,
+			units,
+			ori,
+			opacity,
+			depth,
+			text,
+			font,
+			letterHeight,
+			bold,
+			italic,
+			alignment,
+			color,
+			contrast,
+			flipHoriz,
+			flipVert,
+			fillColor,
+			borderColor,
+			borderWidth,
+			padding,
+			editable,
+			multiline,
+			autofocus,
+			clipMask,
+			autoDraw,
+			autoLog,
+		} = {},
+	)
 	{
-		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
+		super({ name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
 
 		this._addAttribute(
-			'text',
+			"text",
 			text,
-			'',
-			this._onChange(true, true)
+			"",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'placeholder',
+			"placeholder",
 			text,
-			'',
-			this._onChange(true, true)
-		);		
+			"",
+			this._onChange(true, true),
+		);
 		this._addAttribute(
-			'anchor',
+			"anchor",
 			anchor,
-			'center',
-			this._onChange(false, true)
+			"center",
+			this._onChange(false, true),
 		);
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
 		// font:
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'letterHeight',
+			"letterHeight",
 			letterHeight,
 			this._getDefaultLetterHeight(),
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'alignment',
+			"alignment",
 			alignment,
-			'left',
-			this._onChange(true, true)
+			"left",
+			this._onChange(true, true),
 		);
 
 		// colors:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			"white",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'fillColor',
+			"fillColor",
 			fillColor,
-			'lightgrey',
-			this._onChange(true, false)
+			"lightgrey",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'borderColor',
+			"borderColor",
 			borderColor,
 			this.fillColor,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		// default border width: 1px
 		this._addAttribute(
-			'borderWidth',
+			"borderWidth",
 			borderWidth,
-			util.to_unit([1, 0], 'pix', win, this._units)[0],
-			this._onChange(true, true)
+			util.to_unit([1, 0], "pix", win, this._units)[0],
+			this._onChange(true, true),
 		);
 		// default padding: half of the letter height
 		this._addAttribute(
-			'padding',
+			"padding",
 			padding,
 			this._letterHeight / 2.0,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
-		this._addAttribute('multiline', multiline, false, this._onChange(true, true));
-		this._addAttribute('editable', editable, false, this._onChange(true, true));
-		this._addAttribute('autofocus', autofocus, true, this._onChange(true, false));
-			// this._setAttribute({
-			// 	name: 'vertices',
-			// 	value: vertices,
-			// 	assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
-			// 	log);
+		this._addAttribute("multiline", multiline, false, this._onChange(true, true));
+		this._addAttribute("editable", editable, false, this._onChange(true, true));
+		this._addAttribute("autofocus", autofocus, true, this._onChange(true, false));
+		// this._setAttribute({
+		// 	name: 'vertices',
+		// 	value: vertices,
+		// 	assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
+		// 	log);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -176,7 +207,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
-
 	/**
 	 * Clears the current text value or sets it back to match the placeholder.
 	 *
@@ -185,12 +215,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	reset()
 	{
-		const text = this.editable ? '' : this.placeholder;
+		const text = this.editable ? "" : this.placeholder;
 
 		this.setText(this.placeholder);
 	}
-
-
 
 	/**
 	 * Clears the current text value.
@@ -203,8 +231,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this.setText();
 	}
 
-
-
 	/**
 	 * For tweaking the underlying input value.
 	 *
@@ -212,16 +238,15 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 * @param {string} text
 	 */
-	setText(text = '')
+	setText(text = "")
 	{
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			this._pixi.text = text;
 		}
 
 		this._text = text;
 	}
-
 
 	/**
 	 * For accessing the underlying input value.
@@ -232,14 +257,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	getText()
 	{
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			return this._pixi.text;
 		}
 
 		return this._text;
 	}
-
 
 	/**
 	 * Setter for the size attribute.
@@ -253,25 +277,25 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		// test with the size is undefined, or [undefined, undefined]:
 		let isSizeUndefined = (
-			(typeof size === 'undefined') || (size === null) ||
-			( Array.isArray(size) && size.every( v => typeof v === 'undefined' || v === null) )
-		); 
+			(typeof size === "undefined") || (size === null)
+			|| (Array.isArray(size) && size.every((v) => typeof v === "undefined" || v === null))
+		);
 
 		if (isSizeUndefined)
 		{
 			size = TextBox._defaultSizeMap.get(this._units);
 
-			if (typeof size === 'undefined')
+			if (typeof size === "undefined")
 			{
 				throw {
-					origin: 'TextBox.setSize',
-					context: 'when setting the size of TextBox: ' + this._name,
-					error: 'no default size for unit: ' + this._units
+					origin: "TextBox.setSize",
+					context: "when setting the size of TextBox: " + this._name,
+					error: "no default size for unit: " + this._units,
 				};
 			}
 		}
 
-		const hasChanged = this._setAttribute('size', size, log);
+		const hasChanged = this._setAttribute("size", size, log);
 
 		if (hasChanged)
 		{
@@ -282,8 +306,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._estimateBoundingBox();
 		}
 	}
-
-
 
 	/**
 	 * Get the default letter height given the stimulus' units.
@@ -296,19 +318,17 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const height = TextBox._defaultLetterHeightMap.get(this._units);
 
-		if (typeof height === 'undefined')
+		if (typeof height === "undefined")
 		{
 			throw {
-				origin: 'TextBox._getDefaultLetterHeight',
-				context: 'when getting the default height of TextBox: ' + this._name,
-				error: 'no default letter height for unit: ' + this._units
+				origin: "TextBox._getDefaultLetterHeight",
+				context: "when getting the default height of TextBox: " + this._name,
+				error: "no default letter height for unit: " + this._units,
 			};
 		}
 
 		return height;
 	}
-
-
 
 	/**
 	 * Get the TextInput options applied to the PIXI.TextInput.
@@ -328,24 +348,24 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return {
 			input: {
 				fontFamily: this._font,
-				fontSize: letterHeight_px + 'px',
+				fontSize: letterHeight_px + "px",
 				color: new Color(this._color).hex,
-				fontWeight: (this._bold) ? 'bold' : 'normal',
-				fontStyle: (this._italic) ? 'italic' : 'normal',
+				fontWeight: (this._bold) ? "bold" : "normal",
+				fontStyle: (this._italic) ? "italic" : "normal",
 
-				padding: padding_px + 'px',
+				padding: padding_px + "px",
 				multiline,
 				text: this._text,
-				height: multiline ? (height_px - 2 * padding_px) + 'px' : undefined,
-				width: (width_px - 2 * padding_px) + 'px'
+				height: multiline ? (height_px - 2 * padding_px) + "px" : undefined,
+				width: (width_px - 2 * padding_px) + "px",
 			},
 			box: {
 				fill: new Color(this._fillColor).int,
 				rounded: 5,
 				stroke: {
 					color: new Color(this._borderColor).int,
-					width: borderWidth_px
-				}
+					width: borderWidth_px,
+				},
 				/*default: {
 					fill: new Color(this._fillColor).int,
 					rounded: 5,
@@ -370,11 +390,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 						width: borderWidth_px
 					}
 				}*/
-			}
+			},
 		};
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -395,13 +413,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._pos[0] - anchor[0] * this._size[0],
 			this._pos[1] - anchor[1] * boxHeight,
 			this._size[0],
-			boxHeight
+			boxHeight,
 		);
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -424,13 +440,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
 			// Get the currently entered text
-			let enteredText = this._pixi !== undefined? this._pixi.text: '';
-			// Create new TextInput 
+			let enteredText = this._pixi !== undefined ? this._pixi.text : "";
+			// Create new TextInput
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
@@ -441,7 +457,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 			// check if other TextBox instances are already in focus
 			const { _drawList = [] } = this.psychoJS.window;
-			const otherTextBoxWithFocus = _drawList.some(item => item instanceof TextBox && item._pixi && item._pixi._hasFocus());
+			const otherTextBoxWithFocus = _drawList.some((item) => item instanceof TextBox && item._pixi && item._pixi._hasFocus());
 			if (this._autofocus && !otherTextBoxWithFocus)
 			{
 				this._pixi._onSurrogateFocus();
@@ -452,7 +468,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this.text = enteredText;				
+				this.text = enteredText;
 				this._pixi.placeholder = this._placeholder;
 			}
 			else
@@ -479,8 +495,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.mask = this._clipMask;
 	}
 
-
-
 	/**
 	 * Convert the anchor attribute into numerical values.
 	 *
@@ -493,29 +507,26 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const anchor = [0.5, 0.5];
 
-		if (this._anchor.indexOf('left') > -1)
+		if (this._anchor.indexOf("left") > -1)
 		{
 			anchor[0] = 0;
 		}
-		else if (this._anchor.indexOf('right') > -1)
+		else if (this._anchor.indexOf("right") > -1)
 		{
 			anchor[0] = 1;
 		}
-		if (this._anchor.indexOf('top') > -1)
+		if (this._anchor.indexOf("top") > -1)
 		{
 			anchor[1] = 0;
 		}
-		else if (this._anchor.indexOf('bottom') > -1)
+		else if (this._anchor.indexOf("bottom") > -1)
 		{
 			anchor[1] = 1;
 		}
 
 		return anchor;
 	}
-
-
 }
-
 
 /**
  * <p>This map associates units to default letter height.</p>
@@ -525,17 +536,16 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
  * @private
  */
 TextBox._defaultLetterHeightMap = new Map([
-	['cm', 1.0],
-	['deg', 1.0],
-	['degs', 1.0],
-	['degFlatPos', 1.0],
-	['degFlat', 1.0],
-	['norm', 0.1],
-	['height', 0.2],
-	['pix', 20],
-	['pixels', 20]
+	["cm", 1.0],
+	["deg", 1.0],
+	["degs", 1.0],
+	["degFlatPos", 1.0],
+	["degFlat", 1.0],
+	["norm", 0.1],
+	["height", 0.2],
+	["pix", 20],
+	["pixels", 20],
 ]);
-
 
 /**
  * <p>This map associates units to default sizes.</p>
@@ -545,13 +555,13 @@ TextBox._defaultLetterHeightMap = new Map([
  * @private
  */
 TextBox._defaultSizeMap = new Map([
-	['cm', [15.0, -1]],
-	['deg', [15.0, -1]],
-	['degs', [15.0, -1]],
-	['degFlatPos', [15.0, -1]],
-	['degFlat', [15.0, -1]],
-	['norm', [1, -1]],
-	['height', [1, -1]],
-	['pix', [500, -1]],
-	['pixels', [500, -1]]
+	["cm", [15.0, -1]],
+	["deg", [15.0, -1]],
+	["degs", [15.0, -1]],
+	["degFlatPos", [15.0, -1]],
+	["degFlat", [15.0, -1]],
+	["norm", [1, -1]],
+	["height", [1, -1]],
+	["pix", [500, -1]],
+	["pixels", [500, -1]],
 ]);

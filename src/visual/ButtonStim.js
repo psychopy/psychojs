@@ -7,10 +7,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import {TextBox} from './TextBox.js';
-import {Mouse} from '../core/Mouse.js';
-
+import { Mouse } from "../core/Mouse.js";
+import { TextBox } from "./TextBox.js";
 
 /**
  * <p>ButtonStim visual stimulus.</p>
@@ -39,28 +37,71 @@ import {Mouse} from '../core/Mouse.js';
  */
 export class ButtonStim extends TextBox
 {
-	constructor({win, name, text, font, pos, size, padding, anchor = 'center', units, color, fillColor = 'darkgrey', borderColor, borderWidth = 0, opacity, letterHeight, bold = true, italic, autoDraw, autoLog} = {})
+	constructor(
+		{
+			win,
+			name,
+			text,
+			font,
+			pos,
+			size,
+			padding,
+			anchor = "center",
+			units,
+			color,
+			fillColor = "darkgrey",
+			borderColor,
+			borderWidth = 0,
+			opacity,
+			letterHeight,
+			bold = true,
+			italic,
+			autoDraw,
+			autoLog,
+		} = {},
+	)
 	{
-		super({win, name, text, font, pos, size, padding, anchor, units, color, fillColor, borderColor, borderWidth, opacity, letterHeight, bold, italic, alignment: 'center', autoDraw, autoLog});
+		super({
+			win,
+			name,
+			text,
+			font,
+			pos,
+			size,
+			padding,
+			anchor,
+			units,
+			color,
+			fillColor,
+			borderColor,
+			borderWidth,
+			opacity,
+			letterHeight,
+			bold,
+			italic,
+			alignment: "center",
+			autoDraw,
+			autoLog,
+		});
 
-		this.psychoJS.logger.debug('create a new Button with name: ', name);
+		this.psychoJS.logger.debug("create a new Button with name: ", name);
 
-		this.listener = new Mouse({name, win, autoLog});
+		this.listener = new Mouse({ name, win, autoLog });
 
 		this._addAttribute(
-			'wasClicked',
-			false
+			"wasClicked",
+			false,
 		);
 
 		// Arrays to store times of clicks on and off
 		this._addAttribute(
-			'timesOn',
-			[]
+			"timesOn",
+			[],
 		);
 
 		this._addAttribute(
-			'timesOff',
-			[]
+			"timesOff",
+			[],
 		);
 
 		if (this._autoLog)
@@ -68,8 +109,6 @@ export class ButtonStim extends TextBox
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
-
 
 	/**
 	 * How many times has this button been clicked on?
@@ -82,8 +121,6 @@ export class ButtonStim extends TextBox
 		return this.timesOn.length;
 	}
 
-
-
 	/**
 	 * Is this button currently being clicked on?
 	 *
@@ -94,5 +131,4 @@ export class ButtonStim extends TextBox
 	{
 		return this.listener.isPressedIn(this, [1, 0, 0]);
 	}
-
 }
