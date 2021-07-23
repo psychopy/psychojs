@@ -506,8 +506,21 @@ export class ServerManager extends PsychObject
 				}
 			}
 
-			// download those registered resources for which download = true:
-			/*await*/ this._downloadResources(resourcesToDownload);
+			// download those registered resources for which download = true
+			// note: we return a Promise that will be resolved when all the resources are downloaded
+			return new Promise((resolve, reject) =>
+			{
+				const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
+				{
+					if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
+					{
+						this.off(ServerManager.Event.RESOURCE, uuid);
+						resolve();
+					}
+				});
+
+				this._downloadResources(resourcesToDownload);
+			});
 		}
 		catch (error)
 		{
@@ -898,7 +911,7 @@ export class ServerManager extends PsychObject
 	 * @protected
 	 * @param {Set} resources - a set of names of previously registered resources
 	 */
-	_downloadResources(resources)
+	async _downloadResources(resources)
 	{
 		const response = {
 			origin: "ServerManager._downloadResources",
