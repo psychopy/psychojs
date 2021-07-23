@@ -1406,5 +1406,10 @@ export function extensionFromMimeType(mimeType)
 		return ".wav";
 	}
 
-	return ".dat";
+	if (mimeType.indexOf("video/webm") === 0)
+	{
+		return ".webm";
+	}
+
+	return '.dat';
 }
