@@ -14,14 +14,26 @@ import {TrialHandler} from "./TrialHandler";
 
 /**
  * <p>A Trial Handler that implements the Quest algorithm for quick measurement of
-    psychophysical thresholds.</p>
+    psychophysical thresholds.QuestHandler relies on the [jsQuest]{@link https://github.com/kurokida/jsQUEST} library, a port of Prof Dennis Pelli's QUEST algorithm by [Daiichiro Kuroki]{@link https://github.com/kurokida}.</p>
  *
- * @class
- * @extends PsychObject
+ * @class module.data.QuestHandler
+ * @extends TrialHandler
  * @param {Object} options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {string} options.varName - the name of the variable / intensity / contrast / threshold manipulated by QUEST
+ * @param {number} options.startVal - initial guess for the threshold
+ * @param {number} options.startValSd - standard deviation of the initial guess
+ * @param {number} options.minVal - minimum value for the threshold
+ * @param {number} options.maxVal - maximum value for the threshold
+ * @param {number} [options.pThreshold=0.82] - threshold criterion expressed as probability of getting a correct response
  * @param {number} options.nTrials - maximum number of trials
+ * @param {number} options.stopInterval - minimum [5%, 95%] confidence interval required for the loop to stop
  * @param {module:data.QuestHandler.Method} options.method - the QUEST method
+ * @param {number} [options.beta=3.5] - steepness of the QUEST psychometric function
+ * @param {number} [options.delta=0.01] - fraction of trials with blind responses
+ * @param {number} [options.gamma=0.5] - fraction of trails that would generate a correct response when the threshold is infinitely small
+ * @param {number} [options.grain=0.01] - quantization of the internal table
+ * @param {string} options.name - name of the handler
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class QuestHandler extends TrialHandler
@@ -80,9 +92,11 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Add a response and update the PDF.
 	 *
+	 * @name module:data.QuestHandler#addResponse
+	 * @function
 	 * @public
-	 * @param{number} response	- the response to the trial, must be either 0 (incorrect,
-	 * non-detected) or 1 (correct, detected).
+	 * @param{number} response	- the response to the trial, must be either 0 (incorrect or
+	 * non-detected) or 1 (correct or detected).
 	 */
 	addResponse(response)
 	{
@@ -110,7 +124,10 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Simulate a response.
 	 *
-	 * @param{number} trueValue
+	 * @name module:data.QuestHandler#simulate
+	 * @function
+	 * @public
+	 * @param{number} trueValue - the true, known value of the threshold / contrast / intensity
 	 */
 	simulate(trueValue)
 	{
@@ -128,6 +145,9 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Get the mean of the Quest posterior PDF.
 	 *
+	 * @name module:data.QuestHandler#mean
+	 * @function
+	 * @public
 	 * @returns {number} the mean
 	 */
 	mean()
@@ -139,6 +159,9 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Get the standard deviation of the Quest posterior PDF.
 	 *
+	 * @name module:data.QuestHandler#sd
+	 * @function
+	 * @public
 	 * @returns {number} the standard deviation
 	 */
 	sd()
@@ -150,6 +173,9 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Get the mode of the Quest posterior PDF.
 	 *
+	 * @name module:data.QuestHandler#mode
+	 * @function
+	 * @public
 	 * @returns {number} the mode
 	 */
 	mode()
@@ -162,6 +188,9 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Get the standard deviation of the Quest posterior PDF.
 	 *
+	 * @name module:data.QuestHandler#quantile
+	 * @function
+	 * @public
 	 * @param{number} quantileOrder the quantile order
 	 * @returns {number} the quantile
 	 */
@@ -174,6 +203,8 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Get an estimate of the 5%-95% confidence interval (CI).
 	 *
+	 * @name module:data.QuestHandler#confInterval
+	 * @function
 	 * @public
 	 * @param{boolean} [getDifference=false]	if true, return the width of the CI instead of the CI
 	 */
@@ -198,6 +229,8 @@ export class QuestHandler extends TrialHandler
 	/**
 	 * Setup the JS Quest object.
 	 *
+	 * @name module:data.QuestHandler#_setupJsQuest
+	 * @function
 	 * @protected
 	 */
 	_setupJsQuest()
@@ -219,6 +252,8 @@ export class QuestHandler extends TrialHandler
 	 * Estimate the next value of the QUEST variable, based on the current value
 	 * and on the selected QUEST method.
 	 *
+	 * @name module:data.QuestHandler#_estimateQuestValue
+	 * @function
 	 * @protected
 	 */
 	_estimateQuestValue()
@@ -248,7 +283,6 @@ export class QuestHandler extends TrialHandler
 
 		this._psychoJS.logger.debug(`estimated value for QUEST variable ${this._varName}: ${this._questValue}`);
 
-
 		// check whether we should finish the trial:
 		if (this.thisN > 0 &&
 			(this.nRemaining === 0 || this.confInterval(true) < this._stopInterval))
@@ -268,7 +302,6 @@ export class QuestHandler extends TrialHandler
 
 			return;
 		}
-
 
 		// update the next undefined trial in the trial list, and the associated snapshot:
 		for (let t = 0; t < this._trialList.length; ++t)

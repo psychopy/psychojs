@@ -145,9 +145,9 @@ export class PsychoJS
 			psychoJS: this
 		});
 
-		// to be loading `configURL` files in `_configure` calls from
-		const hostsEvidently = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
-		this._hosts = Array.from(hostsEvidently);
+		// add the pavlovia server to the list of hosts:
+		const hostsWithPavlovia = new Set([...hosts, 'https://pavlovia.org/run/', 'https://run.pavlovia.org/']);
+		this._hosts = Array.from(hostsWithPavlovia);
 
 		// GUI:
 		this._gui = new GUI(this);
@@ -181,7 +181,7 @@ export class PsychoJS
 		this.logger.info('[PsychoJS] Initialised.');
 		this.logger.info('[PsychoJS] @version 2021.2.x');
 
-		// Hide #root::after
+		// hide the initialisation message:
 		jQuery('#root').addClass('is-ready');
 	}
 
@@ -591,17 +591,17 @@ export class PsychoJS
 		{
 			this.status = PsychoJS.Status.CONFIGURING;
 
-			// if the experiment is running from the pavlovia.org server, we read the configuration file:
+			// if the experiment is running from an approved hosts, e.e pavlovia.org,
+			// we read the configuration file:
 			const experimentUrl = window.location.href;
-			// go through each url in allow list
 			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
 			if (isHost)
 			{
 				const serverResponse = await this._serverManager.getConfiguration(configURL);
 				this._config = serverResponse.config;
 
-				// legacy experiments had a psychoJsManager block instead of a pavlovia block,
-				// and the URL pointed to https://pavlovia.org/server
+				// update the configuration for legacy experiments, which  had a psychoJsManager
+				// block instead of a pavlovia block, with URL pointing to https://pavlovia.org/server
 				if ('psychoJsManager' in this._config)
 				{
 					delete this._config.psychoJsManager;
@@ -744,10 +744,13 @@ export class PsychoJS
 		window.onunhandledrejection = function (error)
 		{
 			console.error(error?.reason);
-			if (error?.reason?.stack === undefined) {
+			if (error?.reason?.stack === undefined)
+			{
 				// No stack? Error thrown by PsychoJS; stringify whole error
 				document.body.setAttribute('data-error', JSON.stringify(error?.reason));
-			} else {
+			}
+			else
+			{
 				// Yes stack? Error thrown by JS; stringify stack
 				document.body.setAttribute('data-error', JSON.stringify(error?.reason?.stack));
 			}

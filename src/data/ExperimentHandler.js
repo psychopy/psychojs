@@ -33,7 +33,7 @@ export class ExperimentHandler extends PsychObject
 	/**
 	 * Getter for experimentEnded.
 	 *
-	 * @name module:core.Window#experimentEnded
+	 * @name module:data.ExperimentHandler#experimentEnded
 	 * @function
 	 * @public
 	 */
@@ -45,7 +45,7 @@ export class ExperimentHandler extends PsychObject
 	/**
 	 * Setter for experimentEnded.
 	 *
-	 * @name module:core.Window#experimentEnded
+	 * @name module:data.ExperimentHandler#experimentEnded
 	 * @function
 	 * @public
 	 */

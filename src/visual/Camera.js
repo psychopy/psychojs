@@ -456,14 +456,15 @@ export class Camera extends PsychObject
 
 		// create a new stream with ideal dimensions:
 		this._stream = await navigator.mediaDevices.getUserMedia({
-			video: {
+			video: true
+			/*video: {
 				width: {
-					ideal: 1920
+					ideal: 640 //1920
 				},
 				height: {
-					ideal: 1080
+					ideal: 480 //1080
 				}
-			}
+			}*/
 		});
 
 		// check the actual width and height:
