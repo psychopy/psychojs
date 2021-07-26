@@ -453,7 +453,7 @@ export class ServerManager extends PsychObject
 								path,
 								data: undefined,
 							});
-							this._psychoJS.logger.debug("registered resource:", name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 							resourcesToDownload.add(name);
 						}
 					}
@@ -476,12 +476,10 @@ export class ServerManager extends PsychObject
 						{
 							// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 							// not hosted on pavlovia.org:
-							if (
-								(path.toLowerCase().indexOf("www.") === 0
-									|| path.toLowerCase().indexOf("http:") === 0
-									|| path.toLowerCase().indexOf("https:") === 0)
-								&& (path.indexOf("pavlovia.org") === -1)
-							)
+							if ( (path.toLowerCase().indexOf("www.") === 0 ||
+									path.toLowerCase().indexOf("http:") === 0 ||
+									path.toLowerCase().indexOf("https:") === 0) &&
+								(path.indexOf("pavlovia.org") === -1) )
 							{
 								path = "https://pavlovia.org/api/v2/proxy/" + path;
 							}
@@ -491,7 +489,7 @@ export class ServerManager extends PsychObject
 								path,
 								data: undefined,
 							});
-							this._psychoJS.logger.debug("registered resource:", name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 
 							// download resources by default:
 							if (typeof download === "undefined" || download)
