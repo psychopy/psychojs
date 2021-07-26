@@ -1,7 +1,11 @@
+html {
+  height: 100%;
+}
+
 body {
   align-items: center;
   display: flex;
-  height: 100vh;
+  height: 100%;
   justify-content: center;
   margin: 0;
 }
@@ -53,9 +57,11 @@ a:hover {
 }
 
 .ui-dialog {
+  left: auto !important;
   margin: auto;
   max-width: 88vw;
   position: relative;
+  top: auto !important;
 }
 
 /* Don't display close button in the top right corner of the box */
