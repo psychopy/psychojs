@@ -14,6 +14,8 @@ import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
+import {Camera} from "./Camera.js";
+
 
 /**
  * Movie Stimulus.
@@ -24,7 +26,8 @@ import { VisualStim } from "./VisualStim.js";
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {module:core.Window} options.win - the associated Window
- * @param {string | HTMLVideoElement} options.movie - the name of the movie resource or the HTMLVideoElement corresponding to the movie
+ * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
+ * movie resource or of a HTMLVideoElement or of a Camera component
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
@@ -134,8 +137,8 @@ export class MovieStim extends VisualStim
 	 *
 	 * @name module:visual.MovieStim#setMovie
 	 * @public
-	 * @param {string | HTMLVideoElement} movie - the name of the movie resource or a
-	 * 	HTMLVideoElement
+	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
+	 * movie resource or of a HTMLVideoElement or of a Camera component
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setMovie(movie, log = false)
@@ -147,30 +150,42 @@ export class MovieStim extends VisualStim
 
 		try
 		{
-			// movie is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
-			if (typeof movie === "undefined")
+			// movie is undefined: that's fine but we raise a warning in case this is
+			// a symptom of an actual problem
+			if (typeof movie === 'undefined')
 			{
-				this.psychoJS.logger.warn("setting the movie of MovieStim: " + this._name + " with argument: undefined.");
-				this.psychoJS.logger.debug("set the movie of MovieStim: " + this._name + " as: undefined");
+				this.psychoJS.logger.warn(
+					`setting the movie of MovieStim: ${this._name} with argument: undefined.`);
+				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: undefined`);
 			}
+
 			else
 			{
-				// movie is a string: it should be the name of a resource, which we load
+				// if movie is a string, then it should be the name of a resource, which we get:
 				if (typeof movie === "string")
 				{
 					movie = this.psychoJS.serverManager.getResource(movie);
 				}
 
-				// movie should now be an actual HTMLVideoElement: we raise an error if it is not
+				// if movie is an instance of camera, get a video element from it:
+				else if (movie instanceof Camera)
+				{
+					const video = movie.getVideo();
+					// TODO remove previous one if there is one
+					// document.body.appendChild(video);
+					movie = video;
+				}
+
+				// check that movie is now an HTMLVideoElement
 				if (!(movie instanceof HTMLVideoElement))
 				{
-					throw "the argument: " + movie.toString() + ' is not a video" }';
+					throw movie.toString() + " is not a video";
 				}
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
 
-				// ensure we have only one onended listener per HTMLVideoElement (we can have several
-				// MovieStim with the same underlying HTMLVideoElement)
+				// ensure we have only one onended listener per HTMLVideoElement, since we can have several
+				// MovieStim with the same underlying HTMLVideoElement
 				// https://stackoverflow.com/questions/11455515
 				if (!movie.onended)
 				{
