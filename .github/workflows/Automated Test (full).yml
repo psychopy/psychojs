@@ -163,7 +163,6 @@ jobs:
     name: Join reports
     needs: [tests]
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       # START: install psychojs_testing
       - name: Checkout psychojs_testing
