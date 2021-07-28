@@ -89,6 +89,28 @@ export class QuestHandler extends TrialHandler
 	}
 
 	/**
+	 * Setter for the method attribute.
+	 *
+	 * @param {mixed} method - the method value, PsychoPy-style values ("mean", "median", 
+	 * "quantile") are converted to their respective QuestHandler.Method values
+	 * @param {boolean} log - whether or not to log the change of seed
+	 */
+	 setMethod(method, log)
+	 {
+		let methodMapping = {
+			"quantile": QuestHandler.Method.QUANTILE,
+			"mean": QuestHandler.Method.MEAN,
+			"mode": QuestHandler.Method.MODE
+		};
+		// If method is a key in methodMapping, convert method to corresponding value
+		if (methodMapping.hasOwnProperty(method)) 
+		{
+			method = methodMapping[method];
+		}
+		this._setAttribute("method", method, log);
+	}
+
+	/**
 	 * Add a response and update the PDF.
 	 *
 	 * @name module:data.QuestHandler#addResponse
