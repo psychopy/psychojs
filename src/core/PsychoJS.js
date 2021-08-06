@@ -534,12 +534,12 @@ export class PsychoJS
 					// return from fullscreen if we were there:
 					this._window.closeFullScreen();
 
-					// redirect if redirection URLs have been provided:
-					if (isCompleted && typeof self._completionUrl !== "undefined" && self._completionUrl)
+					// redirect if redirection URLs have been provided (and not empty):
+					if (isCompleted && self._completionUrl)
 					{
 						window.location = self._completionUrl;
 					}
-					else if (!isCompleted && typeof self._cancellationUrl !== "undefined" && self._cancellationUrl)
+					else if (!isCompleted && self._cancellationUrl)
 					{
 						window.location = self._cancellationUrl;
 					}
