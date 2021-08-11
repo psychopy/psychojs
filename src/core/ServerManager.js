@@ -27,7 +27,7 @@ import { PsychoJS } from "./PsychoJS.js";
  */
 export class ServerManager extends PsychObject
 {
-	/**
+	/****************************************************************************
 	 * Used to indicate to the ServerManager that all resources must be registered (and
 	 * subsequently downloaded)
 	 *
@@ -54,14 +54,14 @@ export class ServerManager extends PsychObject
 		this._addAttribute("status", ServerManager.Status.READY);
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.GetConfigurationPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [config] the configuration
 	 * @property {Object.<string, *>} [error] an error message if we could not read the configuration file
 	 */
-	/**
+	/****************************************************************************
 	 * Read the configuration file for the experiment.
 	 *
 	 * @name module:core.ServerManager#getConfiguration
@@ -100,14 +100,14 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.OpenSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {string} [token] the session token
 	 * @property {Object.<string, *>} [error] an error message if we could not open the session
 	 */
-	/**
+	/****************************************************************************
 	 * Open a session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#openSession
@@ -190,13 +190,13 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.CloseSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [error] an error message if we could not close the session (e.g. if it has not previously been opened)
 	 */
-	/**
+	/****************************************************************************
 	 * Close the session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#closeSession
@@ -277,7 +277,7 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Get the value of a resource.
 	 *
 	 * @name module:core.ServerManager#getResource
@@ -316,7 +316,7 @@ export class ServerManager extends PsychObject
 		return pathStatusData.data;
 	}
 
-	/**
+	/****************************************************************************
 	 * Get the status of a resource.
 	 *
 	 * @name module:core.ServerManager#getResourceStatus
@@ -343,7 +343,7 @@ export class ServerManager extends PsychObject
 		return pathStatusData.status;
 	}
 
-	/**
+	/****************************************************************************
 	 * Set the resource manager status.
 	 *
 	 * @name module:core.ServerManager#setStatus
@@ -376,7 +376,7 @@ export class ServerManager extends PsychObject
 		return this._status;
 	}
 
-	/**
+	/****************************************************************************
 	 * Reset the resource manager status to ServerManager.Status.READY.
 	 *
 	 * @name module:core.ServerManager#resetStatus
@@ -389,7 +389,7 @@ export class ServerManager extends PsychObject
 		return this.setStatus(ServerManager.Status.READY);
 	}
 
-	/**
+	/****************************************************************************
 	 * Prepare resources for the experiment: register them with the server manager and possibly
 	 * start downloading them right away.
 	 *
@@ -525,7 +525,7 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Block the experiment until the specified resources have been downloaded.
 	 *
 	 * @name module:core.ServerManager#waitForResources
@@ -621,13 +621,13 @@ export class ServerManager extends PsychObject
 		};
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.UploadDataPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [error] an error message if we could not upload the data
 	 */
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment data to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadData
@@ -692,7 +692,7 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment logs to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadLog
@@ -751,36 +751,39 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
-	 * Asynchronously upload audio data to the pavlovia server.
+	/****************************************************************************
+	 * Synchronously or asynchronously upload audio data to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadAudioVideo
 	 * @function
 	 * @public
-	 * @param {Blob} audioBlob - the audio blob to be uploaded
+	 * @param {Blob} mediaBlob - the audio or video blob to be uploaded
 	 * @param {string} tag - additional tag
+	 * @param {boolean} [waitForCompletion=false] - whether or not to wait for completion
+	 * 	before returning
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudioVideo(audioBlob, tag)
+	async uploadAudioVideo(mediaBlob, tag, waitForCompletion = false)
 	{
 		const response = {
 			origin: "ServerManager.uploadAudio",
-			context: "when uploading audio data for experiment: " + this._psychoJS.config.experiment.fullpath,
+			context: "when uploading media data for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
 		try
 		{
-			if (
-				this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
 				|| this._psychoJS.config.experiment.status !== "RUNNING"
-				|| this._psychoJS._serverMsg.has("__pilotToken")
-			)
+				|| this._psychoJS._serverMsg.has("__pilotToken"))
 			{
-				throw "audio recordings can only be uploaded to the server for experiments running on the server";
+				throw "media recordings can only be uploaded to the server for experiments running on the server";
 			}
 
-			this._psychoJS.logger.debug("uploading audio data for experiment: " + this._psychoJS.config.experiment.fullpath);
+			this._psychoJS.logger.debug(`uploading media data for experiment: ${this._psychoJS.config.experiment.fullpath}`);
 			this.setStatus(ServerManager.Status.BUSY);
+
+			// open pop-up dialog:
+			// TODO
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
@@ -790,15 +793,15 @@ export class ServerManager extends PsychObject
 			const filename = participant + "_" + experimentName + "_" + datetime + "_" + tag;
 
 			const formData = new FormData();
-			formData.append("audio", audioBlob, filename);
+			formData.append("media", mediaBlob, filename);
 
-			const url = this._psychoJS.config.pavlovia.URL
+			let url = this._psychoJS.config.pavlovia.URL
 				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
 				+ "/sessions/" + this._psychoJS.config.session.token
-				+ "/audio";
+				+ "/media";
 
-			// query the pavlovia server:
-			const response = await fetch(url, {
+			// query the server:
+			let response = await fetch(url, {
 				method: "POST",
 				mode: "cors",
 				cache: "no-cache",
@@ -807,16 +810,58 @@ export class ServerManager extends PsychObject
 				referrerPolicy: "no-referrer",
 				body: formData,
 			});
-			const jsonResponse = await response.json();
+			const postMediaResponse = await response.json();
+			this._psychoJS.logger.debug(`post media response: ${JSON.stringify(postMediaResponse)}`);
 
 			// deal with server errors:
 			if (!response.ok)
 			{
-				throw jsonResponse;
+				throw postMediaResponse;
+			}
+
+			// wait until the upload has completed:
+			if (waitForCompletion)
+			{
+				if (!("uploadToken" in postMediaResponse))
+				{
+					throw "incorrect server response: missing uploadToken";
+				}
+				const uploadToken = postMediaResponse['uploadToken'];
+
+				while (true)
+				{
+					// wait a bit:
+					await new Promise(r =>
+					{
+						setTimeout(r, 1000);
+					});
+
+					// check the status of the upload:
+					url = this._psychoJS.config.pavlovia.URL
+						+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+						+ "/sessions/" + this._psychoJS.config.session.token
+						+ "/media/" + uploadToken + "/status";
+
+					response = await fetch(url, {
+						method: "GET",
+						mode: "cors",
+						cache: "no-cache",
+						credentials: "same-origin",
+						redirect: "follow",
+						referrerPolicy: "no-referrer"
+					});
+					const checkSatusResponse = await response.json();
+					this._psychoJS.logger.debug(`check upload status response: ${JSON.stringify(checkStatusResponse)}`);
+
+					if (("status" in checkStatusResponse) && checkStatusResponse["status"] === "COMPLETED")
+					{
+						break;
+					}
+				}
 			}
 
 			this.setStatus(ServerManager.Status.READY);
-			return jsonResponse;
+			return postMediaResponse;
 		}
 		catch (error)
 		{
@@ -827,9 +872,9 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * List the resources available to the experiment.
-
+	 *
 	 * @name module:core.ServerManager#_listResources
 	 * @function
 	 * @private
@@ -896,7 +941,7 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * Download the specified resources.
 	 *
 	 * <p>Note: we use the [preloadjs library]{@link https://www.createjs.com/preloadjs}.</p>
@@ -1124,7 +1169,7 @@ export class ServerManager extends PsychObject
 	}
 }
 
-/**
+/****************************************************************************
  * Server event
  *
  * <p>A server event is emitted by the manager to inform its listeners of either a change of status, or of a resource related event (e.g. download started, download is completed).</p>
@@ -1166,7 +1211,7 @@ ServerManager.Event = {
 	STATUS: Symbol.for("STATUS"),
 };
 
-/**
+/****************************************************************************
  * Server status
  *
  * @name module:core.ServerManager#Status
@@ -1191,7 +1236,7 @@ ServerManager.Status = {
 	ERROR: Symbol.for("ERROR"),
 };
 
-/**
+/****************************************************************************
  * Resource status
  *
  * @name module:core.ServerManager#ResourceStatus
