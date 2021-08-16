@@ -359,6 +359,22 @@ export function shuffle(array, randomNumberGenerator = undefined)
 }
 
 /**
+ * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
+ *
+ * @name module:util.randchoice
+ * @function
+ * @public
+ * @param {Object[]} array - the input 1-D array
+ * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @return {Object[]} a chosen value from the array
+ */
+export function randchoice(array, randomNumberGenerator = undefined)
+{
+	let shuffledArray = shuffle(array, randomNumberGenerator=randomNumberGenerator)
+	return shuffledArray.slice((- 1))[0];
+}
+
+/**
  * Get the position of the object, in pixel units
  *
  * @name module:util.getPositionFromObject
