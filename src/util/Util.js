@@ -370,8 +370,12 @@ export function shuffle(array, randomNumberGenerator = undefined)
  */
 export function randchoice(array, randomNumberGenerator = undefined)
 {
-	let shuffledArray = shuffle(array, randomNumberGenerator=randomNumberGenerator)
-	return shuffledArray.slice((- 1))[0];
+	if (randomNumberGenerator === undefined)
+	{
+		randomNumberGenerator = Math.random;
+	}
+	const j = Math.floor(randomNumberGenerator() * array.length);
+	return array[j]
 }
 
 /**
