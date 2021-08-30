@@ -369,9 +369,12 @@ export class Camera extends PsychObject
 	 * @name module:visual.Camera#upload
 	 * @function
 	 * @public
-	 * @param {string} tag an optional tag for the audio file
+	 * @param @param {Object} options
+	 * @param {string} options.tag an optional tag for the video file
+	 * @param {boolean} [options.waitForCompletion= false] whether or not to wait for completion
+	 * 	before returning
 	 */
-	async upload({tag} = {})
+	async upload({tag, waitForCompletion = false} = {})
 	{
 		// default tag: the name of this Camera object
 		if (typeof tag === "undefined")
@@ -394,7 +397,7 @@ export class Camera extends PsychObject
 
 		// upload the blob:
 		const videoBlob = new Blob(this._videoBuffer);
-		return this._psychoJS.serverManager.uploadAudioVideo(videoBlob, tag);
+		return this._psychoJS.serverManager.uploadAudioVideo(videoBlob, tag, waitForCompletion);
 	}
 
 
