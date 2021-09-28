@@ -94,11 +94,12 @@ export class MultiStairHandler extends TrialHandler
 	 * @name module:data.MultiStairHandler#addResponse
 	 * @function
 	 * @public
-	 * @param{number} response - the response to the trial, must be either 0 (incorrect or
+	 * @param {number} response - the response to the trial, must be either 0 (incorrect or
 	 * non-detected) or 1 (correct or detected).
+	 * @param {number} [intensity] - the intensity of the trial. Default is what QUEST recommended, as handled by QuestHandler.addResponse.
 	 * @returns {void}
 	 */
-	addResponse(response)
+	addResponse(response, intensity=undefined)
 	{
 		// check that response is either 0 or 1:
 		if (response !== 0 && response !== 1)
@@ -113,7 +114,7 @@ export class MultiStairHandler extends TrialHandler
 		if (!this._finished)
 		{
 			// update the current staircase:
-			this._currentStaircase.addResponse(response);
+			this._currentStaircase.addResponse(response, intensity);
 
 			// move onto the next trial:
 			this._nextTrial();

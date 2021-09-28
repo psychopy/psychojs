@@ -116,11 +116,12 @@ export class QuestHandler extends TrialHandler
 	 * @name module:data.QuestHandler#addResponse
 	 * @function
 	 * @public
-	 * @param{number} response	- the response to the trial, must be either 0 (incorrect or
+	 * @param {number} response	- the response to the trial, must be either 0 (incorrect or
 	 * non-detected) or 1 (correct or detected).
+	 * @param {number} [intensity=this._questValue]	- the intensity of the trial. Default is what QUEST recommended.
 	 * @returns {void}
 	 */
-	addResponse(response)
+	addResponse(response, intensity=this._questValue)
 	{
 		// check that response is either 0 or 1:
 		if (response !== 0 && response !== 1)
@@ -133,7 +134,7 @@ export class QuestHandler extends TrialHandler
 		}
 
 		// update the QUEST pdf:
-		this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, this._questValue, response);
+		this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, intensity, response);
 
 		if (!this._finished)
 		{
