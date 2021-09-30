@@ -95,10 +95,11 @@ export class MultiStairHandler extends TrialHandler
 	 * @function
 	 * @public
 	 * @param{number} response - the response to the trial, must be either 0 (incorrect or
-	 * non-detected) or 1 (correct or detected).
+	 * non-detected) or 1 (correct or detected)
+	 * @param{number | undefined} [value] - optional intensity / contrast / threshold
 	 * @returns {void}
 	 */
-	addResponse(response)
+	addResponse(response, value)
 	{
 		// check that response is either 0 or 1:
 		if (response !== 0 && response !== 1)
@@ -113,7 +114,7 @@ export class MultiStairHandler extends TrialHandler
 		if (!this._finished)
 		{
 			// update the current staircase:
-			this._currentStaircase.addResponse(response);
+			this._currentStaircase.addResponse(response, value);
 
 			// move onto the next trial:
 			this._nextTrial();

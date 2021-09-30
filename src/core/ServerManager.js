@@ -12,6 +12,7 @@ import { ExperimentHandler } from "../data/ExperimentHandler.js";
 import { Clock, MonotonicClock } from "../util/Clock.js";
 import { PsychObject } from "../util/PsychObject.js";
 import * as util from "../util/Util.js";
+import { Scheduler } from "../util/Scheduler.js";
 import { PsychoJS } from "./PsychoJS.js";
 
 /**
@@ -519,7 +520,7 @@ export class ServerManager extends PsychObject
 		}
 		catch (error)
 		{
-			console.log("error", error);
+			console.error("error", error);
 			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
@@ -543,7 +544,7 @@ export class ServerManager extends PsychObject
 		};
 
 		const self = this;
-		return () =>
+		return async () =>
 		{
 			const t = self._waitForDownloadComponent.clock.getTime();
 
@@ -558,7 +559,7 @@ export class ServerManager extends PsychObject
 				{
 					for (const [name, { status, path, data }] of this._resources)
 					{
-						resources.append({ name, path });
+						resources.push({ name, path });
 					}
 				}
 
@@ -592,6 +593,7 @@ export class ServerManager extends PsychObject
 						resourcesToDownload.add(name);
 						self._psychoJS.logger.debug("registered resource:", name, path);
 					}
+
 					// the resource has been registered but is not downloaded yet:
 					else if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
 					{ // else if (typeof pathStatusData.data === 'undefined')
@@ -599,25 +601,30 @@ export class ServerManager extends PsychObject
 					}
 				}
 
+				self._waitForDownloadComponent.status = PsychoJS.Status.STARTED;
+
 				// start the download:
 				self._downloadResources(resourcesToDownload);
 			}
 
-			// check whether all resources have been downloaded:
-			for (const name of self._waitForDownloadComponent.resources)
+			if (self._waitForDownloadComponent.status === PsychoJS.Status.STARTED)
 			{
-				const pathStatusData = this._resources.get(name);
+				// check whether all resources have been downloaded:
+				for (const name of self._waitForDownloadComponent.resources)
+				{
+					const pathStatusData = this._resources.get(name);
 
-				// the resource has not been downloaded yet: loop this component
-				if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
-				{ // if (typeof pathStatusData.data === 'undefined')
-					return Scheduler.Event.FLIP_REPEAT;
+					// the resource has not been downloaded yet: loop this component
+					if (pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					{ // if (typeof pathStatusData.data === 'undefined')
+						return Scheduler.Event.FLIP_REPEAT;
+					}
 				}
-			}
 
-			// all resources have been downloaded: move to the next component:
-			self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
-			return Scheduler.Event.NEXT;
+				// all resources have been downloaded: move to the next component:
+				self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
+				return Scheduler.Event.NEXT;
+			}
 		};
 	}
 
@@ -757,13 +764,16 @@ export class ServerManager extends PsychObject
 	 * @name module:core.ServerManager#uploadAudioVideo
 	 * @function
 	 * @public
-	 * @param {Blob} mediaBlob - the audio or video blob to be uploaded
-	 * @param {string} tag - additional tag
-	 * @param {boolean} [waitForCompletion=false] - whether or not to wait for completion
+	 * @param @param {Object} options
+	 * @param {Blob} options.mediaBlob - the audio or video blob to be uploaded
+	 * @param {string} options.tag - additional tag
+	 * @param {boolean} [options.waitForCompletion=false] - whether or not to wait for completion
 	 * 	before returning
+	 * @param {boolean} [options.showDialog=false] - whether or not to open a dialog box to inform the participant to wait for the data to be uploaded to the server
+	 * @param {string} [options.dialogMsg="Please wait a few moments while the data is uploading to the server"] - default message informing the participant to wait for the data to be uploaded to the server
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudioVideo(mediaBlob, tag, waitForCompletion = false)
+	async uploadAudioVideo({mediaBlob, tag, waitForCompletion = false, showDialog = false, dialogMsg = "Please wait a few moments while the data is uploading to the server"})
 	{
 		const response = {
 			origin: "ServerManager.uploadAudio",
@@ -783,7 +793,13 @@ export class ServerManager extends PsychObject
 			this.setStatus(ServerManager.Status.BUSY);
 
 			// open pop-up dialog:
-			// TODO
+			if (showDialog)
+			{
+				this.psychoJS.gui.dialog({
+					warning: dialogMsg,
+					showOK: false,
+				});
+			}
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
@@ -850,7 +866,7 @@ export class ServerManager extends PsychObject
 						redirect: "follow",
 						referrerPolicy: "no-referrer"
 					});
-					const checkSatusResponse = await response.json();
+					const checkStatusResponse = await response.json();
 					this._psychoJS.logger.debug(`check upload status response: ${JSON.stringify(checkStatusResponse)}`);
 
 					if (("status" in checkStatusResponse) && checkStatusResponse["status"] === "COMPLETED")
@@ -858,6 +874,11 @@ export class ServerManager extends PsychObject
 						break;
 					}
 				}
+			}
+
+			if (showDialog)
+			{
+				this.psychoJS.gui.closeDialog();
 			}
 
 			this.setStatus(ServerManager.Status.READY);
@@ -1103,6 +1124,7 @@ export class ServerManager extends PsychObject
 		}
 
 		// start loading resources marked for howler.js:
+		const self = this;
 		for (const name of soundResources)
 		{
 			const pathStatusData = this._resources.get(name);
