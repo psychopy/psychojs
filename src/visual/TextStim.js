@@ -151,19 +151,17 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			false,
 			onChange(true, true, true),
 		);
-
-		// color:
 		this._addAttribute(
 			"color",
 			color,
-			"white",
-			this._onChange(true, false),
+			"white"
+			// this._onChange(true, false)
 		);
 		this._addAttribute(
 			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false),
+			this._onChange(true, false)
 		);
 
 		// estimate the bounding box (using TextMetrics):
@@ -342,7 +340,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - anchor[1] * textSize[1],
+			this._pos[1] - textSize[1] - anchor[1] * textSize[1],
 			textSize[0],
 			textSize[1],
 		);
@@ -371,6 +369,28 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextStim#setColor
+	 * @public
+	 * @param {undefined | null | number} color - the color
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setColor(color, log = false)
+	{
+		const hasChanged = this._setAttribute("color", color, log);
+
+		if (hasChanged)
+		{
+			if (typeof this._pixi !== "undefined")
+			{
+				this._pixi.style = this._getTextStyle();
+				this._needUpdate = true;
+			}
+		}
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.TextStim#_updateIfNeeded
@@ -395,7 +415,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
-			this._pixi.updateText();
+			// TODO is updateText necessary?
+			// this._pixi.updateText();
 		}
 
 		const anchor = this._getAnchor();
@@ -413,16 +434,18 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
 
-		// update the size attributes:
-		this._size = [
-			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height)),
-		];
+		// update the size attribute:
+		this._size = util.to_unit(
+			[Math.abs(this._pixi.width), Math.abs(this._pixi.height)],
+			"pix",
+			this._win,
+			this._units
+		);
 
 		// refine the estimate of the bounding box:
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - anchor[1] * this._size[1],
+			this._pos[1] - this._size[1] - anchor[1] * this._size[1],
 			this._size[0],
 			this._size[1],
 		);

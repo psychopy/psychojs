@@ -76,14 +76,14 @@ export let WindowMixin = (superclass) =>
 		}
 
 		/**
-	 * Convert the given length from pixel units to the stimulus units
-	 *
-	 * @name module:core.WindowMixin#_getLengthUnits
-	 * @function
-	 * @protected
-	 * @param {number} length_px - the length in pixel units
-	 * @return {number} - the length in stimulus units
-	 */
+		 * Convert the given length from pixel units to the stimulus units
+		 *
+		 * @name module:core.WindowMixin#_getLengthUnits
+		 * @function
+		 * @protected
+		 * @param {number} length_px - the length in pixel units
+		 * @return {number} - the length in stimulus units
+		 */
 		_getLengthUnits(length_px)
 		{
 			let response = {
