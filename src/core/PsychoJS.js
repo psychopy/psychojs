@@ -393,7 +393,7 @@ export class PsychoJS
 			}
 
 			// start the asynchronous download of resources:
-			await this._serverManager.prepareResources(resources);
+			this._serverManager.prepareResources(resources);
 
 			// start the experiment:
 			this.logger.info("[PsychoJS] Start Experiment.");

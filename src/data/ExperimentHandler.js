@@ -170,7 +170,7 @@ export class ExperimentHandler extends PsychObject
 	 * @name module:data.ExperimentHandler#nextEntry
 	 * @function
 	 * @public
-	 * @param {Object[]} snapshots - array of loop snapshots
+	 * @param {Object | Object[] | undefined} snapshots - array of loop snapshots
 	 */
 	nextEntry(snapshots)
 	{
@@ -239,16 +239,20 @@ export class ExperimentHandler extends PsychObject
 	 * @public
 	 * @param {Object} options
 	 * @param {Array.<Object>} [options.attributes] - the attributes to be saved
-	 * @param {Array.<Object>} [options.sync] - whether or not to communicate with the server in a synchronous manner
+	 * @param {boolean} [options.sync=false] - whether or not to communicate with the server in a synchronous manner
+	 * @param {string} [options.tag=''] - an optional tag to add to the filename to which the data is saved (for CSV and XLSX saving options)
+	 * @param {boolean} [options.clear=false] - whether or not to clear all experiment results immediately after they are saved (this is useful when saving data in separate chunks, throughout an experiment)
 	 */
 	async save({
 		attributes = [],
 		sync = false,
+		tag = "",
+		clear = false
 	} = {})
 	{
 		this._psychoJS.logger.info("[PsychoJS] Save experiment results.");
 
-		// (*) get attributes:
+		// get attributes:
 		if (attributes.length === 0)
 		{
 			attributes = this._trialsKeys.slice();
@@ -274,7 +278,7 @@ export class ExperimentHandler extends PsychObject
 			}
 		}
 
-		// (*) get various experiment info:
+		// get various experiment info:
 		const info = this.extraInfo;
 		const __experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
 		const __participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
@@ -283,17 +287,26 @@ export class ExperimentHandler extends PsychObject
 		const gitlabConfig = this._psychoJS.config.gitlab;
 		const __projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
 
-		// (*) save to a .csv file:
+		let data = this._trialsData;
+		// if the experiment data have to be cleared, we first make a copy of them:
+		if (clear)
+		{
+			data = this._trialsData.slice();
+			this._trialsData = [];
+		}
+
+		// save to a .csv file:
 		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV)
 		{
 			// note: we use the XLSX library as it automatically deals with header, takes care of quotes,
 			// newlines, etc.
-			const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
+			// TODO only save the given attributes
+			const worksheet = XLSX.utils.json_to_sheet(data);
 			// prepend BOM
 			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
-			const key = __participant + "_" + __experimentName + "_" + __datetime + ".csv";
+			const key = `${__participant}_${__experimentName}_${__datetime}${tag}.csv`;
 			if (
 				this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
 				&& this._psychoJS.config.experiment.status === "RUNNING"
@@ -307,17 +320,17 @@ export class ExperimentHandler extends PsychObject
 				util.offerDataForDownload(key, csv, "text/csv");
 			}
 		}
-		// (*) save in the database on the remote server:
+		// save to the database on the pavlovia server:
 		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE)
 		{
 			let documents = [];
 
-			for (let r = 0; r < this._trialsData.length; r++)
+			for (let r = 0; r < data.length; r++)
 			{
 				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
 				for (let h = 0; h < attributes.length; h++)
 				{
-					doc[attributes[h]] = this._trialsData[r][attributes[h]];
+					doc[attributes[h]] = data[r][attributes[h]];
 				}
 
 				documents.push(doc);
