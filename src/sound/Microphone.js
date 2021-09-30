@@ -322,7 +322,10 @@ export class Microphone extends PsychObject
 
 		// upload the blob:
 		const audioBlob = new Blob(this._audioBuffer);
-		return this._psychoJS.serverManager.uploadAudioVideo(audioBlob, tag);
+		return this._psychoJS.serverManager.uploadAudioVideo({
+			mediaBlob: audioBlob,
+			tag
+		});
 	}
 
 	/**

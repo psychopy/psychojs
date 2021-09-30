@@ -258,7 +258,19 @@ export class EventManager
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 
-			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
+		}, false);
+
+		renderer.view.addEventListener("pointerout", (event) =>
+		{
+			event.preventDefault();
+
+			// if the pointer leaves the canvas: cancel all buttons
+			self._mouseInfo.buttons.pressed = [0, 0, 0];
+			self._mouseInfo.buttons.times = [0.0, 0.0, 0.0];
+			self._mouseInfo.pos = [event.offsetX, event.offsetY];
+
+			this._psychoJS.experimentLogger.data("Mouse: out, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 		renderer.view.addEventListener("touchend", (event) =>
@@ -272,7 +284,7 @@ export class EventManager
 			const touches = event.changedTouches;
 			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
 
-			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
+			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
 		renderer.view.addEventListener("pointermove", (event) =>
