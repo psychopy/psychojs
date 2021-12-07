@@ -563,7 +563,7 @@ export class ServerManager extends PsychObject
 					}
 				}
 
-				// only download those resources not already downloaded or downloading:
+				// only download those resources not already downloaded and not downloading:
 				const resourcesToDownload = new Set();
 				for (let { name, path } of resources)
 				{
