@@ -9,7 +9,6 @@
  */
 
 
-
 import {TrialHandler} from "./TrialHandler.js";
 
 /**
@@ -18,7 +17,7 @@ import {TrialHandler} from "./TrialHandler.js";
  *
  * @class module.data.QuestHandler
  * @extends TrialHandler
- * @param {Object} options
+ * @param {Object} options - the handler options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {string} options.varName - the name of the variable / intensity / contrast / threshold manipulated by QUEST
  * @param {number} options.startVal - initial guess for the threshold
@@ -43,23 +42,23 @@ export class QuestHandler extends TrialHandler
 	 * @public
 	 */
 	constructor({
-								psychoJS,
-								varName,
-								startVal,
-								startValSd,
-								minVal,
-								maxVal,
-								pThreshold,
-								nTrials,
-								stopInterval,
-								method,
-								beta,
-								delta,
-								gamma,
-								grain,
-								name,
-								autoLog
-							} = {})
+		psychoJS,
+		varName,
+		startVal,
+		startValSd,
+		minVal,
+		maxVal,
+		pThreshold,
+		nTrials,
+		stopInterval,
+		method,
+		beta,
+		delta,
+		gamma,
+		grain,
+		name,
+		autoLog
+	} = {})
 	{
 		super({
 			psychoJS,
@@ -70,24 +69,46 @@ export class QuestHandler extends TrialHandler
 			nReps: 1
 		});
 
-		this._addAttribute('varName', varName);
-		this._addAttribute('startVal', startVal);
-		this._addAttribute('minVal', minVal, Number.MIN_VALUE);
-		this._addAttribute('maxVal', maxVal, Number.MAX_VALUE);
-		this._addAttribute('startValSd', startValSd);
-		this._addAttribute('pThreshold', pThreshold, 0.82);
-		this._addAttribute('nTrials', nTrials);
-		this._addAttribute('stopInterval', stopInterval, Number.MIN_VALUE);
-		this._addAttribute('beta', beta, 3.5);
-		this._addAttribute('delta', delta, 0.01);
-		this._addAttribute('gamma', gamma, 0.5);
-		this._addAttribute('grain', grain, 0.01);
-		this._addAttribute('method', method, QuestHandler.Method.QUANTILE);
+		this._addAttribute("varName", varName);
+		this._addAttribute("startVal", startVal);
+		this._addAttribute("minVal", minVal, Number.MIN_VALUE);
+		this._addAttribute("maxVal", maxVal, Number.MAX_VALUE);
+		this._addAttribute("startValSd", startValSd);
+		this._addAttribute("pThreshold", pThreshold, 0.82);
+		this._addAttribute("nTrials", nTrials);
+		this._addAttribute("stopInterval", stopInterval, Number.MIN_VALUE);
+		this._addAttribute("beta", beta, 3.5);
+		this._addAttribute("delta", delta, 0.01);
+		this._addAttribute("gamma", gamma, 0.5);
+		this._addAttribute("grain", grain, 0.01);
+		this._addAttribute("method", method, QuestHandler.Method.QUANTILE);
 
 		// setup jsQuest:
 		this._setupJsQuest();
+		this._estimateQuestValue();
 	}
 
+	/**
+	 * Setter for the method attribute.
+	 *
+	 * @param {mixed} method - the method value, PsychoPy-style values ("mean", "median", 
+	 * "quantile") are converted to their respective QuestHandler.Method values
+	 * @param {boolean} log - whether or not to log the change of seed
+	 */
+	 setMethod(method, log)
+	 {
+		let methodMapping = {
+			"quantile": QuestHandler.Method.QUANTILE,
+			"mean": QuestHandler.Method.MEAN,
+			"mode": QuestHandler.Method.MODE
+		};
+		// If method is a key in methodMapping, convert method to corresponding value
+		if (methodMapping.hasOwnProperty(method)) 
+		{
+			method = methodMapping[method];
+		}
+		this._setAttribute("method", method, log);
+	}
 
 	/**
 	 * Add a response and update the PDF.
@@ -96,22 +117,31 @@ export class QuestHandler extends TrialHandler
 	 * @function
 	 * @public
 	 * @param{number} response	- the response to the trial, must be either 0 (incorrect or
-	 * non-detected) or 1 (correct or detected).
+	 * non-detected) or 1 (correct or detected)
+	 * @param{number | undefined} [value] - optional intensity / contrast / threshold
+	 * @returns {void}
 	 */
-	addResponse(response)
+	addResponse(response, value)
 	{
 		// check that response is either 0 or 1:
 		if (response !== 0 && response !== 1)
 		{
 			throw {
-				origin: 'QuestHandler.addResponse',
-				context: 'when adding a trial response',
+				origin: "QuestHandler.addResponse",
+				context: "when adding a trial response",
 				error: `the response must be either 0 or 1, got: ${JSON.stringify(response)}`
 			};
 		}
 
 		// update the QUEST pdf:
-		this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, this._questValue, response);
+		if (typeof value !== "undefined")
+		{
+			this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, value, response);
+		}
+		else
+		{
+			this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, this._questValue, response);
+		}
 
 		if (!this._finished)
 		{
@@ -120,7 +150,6 @@ export class QuestHandler extends TrialHandler
 		}
 	}
 
-
 	/**
 	 * Simulate a response.
 	 *
@@ -128,6 +157,7 @@ export class QuestHandler extends TrialHandler
 	 * @function
 	 * @public
 	 * @param{number} trueValue - the true, known value of the threshold / contrast / intensity
+	 * @returns{number} the simulated response, 0 or 1
 	 */
 	simulate(trueValue)
 	{
@@ -140,7 +170,6 @@ export class QuestHandler extends TrialHandler
 
 		return response;
 	}
-
 
 	/**
 	 * Get the mean of the Quest posterior PDF.
@@ -155,7 +184,6 @@ export class QuestHandler extends TrialHandler
 		return jsQUEST.QuestMean(this._jsQuest);
 	}
 
-
 	/**
 	 * Get the standard deviation of the Quest posterior PDF.
 	 *
@@ -168,7 +196,6 @@ export class QuestHandler extends TrialHandler
 	{
 		return jsQUEST.QuestSd(this._jsQuest);
 	}
-
 
 	/**
 	 * Get the mode of the Quest posterior PDF.
@@ -184,7 +211,6 @@ export class QuestHandler extends TrialHandler
 		return mode;
 	}
 
-
 	/**
 	 * Get the standard deviation of the Quest posterior PDF.
 	 *
@@ -199,6 +225,18 @@ export class QuestHandler extends TrialHandler
 		return jsQUEST.QuestQuantile(this._jsQuest, quantileOrder);
 	}
 
+	/**
+	 * Get the current value of the variable / contrast / threshold.
+	 *
+	 * @name module:data.QuestHandler#getQuestValue
+	 * @function
+	 * @public
+	 * @returns {number} the current QUEST value for the variable / contrast / threshold
+	 */
+	getQuestValue()
+	{
+		return this._questValue;
+	}
 
 	/**
 	 * Get an estimate of the 5%-95% confidence interval (CI).
@@ -206,7 +244,8 @@ export class QuestHandler extends TrialHandler
 	 * @name module:data.QuestHandler#confInterval
 	 * @function
 	 * @public
-	 * @param{boolean} [getDifference=false]	if true, return the width of the CI instead of the CI
+	 * @param{boolean} [getDifference=false] - if true, return the width of the CI instead of the CI
+	 * @returns{number[] | number} the 5%-95% CI or the width of the CI
 	 */
 	confInterval(getDifference = false)
 	{
@@ -225,13 +264,13 @@ export class QuestHandler extends TrialHandler
 		}
 	}
 
-
 	/**
 	 * Setup the JS Quest object.
 	 *
 	 * @name module:data.QuestHandler#_setupJsQuest
 	 * @function
 	 * @protected
+	 * @returns {void}
 	 */
 	_setupJsQuest()
 	{
@@ -243,10 +282,7 @@ export class QuestHandler extends TrialHandler
 			this._delta,
 			this._gamma,
 			this._grain);
-
-		this._estimateQuestValue();
 	}
-
 
 	/**
 	 * Estimate the next value of the QUEST variable, based on the current value
@@ -255,6 +291,7 @@ export class QuestHandler extends TrialHandler
 	 * @name module:data.QuestHandler#_estimateQuestValue
 	 * @function
 	 * @protected
+	 * @returns {void}
 	 */
 	_estimateQuestValue()
 	{
@@ -275,8 +312,8 @@ export class QuestHandler extends TrialHandler
 		else
 		{
 			throw {
-				origin: 'QuestHandler._estimateQuestValue',
-				context: 'when estimating the next value of the QUEST variable',
+				origin: "QuestHandler._estimateQuestValue",
+				context: "when estimating the next value of the QUEST variable",
 				error: `unknown method: ${this._method}, please use: mean, mode, or quantile`
 			};
 		}
@@ -284,16 +321,15 @@ export class QuestHandler extends TrialHandler
 		this._psychoJS.logger.debug(`estimated value for QUEST variable ${this._varName}: ${this._questValue}`);
 
 		// check whether we should finish the trial:
-		if (this.thisN > 0 &&
-			(this.nRemaining === 0 || this.confInterval(true) < this._stopInterval))
+		if (this.thisN > 0 && (this.nRemaining === 0 || this.confInterval(true) < this._stopInterval))
 		{
 			this._finished = true;
 
 			// update the snapshots associated with the current trial in the trial list:
-			for (let t = 0; t < this._trialList.length-1; ++t)
+			for (let t = 0; t < this._snapshots.length - 1; ++t)
 			{
 				// the current trial is the last defined one:
-				if (typeof this._trialList[t+1] === 'undefined')
+				if (typeof this._trialList[t + 1] === "undefined")
 				{
 					this._snapshots[t].finished = true;
 					break;
@@ -306,11 +342,11 @@ export class QuestHandler extends TrialHandler
 		// update the next undefined trial in the trial list, and the associated snapshot:
 		for (let t = 0; t < this._trialList.length; ++t)
 		{
-			if (typeof this._trialList[t] === 'undefined')
+			if (typeof this._trialList[t] === "undefined")
 			{
 				this._trialList[t] = { [this._varName]: this._questValue };
 
-				if (typeof this._snapshots[t] !== 'undefined')
+				if (typeof this._snapshots[t] !== "undefined")
 				{
 					this._snapshots[t][this._varName] = this._questValue;
 					this._snapshots[t].trialAttributes.push(this._varName);
@@ -319,9 +355,7 @@ export class QuestHandler extends TrialHandler
 			}
 		}
 	}
-
 }
-
 
 /**
  * QuestHandler method
@@ -334,15 +368,15 @@ QuestHandler.Method = {
 	/**
 	 * Quantile threshold estimate.
 	 */
-	QUANTILE: Symbol.for('QUANTILE'),
+	QUANTILE: Symbol.for("QUANTILE"),
 
 	/**
 	 * Mean threshold estimate.
 	 */
-	MEAN: Symbol.for('MEAN'),
+	MEAN: Symbol.for("MEAN"),
 
 	/**
 	 * Mode threshold estimate.
 	 */
-	MODE: Symbol.for('MODE')
+	MODE: Symbol.for("MODE")
 };

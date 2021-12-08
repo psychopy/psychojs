@@ -151,19 +151,17 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			false,
 			onChange(true, true, true),
 		);
-
-		// color:
 		this._addAttribute(
 			"color",
 			color,
-			"white",
-			this._onChange(true, false),
+			"white"
+			// this._onChange(true, false)
 		);
 		this._addAttribute(
 			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false),
+			this._onChange(true, false)
 		);
 
 		// estimate the bounding box (using TextMetrics):
@@ -178,8 +176,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the metrics estimated for the text and style.
 	 *
-	 * Note: getTextMetrics does not require the PIXI representation of the stimulus to be instantiated,
-	 * unlike getSize().
+	 * Note: getTextMetrics does not require the PIXI representation of the stimulus
+	 * to be instantiated, unlike getSize().
 	 *
 	 * @name module:visual.TextStim#getTextMetrics
 	 * @public
@@ -189,6 +187,19 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		if (typeof this._textMetrics === "undefined")
 		{
 			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
+
+			// since PIXI.TextMetrics does not give us the actual bounding box of the text
+			// (e.g. the height is really just the ascent + descent of the font), we use measureText:
+			const textMetricsCanvas = document.createElement('canvas');
+			document.body.appendChild(textMetricsCanvas);
+
+			const ctx = textMetricsCanvas.getContext("2d");
+			ctx.font = this._getTextStyle().toFontString();
+			ctx.textBaseline = "alphabetic";
+			ctx.textAlign = "left";
+			this._textMetrics.boundingBox = ctx.measureText(this._text);
+
+			document.body.removeChild(textMetricsCanvas);
 		}
 
 		return this._textMetrics;
@@ -241,6 +252,72 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Get the bounding gox.
+	 *
+	 * @name module:visual.TextStim#getBoundingBox
+	 * @function
+	 * @protected
+	 * @param {boolean} [tight= false] - whether or not to fit as closely as possible to the text
+	 * @return {number[]} - the bounding box, in the units of this TextStim
+	 */
+	getBoundingBox(tight = false)
+	{
+		if (tight)
+		{
+			const textMetrics_px = this.getTextMetrics();
+			let left_px = this._pos[0] - textMetrics_px.boundingBox.actualBoundingBoxLeft;
+			let top_px = this._pos[1] + textMetrics_px.fontProperties.descent - textMetrics_px.boundingBox.actualBoundingBoxDescent;
+			const width_px = textMetrics_px.boundingBox.actualBoundingBoxRight + textMetrics_px.boundingBox.actualBoundingBoxLeft;
+			const height_px = textMetrics_px.boundingBox.actualBoundingBoxAscent + textMetrics_px.boundingBox.actualBoundingBoxDescent;
+
+			// adjust the bounding box position by taking into account the anchoring of the text:
+			const boundingBox_px = this._getBoundingBox_px();
+			switch (this._alignHoriz)
+			{
+				case "left":
+					// nothing to do
+					break;
+				case "right":
+					// TODO
+					break;
+				default:
+				case "center":
+					left_px -= (boundingBox_px.width - width_px) / 2;
+			}
+			switch (this._alignVert)
+			{
+				case "top":
+					// TODO
+					break;
+				case "bottom":
+					// nothing to do
+					break;
+				default:
+				case "center":
+					top_px -= (boundingBox_px.height - height_px) / 2;
+			}
+
+			// convert from pixel to this stimulus' units:
+			const leftTop = util.to_unit(
+				[left_px, top_px],
+				"pix",
+				this._win,
+				this._units);
+			const dimensions = util.to_unit(
+				[width_px, height_px],
+				"pix",
+				this._win,
+				this._units);
+
+			return new PIXI.Rectangle(leftTop[0], leftTop[1], dimensions[0], dimensions[1]);
+		}
+		else
+		{
+			return this._boundingBox.clone();
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.TextStim#_estimateBoundingBox
@@ -263,7 +340,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - anchor[1] * textSize[1],
+			this._pos[1] - textSize[1] - anchor[1] * textSize[1],
 			textSize[0],
 			textSize[1],
 		);
@@ -292,6 +369,28 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextStim#setColor
+	 * @public
+	 * @param {undefined | null | number} color - the color
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setColor(color, log = false)
+	{
+		const hasChanged = this._setAttribute("color", color, log);
+
+		if (hasChanged)
+		{
+			if (typeof this._pixi !== "undefined")
+			{
+				this._pixi.style = this._getTextStyle();
+				this._needUpdate = true;
+			}
+		}
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.TextStim#_updateIfNeeded
@@ -316,6 +415,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.destroy(true);
 			}
 			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
+			// TODO is updateText necessary?
+			// this._pixi.updateText();
 		}
 
 		const anchor = this._getAnchor();
@@ -333,16 +434,18 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
 
-		// update the size attributes:
-		this._size = [
-			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height)),
-		];
+		// update the size attribute:
+		this._size = util.to_unit(
+			[Math.abs(this._pixi.width), Math.abs(this._pixi.height)],
+			"pix",
+			this._win,
+			this._units
+		);
 
 		// refine the estimate of the bounding box:
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - anchor[1] * this._size[1],
+			this._pos[1] - this._size[1] - anchor[1] * this._size[1],
 			this._size[0],
 			this._size[1],
 		);

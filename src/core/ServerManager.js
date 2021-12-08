@@ -12,6 +12,7 @@ import { ExperimentHandler } from "../data/ExperimentHandler.js";
 import { Clock, MonotonicClock } from "../util/Clock.js";
 import { PsychObject } from "../util/PsychObject.js";
 import * as util from "../util/Util.js";
+import { Scheduler } from "../util/Scheduler.js";
 import { PsychoJS } from "./PsychoJS.js";
 
 /**
@@ -27,7 +28,7 @@ import { PsychoJS } from "./PsychoJS.js";
  */
 export class ServerManager extends PsychObject
 {
-	/**
+	/****************************************************************************
 	 * Used to indicate to the ServerManager that all resources must be registered (and
 	 * subsequently downloaded)
 	 *
@@ -54,14 +55,14 @@ export class ServerManager extends PsychObject
 		this._addAttribute("status", ServerManager.Status.READY);
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.GetConfigurationPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [config] the configuration
 	 * @property {Object.<string, *>} [error] an error message if we could not read the configuration file
 	 */
-	/**
+	/****************************************************************************
 	 * Read the configuration file for the experiment.
 	 *
 	 * @name module:core.ServerManager#getConfiguration
@@ -100,14 +101,14 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.OpenSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {string} [token] the session token
 	 * @property {Object.<string, *>} [error] an error message if we could not open the session
 	 */
-	/**
+	/****************************************************************************
 	 * Open a session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#openSession
@@ -190,13 +191,13 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.CloseSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [error] an error message if we could not close the session (e.g. if it has not previously been opened)
 	 */
-	/**
+	/****************************************************************************
 	 * Close the session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#closeSession
@@ -277,7 +278,7 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Get the value of a resource.
 	 *
 	 * @name module:core.ServerManager#getResource
@@ -316,7 +317,7 @@ export class ServerManager extends PsychObject
 		return pathStatusData.data;
 	}
 
-	/**
+	/****************************************************************************
 	 * Get the status of a resource.
 	 *
 	 * @name module:core.ServerManager#getResourceStatus
@@ -343,7 +344,7 @@ export class ServerManager extends PsychObject
 		return pathStatusData.status;
 	}
 
-	/**
+	/****************************************************************************
 	 * Set the resource manager status.
 	 *
 	 * @name module:core.ServerManager#setStatus
@@ -376,7 +377,7 @@ export class ServerManager extends PsychObject
 		return this._status;
 	}
 
-	/**
+	/****************************************************************************
 	 * Reset the resource manager status to ServerManager.Status.READY.
 	 *
 	 * @name module:core.ServerManager#resetStatus
@@ -389,7 +390,7 @@ export class ServerManager extends PsychObject
 		return this.setStatus(ServerManager.Status.READY);
 	}
 
-	/**
+	/****************************************************************************
 	 * Prepare resources for the experiment: register them with the server manager and possibly
 	 * start downloading them right away.
 	 *
@@ -453,7 +454,7 @@ export class ServerManager extends PsychObject
 								path,
 								data: undefined,
 							});
-							this._psychoJS.logger.debug("registered resource:", name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 							resourcesToDownload.add(name);
 						}
 					}
@@ -476,12 +477,10 @@ export class ServerManager extends PsychObject
 						{
 							// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 							// not hosted on pavlovia.org:
-							if (
-								(path.toLowerCase().indexOf("www.") === 0
-									|| path.toLowerCase().indexOf("http:") === 0
-									|| path.toLowerCase().indexOf("https:") === 0)
-								&& (path.indexOf("pavlovia.org") === -1)
-							)
+							if ( (path.toLowerCase().indexOf("www.") === 0 ||
+									path.toLowerCase().indexOf("http:") === 0 ||
+									path.toLowerCase().indexOf("https:") === 0) &&
+								(path.indexOf("pavlovia.org") === -1) )
 							{
 								path = "https://pavlovia.org/api/v2/proxy/" + path;
 							}
@@ -491,7 +490,7 @@ export class ServerManager extends PsychObject
 								path,
 								data: undefined,
 							});
-							this._psychoJS.logger.debug("registered resource:", name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 
 							// download resources by default:
 							if (typeof download === "undefined" || download)
@@ -521,13 +520,13 @@ export class ServerManager extends PsychObject
 		}
 		catch (error)
 		{
-			console.log("error", error);
+			console.error("error", error);
 			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Block the experiment until the specified resources have been downloaded.
 	 *
 	 * @name module:core.ServerManager#waitForResources
@@ -545,7 +544,7 @@ export class ServerManager extends PsychObject
 		};
 
 		const self = this;
-		return () =>
+		return async () =>
 		{
 			const t = self._waitForDownloadComponent.clock.getTime();
 
@@ -560,11 +559,11 @@ export class ServerManager extends PsychObject
 				{
 					for (const [name, { status, path, data }] of this._resources)
 					{
-						resources.append({ name, path });
+						resources.push({ name, path });
 					}
 				}
 
-				// only download those resources not already downloaded or downloading:
+				// only download those resources not already downloaded and not downloading:
 				const resourcesToDownload = new Set();
 				for (let { name, path } of resources)
 				{
@@ -594,6 +593,7 @@ export class ServerManager extends PsychObject
 						resourcesToDownload.add(name);
 						self._psychoJS.logger.debug("registered resource:", name, path);
 					}
+
 					// the resource has been registered but is not downloaded yet:
 					else if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
 					{ // else if (typeof pathStatusData.data === 'undefined')
@@ -601,35 +601,40 @@ export class ServerManager extends PsychObject
 					}
 				}
 
+				self._waitForDownloadComponent.status = PsychoJS.Status.STARTED;
+
 				// start the download:
 				self._downloadResources(resourcesToDownload);
 			}
 
-			// check whether all resources have been downloaded:
-			for (const name of self._waitForDownloadComponent.resources)
+			if (self._waitForDownloadComponent.status === PsychoJS.Status.STARTED)
 			{
-				const pathStatusData = this._resources.get(name);
+				// check whether all resources have been downloaded:
+				for (const name of self._waitForDownloadComponent.resources)
+				{
+					const pathStatusData = this._resources.get(name);
 
-				// the resource has not been downloaded yet: loop this component
-				if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
-				{ // if (typeof pathStatusData.data === 'undefined')
-					return Scheduler.Event.FLIP_REPEAT;
+					// the resource has not been downloaded yet: loop this component
+					if (pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					{ // if (typeof pathStatusData.data === 'undefined')
+						return Scheduler.Event.FLIP_REPEAT;
+					}
 				}
-			}
 
-			// all resources have been downloaded: move to the next component:
-			self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
-			return Scheduler.Event.NEXT;
+				// all resources have been downloaded: move to the next component:
+				self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
+				return Scheduler.Event.NEXT;
+			}
 		};
 	}
 
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.UploadDataPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.<string, *>} [error] an error message if we could not upload the data
 	 */
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment data to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadData
@@ -694,7 +699,7 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment logs to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadLog
@@ -753,36 +758,48 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
-	 * Asynchronously upload audio data to the pavlovia server.
+	/****************************************************************************
+	 * Synchronously or asynchronously upload audio data to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadAudioVideo
 	 * @function
 	 * @public
-	 * @param {Blob} audioBlob - the audio blob to be uploaded
-	 * @param {string} tag - additional tag
+	 * @param @param {Object} options
+	 * @param {Blob} options.mediaBlob - the audio or video blob to be uploaded
+	 * @param {string} options.tag - additional tag
+	 * @param {boolean} [options.waitForCompletion=false] - whether or not to wait for completion
+	 * 	before returning
+	 * @param {boolean} [options.showDialog=false] - whether or not to open a dialog box to inform the participant to wait for the data to be uploaded to the server
+	 * @param {string} [options.dialogMsg="Please wait a few moments while the data is uploading to the server"] - default message informing the participant to wait for the data to be uploaded to the server
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudioVideo(audioBlob, tag)
+	async uploadAudioVideo({mediaBlob, tag, waitForCompletion = false, showDialog = false, dialogMsg = "Please wait a few moments while the data is uploading to the server"})
 	{
 		const response = {
 			origin: "ServerManager.uploadAudio",
-			context: "when uploading audio data for experiment: " + this._psychoJS.config.experiment.fullpath,
+			context: "when uploading media data for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
 		try
 		{
-			if (
-				this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
 				|| this._psychoJS.config.experiment.status !== "RUNNING"
-				|| this._psychoJS._serverMsg.has("__pilotToken")
-			)
+				|| this._psychoJS._serverMsg.has("__pilotToken"))
 			{
-				throw "audio recordings can only be uploaded to the server for experiments running on the server";
+				throw "media recordings can only be uploaded to the server for experiments running on the server";
 			}
 
-			this._psychoJS.logger.debug("uploading audio data for experiment: " + this._psychoJS.config.experiment.fullpath);
+			this._psychoJS.logger.debug(`uploading media data for experiment: ${this._psychoJS.config.experiment.fullpath}`);
 			this.setStatus(ServerManager.Status.BUSY);
+
+			// open pop-up dialog:
+			if (showDialog)
+			{
+				this.psychoJS.gui.dialog({
+					warning: dialogMsg,
+					showOK: false,
+				});
+			}
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
@@ -792,15 +809,15 @@ export class ServerManager extends PsychObject
 			const filename = participant + "_" + experimentName + "_" + datetime + "_" + tag;
 
 			const formData = new FormData();
-			formData.append("audio", audioBlob, filename);
+			formData.append("media", mediaBlob, filename);
 
-			const url = this._psychoJS.config.pavlovia.URL
+			let url = this._psychoJS.config.pavlovia.URL
 				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
 				+ "/sessions/" + this._psychoJS.config.session.token
-				+ "/audio";
+				+ "/media";
 
-			// query the pavlovia server:
-			const response = await fetch(url, {
+			// query the server:
+			let response = await fetch(url, {
 				method: "POST",
 				mode: "cors",
 				cache: "no-cache",
@@ -809,16 +826,63 @@ export class ServerManager extends PsychObject
 				referrerPolicy: "no-referrer",
 				body: formData,
 			});
-			const jsonResponse = await response.json();
+			const postMediaResponse = await response.json();
+			this._psychoJS.logger.debug(`post media response: ${JSON.stringify(postMediaResponse)}`);
 
 			// deal with server errors:
 			if (!response.ok)
 			{
-				throw jsonResponse;
+				throw postMediaResponse;
+			}
+
+			// wait until the upload has completed:
+			if (waitForCompletion)
+			{
+				if (!("uploadToken" in postMediaResponse))
+				{
+					throw "incorrect server response: missing uploadToken";
+				}
+				const uploadToken = postMediaResponse['uploadToken'];
+
+				while (true)
+				{
+					// wait a bit:
+					await new Promise(r =>
+					{
+						setTimeout(r, 1000);
+					});
+
+					// check the status of the upload:
+					url = this._psychoJS.config.pavlovia.URL
+						+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+						+ "/sessions/" + this._psychoJS.config.session.token
+						+ "/media/" + uploadToken + "/status";
+
+					response = await fetch(url, {
+						method: "GET",
+						mode: "cors",
+						cache: "no-cache",
+						credentials: "same-origin",
+						redirect: "follow",
+						referrerPolicy: "no-referrer"
+					});
+					const checkStatusResponse = await response.json();
+					this._psychoJS.logger.debug(`check upload status response: ${JSON.stringify(checkStatusResponse)}`);
+
+					if (("status" in checkStatusResponse) && checkStatusResponse["status"] === "COMPLETED")
+					{
+						break;
+					}
+				}
+			}
+
+			if (showDialog)
+			{
+				this.psychoJS.gui.closeDialog();
 			}
 
 			this.setStatus(ServerManager.Status.READY);
-			return jsonResponse;
+			return postMediaResponse;
 		}
 		catch (error)
 		{
@@ -829,9 +893,9 @@ export class ServerManager extends PsychObject
 		}
 	}
 
-	/**
+	/****************************************************************************
 	 * List the resources available to the experiment.
-
+	 *
 	 * @name module:core.ServerManager#_listResources
 	 * @function
 	 * @private
@@ -898,7 +962,7 @@ export class ServerManager extends PsychObject
 		});
 	}
 
-	/**
+	/****************************************************************************
 	 * Download the specified resources.
 	 *
 	 * <p>Note: we use the [preloadjs library]{@link https://www.createjs.com/preloadjs}.</p>
@@ -925,87 +989,11 @@ export class ServerManager extends PsychObject
 
 		this._nbLoadedResources = 0;
 
-		// (*) set-up preload.js:
-		this._resourceQueue = new createjs.LoadQueue(true, "", true);
-
-		const self = this;
-
-		// the loading of a specific resource has started:
-		this._resourceQueue.addEventListener("filestart", (event) =>
-		{
-			const pathStatusData = self._resources.get(event.item.id);
-			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
-
-			self.emit(ServerManager.Event.RESOURCE, {
-				message: ServerManager.Event.DOWNLOADING_RESOURCE,
-				resource: event.item.id,
-			});
-		});
-
-		// the loading of a specific resource has completed:
-		this._resourceQueue.addEventListener("fileload", (event) =>
-		{
-			const pathStatusData = self._resources.get(event.item.id);
-			pathStatusData.data = event.result;
-			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
-
-			++self._nbLoadedResources;
-			self.emit(ServerManager.Event.RESOURCE, {
-				message: ServerManager.Event.RESOURCE_DOWNLOADED,
-				resource: event.item.id,
-			});
-		});
-
-		// the loading of all given resources completed:
-		this._resourceQueue.addEventListener("complete", (event) =>
-		{
-			self._resourceQueue.close();
-			if (self._nbLoadedResources === resources.size)
-			{
-				self.setStatus(ServerManager.Status.READY);
-				self.emit(ServerManager.Event.RESOURCE, {
-					message: ServerManager.Event.DOWNLOAD_COMPLETED,
-				});
-			}
-		});
-
-		// error: we throw an exception
-		this._resourceQueue.addEventListener("error", (event) =>
-		{
-			self.setStatus(ServerManager.Status.ERROR);
-			if (typeof event.item !== "undefined")
-			{
-				const pathStatusData = self._resources.get(event.item.id);
-				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
-				throw Object.assign(response, {
-					error: "unable to download resource: " + event.item.id + " (" + event.title + ")",
-				});
-			}
-			else
-			{
-				console.error(event);
-
-				if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
-				{
-					const id = event.data.id;
-					const title = event.data.src;
-
-					throw Object.assign(response, {
-						error: "unable to download resource: " + id + " (" + title + ")",
-					});
-				}
-				else
-				{
-					throw Object.assign(response, {
-						error: "unspecified download error",
-					});
-				}
-			}
-		});
-
-		// (*) dispatch resources to preload.js or howler.js based on extension:
-		let manifest = [];
+		// based on the resource extension either (a) add it to the preload manifest, (b) mark it for
+		// download by howler, or (c) add it to the document fonts
+		const preloadManifest = [];
 		const soundResources = new Set();
+		const fontResources = [];
 		for (const name of resources)
 		{
 			const nameParts = name.toLowerCase().split(".");
@@ -1027,23 +1015,27 @@ export class ServerManager extends PsychObject
 				throw Object.assign(response, { error: name + " is already downloaded or is currently already downloading" });
 			}
 
-			// preload.js with forced binary for xls and xlsx:
+			const pathParts = pathStatusData.path.toLowerCase().split(".");
+			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
+
+			// preload.js with forced binary:
 			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
 			{
-				manifest.push(/*new createjs.LoadItem().set(*/ {
+				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
 					type: createjs.Types.BINARY,
 					crossOrigin: "Anonymous",
 				} /*)*/);
 			}
-			/* ascii .csv are adequately handled in binary format
+
+			/* note: ascii .csv are adequately handled in binary format, no need to treat them separately
 			// forced text for .csv:
 			else if (['csv'].indexOf(resourceExtension) > -1)
 				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
 			*/
 
-			// sound files are loaded through howler.js:
+			// sound files:
 			else if (["mp3", "mpeg", "opus", "ogg", "oga", "wav", "aac", "caf", "m4a", "weba", "dolby", "flac"].indexOf(extension) > -1)
 			{
 				soundResources.add(name);
@@ -1053,10 +1045,17 @@ export class ServerManager extends PsychObject
 					this.psychoJS.logger.warn(`wav files are not supported by all browsers. We recommend you convert "${name}" to another format, e.g. mp3`);
 				}
 			}
-			// preload.js for the other extensions (download type decided by preload.js):
+
+			// font files
+			else if (["ttf", "otf", "woff", "woff2"].indexOf(pathExtension) > -1)
+			{
+				fontResources.push(name);
+			}
+
+			// all other extensions handled by preload.js (download type decided by preload.js):
 			else
 			{
-				manifest.push(/*new createjs.LoadItem().set(*/ {
+				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
 					crossOrigin: "Anonymous",
@@ -1064,10 +1063,11 @@ export class ServerManager extends PsychObject
 			}
 		}
 
-		// (*) start loading non-sound resources:
-		if (manifest.length > 0)
+		// start loading resources marked for preload.js:
+		if (preloadManifest.length > 0)
 		{
-			this._resourceQueue.loadManifest(manifest);
+			this._setupPreloadQueue(resources);
+			this._preloadQueue.loadManifest(preloadManifest);
 		}
 		else
 		{
@@ -1080,7 +1080,51 @@ export class ServerManager extends PsychObject
 			}
 		}
 
-		// (*) prepare and start loading sound resources:
+		// start loading fonts:
+		for (const name of fontResources)
+		{
+			const pathStatusData = this._resources.get(name);
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+			this.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.DOWNLOADING_RESOURCE,
+				resource: name,
+			});
+
+			const pathExtension = pathStatusData.path.toLowerCase().split(".").pop();
+			try
+			{
+				const newFont = await new FontFace(name, `url('${pathStatusData.path}') format('${pathExtension}')`).load();
+				document.fonts.add(newFont);
+
+				++this._nbLoadedResources;
+
+				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				this.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.RESOURCE_DOWNLOADED,
+					resource: name,
+				});
+
+				if (this._nbLoadedResources === resources.size)
+				{
+					this.setStatus(ServerManager.Status.READY);
+					this.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
+				}
+			}
+			catch (error)
+			{
+				console.error(error);
+				this.setStatus(ServerManager.Status.ERROR);
+				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
+				throw Object.assign(response, {
+					error: `unable to download resource: ${name}: ${error}`
+				});
+			}
+		}
+
+		// start loading resources marked for howler.js:
+		const self = this;
 		for (const name of soundResources)
 		{
 			const pathStatusData = this._resources.get(name);
@@ -1124,9 +1168,99 @@ export class ServerManager extends PsychObject
 			howl.load();
 		}
 	}
+
+	/****************************************************************************
+	 * Setup the preload.js queue, and the associated callbacks.
+	 *
+	 * @name module:core.ServerManager#_setupPreloadQueue
+	 * @function
+	 * @protected
+	 * @param {Set} resources - a set of names of previously registered resources
+	 */
+	_setupPreloadQueue(resources)
+	{
+		this._preloadQueue = new createjs.LoadQueue(true, "", true);
+
+		const self = this;
+
+		// the loading of a specific resource has started:
+		this._preloadQueue.addEventListener("filestart", (event) =>
+		{
+			const pathStatusData = self._resources.get(event.item.id);
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+
+			self.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.DOWNLOADING_RESOURCE,
+				resource: event.item.id,
+			});
+		});
+
+		// the loading of a specific resource has completed:
+		this._preloadQueue.addEventListener("fileload", (event) =>
+		{
+			const pathStatusData = self._resources.get(event.item.id);
+			pathStatusData.data = event.result;
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+
+			++self._nbLoadedResources;
+			self.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.RESOURCE_DOWNLOADED,
+				resource: event.item.id,
+			});
+		});
+
+		// the loading of all given resources completed:
+		this._preloadQueue.addEventListener("complete", (event) =>
+		{
+			self._preloadQueue.close();
+			if (self._nbLoadedResources === resources.size)
+			{
+				self.setStatus(ServerManager.Status.READY);
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOAD_COMPLETED,
+				});
+			}
+		});
+
+		// error: we throw an exception
+		this._preloadQueue.addEventListener("error", (event) =>
+		{
+			self.setStatus(ServerManager.Status.ERROR);
+			if (typeof event.item !== "undefined")
+			{
+				const pathStatusData = self._resources.get(event.item.id);
+				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
+				throw Object.assign(response, {
+					error: "unable to download resource: " + event.item.id + " (" + event.title + ")",
+				});
+			}
+			else
+			{
+				console.error(event);
+
+				if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
+				{
+					const id = event.data.id;
+					const title = event.data.src;
+
+					throw Object.assign(response, {
+						error: "unable to download resource: " + id + " (" + title + ")",
+					});
+				}
+				else
+				{
+					throw Object.assign(response, {
+						error: "unspecified download error",
+					});
+				}
+			}
+		});
+	}
+
+
 }
 
-/**
+/****************************************************************************
  * Server event
  *
  * <p>A server event is emitted by the manager to inform its listeners of either a change of status, or of a resource related event (e.g. download started, download is completed).</p>
@@ -1168,7 +1302,7 @@ ServerManager.Event = {
 	STATUS: Symbol.for("STATUS"),
 };
 
-/**
+/****************************************************************************
  * Server status
  *
  * @name module:core.ServerManager#Status
@@ -1193,7 +1327,7 @@ ServerManager.Status = {
 	ERROR: Symbol.for("ERROR"),
 };
 
-/**
+/****************************************************************************
  * Resource status
  *
  * @name module:core.ServerManager#ResourceStatus

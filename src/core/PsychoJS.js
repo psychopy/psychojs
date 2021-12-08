@@ -176,7 +176,7 @@ export class PsychoJS
 		}
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2021.2.0");
+		this.logger.info("[PsychoJS] @version 2021.3.0");
 
 		// hide the initialisation message:
 		jQuery("#root").addClass("is-ready");
@@ -393,7 +393,7 @@ export class PsychoJS
 			}
 
 			// start the asynchronous download of resources:
-			await this._serverManager.prepareResources(resources);
+			this._serverManager.prepareResources(resources);
 
 			// start the experiment:
 			this.logger.info("[PsychoJS] Start Experiment.");

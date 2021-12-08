@@ -21,8 +21,12 @@ import {ExperimentHandler} from "../data/ExperimentHandler.js";
  * @name module:visual.Camera
  * @class
  * @param {Object} options
- * @param @param {module:core.Window} options.win - the associated Window
+ * @param {module:core.Window} options.win - the associated Window
  * @param {string} [options.format='video/webm;codecs=vp9'] the video format
+ * @param {boolean} [options.showDialog=false] - whether or not to open a dialog box to inform the
+ * 	participant to wait for the camera to be initialised
+ * @param {string} [options.dialogMsg="Please wait a few moments while the camera initialises"] -
+ * 	default message informing the participant to wait for the camera to initialise
  * @param {Clock} [options.clock= undefined] - an optional clock
  * @param {boolean} [options.autoLog= false] - whether or not to log
  *
@@ -34,7 +38,7 @@ export class Camera extends PsychObject
 	 * @constructor
 	 * @public
 	 */
-	constructor({win, name, format, clock, autoLog} = {})
+	constructor({win, name, format, showDialog, dialogMsg = "Please wait a few moments while the camera initialises", clock, autoLog} = {})
 	{
 		super(win._psychoJS);
 
@@ -45,13 +49,41 @@ export class Camera extends PsychObject
 		this._addAttribute("autoLog", autoLog, false);
 		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);
 
+		// open pop-up dialog:
+		if (showDialog)
+		{
+			this.psychoJS.gui.dialog({
+				warning: dialogMsg,
+				showOK: false,
+			});
+		}
+
 		// prepare the recording:
-		this._prepareRecording();
+		this._prepareRecording().then( () =>
+		{
+			if (showDialog)
+			{
+				this.psychoJS.gui.closeDialog();
+			}
+		})
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
+	}
+
+	/**
+	 * Query whether or not the camera is ready to record.
+	 *
+	 * @name module:visual.Camera#isReady
+	 * @function
+	 * @public
+	 * @returns {boolean} whether or not the camera is ready to record
+	 */
+	isReady()
+	{
+		return (this._recorder !== null);
 	}
 
 
@@ -369,9 +401,14 @@ export class Camera extends PsychObject
 	 * @name module:visual.Camera#upload
 	 * @function
 	 * @public
-	 * @param {string} tag an optional tag for the audio file
+	 * @param @param {Object} options
+	 * @param {string} options.tag an optional tag for the video file
+	 * @param {boolean} [options.waitForCompletion= false] whether or not to wait for completion
+	 * 	before returning
+	 * @param {boolean} [options.showDialog=false] - whether or not to open a dialog box to inform the participant to wait for the data to be uploaded to the server
+	 * @param {string} [options.dialogMsg=""] - default message informing the participant to wait for the data to be uploaded to the server
 	 */
-	async upload({tag} = {})
+	async upload({tag, waitForCompletion = false, showDialog = false, dialogMsg = ""} = {})
 	{
 		// default tag: the name of this Camera object
 		if (typeof tag === "undefined")
@@ -394,7 +431,12 @@ export class Camera extends PsychObject
 
 		// upload the blob:
 		const videoBlob = new Blob(this._videoBuffer);
-		return this._psychoJS.serverManager.uploadAudioVideo(videoBlob, tag);
+		return this._psychoJS.serverManager.uploadAudioVideo({
+			mediaBlob: videoBlob,
+			tag,
+			waitForCompletion,
+			showDialog,
+			dialogMsg});
 	}
 
 
