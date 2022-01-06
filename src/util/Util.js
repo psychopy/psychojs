@@ -359,6 +359,24 @@ export function shuffle(array, randomNumberGenerator = undefined)
 }
 
 /**
+ * linspace
+ *
+ * @name module:util.linspace
+ * @function
+ * @public
+ * @param {Object[]} startValue, stopValue, cardinality
+ * @return {Object[]} an array from startValue to stopValue with cardinality steps
+ */
+export function linspace(startValue, stopValue, cardinality) {
+  var arr = [];
+  var step = (stopValue - startValue) / (cardinality - 1);
+  for (var i = 0; i < cardinality; i++) {
+    arr.push(startValue + (step * i));
+  }
+  return arr;
+}
+
+/**
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
  * @name module:util.randchoice
