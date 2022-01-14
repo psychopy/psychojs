@@ -404,7 +404,7 @@ export class ServerManager extends PsychObject
 	 * </ul>
 	 *
 	 * @name module:core.ServerManager#prepareResources
-	 * @param {Array.<{name: string, path: string, download: boolean} | Symbol>} [resources=[]] - the list of resources
+	 * @param {Array.<{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the list of resources
 	 * @function
 	 * @public
 	 */
@@ -469,6 +469,20 @@ export class ServerManager extends PsychObject
 						allResources)
 					{
 						throw "resources must be manually specified when the experiment is running locally: ALL_RESOURCES cannot be used";
+					}
+
+					// convert those resources that are only a string to an object with name and path:
+					for (let r = 0; r < resources.length; ++r)
+					{
+						const resource = resources[r];
+						if (typeof resource === "string")
+						{
+							resources[r] = {
+								name: resource,
+								path: resource,
+								download: true
+							}
+						}
 					}
 
 					for (let { name, path, download } of resources)
@@ -1179,6 +1193,11 @@ export class ServerManager extends PsychObject
 	 */
 	_setupPreloadQueue(resources)
 	{
+		const response = {
+			origin: "ServerManager._downloadResources",
+			context: "when downloading resources for experiment: " + this._psychoJS.config.experiment.name,
+		};
+
 		this._preloadQueue = new createjs.LoadQueue(true, "", true);
 
 		const self = this;

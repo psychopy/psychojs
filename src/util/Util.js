@@ -1413,3 +1413,58 @@ export function extensionFromMimeType(mimeType)
 
 	return '.dat';
 }
+
+/**
+ * Get an estimate of the download speed, by repeatedly downloading an image file from a distant
+ * server.
+ *
+ * @name module:util.getDownloadSpeed
+ * @function
+ * @public
+ * @param {PsychoJS} psychoJS the instance of PsychoJS
+ * @param {number} [nbDownloads = 1] the number of image downloads over which to average
+ * 	the download speed
+ * @return {number} the download speed, in megabits per second
+ */
+export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
+{
+	// url of the image to download and size of the image in bits:
+	// TODO use a variety of files, with different sizes
+	const imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/a6/Brandenburger_Tor_abends.jpg";
+	const imageSize_b = 2707459 * 8;
+
+	return new Promise( (resolve, reject) =>
+	{
+		let downloadTimeAccumulator = 0;
+		let downloadCounter = 0;
+
+		const download = new Image();
+		download.onload = () =>
+		{
+			const toc = performance.now();
+			downloadTimeAccumulator += (toc-tic);
+			++ downloadCounter;
+
+			if (downloadCounter === nbDownloads)
+			{
+				const speed_bps = (imageSize_b  * nbDownloads) / (downloadTimeAccumulator / 1000);
+				resolve(speed_bps / 1024 / 1024);
+			}
+			else
+			{
+				tic = performance.now();
+				download.src = `${imageUrl}?salt=${tic}`;
+			}
+		}
+
+		download.onerror = (event) =>
+		{
+			const errorMsg = `unable to estimate the download speed: ${JSON.stringify(event)}`;
+			psychoJS.logger.error(errorMsg);
+			reject(errorMsg);
+		}
+
+		let tic = performance.now();
+		download.src = `${imageUrl}?salt=${tic}`;
+	});
+}
