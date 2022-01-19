@@ -138,7 +138,9 @@ export class ServerManager extends PsychObject
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL + "/api/v2/experiments/" + encodeURIComponent(self._psychoJS.config.experiment.fullpath) + "/sessions";
+			const url = this._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+				+ "/sessions/";
 			jQuery.post(url, data, null, "json")
 				.done((data, textStatus) =>
 				{
@@ -219,8 +221,9 @@ export class ServerManager extends PsychObject
 		this.setStatus(ServerManager.Status.BUSY);
 
 		// prepare DELETE query:
-		const url = this._psychoJS.config.pavlovia.URL + "/api/v2/experiments/" + encodeURIComponent(this._psychoJS.config.experiment.fullpath) + "/sessions/"
-			+ this._psychoJS.config.session.token;
+		const url = this._psychoJS.config.pavlovia.URL
+			+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+			+ "/sessions/"  + this._psychoJS.config.session.token;
 
 		// synchronous query the pavlovia server:
 		if (sync)
@@ -231,7 +234,7 @@ export class ServerManager extends PsychObject
 			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 			request.send(JSON.stringify(data));
 			 */
-			/* This does not work in Chrome before of a CORS bug
+			/* This does not work in Chrome because of a CORS bug
 			await fetch(url, {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json;charset=UTF-8' },

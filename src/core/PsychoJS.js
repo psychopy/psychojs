@@ -312,7 +312,7 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [] } = {})
+	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [], dataFileName } = {})
 	{
 		this.logger.debug();
 
@@ -344,6 +344,7 @@ export class PsychoJS
 			this._experiment = new ExperimentHandler({
 				psychoJS: this,
 				extraInfo: expInfo,
+				dataFileName
 			});
 
 			// setup the logger:

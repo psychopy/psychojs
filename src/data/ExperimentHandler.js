@@ -68,11 +68,32 @@ export class ExperimentHandler extends PsychObject
 		psychoJS,
 		name,
 		extraInfo,
+		dataFileName
 	} = {})
 	{
 		super(psychoJS, name);
 
 		this._addAttribute("extraInfo", extraInfo);
+
+		// process the extra info:
+		this._experimentName = (typeof extraInfo.expName === "string" && extraInfo.expName.length > 0)
+			? extraInfo.expName
+			: this.psychoJS.config.experiment.name;
+		this._participant = (typeof extraInfo.participant === "string" && extraInfo.participant.length > 0)
+			? extraInfo.participant
+			: "PARTICIPANT";
+		this._session = (typeof extraInfo.session === "string" && extraInfo.session.length > 0)
+			? extraInfo.session
+			: "SESSION";
+		this._datetime = (typeof extraInfo.date !== "undefined")
+			? extraInfo.date
+			: MonotonicClock.getDateStr();
+
+		this._addAttribute(
+			"dataFileName",
+			dataFileName,
+			`${this._participant}_${this._experimentName}_${this._datetime}`
+		);
 
 		// loop handlers:
 		this._loops = [];
@@ -278,15 +299,6 @@ export class ExperimentHandler extends PsychObject
 			}
 		}
 
-		// get various experiment info:
-		const info = this.extraInfo;
-		const __experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
-		const __participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
-		const __session = ((typeof info.session === "string" && info.session.length > 0) ? info.session : "SESSION");
-		const __datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
-		const gitlabConfig = this._psychoJS.config.gitlab;
-		const __projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
-
 		let data = this._trialsData;
 		// if the experiment data have to be cleared, we first make a copy of them:
 		if (clear)
@@ -306,7 +318,8 @@ export class ExperimentHandler extends PsychObject
 			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
-			const key = `${__participant}_${__experimentName}_${__datetime}${tag}.csv`;
+			const filenameWithoutPath = this._dataFileName.split(/[\\/]/).pop();
+			const key = `${filenameWithoutPath}${tag}.csv`;
 			if (
 				this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
 				&& this._psychoJS.config.experiment.status === "RUNNING"
@@ -323,11 +336,20 @@ export class ExperimentHandler extends PsychObject
 		// save to the database on the pavlovia server:
 		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE)
 		{
+			const gitlabConfig = this._psychoJS.config.gitlab;
+			const projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
+
 			let documents = [];
 
 			for (let r = 0; r < data.length; r++)
 			{
-				let doc = { __projectId, __experimentName, __participant, __session, __datetime };
+				let doc = {
+					projectId,
+					__experimentName: this._experimentName,
+					__participant: this._participant,
+					__session: this._session,
+					__datetime: this._datetime
+				};
 				for (let h = 0; h < attributes.length; h++)
 				{
 					doc[attributes[h]] = data[r][attributes[h]];
