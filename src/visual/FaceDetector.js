@@ -282,7 +282,7 @@ export class FaceDetector extends VisualStim
 		this._pixi.scale.x = 1;
 		this._pixi.scale.y = -1;
 
-		this._pixi.rotation = this.ori * Math.PI / 180;
+		this._pixi.rotation = -this.ori * Math.PI / 180;
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
