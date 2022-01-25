@@ -260,7 +260,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 
 		// set polygon position and rotation:
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
-		this._pixi.rotation = this.ori * Math.PI / 180.0;
+		this._pixi.rotation = -this.ori * Math.PI / 180.0;
 	}
 
 	/**

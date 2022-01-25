@@ -324,7 +324,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
 
-		this._pixi.rotation = this._ori * Math.PI / 180;
+		this._pixi.rotation = -this._ori * Math.PI / 180;
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
