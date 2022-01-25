@@ -728,7 +728,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.scale.x = 1;
 		this._pixi.scale.y = -1;
 
-		this._pixi.rotation = this._ori * Math.PI / 180;
+		this._pixi.rotation = -this._ori * Math.PI / 180;
 		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
@@ -1189,7 +1189,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			const labelText = new PIXI.Text(this._labels[l], labelTextStyle);
 			labelText.position.x = this._labelPositions_px[l][0];
 			labelText.position.y = this._labelPositions_px[l][1];
-			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
+			labelText.rotation = -(this._ori + this._labelOri) * Math.PI / 180;
 			labelText.anchor = this._labelAnchor;
 			labelText.alpha = 1;
 
