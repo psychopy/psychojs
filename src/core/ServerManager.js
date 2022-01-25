@@ -50,6 +50,9 @@ export class ServerManager extends PsychObject
 
 		// resources is a map of <name: string, { path: string, status: ResourceStatus, data: any }>
 		this._resources = new Map();
+		this._nbLoadedResources = 0;
+		this._setupPreloadQueue();
+
 
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("status", ServerManager.Status.READY);
@@ -429,7 +432,7 @@ export class ServerManager extends PsychObject
 			{
 				if (!Array.isArray(resources))
 				{
-					throw "resources should be an array of objects";
+					throw "resources should be an array of string or objects";
 				}
 
 				// whether all resources have been requested:
@@ -1004,8 +1007,6 @@ export class ServerManager extends PsychObject
 			count: resources.size,
 		});
 
-		this._nbLoadedResources = 0;
-
 		// based on the resource extension either (a) add it to the preload manifest, (b) mark it for
 		// download by howler, or (c) add it to the document fonts
 		const preloadManifest = [];
@@ -1083,7 +1084,6 @@ export class ServerManager extends PsychObject
 		// start loading resources marked for preload.js:
 		if (preloadManifest.length > 0)
 		{
-			this._setupPreloadQueue(resources);
 			this._preloadQueue.loadManifest(preloadManifest);
 		}
 		else
@@ -1192,13 +1192,12 @@ export class ServerManager extends PsychObject
 	 * @name module:core.ServerManager#_setupPreloadQueue
 	 * @function
 	 * @protected
-	 * @param {Set} resources - a set of names of previously registered resources
 	 */
-	_setupPreloadQueue(resources)
+	_setupPreloadQueue()
 	{
 		const response = {
-			origin: "ServerManager._downloadResources",
-			context: "when downloading resources for experiment: " + this._psychoJS.config.experiment.name,
+			origin: "ServerManager._setupPreloadQueue",
+			context: "when setting up a preload queue"
 		};
 
 		this._preloadQueue = new createjs.LoadQueue(true, "", true);
@@ -1235,7 +1234,7 @@ export class ServerManager extends PsychObject
 		this._preloadQueue.addEventListener("complete", (event) =>
 		{
 			self._preloadQueue.close();
-			if (self._nbLoadedResources === resources.size)
+			if (self._nbLoadedResources === self._resources.size)
 			{
 				self.setStatus(ServerManager.Status.READY);
 				self.emit(ServerManager.Event.RESOURCE, {
