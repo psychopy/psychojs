@@ -7,7 +7,29 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
+import defaultQuadVert from './shaders/defaultQuad.vert';
+import sinShader from './shaders/sinShader.frag';
+import gaussShader from './shaders/gaussShader.frag';
 
+const DEFINED_FUNCTIONS = {
+	sin: sinShader,
+	sqr: undefined,
+	saw: undefined,
+	tri: undefined,
+	sinXsin: undefined,
+	sqrXsqr: undefined,
+	circle: undefined,
+	gauss: gaussShader,
+	cross: undefined,
+	radRamp: undefined,
+	raisedCos: undefined
+};
 
 /**
  * Grating Stimulus.
@@ -32,39 +54,37 @@
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.texRes= 128] - the resolution of the text
  * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 
-                 // win,
-                 // tex="sin",
-                 // mask="none",
-                 // units="",
-                 // pos=(0.0, 0.0),
-                 // size=None,
-                 // sf=None,
-                 // ori=0.0,
-                 // phase=(0.0, 0.0),
-                 // texRes=128,
-                 // rgb=None,
-                 // dkl=None,
-                 // lms=None,
-                 // color=(1.0, 1.0, 1.0),
-                 // colorSpace='rgb',
-                 // contrast=1.0,
-                 // opacity=None,
-                 // depth=0,
-                 // rgbPedestal=(0.0, 0.0, 0.0),
-                 // interpolate=False,
-                 // blendmode='avg',
-                 // name=None,
-                 // autoLog=None,
-                 // autoDraw=False,
-                 // maskParams=None)
 export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 {
+	// win,
+	// tex="sin",
+	// mask="none",
+	// units="",
+	// pos=(0.0, 0.0),
+	// size=None,
+	// sf=None,
+	// ori=0.0,
+	// phase=(0.0, 0.0),
+	// texRes=128,
+	// rgb=None,
+	// dkl=None,
+	// lms=None,
+	// color=(1.0, 1.0, 1.0),
+	// colorSpace='rgb',
+	// contrast=1.0,
+	// opacity=None,
+	// depth=0,
+	// rgbPedestal=(0.0, 0.0, 0.0),
+	// interpolate=False,
+	// blendmode='avg',
+	// name=None,
+	// autoLog=None,
+	// autoDraw=False,
+	// maskParams=None)
 	constructor({
 		name,
 		tex,
@@ -72,7 +92,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		mask,
 		pos,
 		units,
-		sf,
+		spatialFrequency = 10.,
 		ori,
 		phase,
 		size,
@@ -99,10 +119,21 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			"tex",
 			tex,
 		);
-
 		this._addAttribute(
 			"mask",
 			mask,
+		);
+		this._addAttribute(
+			"spatialFrequency",
+			spatialFrequency,
+			10.,
+			this._onChange(true, false)
+		);
+		this._addAttribute(
+			"phase",
+			phase,
+			0.,
+			this._onChange(true, false)
 		);
 		this._addAttribute(
 			"color",
@@ -128,18 +159,6 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			false,
 			this._onChange(true, false),
 		);
-		this._addAttribute(
-			"flipHoriz",
-			flipHoriz,
-			false,
-			this._onChange(false, false),
-		);
-		this._addAttribute(
-			"flipVert",
-			flipVert,
-			false,
-			this._onChange(false, false),
-		);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -162,16 +181,25 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const response = {
 			origin: "GratingStim.setTex",
-			context: "when setting the texture of GratingStim: " + this._name,
+			context: "when setting the tex of GratingStim: " + this._name,
 		};
 
 		try
 		{
+			let hasChanged = false;
+
 			// tex is undefined: that's fine but we raise a warning in case this is a symptom of an actual problem
 			if (typeof tex === "undefined")
 			{
 				this.psychoJS.logger.warn("setting the tex of GratingStim: " + this._name + " with argument: undefined.");
 				this.psychoJS.logger.debug("set the tex of GratingStim: " + this._name + " as: undefined");
+			}
+			else if (DEFINED_FUNCTIONS[tex] !== undefined)
+			{
+				// tex is a string and it is one of predefined functions available in shaders
+				this.psychoJS.logger.debug("the tex is one of predefined functions. Set the tex of GratingStim: " + this._name + " as: " + tex);
+				const existingImage = this.getTex();
+				hasChanged = existingImage ? existingImage !== tex : true;
 			}
 			else
 			{
@@ -188,10 +216,9 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 				}
 
 				this.psychoJS.logger.debug("set the tex of GratingStim: " + this._name + " as: src= " + tex.src + ", size= " + tex.width + "x" + tex.height);
+				const existingImage = this.getTex();
+				hasChanged = existingImage ? existingImage.src !== tex.src : true;
 			}
-
-			const existingImage = this.getImage();
-			const hasChanged = existingImage ? existingImage.src !== tex.src : true;
 
 			this._setAttribute("tex", tex, log);
 
@@ -229,6 +256,11 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 				this.psychoJS.logger.warn("setting the mask of GratingStim: " + this._name + " with argument: undefined.");
 				this.psychoJS.logger.debug("set the mask of GratingStim: " + this._name + " as: undefined");
 			}
+			else if (DEFINED_FUNCTIONS[mask] !== undefined)
+			{
+				// mask is a string and it is one of predefined functions available in shaders
+				this.psychoJS.logger.debug("the mask is one of predefined functions. Set the mask of GratingStim: " + this._name + " as: " + mask);
+			}
 			else
 			{
 				// mask is a string: it should be the name of a resource, which we load
@@ -254,5 +286,180 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			throw Object.assign(response, { error });
 		}
+	}
+
+	/**
+	 * Get the size of the display image, which is either that of the ImageStim or that of the image
+	 * it contains.
+	 *
+	 * @name module:visual.ImageStim#_getDisplaySize
+	 * @private
+	 * @return {number[]} the size of the displayed image
+	 */
+	_getDisplaySize()
+	{
+		let displaySize = this.size;
+
+		if (typeof displaySize === "undefined")
+		{
+			// use the size of the pixi element, if we have access to it:
+			if (typeof this._pixi !== "undefined" && this._pixi.width > 0)
+			{
+				const pixiContainerSize = [this._pixi.width, this._pixi.height];
+				displaySize = util.to_unit(pixiContainerSize, "pix", this.win, this.units);
+			}
+		}
+
+		return displaySize;
+	}
+
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @name module:visual.ImageStim#_estimateBoundingBox
+	 * @function
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		const size = this._getDisplaySize();
+		if (typeof size !== "undefined")
+		{
+			this._boundingBox = new PIXI.Rectangle(
+				this._pos[0] - size[0] / 2,
+				this._pos[1] - size[1] / 2,
+				size[0],
+				size[1],
+			);
+		}
+
+		// TODO take the orientation into account
+	}
+
+	_getPixiMeshFromPredefinedShaders (funcName = '', uniforms = {}) {
+		const geometry = new PIXI.Geometry();
+		geometry.addAttribute(
+			'aVertexPosition',
+			[
+				0, 0,
+				256, 0,
+				256, 256,
+				0, 256
+			],
+			2
+		);
+		geometry.addAttribute(
+			'aUvs',
+			[0, 0, 1, 0, 1, 1, 0, 1],
+			2
+		);
+		geometry.addIndex([0, 1, 2, 0, 2, 3]);
+		const vertexSrc = defaultQuadVert;
+	    const fragmentSrc = DEFINED_FUNCTIONS[funcName];
+	    const uniformsFinal = Object.assign(uniforms, {
+	    	// for future default uniforms
+	    });
+		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
+		return new PIXI.Mesh(geometry, shader);
+	}
+
+	/**
+	 * Update the stimulus, if necessary.
+	 *
+	 * @name module:visual.ImageStim#_updateIfNeeded
+	 * @private
+	 */
+	_updateIfNeeded()
+	{
+		if (!this._needUpdate)
+		{
+			return;
+		}
+		this._needUpdate = false;
+
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
+		{
+			this._needPixiUpdate = false;
+			if (typeof this._pixi !== "undefined")
+			{
+				this._pixi.destroy(true);
+			}
+			this._pixi = undefined;
+
+			// no image to draw: return immediately
+			if (typeof this._tex === "undefined")
+			{
+				return;
+			}
+
+			if (this._tex instanceof HTMLImageElement)
+			{
+				this._pixi = PIXI.Sprite.from(this._tex);
+			}
+			else
+			{
+				this._pixi = this._getPixiMeshFromPredefinedShaders(this._tex, {
+					uFreq: this.spatialFrequency,
+					uPhase: this.phase
+				});
+			}
+			this._pixi.pivot.set(this._pixi.width * .5, this._pixi.width * .5);
+
+			// add a mask if need be:
+			if (typeof this._mask !== "undefined")
+			{
+				if (this._mask instanceof HTMLImageElement)
+				{
+					this._pixi.mask = PIXI.Sprite.from(this._mask);
+					this._pixi.addChild(this._pixi.mask);
+				}
+				else
+				{
+					// for some reason setting PIXI.Mesh as .mask doesn't do anything,
+					// rendering mask to texture for further use.
+					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
+					const rt = PIXI.RenderTexture.create({
+						width: 256,
+						height: 256
+					});
+					this.win._renderer.render(maskMesh, {
+						renderTexture: rt
+					});
+					const maskSprite = new PIXI.Sprite.from(rt);
+					this._pixi.mask = maskSprite;
+					this._pixi.addChild(maskSprite);
+				}
+			}
+
+			// since _pixi.width may not be immediately available but the rest of the code needs its value
+			// we arrange for repeated calls to _updateIfNeeded until we have a width:
+			if (this._pixi.width === 0)
+			{
+				this._needUpdate = true;
+				this._needPixiUpdate = true;
+				return;
+			}
+		}
+
+		this._pixi.zIndex = this._depth;
+		this._pixi.alpha = this.opacity;
+
+		// set the scale:
+		const displaySize = this._getDisplaySize();
+		const size_px = util.to_px(displaySize, this.units, this.win);
+		const scaleX = size_px[0] / this._pixi.width;
+		const scaleY = size_px[1] / this._pixi.height;
+		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+
+		// set the position, rotation, and anchor (image centered on pos):
+		let pos = to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position.set(pos.x, pos.y);
+		this._pixi.rotation = this.ori * Math.PI / 180;
+
+		// re-estimate the bounding box, as the texture's width may now be available:
+		this._estimateBoundingBox();
 	}
 }
