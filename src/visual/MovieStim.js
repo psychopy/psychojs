@@ -401,7 +401,7 @@ export class MovieStim extends VisualStim
 
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
-		this._pixi.rotation = this.ori * Math.PI / 180;
+		this._pixi.rotation = -this.ori * Math.PI / 180;
 		this._pixi.anchor.x = 0.5;
 		this._pixi.anchor.y = 0.5;
 
