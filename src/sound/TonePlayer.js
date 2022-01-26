@@ -164,14 +164,14 @@ export class TonePlayer extends SoundPlayer
 	 */
 	setVolume(volume, mute = false)
 	{
-		this._volume = volume;
+		this._volume = Math.max(0, Math.min(volume, 1));
 
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			if (typeof this._volumeNode !== "undefined")
 			{
 				this._volumeNode.mute = mute;
-				this._volumeNode.volume.value = -60 + volume * 66;
+				this._volumeNode.volume.value = Tone.gainToDb(this._volume);
 				// this._synth.volume.value = -60 + volume * 66;
 			}
 			else
@@ -332,7 +332,8 @@ export class TonePlayer extends SoundPlayer
 			this._synth = new Tone.Synth(this._synthOtions);
 
 			// connect it to a volume node:
-			this._volumeNode = new Tone.Volume(-60 + this._volume * 66);
+			this._volumeNode = new Tone.Volume(Tone.gainToDb(this._volume));
+
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
