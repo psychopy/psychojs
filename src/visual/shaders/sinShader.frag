@@ -7,7 +7,6 @@ out vec4 shaderOut;
 #define M_PI 3.14159265358979
 uniform float uFreq;
 uniform float uPhase;
-uniform sampler2D uMaskTex;
 
 void main() {
     vec2 uv = vUvs;
