@@ -62,12 +62,19 @@ export class Window extends PsychObject
 		// messages to be logged at the next "flip":
 		this._msgToBeLogged = [];
 
+		// storing AdjustmentFilter instance to access later;
+		this._adjustmentFilter = new AdjustmentFilter({
+			gamma
+		});
+
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
 		this._addAttribute("fullscr", fullscr);
 		this._addAttribute("color", color);
-		this._addAttribute("gamma", gamma);
+		this._addAttribute("gamma", gamma, 1, () => {
+			this._adjustmentFilter.gamma = this._gamma;
+		});
 		this._addAttribute("units", units);
 		this._addAttribute("waitBlanking", waitBlanking);
 		this._addAttribute("autoLog", autoLog);
@@ -432,9 +439,7 @@ export class Window extends PsychObject
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
 		this._rootContainer.interactive = true;
-		this._rootContainer.filters = [new AdjustmentFilter({
-			gamma: this.gamma
-		})];
+		this._rootContainer.filters = [this._adjustmentFilter];
 
 		// set the initial size of the PIXI renderer and the position of the root container:
 		Window._resizePixiRenderer(this);
