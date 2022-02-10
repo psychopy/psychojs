@@ -31,6 +31,8 @@ const DEFINED_FUNCTIONS = {
 	raisedCos: undefined
 };
 
+const DEFAULT_STIM_SIZE = [256, 256]; // in pixels
+
 /**
  * Grating Stimulus.
  *
@@ -45,7 +47,6 @@ const DEFINED_FUNCTIONS = {
  * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
  * @param {Color} [options.color= 'white'] the background color
@@ -126,14 +127,12 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"spatialFrequency",
 			spatialFrequency,
-			10.,
-			this._onChange(true, false)
+			10.
 		);
 		this._addAttribute(
 			"phase",
 			phase,
-			0.,
-			this._onChange(true, false)
+			0.
 		);
 		this._addAttribute(
 			"color",
@@ -167,6 +166,11 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
+
+		if (!Array.isArray(this.size) || this.size.length === 0) {
+			this.size = util.to_unit(DEFAULT_STIM_SIZE, "pix", this.win, this.units);
+		}
+		this._sizeInPixels = util.to_px(this.size, this.units, this.win);
 	}
 
 	/**
@@ -198,8 +202,8 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				// tex is a string and it is one of predefined functions available in shaders
 				this.psychoJS.logger.debug("the tex is one of predefined functions. Set the tex of GratingStim: " + this._name + " as: " + tex);
-				const existingImage = this.getTex();
-				hasChanged = existingImage ? existingImage !== tex : true;
+				const curFuncName = this.getTex();
+				hasChanged = curFuncName ? curFuncName !== tex : true;
 			}
 			else
 			{
@@ -289,10 +293,10 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
-	 * Get the size of the display image, which is either that of the ImageStim or that of the image
+	 * Get the size of the display image, which is either that of the GratingStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
+	 * @name module:visual.GratingStim#_getDisplaySize
 	 * @private
 	 * @return {number[]} the size of the displayed image
 	 */
@@ -316,7 +320,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
+	 * @name module:visual.GratingStim#_estimateBoundingBox
 	 * @function
 	 * @override
 	 * @protected
@@ -343,9 +347,9 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			'aVertexPosition',
 			[
 				0, 0,
-				256, 0,
-				256, 256,
-				0, 256
+				this._sizeInPixels[0], 0,
+				this._sizeInPixels[0], this._sizeInPixels[1],
+				0, this._sizeInPixels[1]
 			],
 			2
 		);
@@ -364,10 +368,30 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		return new PIXI.Mesh(geometry, shader);
 	}
 
+	setPhase (phase, log = false) {
+		this._setAttribute("phase", phase, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+			this._pixi.shader.uniforms.uPhase = phase;
+		} else if (this._pixi instanceof PIXI.TilingSprite) {
+			this._pixi.tilePosition.x = -phase * (this._sizeInPixels[0] * this._pixi.tileScale.x) / (2 * Math.PI)
+		}
+	}
+
+	setSpatialFrequency (sf, log = false) {
+		this._setAttribute("spatialFrequency", sf, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+			this._pixi.shader.uniforms.uFreq = sf;
+		} else if (this._pixi instanceof PIXI.TilingSprite) {
+			// tileScale units are pixels, so converting function frequency to pixels
+			// and also taking into account possible size difference between used texture and requested stim size
+			this._pixi.tileScale.x = (1 / sf) * (this._pixi.width / this._pixi.texture.width);
+		}
+	}
+
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.ImageStim#_updateIfNeeded
+	 * @name module:visual.GratingStim#_updateIfNeeded
 	 * @private
 	 */
 	_updateIfNeeded()
@@ -396,13 +420,18 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 
 			if (this._tex instanceof HTMLImageElement)
 			{
-				this._pixi = PIXI.Sprite.from(this._tex);
+				this._pixi = PIXI.TilingSprite.from(this._tex, {
+					width: this._sizeInPixels[0],
+					height: this._sizeInPixels[1]
+				});
+				this.setPhase(this._phase);
+				this.setSpatialFrequency(this._spatialFrequency);
 			}
 			else
 			{
 				this._pixi = this._getPixiMeshFromPredefinedShaders(this._tex, {
-					uFreq: this.spatialFrequency,
-					uPhase: this.phase
+					uFreq: this._spatialFrequency,
+					uPhase: this._phase
 				});
 			}
 			this._pixi.pivot.set(this._pixi.width * .5, this._pixi.width * .5);
@@ -421,8 +450,8 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 					// rendering mask to texture for further use.
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
 					const rt = PIXI.RenderTexture.create({
-						width: 256,
-						height: 256
+						width: this._sizeInPixels[0],
+						height: this._sizeInPixels[1]
 					});
 					this.win._renderer.render(maskMesh, {
 						renderTexture: rt
@@ -448,9 +477,9 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();
-		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._pixi.width;
-		const scaleY = size_px[1] / this._pixi.height;
+		this._sizeInPixels = util.to_px(displaySize, this.units, this.win);
+		const scaleX = this._sizeInPixels[0] / this._pixi.width;
+		const scaleY = this._sizeInPixels[1] / this._pixi.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
