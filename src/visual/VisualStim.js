@@ -145,7 +145,10 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		if (hasChanged)
 		{
 			let radians = -ori * 0.017453292519943295;
-			this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)], [Math.sin(radians), Math.cos(radians)]];
+			this._rotationMatrix = [
+				[Math.cos(radians), -Math.sin(radians)],
+				[Math.sin(radians), Math.cos(radians)]
+			];
 
 			this._onChange(true, true)();
 		}

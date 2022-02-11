@@ -176,7 +176,7 @@ export class PsychoJS
 		}
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2021.3.0");
+		this.logger.info("[PsychoJS] @version 2022.1.0");
 
 		// hide the initialisation message:
 		jQuery("#root").addClass("is-ready");
@@ -312,7 +312,7 @@ export class PsychoJS
 	 * @async
 	 * @public
 	 */
-	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [] } = {})
+	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [], dataFileName } = {})
 	{
 		this.logger.debug();
 
@@ -344,6 +344,7 @@ export class PsychoJS
 			this._experiment = new ExperimentHandler({
 				psychoJS: this,
 				extraInfo: expInfo,
+				dataFileName
 			});
 
 			// setup the logger:

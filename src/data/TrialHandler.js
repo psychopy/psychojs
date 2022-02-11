@@ -688,7 +688,7 @@ export class TrialHandler extends PsychObject
 			context: "when preparing a sequence of trials",
 		};
 
-		// get an array of the indices of the elements of trialList :
+		// get an array of the indices of the elements of trialList:
 		const indices = Array.from(this.trialList.keys());
 
 		if (this._method === TrialHandler.Method.SEQUENTIAL)

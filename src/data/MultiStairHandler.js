@@ -111,10 +111,12 @@ export class MultiStairHandler extends TrialHandler
 			};
 		}
 
+		this._psychoJS.experiment.addData(this._name+'.response', response);
+
 		if (!this._finished)
 		{
-			// update the current staircase:
-			this._currentStaircase.addResponse(response, value);
+			// update the current staircase, but do not add the response again:
+			this._currentStaircase.addResponse(response, value, false);
 
 			// move onto the next trial:
 			this._nextTrial();
@@ -206,6 +208,7 @@ export class MultiStairHandler extends TrialHandler
 					const args = Object.assign({}, condition);
 					args.psychoJS = this._psychoJS;
 					args.varName = this._varName;
+					// label becomes name:
 					args.name = condition.label;
 					args.autoLog = this._autoLog;
 					if (typeof condition.nTrials === "undefined")
@@ -254,7 +257,7 @@ export class MultiStairHandler extends TrialHandler
 			// if the current pass is empty, get a new one:
 			if (this._currentPass.length === 0)
 			{
-				this._currentPass = this._staircases.filter(handler => !handler.finished);
+				this._currentPass = this._staircases.filter( handler => !handler.finished );
 
 				if (this._multiMethod === TrialHandler.Method.SEQUENTIAL)
 				{
@@ -322,12 +325,48 @@ export class MultiStairHandler extends TrialHandler
 			{
 				if (typeof this._trialList[t] === "undefined")
 				{
-					this._trialList[t] = {[this._varName]: value};
+					this._trialList[t] = {
+						[this._name+"."+this._varName]: value,
+						[this._name+".intensity"]: value
+					};
+					for (const attribute of this._currentStaircase._userAttributes)
+					{
+						// "name" becomes "label" again:
+						if (attribute === "name")
+						{
+							this._trialList[t][this._name+".label"] = this._currentStaircase["_name"];
+						}
+						else if (attribute !== "trialList" && attribute !== "extraInfo")
+						{
+							this._trialList[t][this._name+"."+attribute] = this._currentStaircase["_" + attribute];
+						}
+					}
 
 					if (typeof this._snapshots[t] !== "undefined")
 					{
-						this._snapshots[t][this._varName] = value;
-						this._snapshots[t].trialAttributes.push(this._varName);
+						let fieldName = this._name + "." + this._varName;
+						this._snapshots[t][fieldName] = value;
+						this._snapshots[t].trialAttributes.push(fieldName);
+						fieldName = this._name + ".intensity";
+						this._snapshots[t][fieldName] = value;
+						this._snapshots[t].trialAttributes.push(fieldName);
+
+						for (const attribute of this._currentStaircase._userAttributes)
+						{
+							// "name" becomes "label" again:
+							if (attribute === 'name')
+							{
+								fieldName = this._name + ".label";
+								this._snapshots[t][fieldName] = this._currentStaircase["_name"];
+								this._snapshots[t].trialAttributes.push(fieldName);
+							}
+							else if (attribute !== 'trialList' && attribute !== 'extraInfo')
+							{
+								fieldName = this._name+"."+attribute;
+								this._snapshots[t][fieldName] = this._currentStaircase["_" + attribute];
+								this._snapshots[t].trialAttributes.push(fieldName);
+							}
+						}
 					}
 					break;
 				}

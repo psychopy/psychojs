@@ -118,10 +118,12 @@ export class QuestHandler extends TrialHandler
 	 * @public
 	 * @param{number} response	- the response to the trial, must be either 0 (incorrect or
 	 * non-detected) or 1 (correct or detected)
-	 * @param{number | undefined} [value] - optional intensity / contrast / threshold
+	 * @param{number | undefined} value - optional intensity / contrast / threshold
+	 * @param{boolean} [doAddData = true] - whether or not to add the response as data to the
+	 * 	experiment
 	 * @returns {void}
 	 */
-	addResponse(response, value)
+	addResponse(response, value, doAddData = true)
 	{
 		// check that response is either 0 or 1:
 		if (response !== 0 && response !== 1)
@@ -131,6 +133,11 @@ export class QuestHandler extends TrialHandler
 				context: "when adding a trial response",
 				error: `the response must be either 0 or 1, got: ${JSON.stringify(response)}`
 			};
+		}
+
+		if (doAddData)
+		{
+			this._psychoJS.experiment.addData(this._name + '.response', response);
 		}
 
 		// update the QUEST pdf:
@@ -145,7 +152,10 @@ export class QuestHandler extends TrialHandler
 
 		if (!this._finished)
 		{
-			// estimate the next value of the QUEST variable (and update the trial list and snapshots):
+			this.next();
+
+			// estimate the next value of the QUEST variable
+			// (and update the trial list and snapshots):
 			this._estimateQuestValue();
 		}
 	}
