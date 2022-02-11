@@ -115,6 +115,7 @@ export class ExperimentHandler extends PsychObject
 	 * @function
 	 * @public
 	 * @returns {boolean} whether or not the current entry is empty
+	 * @todo This really should be renamed: IsCurrentEntryNotEmpty
 	 */
 	isEntryEmpty()
 	{

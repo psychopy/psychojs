@@ -143,7 +143,7 @@ export class ServerManager extends PsychObject
 		{
 			const url = this._psychoJS.config.pavlovia.URL
 				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
-				+ "/sessions/";
+				+ "/sessions";
 			jQuery.post(url, data, null, "json")
 				.done((data, textStatus) =>
 				{
@@ -324,30 +324,72 @@ export class ServerManager extends PsychObject
 	}
 
 	/****************************************************************************
-	 * Get the status of a resource.
+	 * Get the status of a single resource or the reduced status of an array of resources.
+	 *
+	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
+	 * that is the status furthest away from DOWNLOADED, with the status ordered as follow:
+	 * ERROR (furthest from DOWNLOADED), REGISTERED, DOWNLOADING, and DOWNLOADED</p>
+	 * <p>For example, given three resources:
+	 * <ul>
+	 *   <li>if at least one of the resource status is ERROR, the reduced status is ERROR</li>
+	 *   <li>if at least one of the resource status is DOWNLOADING, the reduced status is DOWNLOADING</li>
+	 *   <li>if the status of all three resources is REGISTERED, the reduced status is REGISTERED</li>
+	 *   <li>if the status of all three resources is DOWNLOADED, the reduced status is DOWNLOADED</li>
+	 * </ul>
+	 * </p>
 	 *
 	 * @name module:core.ServerManager#getResourceStatus
 	 * @function
 	 * @public
-	 * @param {string} name of the requested resource
-	 * @return {core.ServerManager.ResourceStatus} status of the resource
-	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
+	 * @param {string | string[]} names names of the resources whose statuses are requested
+	 * @return {core.ServerManager.ResourceStatus} status of the resource if there is only one, or reduced status otherwise
+	 * @throws {Object.<string, *>} if at least one of the names is not that of a previously
+	 * 	registered resource
 	 */
-	getResourceStatus(name)
+	getResourceStatus(names)
 	{
 		const response = {
 			origin: "ServerManager.getResourceStatus",
-			context: "when getting the status of resource: " + name,
+			context: `when getting the status of resource(s): ${JSON.stringify(names)}`,
 		};
 
-		const pathStatusData = this._resources.get(name);
-		if (typeof pathStatusData === "undefined")
+		// sanity checks:
+		if (typeof names === 'string')
 		{
-			// throw { ...response, error: 'unknown resource' };
-			throw Object.assign(response, { error: "unknown resource" });
+			names = [names];
+		}
+		if (!Array.isArray(names))
+		{
+			throw Object.assign(response, { error: "names should be either a string or an array of strings" });
+		}
+		const statusOrder = new Map([
+			[Symbol.keyFor(ServerManager.ResourceStatus.ERROR), 0],
+			[Symbol.keyFor(ServerManager.ResourceStatus.REGISTERED), 1],
+			[Symbol.keyFor(ServerManager.ResourceStatus.DOWNLOADING), 2],
+			[Symbol.keyFor(ServerManager.ResourceStatus.DOWNLOADED), 3]
+		]);
+		let reducedStatus = ServerManager.ResourceStatus.DOWNLOADED;
+		for (const name of names)
+		{
+			const pathStatusData = this._resources.get(name);
+
+			if (typeof pathStatusData === "undefined")
+			{
+				// throw { ...response, error: 'unknown resource' };
+				throw Object.assign(response, {
+					error: `unable to find a previously registered resource with name: ${name}`
+				});
+			}
+
+			// update the reduced status according to the order given by statusOrder:
+			if (statusOrder.get(Symbol.keyFor(pathStatusData.status)) <
+				statusOrder.get(Symbol.keyFor(reducedStatus)))
+			{
+				reducedStatus = pathStatusData.status;
+			}
 		}
 
-		return pathStatusData.status;
+		return reducedStatus;
 	}
 
 	/****************************************************************************
@@ -410,7 +452,7 @@ export class ServerManager extends PsychObject
 	 * </ul>
 	 *
 	 * @name module:core.ServerManager#prepareResources
-	 * @param {Array.<{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the list of resources
+	 * @param {String | Array.<{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the list of resources or a single resource
 	 * @function
 	 * @public
 	 */
@@ -430,9 +472,13 @@ export class ServerManager extends PsychObject
 			// register the resources:
 			if (resources !== null)
 			{
+				if (typeof resources === "string")
+				{
+					resources = [resources];
+				}
 				if (!Array.isArray(resources))
 				{
-					throw "resources should be an array of string or objects";
+					throw "resources should be either (a) a string or (b) an array of string or objects";
 				}
 
 				// whether all resources have been requested:
@@ -524,19 +570,26 @@ export class ServerManager extends PsychObject
 
 			// download those registered resources for which download = true
 			// note: we return a Promise that will be resolved when all the resources are downloaded
-			return new Promise((resolve, reject) =>
+			if (resourcesToDownload.size === 0)
 			{
-				const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
+				return Promise.resolve();
+			}
+			else
+			{
+				return new Promise((resolve, reject) =>
 				{
-					if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
+					const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
 					{
-						this.off(ServerManager.Event.RESOURCE, uuid);
-						resolve();
-					}
-				});
+						if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
+						{
+							this.off(ServerManager.Event.RESOURCE, uuid);
+							resolve();
+						}
+					});
 
-				this._downloadResources(resourcesToDownload);
-			});
+					this._downloadResources(resourcesToDownload);
+				});
+			}
 		}
 		catch (error)
 		{
@@ -1358,6 +1411,11 @@ ServerManager.Status = {
  */
 ServerManager.ResourceStatus = {
 	/**
+	 * There was an error during downloading, or the resource is in an unknown state.
+	 */
+	ERROR: Symbol.for("ERROR"),
+
+	/**
 	 * The resource has been registered.
 	 */
 	REGISTERED: Symbol.for("REGISTERED"),
@@ -1371,9 +1429,4 @@ ServerManager.ResourceStatus = {
 	 * The resource has been downloaded.
 	 */
 	DOWNLOADED: Symbol.for("DOWNLOADED"),
-
-	/**
-	 * There was an error during downloading, or the resource is in an unknown state.
-	 */
-	ERROR: Symbol.for("ERROR"),
 };
