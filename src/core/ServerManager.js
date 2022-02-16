@@ -572,6 +572,10 @@ export class ServerManager extends PsychObject
 			// note: we return a Promise that will be resolved when all the resources are downloaded
 			if (resourcesToDownload.size === 0)
 			{
+				this.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOAD_COMPLETED,
+				});
+
 				return Promise.resolve();
 			}
 			else
