@@ -813,27 +813,29 @@ export function addInfoFromUrl(info)
  */
 export function selectFromArray(array, selection)
 {
-	// if selection is an integer, or a string representing an integer, we treat it as an index in the array
-	// and return that entry:
+	// if selection is an integer, or a string representing an integer, we treat it
+	// as an index in the array and return that entry:
 	if (isInt(selection))
 	{
 		return [array[parseInt(selection)]];
 	}
+
 	// if selection is an array, we treat it as a list of indices
 	// and return an array with the entries corresponding to those indices:
 	else if (Array.isArray(selection))
 	{
-		// Pick out `array` items matching indices contained in `selection` in order
-		return selection.map((i) => array[i]);
+		return selection.map( (i) => array[i] );
 	}
-	// if selection is a string, we decode it:
+
+	// if selection is a string:
 	else if (typeof selection === "string")
 	{
 		if (selection.indexOf(",") > -1)
 		{
-			return selection.split(",").map((a) => selectFromArray(array, a));
+			const selectionAsArray = selection.split(",").map( (i) => parseInt(i) );
+			return selectFromArray(array, selectionAsArray);
 		}
-		// return flattenArray( selection.split(',').map(a => selectFromArray(array, a)) );
+
 		else if (selection.indexOf(":") > -1)
 		{
 			let sliceParams = selection.split(":").map((a) => parseInt(a));
