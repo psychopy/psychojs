@@ -1,17 +1,24 @@
+//
+// Gaussian Function:
+// https://en.wikipedia.org/wiki/Gaussian_function
+//
+
 #version 300 es
 precision mediump float;
 
 in vec2 vUvs;
 out vec4 shaderOut;
 
-#define M_PI 3.14159265358979
+uniform float uA;
+uniform float uB;
+uniform float uC;
 
-float gauss(float x) {
-    return exp(-(x * x) * 20.);
-}
+#define M_PI 3.14159265358979
 
 void main() {
     vec2 uv = vUvs;
-    float g = gauss(uv.x - .5) * gauss(uv.y - .5);
+    float c2 = uC * uC;
+    float x = length(uv - .5);
+    float g = uA * exp(-pow(x - uB, 2.) / c2 * .5);
     shaderOut = vec4(vec3(g), 1.);
 }
