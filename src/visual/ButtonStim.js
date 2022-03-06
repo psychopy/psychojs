@@ -104,6 +104,11 @@ export class ButtonStim extends TextBox
 			[],
 		);
 
+		this._addAttribute(
+			"numClicks",
+			0,
+		);
+
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
