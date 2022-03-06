@@ -145,7 +145,10 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		if (hasChanged)
 		{
 			let radians = -ori * 0.017453292519943295;
-			this._rotationMatrix = [[Math.cos(radians), -Math.sin(radians)], [Math.sin(radians), Math.cos(radians)]];
+			this._rotationMatrix = [
+				[Math.cos(radians), -Math.sin(radians)],
+				[Math.sin(radians), Math.cos(radians)]
+			];
 
 			this._onChange(true, true)();
 		}
@@ -258,14 +261,17 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 	/**
 	 * Generate a callback that prepares updates to the stimulus.
-	 * This is typically called in the constructor of a stimulus, when attributes are added with _addAttribute.
+	 * This is typically called in the constructor of a stimulus, when attributes are added
+	 * 	with _addAttribute.
 	 *
 	 * @name module:visual.VisualStim#_onChange
 	 * @function
-	 * @param {boolean} [withPixi = false] - whether or not the PIXI representation must also be updated
-	 * @param {boolean} [withBoundingBox = false] - whether or not to immediately estimate the bounding box
-	 * @return {Function}
 	 * @protected
+	 * @param {boolean} [withPixi = false] - whether or not the PIXI representation must
+	 * 	also be updated
+	 * @param {boolean} [withBoundingBox = false] - whether or not to immediately estimate
+	 * 	the bounding box
+	 * @return {Function}
 	 */
 	_onChange(withPixi = false, withBoundingBox = false)
 	{

@@ -65,6 +65,19 @@ export class FaceDetector extends VisualStim
 		}
 	}
 
+	/**
+	 * Query whether or not the face detector is ready to detect.
+	 *
+	 * @name module:visual.FaceDetector#isReady
+	 * @function
+	 * @public
+	 * @returns {boolean} whether or not the face detector is ready to detect
+	 */
+	isReady()
+	{
+		return this._modelsLoaded;
+	}
+
 
 	/**
 	 * Setter for the video attribute.
@@ -207,7 +220,8 @@ export class FaceDetector extends VisualStim
 	 * @protected
 	 */
 	async _initFaceApi()
-	{/*
+	{
+/*
 		// load the library:
 		await this._psychoJS.serverManager.prepareResources([
 			{
@@ -215,13 +229,16 @@ export class FaceDetector extends VisualStim
 				"path": this.faceApiUrl,
 				"download": true
 			}
-		]);*/
+		]);
+*/
 
 		// load the models:
-		faceapi.nets.tinyFaceDetector.loadFromUri(this._modelDir);
-		faceapi.nets.faceLandmark68Net.loadFromUri(this._modelDir);
-		faceapi.nets.faceRecognitionNet.loadFromUri(this._modelDir);
-		faceapi.nets.faceExpressionNet.loadFromUri(this._modelDir);
+		this._modelsLoaded = false;
+		await faceapi.nets.tinyFaceDetector.loadFromUri(this._modelDir);
+		await faceapi.nets.faceLandmark68Net.loadFromUri(this._modelDir);
+		await faceapi.nets.faceRecognitionNet.loadFromUri(this._modelDir);
+		await faceapi.nets.faceExpressionNet.loadFromUri(this._modelDir);
+		this._modelsLoaded = true;
 	}
 
 

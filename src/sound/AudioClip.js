@@ -157,7 +157,10 @@ export class AudioClip extends PsychObject
 		}
 
 		// upload the data:
-		return this._psychoJS.serverManager.uploadAudioVideo(this._data, filename);
+		return this._psychoJS.serverManager.uploadAudioVideo({
+			mediaBlob: this._data,
+			tag: filename
+		});
 	}
 
 	/**

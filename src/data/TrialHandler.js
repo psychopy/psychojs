@@ -19,7 +19,7 @@ import * as util from "../util/Util.js";
  *
  * @class
  * @extends PsychObject
- * @param {Object} options
+ * @param {Object} options - the handler options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {Array.<Object> | String} [options.trialList= [undefined] ] - if it is a string, we treat it as the name of a condition resource
  * @param {number} options.nReps - number of repetitions
@@ -80,7 +80,7 @@ export class TrialHandler extends PsychObject
 		this._addAttribute("name", name);
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("seed", seed);
-		this._prepareTrialList(trialList);
+		this._prepareTrialList();
 
 		// number of stimuli
 		this.nStim = this.trialList.length;
@@ -520,7 +520,7 @@ export class TrialHandler extends PsychObject
 	{
 		try
 		{
-			let resourceExtension = resourceName.split(".").pop();
+			const resourceExtension = resourceName.split(".").pop();
 			if (["csv", "odp", "xls", "xlsx"].indexOf(resourceExtension) > -1)
 			{
 				// (*) read conditions from resource:
@@ -551,9 +551,9 @@ export class TrialHandler extends PsychObject
 
 				// (*) return the selected conditions as an array of 'object as map':
 				// [
-				// 		{field0: value0-0, field1: value0-1, ...}
-				// 		{field0: value1-0, field1: value1-1, ...}
-				// 		...
+				// {field0: value0-0, field1: value0-1, ...}
+				// {field0: value1-0, field1: value1-1, ...}
+				// ...
 				// ]
 				let trialList = new Array(selectedRows.length - 1);
 				for (let r = 0; r < selectedRows.length; ++r)
@@ -617,10 +617,11 @@ export class TrialHandler extends PsychObject
 	/**
 	 * Prepare the trial list.
 	 *
+	 * @function
 	 * @protected
-	 * @param {Array.<Object> | String} trialList - a list of trials, or the name of a condition resource
+	 * @returns {void}
 	 */
-	_prepareTrialList(trialList)
+	_prepareTrialList()
 	{
 		const response = {
 			origin: "TrialHandler._prepareTrialList",
@@ -628,28 +629,28 @@ export class TrialHandler extends PsychObject
 		};
 
 		// we treat undefined trialList as a list with a single empty entry:
-		if (typeof trialList === "undefined")
+		if (typeof this._trialList === "undefined")
 		{
 			this.trialList = [undefined];
 		}
 		// if trialList is an array, we make sure it is not empty:
-		else if (Array.isArray(trialList))
+		else if (Array.isArray(this._trialList))
 		{
-			if (trialList.length === 0)
+			if (this._trialList.length === 0)
 			{
 				this.trialList = [undefined];
 			}
 		}
 		// if trialList is a string, we treat it as the name of the condition resource:
-		else if (typeof trialList === "string")
+		else if (typeof this._trialList === "string")
 		{
-			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
+			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, this._trialList);
 		}
 		// unknown type:
 		else
 		{
 			throw Object.assign(response, {
-				error: "unable to prepare trial list: unknown type: " + (typeof trialList),
+				error: `unable to prepare trial list: unknown type: ${(typeof this._trialList)}`
 			});
 		}
 	}
@@ -687,16 +688,16 @@ export class TrialHandler extends PsychObject
 			context: "when preparing a sequence of trials",
 		};
 
-		// get an array of the indices of the elements of trialList :
+		// get an array of the indices of the elements of trialList:
 		const indices = Array.from(this.trialList.keys());
 
-		if (this.method === TrialHandler.Method.SEQUENTIAL)
+		if (this._method === TrialHandler.Method.SEQUENTIAL)
 		{
 			this._trialSequence = Array(this.nReps).fill(indices);
 			// transposed version:
 			// this._trialSequence = indices.reduce( (seq, e) => { seq.push( Array(this.nReps).fill(e) ); return seq; }, [] );
 		}
-		else if (this.method === TrialHandler.Method.RANDOM)
+		else if (this._method === TrialHandler.Method.RANDOM)
 		{
 			this._trialSequence = [];
 			for (let i = 0; i < this.nReps; ++i)
@@ -704,10 +705,10 @@ export class TrialHandler extends PsychObject
 				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
-		else if (this.method === TrialHandler.Method.FULL_RANDOM)
+		else if (this._method === TrialHandler.Method.FULL_RANDOM)
 		{
 			// create a flat sequence with nReps repeats of indices:
-			let flatSequence = [];
+			const flatSequence = [];
 			for (let i = 0; i < this.nReps; ++i)
 			{
 				flatSequence.push.apply(flatSequence, indices);

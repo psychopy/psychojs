@@ -290,6 +290,19 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	}
 
 	/**
+	 * Query whether or not the marker is currently being dragged.
+	 *
+	 * @name module:visual.Slider#isMarkerDragging
+	 * @function
+	 * @public
+	 * @returns {boolean} whether or not the marker is being dragged
+	 */
+	isMarkerDragging()
+	{
+		return this._markerDragging;
+	}
+
+	/**
 	 * Get the current value of the rating.
 	 *
 	 * @name module:visual.Slider#getRating
@@ -593,6 +606,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_sanitizeAttributes()
 	{
+		this._isSliderStyle = false;
+		this._frozenMarker = false;
+
 		// convert potential string styles into Symbols:
 		this._style.forEach((style, index) =>
 		{
@@ -602,7 +618,51 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			}
 		});
 
-		// TODO: only two ticks for SLIDER type, non-empty ticks, that RADIO is also categorical, etc.
+		// TODO: non-empty ticks, RADIO is also categorical, etc.
+
+		// SLIDER style: two ticks, first one is zero, second one is > 1
+		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+		{
+			this._isSliderStyle = true;
+
+			// more than 2 ticks: cut to two
+			if (this._ticks.length > 2)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER and more than two ticks. We cut the ticks to 2.`);
+				this._ticks = this._ticks.slice(0, 2);
+			}
+
+			// less than 2 ticks: error
+			if (this._ticks.length < 2)
+			{
+				throw {
+					origin: "Slider._sanitizeAttributes",
+					context: "when sanitizing the attributes of Slider: " + this._name,
+					error: "less than 2 ticks were given for a slider of type: SLIDER"
+				}
+			}
+
+			// first tick different from zero: change it to zero
+			if (this._ticks[0] !== 0)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER but the first tick is not 0. We changed it to 0.`);
+				this._ticks[0] = 0;
+			}
+
+			// second tick smaller than 1: change it to 1
+			if (this._ticks[1] < 1)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER but the second tick is less than 1. We changed it to 1.`);
+				this._ticks[1] = 1;
+			}
+
+			// second tick is 1: the marker is frozen
+			if (this._ticks[1] === 1)
+			{
+				this._frozenMarker = true;
+			}
+
+		}
 
 		// deal with categorical sliders:
 		this._isCategorical = (this._ticks.length === 0);
@@ -911,7 +971,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 		else if (this._markerType === Slider.Shape.BOX)
 		{
-			this._marker.lineStyle(1, this.getContrastedColor(this._markerColor, 0.5).int, 1, 0.5);
+			this._marker.lineStyle(1, this.getContrastedColor(this._markerColor, 0.5).int, 1, 0);
 			this._marker.beginFill(this._markerColor.int, 1);
 			this._marker.drawRect(
 				Math.round(-this._markerSize_px[0] / 2),
@@ -954,9 +1014,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			{
 				self._markerDragging = false;
 
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
+				if (!this._frozenMarker)
+				{
+					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
+					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+					self.recordRating(rating);
+				}
 
 				event.stopPropagation();
 			}
@@ -967,11 +1030,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			if (self._markerDragging)
 			{
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
-
 				self._markerDragging = false;
+
+				if (!this._frozenMarker)
+				{
+					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
+					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+					self.recordRating(rating);
+				}
 
 				event.stopPropagation();
 			}
@@ -982,9 +1048,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			if (self._markerDragging)
 			{
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.setMarkerPos(rating);
+				if (!this._frozenMarker)
+				{
+					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
+					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+					self.setMarkerPos(rating);
+				}
 
 				event.stopPropagation();
 			}
@@ -1015,12 +1084,37 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) =>
 		{
-			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
-			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-			self.recordRating(rating);
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = event.data.getLocalPosition(self._body);
+				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				self.recordRating(rating);
+			}
 
 			event.stopPropagation();
 		};
+
+		// mouse wheel over slider:
+		if (this._isSliderStyle)
+		{
+			self._pointerIsOver = false;
+
+			this._pixi.pointerover = this._pixi.mouseover = (event) =>
+			{
+				self._pointerIsOver = true;
+				event.stopPropagation();
+			}
+			this._pixi.pointerout = this._pixi.mouseout = (event) =>
+			{
+				self._pointerIsOver = false;
+				event.stopPropagation();
+			}
+
+			/*renderer.view.addEventListener("wheel", (event) =>
+			{
+
+			}*/
+		}
 	}
 
 	/**
@@ -1082,7 +1176,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the labels.
 	 *
-	 * @name module:visual.Slider#_setupTicks
+	 * @name module:visual.Slider#_setupLabels
 	 * @function
 	 * @private
 	 */
@@ -1311,7 +1405,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range + this._ticks[0];
+				if (size_px[1] === markerSize_px[1])
+				{
+
+				}
+				else
+				{
+					return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range + this._ticks[0];
+				}
 			}
 			else
 			{
