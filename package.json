@@ -27,6 +27,7 @@
     "start": "npm run build"
   },
   "dependencies": {
+    "esbuild-plugin-glsl": "^1.0.5",
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
     "pako": "^1.0.10",

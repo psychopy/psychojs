@@ -1,3 +1,14 @@
+/**
+ * Sine wave multiplied by another sine wave.
+ * https://en.wikipedia.org/wiki/Sine_wave
+ *
+ * @author Nikita Agafonov
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ * @description Creates an image of two 2d sine waves multiplied with each other.
+ * @usedby GratingStim.js
+ */
+
 #version 300 es
 precision mediump float;
 
