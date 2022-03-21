@@ -1,7 +1,13 @@
-//
-// Raised-cosine function:
-// https://en.wikipedia.org/wiki/Raised-cosine_filter
-//
+/**
+ * Raised-cosine.
+ * https://en.wikipedia.org/wiki/Raised-cosine_filter
+ *
+ * @author Nikita Agafonov
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ * @description Creates 2d raised-cosine image as if 1d raised-cosine graph was rotated around Y axis and observed from above.
+ * @usedby GratingStim.js
+ */
 
 #version 300 es
 precision mediump float;

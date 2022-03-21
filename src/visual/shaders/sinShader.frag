@@ -1,3 +1,14 @@
+/**
+ * Sine wave.
+ * https://en.wikipedia.org/wiki/Sine_wave
+ *
+ * @author Nikita Agafonov
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ * @description Creates 2d sine wave image as if 1d sine graph was extended across Z axis and observed from above.
+ * @usedby GratingStim.js
+ */
+
 #version 300 es
 precision mediump float;
 

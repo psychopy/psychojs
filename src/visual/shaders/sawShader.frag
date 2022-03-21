@@ -1,7 +1,13 @@
-//
-// Sawtooth wave:
-// https://en.wikipedia.org/wiki/Sawtooth_wave
-//
+/**
+ * Sawtooth wave.
+ * https://en.wikipedia.org/wiki/Sawtooth_wave
+ *
+ * @author Nikita Agafonov
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ * @description Creates 2d sawtooth wave image as if 1d sawtooth graph was extended across Z axis and observed from above.
+ * @usedby GratingStim.js
+ */
 
 #version 300 es
 precision mediump float;
