@@ -105,12 +105,12 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {float} sqrXsqr.uniforms.uPhase=0.0 - phase of sine wave (both of them).
 	 *
 	 * @property {Object} circle - Creates a filled circle shape with sharp edges.
-     * @property {String} circle.shader - shader source code for filled circle.
-     * @property {Object} circle.uniforms - default uniforms for shader.
-     * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
-     * and 1.0 is circle that spans from edge to edge of the stim.
-     *
-     * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
+	 * @property {String} circle.shader - shader source code for filled circle.
+	 * @property {Object} circle.uniforms - default uniforms for shader.
+	 * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
+	 * and 1.0 is circle that spans from edge to edge of the stim.
+	 *
+	 * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Gaussian_function}
 	 * @property {String} gauss.shader - shader source code for Gaussian shader
 	 * @property {Object} gauss.uniforms - default uniforms for shader
@@ -119,12 +119,12 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {float} gauss.uniforms.uC=0.16 - C constant for gaussian formula (see link).
 	 *
 	 * @property {Object} cross - Creates a filled cross shape with sharp edges.
-     * @property {String} cross.shader - shader source code for cross shader
-     * @property {Object} cross.uniforms - default uniforms for shader
-     * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
-     * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
-     *
-     * @property {Object} radRamp - Creates 2d radial ramp image.
+	 * @property {String} cross.shader - shader source code for cross shader
+	 * @property {Object} cross.uniforms - default uniforms for shader
+	 * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
+	 * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
+	 *
+	 * @property {Object} radRamp - Creates 2d radial ramp image.
 	 * @property {String} radRamp.shader - shader source code for radial ramp shader
 	 * @property {Object} radRamp.uniforms - default uniforms for shader
 	 * @property {float} radRamp.uniforms.uSqueeze=1.0 - coefficient that helps to modify size of the ramp. Ranges [0.0, Infinity], where 0.0 results in ramp being so large
@@ -132,10 +132,10 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * @property {Object} raisedCos - Creates 2d raised-cosine image as if 1d raised-cosine graph was rotated around Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Raised-cosine_filter}
-     * @property {String} raisedCos.shader - shader source code for raised-cosine shader
-     * @property {Object} raisedCos.uniforms - default uniforms for shader
-     * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
-     * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
+	 * @property {String} raisedCos.shader - shader source code for raised-cosine shader
+	 * @property {Object} raisedCos.uniforms - default uniforms for shader
+	 * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
+	 * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
 	 */
 	static #SHADERS = {
 		sin: {
@@ -497,8 +497,8 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		);
 		geometry.addIndex([0, 1, 2, 0, 2, 3]);
 		const vertexSrc = defaultQuadVert;
-	    const fragmentSrc = GratingStim.#SHADERS[funcName].shader;
-	    const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[funcName].uniforms, uniforms);
+		const fragmentSrc = GratingStim.#SHADERS[funcName].shader;
+		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[funcName].uniforms, uniforms);
 		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
 		return new PIXI.Mesh(geometry, shader);
 	}
