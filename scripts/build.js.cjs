@@ -1,9 +1,18 @@
-const { buildSync } = require("esbuild");
-const pkg = require("psychojs/package.json");
+const { buildSync, build } = require("esbuild");
+const { glsl } = require("esbuild-plugin-glsl");
+const pkg = require("../package.json");
 
 const versionMaybe = process.env.npm_config_outver;
 const dirMaybe = process.env.npm_config_outdir;
 const [, , , dir = dirMaybe || "out", version = versionMaybe || pkg.version] = process.argv;
+let shouldWatchDir = false;
+
+for (var i = 0; i < process.argv.length; i++) {
+	if (process.argv[i] === '-w') {
+		shouldWatchDir = true;
+		break;
+	}
+}
 
 [
 	// The ESM bundle
@@ -20,13 +29,19 @@ const [, , , dir = dirMaybe || "out", version = versionMaybe || pkg.version] = p
 	},
 ].forEach(function(options)
 {
-	buildSync({ ...this, ...options });
+	build({ ...this, ...options })
+	.then(()=> {
+		if (shouldWatchDir) {
+			console.log('watching...')
+		}
+	});
 }, {
 	// Shared options
 	banner: {
 		js: `/*! For license information please see psychojs-${version}.js.LEGAL.txt */`,
 	},
 	bundle: true,
+	watch: shouldWatchDir,
 	sourcemap: true,
 	entryPoints: ["src/index.js"],
 	minifySyntax: true,
@@ -36,4 +51,9 @@ const [, , , dir = dirMaybe || "out", version = versionMaybe || pkg.version] = p
 		"es2017",
 		"node14",
 	],
+	plugins: [
+		glsl({
+			minify: true
+		})
+	]
 });
