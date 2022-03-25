@@ -1,9 +1,9 @@
 /**
  * Editable TextBox Stimulus.
  *
- * @author Alain Pitiot
+ * @author Alain Pitiot, Nikita Agafonov
  * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -152,20 +152,17 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"color",
 			color,
-			"white",
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"fillColor",
 			fillColor,
-			"lightgrey",
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"borderColor",
 			borderColor,
-			this.fillColor,
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"contrast",
@@ -266,6 +263,48 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextBox#setColor
+	 * @public
+	 * @param {boolean} color - color of the text
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setColor (color, log = false) {
+		this._setAttribute('color', color, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the fillColor attribute.
+	 *
+	 * @name module:visual.TextBox#setFillColor
+	 * @public
+	 * @param {boolean} fillColor - fill color of the text box
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setFillColor (fillColor, log = false) {
+		this._setAttribute('fillColor', fillColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the borderColor attribute.
+	 *
+	 * @name module:visual.TextBox#setBorderColor
+	 * @public
+	 * @param {boolean} borderColor - border color of the text box
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setBorderColor (borderColor, log = false) {
+		this._setAttribute('borderColor', borderColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
 	 * Setter for the size attribute.
 	 *
 	 * @name module:visual.TextBox#setSize
@@ -346,10 +385,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const multiline = this._multiline;
 
 		return {
+			// input style properties eventually become CSS, so same syntax applies
 			input: {
 				fontFamily: this._font,
 				fontSize: letterHeight_px + "px",
-				color: new Color(this._color).hex,
+				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
 
@@ -359,12 +399,15 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				height: multiline ? (height_px - 2 * padding_px) + "px" : undefined,
 				width: (width_px - 2 * padding_px) + "px",
 			},
+			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
 			box: {
 				fill: new Color(this._fillColor).int,
+				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
 				rounded: 5,
 				stroke: {
 					color: new Color(this._borderColor).int,
 					width: borderWidth_px,
+					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
 				},
 				/*default: {
 					fill: new Color(this._fillColor).int,

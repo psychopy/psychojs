@@ -824,17 +824,14 @@ function DefaultBoxGenerator(styles)
 		let style = styles[state.toLowerCase()];
 		let box = new PIXI.Graphics();
 
-		if (style.fill)
-		{
-			box.beginFill(style.fill);
-		}
+		box.beginFill(style.fill, style.alpha);
 
 		if (style.stroke)
 		{
 			box.lineStyle(
 				style.stroke.width ?? 1,
-				style.stroke.color ?? 0,
-				style.stroke.alpha ?? 1,
+				style.stroke.color,
+				style.stroke.alpha,
 			);
 		}
 
