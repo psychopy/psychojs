@@ -392,7 +392,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
-
+				textAlign: this._alignment,
 				padding: padding_px + "px",
 				multiline,
 				text: this._text,
@@ -523,11 +523,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.disabled = !this._editable;
 
 		const anchor = this._getAnchor();
-		this._pixi.pivot.x = anchor[0] * this._pixi.width;
-		this._pixi.pivot.y = anchor[1] * this._pixi.height;
 
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
+		this._pixi.pivot.x = anchor[0] * this._pixi.width;
+		// when setting PIXI.Container.scale.y = -1
+		// PIXI.Container.height becomes negative
+		this._pixi.pivot.y = anchor[1] * -this._pixi.height;
 		this._pixi.rotation = -this._ori * Math.PI / 180;
 		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 
