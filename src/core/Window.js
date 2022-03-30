@@ -8,6 +8,7 @@
  */
 
 import * as PIXI from "pixi.js-legacy";
+import {AdjustmentFilter} from "@pixi/filter-adjustment";
 import { MonotonicClock } from "../util/Clock.js";
 import { Color } from "../util/Color.js";
 import { PsychObject } from "../util/PsychObject.js";
@@ -25,6 +26,7 @@ import { Logger } from "./Logger.js";
  * @param {string} [options.name] the name of the window
  * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
  * @param {Color} [options.color= Color('black')] the background color of the window
+ * @param {number} [options.gamma= 1] sets the delimiter for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
  * @param {string} [options.units= 'pix'] the units of the window
  * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
  * before flipping
@@ -49,6 +51,7 @@ export class Window extends PsychObject
 		name,
 		fullscr = false,
 		color = new Color("black"),
+		gamma = 1,
 		units = "pix",
 		waitBlanking = false,
 		autoLog = true,
@@ -59,11 +62,19 @@ export class Window extends PsychObject
 		// messages to be logged at the next "flip":
 		this._msgToBeLogged = [];
 
+		// storing AdjustmentFilter instance to access later;
+		this._adjustmentFilter = new AdjustmentFilter({
+			gamma
+		});
+
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
 		this._addAttribute("fullscr", fullscr);
 		this._addAttribute("color", color);
+		this._addAttribute("gamma", gamma, 1, () => {
+			this._adjustmentFilter.gamma = this._gamma;
+		});
 		this._addAttribute("units", units);
 		this._addAttribute("waitBlanking", waitBlanking);
 		this._addAttribute("autoLog", autoLog);
@@ -428,6 +439,7 @@ export class Window extends PsychObject
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
 		this._rootContainer.interactive = true;
+		this._rootContainer.filters = [this._adjustmentFilter];
 
 		// set the initial size of the PIXI renderer and the position of the root container:
 		Window._resizePixiRenderer(this);
