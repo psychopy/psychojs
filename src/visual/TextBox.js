@@ -144,8 +144,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"alignment",
 			alignment,
-			"left",
-			this._onChange(true, true),
+			"left"
 		);
 
 		// colors:
@@ -226,6 +225,21 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	clear()
 	{
 		this.setText();
+	}
+
+	/**
+	 * Setter for the alignment attribute.
+	 *
+	 * @name module:visual.TextBox#setAlignment
+	 * @public
+	 * @param {boolean} alignment - alignment of the text
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setAlignment(alignment = "left", log = false) {
+		this._setAttribute("alignment", alignment, log);
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("text-align", alignment);
+		}
 	}
 
 	/**
