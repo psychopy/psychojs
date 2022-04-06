@@ -56,6 +56,7 @@ The PsychoJS library was initially written by [Ilixa](http://www.ilixa.com) with
 It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and [Open Science Tools](https://opensciencetools.org/) (2020-):
 - Alain Pitiot - [@apitiot](https://github.com/apitiot)
 - Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
+- Nikita Agafonov - [@lightest](https://github.com/lightest)
 - Jonathan Peirce - [@peircej](https://github.com/peircej)
 - Thomas Pronk - [@tpronk](https://github.com/tpronk)
 - Hiroyuki Sogo - [@hsogo](https://github.com/hsogo)
