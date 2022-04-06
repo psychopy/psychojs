@@ -81,6 +81,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			lineColor,
 			contrast,
 			opacity,
+			depth,
 			style,
 			ticks,
 			labels,
@@ -99,7 +100,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		} = {},
 	)
 	{
-		super({ name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog });
 
 		this._needMarkerUpdate = false;
 

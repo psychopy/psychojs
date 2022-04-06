@@ -412,6 +412,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				text: this._text,
 				height: multiline ? (height_px - 2 * padding_px) + "px" : undefined,
 				width: (width_px - 2 * padding_px) + "px",
+				pointerEvents: "none"
 			},
 			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
 			box: {
