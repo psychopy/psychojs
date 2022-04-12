@@ -21,6 +21,6 @@ uniform float uPhase;
 
 void main() {
     vec2 uv = vUvs;
-    float s = sign(sin(uFreq * uv.x * 2. * M_PI + uPhase));
+    float s = sign(sin((uFreq * uv.x + uPhase) * 2. * M_PI));
     shaderOut = vec4(.5 + .5 * vec3(s), 1.0);
 }

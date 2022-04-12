@@ -40,7 +40,7 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
  * @param {String | HTMLImageElement} [options.mask] - the name of the mask resource or HTMLImageElement corresponding to the mask
  * @param {String} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
- * @param {number} [options.phase=1.0] - phase of the function used in grating stimulus
+ * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
@@ -142,7 +142,8 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			shader: sinShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [.5, 0, .5]
 			}
 		},
 		sqr: {

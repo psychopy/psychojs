@@ -16,13 +16,14 @@ in vec2 vUvs;
 out vec4 shaderOut;
 
 #define M_PI 3.14159265358979
+#define PI2 2.* M_PI
 uniform float uFreq;
 uniform float uPhase;
 
 void main() {
     vec2 uv = vUvs;
-    float sx = sin(uFreq * uv.x * 2. * M_PI + uPhase);
-    float sy = sin(uFreq * uv.y * 2. * M_PI + uPhase);
+    float sx = sin((uFreq * uv.x + uPhase) * PI2);
+    float sy = sin((uFreq * uv.y + uPhase) * PI2);
     float s = sx * sy * .5 + .5;
     shaderOut = vec4(vec3(s), 1.0);
 }
