@@ -12,7 +12,7 @@ PsychoJS is an open-source project. You can contribute by submitting pull reques
 
 ## Motivation
 
-Many studies in behavioural sciences (e.g., psychology, neuroscience, linguistics or mental health) use computers to present stimuli and record responses in a precise manner. These studies are still typically conducted on small numbers of people in laboratory environments equipped with dedicated hardware.
+Many studies in behavioural sciences (e.g. psychology, neuroscience, linguistics or mental health) use computers to present stimuli and record responses in a precise manner. These studies are still typically conducted on small numbers of people in laboratory environments equipped with dedicated hardware.
 
 With high-speed broadband, improved web technologies and smart devices everywhere, studies can now go online without sacrificing too much temporal precision. This is a "game changer". Data can be collected on larger, more varied, international populations. We can study people in environments they do not find intimidating. Experiments can be run multiple times per day, without data collection becoming impractical.
 
@@ -27,11 +27,10 @@ Running PsychoPy experiments online requires the generation of an index.html fil
 The recommended approach to creating experiments is to use [PsychoPy Builder](http://www.psychopy.org/builder/builder.html) to generate the javascript and html files. Many of the existing Builder experiments should "just work", subject to the [Components being compatible between PsychoPy and PsychoJS](https://www.psychopy.org/online/status.html).
 
 ### JavaScript Code
-We built the PsychoJS library to make the JavaScript experiment files look and behave in very much the same way as to the Builder-generated Python files. PsychoJS offers classes such as `Window` and `ImageStim`, with very similar attributes to their Python equivalents. Experiment designers familiar with the PsychoPy library should feel at home with PsychoJS, and can expect the same level of control they have with PsychoPy, from the structure of the trials/loops all the way down to frame-by-frame updates.
+We built the PsychoJS library to make the JavaScript experiment files look and behave in very much the same way as the Builder-generated Python files. PsychoJS offers classes such as `Window` and `ImageStim`, with very similar attributes to their Python equivalents. Experiment designers familiar with the PsychoPy library should feel at home with PsychoJS, and can expect the same level of control they have with PsychoPy, from the structure of the trials/loops all the way down to frame-by-frame updates.
 
-There are however notable differences between the PsychoJS and PsychoPy libraries, most of which have to do with the way a web browser interprets and runs JavaScript, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJS introduces the concept of Scheduler. As the name indicate, Scheduler's offer a way to organise various PsychoJS along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).
-
-Under the hood PsychoJS relies on [PixiJS](http://www.pixijs.com) to present stimuli and collect responses. PixiJS is a multi-platform, accelerated, 2D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considerably improving the rendering performance.
+There are however notable differences between the PsychoJS and PsychoPy libraries, most of which having to do with the way a web browser interprets and runs JavaScript, deals with resources (such as images, sound or videos), or render stimuli. To manage those web-specific aspect, PsychoJS introduces the concept of Scheduler. As the name indicate, Scheduler's offer a way to organise various tasks along a timeline, such as downloading resources, running a loop, checking for keyboard input, saving experiment results, etc. As an illustration, a Flow in PsychoPy can be conceptualised as a Schedule, with various tasks on it. Some of those tasks, such as trial loops, can also schedule further events (i.e. the individual trials to be run).
+taskshe hood PsychoJS relies on [PixiJS](http://www.pixijs.com) to present stimuli and collect responses. PixiJS is a high performance, multi-platform 2D renderer, that runs in most modern browsers. It uses WebGL wherever possible and silently falls back to HTML5 canvas where not. WebGL directly addresses the graphic card, thereby considerably improving the rendering performance.
 
 
 ### Hosting Experiments
@@ -39,11 +38,11 @@ A convenient way to make experiment available to participants is to host them on
 
 
 ## Which PsychoPy Components are supported by PsychoJS?
-The list of PsychoPy Builder Components supported by PsychoJS see the [PsychoPy/JS online status page](https://www.psychopy.org/online/status.html)
+For the list of PsychoPy Builder Components supported by PsychoJS see this [PsychoPy/JS online status page](https://www.psychopy.org/online/status.html).
 
 
 ## API
-There is full documentation of the [PsychoJS API](https://psychopy.github.io/psychojs/).
+The documentation of the PsychoJS API is available [here](https://psychopy.github.io/psychojs/).
 
 
 ## Maintainers
@@ -54,7 +53,7 @@ Alain Pitiot - [@apitiot](https://github.com/apitiot)
 ## Contributors
 
 The PsychoJS library was initially written by [Ilixa](http://www.ilixa.com) with support from the [Wellcome Trust](https://wellcome.ac.uk).
-It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and  [Open Science Tools](https://opensciencetools.org/) (2020-):
+It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and [Open Science Tools](https://opensciencetools.org/) (2020-):
 - Alain Pitiot - [@apitiot](https://github.com/apitiot)
 - Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
 - Nikita Agafonov - [@lightest](https://github.com/lightest)

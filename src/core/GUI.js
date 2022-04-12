@@ -190,7 +190,10 @@ export class GUI
 					}
 				});
 
-				htmlCode += '<p class="validateTips">Fields marked with an asterisk (*) are required.</p>';
+				if (this._requiredKeys.length > 0)
+				{
+					htmlCode += '<p class="validateTips">Fields marked with an asterisk (*) are required.</p>';
+				}
 
 				// add a progress bar:
 				htmlCode += '<hr><div id="progressMsg" class="progress">' + self._progressMsg + "</div>";
@@ -322,16 +325,7 @@ export class GUI
 	} = {})
 	{
 		// close the previously opened dialog box, if there is one:
-		const expDialog = jQuery("#expDialog");
-		if (expDialog.length)
-		{
-			expDialog.dialog("destroy").remove();
-		}
-		const msgDialog = jQuery("#msgDialog");
-		if (msgDialog.length)
-		{
-			msgDialog.dialog("destroy").remove();
-		}
+		this.closeDialog();
 
 		let htmlCode;
 		let titleColour;
@@ -449,6 +443,27 @@ export class GUI
 	}
 
 	/**
+	 * Close the previously opened dialog box, if there is one.
+	 *
+	 * @name module:core.GUI#closeDialog
+	 * @function
+	 * @public
+	 */
+	closeDialog()
+	{
+		const expDialog = jQuery("#expDialog");
+		if (expDialog.length)
+		{
+			expDialog.dialog("destroy").remove();
+		}
+		const msgDialog = jQuery("#msgDialog");
+		if (msgDialog.length)
+		{
+			msgDialog.dialog("destroy").remove();
+		}
+	}
+
+	/**
 	 * Listener for resource event from the [Server Manager]{@link ServerManager}.
 	 *
 	 * @name module:core.GUI#_onResourceEvents
@@ -517,7 +532,7 @@ export class GUI
 	_updateOkButtonStatus(changeFocus = true)
 	{
 		if (
-			this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL
+			(this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL)
 			|| (this._allResourcesDownloaded && this._setRequiredKeys && this._setRequiredKeys.size >= this._requiredKeys.length)
 		)
 		{
