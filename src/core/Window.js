@@ -438,6 +438,9 @@ export class Window extends PsychObject
 
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
+		// sorts children according to their zIndex value. Higher zIndex means it will be moved towards the end of the array,
+		// and thus rendered on top of previous one.
+		this._rootContainer.sortableChildren = true;
 		this._rootContainer.interactive = true;
 		this._rootContainer.filters = [this._adjustmentFilter];
 

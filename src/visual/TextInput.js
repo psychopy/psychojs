@@ -1,12 +1,12 @@
 /**
  * TextInput encapsulates an html <input> element into a PIXI Container.
  *
- * @author 'Mwni' (https://github.com/Mwni)
+ * @author 'Mwni' (https://github.com/Mwni), Nikita Agafonov
  * @copyright (c) 2018 Mwni
  * @license Distributed under the terms of the MIT License
  *
  * @note TextInput was initially developed by 'Mwni' and is available under the MIT License.
- * We are currently using it almost as is but will be making modification in the near future.
+ * We are currently modifying it to our needs.
  */
 
 import * as PIXI from "pixi.js-legacy";
@@ -558,7 +558,7 @@ export class TextInput extends PIXI.Container
 	}
 
 	_onSurrogateFocus()
-	{
+	{	
 		this._setDOMInputVisible(true);
 		// sometimes the input is not being focused by the mouseclick
 		setTimeout(this._ensureFocus.bind(this), 10);
@@ -823,6 +823,11 @@ function DefaultBoxGenerator(styles)
 	{
 		let style = styles[state.toLowerCase()];
 		let box = new PIXI.Graphics();
+
+		box.interactive = true;
+		box.on('pointerdown', () => {
+			this._dom_input.focus();
+		});
 
 		box.beginFill(style.fill, style.alpha);
 
