@@ -558,7 +558,7 @@ export class TextInput extends PIXI.Container
 	}
 
 	_onSurrogateFocus()
-	{	
+	{
 		this._setDOMInputVisible(true);
 		// sometimes the input is not being focused by the mouseclick
 		setTimeout(this._ensureFocus.bind(this), 10);
