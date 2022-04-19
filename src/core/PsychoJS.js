@@ -176,7 +176,7 @@ export class PsychoJS
 		}
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2022.1.2");
+		this.logger.info("[PsychoJS] @version 2022.1.3");
 
 		// hide the initialisation message:
 		jQuery("#root").addClass("is-ready");
