@@ -209,8 +209,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the default letter height given the stimulus' units.
 	 *
 	 * @name module:visual.TextStim#_getDefaultLetterHeight
-	 * @return {number} - the letter height corresponding to this stimulus' units.
 	 * @protected
+	 * @return {number} - the letter height corresponding to this stimulus' units.
 	 */
 	_getDefaultLetterHeight()
 	{
@@ -232,8 +232,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the default wrap width given the stimulus' units.
 	 *
 	 * @name module:visual.TextStim#_getDefaultWrapWidth
-	 * @return {number} - the wrap width corresponding to this stimulus' units.
 	 * @protected
+	 * @return {number} - the wrap width corresponding to this stimulus' units.
 	 */
 	_getDefaultWrapWidth()
 	{
@@ -252,11 +252,10 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
-	 * Get the bounding gox.
+	 * Get the bounding box.
 	 *
 	 * @name module:visual.TextStim#getBoundingBox
-	 * @function
-	 * @protected
+	 * @public
 	 * @param {boolean} [tight= false] - whether or not to fit as closely as possible to the text
 	 * @return {number[]} - the bounding box, in the units of this TextStim
 	 */
@@ -321,9 +320,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.TextStim#_estimateBoundingBox
-	 * @function
-	 * @override
 	 * @protected
+	 * @override
 	 */
 	_estimateBoundingBox()
 	{
@@ -340,7 +338,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - textSize[1] - anchor[1] * textSize[1],
+			this._pos[1] - textSize[1] + anchor[1] * textSize[1],
 			textSize[0],
 			textSize[1],
 		);
@@ -352,7 +350,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the PIXI Text Style applied to the PIXI.Text
 	 *
 	 * @name module:visual.TextStim#_getTextStyle
-	 * @private
+	 * @protected
 	 */
 	_getTextStyle()
 	{
@@ -394,8 +392,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.TextStim#_updateIfNeeded
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -445,7 +442,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// refine the estimate of the bounding box:
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - this._size[1] - anchor[1] * this._size[1],
+			this._pos[1] - this._size[1] + anchor[1] * this._size[1],
 			this._size[0],
 			this._size[1],
 		);
@@ -455,8 +452,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Convert the alignment attributes into an anchor.
 	 *
 	 * @name module:visual.TextStim#_getAnchor
-	 * @function
-	 * @private
+	 * @protected
 	 * @return {number[]} - the anchor
 	 */
 	_getAnchor()
