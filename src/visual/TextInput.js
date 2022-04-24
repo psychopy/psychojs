@@ -25,6 +25,7 @@ export class TextInput extends PIXI.Container
 				text: "",
 				transformOrigin: "0 0",
 				lineHeight: "1",
+				boxSizing: "border-box"
 			},
 			styles.input,
 		);
@@ -119,6 +120,7 @@ export class TextInput extends PIXI.Container
 	{
 		this._disabled = disabled;
 		this._dom_input.disabled = disabled;
+		this._dom_input.contentEditable = !disabled;
 		this._setState(disabled ? "DISABLED" : "DEFAULT");
 	}
 
@@ -166,12 +168,21 @@ export class TextInput extends PIXI.Container
 
 	get text()
 	{
-		return this._dom_input.value;
+		if (this._dom_input.tagName === "INPUT" || this._dom_input.tagName === "TEXTAREA") {
+			return this._dom_input.value;
+		}
+
+		// innerText, not textContent properly preserves new lines
+		return this._dom_input.innerText;
 	}
 
 	set text(text)
 	{
-		this._dom_input.value = text;
+		if (this._dom_input.tagName === "INPUT" || this._dom_input.tagName === "TEXTAREA") {
+			this._dom_input.value = text;
+		} else {
+			this._dom_input.textContent = text;
+		}
 		if (this._substituted)
 		{
 			this._updateSurrogate();
@@ -220,6 +231,10 @@ export class TextInput extends PIXI.Container
 		}
 	}
 
+	getInputStyle (key) {
+		return this._dom_input.style[key];
+	}
+
 	destroy(options)
 	{
 		this._destroyBoxCache();
@@ -232,8 +247,10 @@ export class TextInput extends PIXI.Container
 	{
 		if (this._multiline)
 		{
-			this._dom_input = document.createElement("textarea");
-			this._dom_input.style.resize = "none";
+			// this._dom_input = document.createElement("textarea");
+			// this._dom_input.style.resize = "none";
+			this._dom_input = document.createElement("div");
+			this._dom_input.contentEditable = "true";
 		}
 		else
 		{
@@ -270,6 +287,10 @@ export class TextInput extends PIXI.Container
 
 	_onInputInput(e)
 	{
+		if (this._disabled)
+		{
+			return;
+		}
 		if (this._restrict_regex)
 		{
 			this._applyRestriction();
@@ -280,6 +301,7 @@ export class TextInput extends PIXI.Container
 			this._updateSubstitution();
 		}
 
+		this._updateBox();
 		this.emit("input", this.text);
 	}
 
@@ -393,6 +415,7 @@ export class TextInput extends PIXI.Container
 		}
 
 		this._box = this._box_cache[this.state];
+		this._box.interactive = !this._disabled;
 		this.addChildAt(this._box, 0);
 		this._previous.state = this.state;
 	}
@@ -719,7 +742,8 @@ export class TextInput extends PIXI.Container
 
 	_setDOMInputVisible(visible)
 	{
-		this._dom_input.style.display = visible ? "block" : "none";
+		const definedStyle = this._input_style.display;
+		this._dom_input.style.display = visible ? (definedStyle ? definedStyle : "display") : "none";
 	}
 
 	_getCanvasBounds()
@@ -824,10 +848,12 @@ function DefaultBoxGenerator(styles)
 		let style = styles[state.toLowerCase()];
 		let box = new PIXI.Graphics();
 
-		box.interactive = true;
-		box.on('pointerdown', () => {
-			this._dom_input.focus();
-		});
+		if (this._multiline) {
+			box.interactive = !this._disabled;
+			box.on("pointerdown", () => {
+				this._dom_input.focus();
+			});
+		}
 
 		box.beginFill(style.fill, style.alpha);
 
