@@ -92,8 +92,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"text",
 			text,
-			"",
-			this._onChange(true, true),
+			""
 		);
 		this._addAttribute(
 			"placeholder",
@@ -104,8 +103,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"anchor",
 			anchor,
-			"center",
-			this._onChange(false, true),
+			"center"
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -220,7 +218,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	reset()
 	{
-		const text = this.editable ? "" : this.placeholder;
 		this.setText(this.placeholder);
 	}
 
@@ -241,12 +238,31 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setAlignment
 	 * @public
 	 * @param {boolean} alignment - alignment of the text
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setAlignment(alignment = "left", log = false) {
+	setAlignment(alignment = "left", log = false)
+	{
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
 			this._pixi.setInputStyle("textAlign", alignment);
+		}
+	}
+
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @name module:visual.TextBox#setAnchor
+	 * @public
+	 * @param {boolean} anchor - anchor of the textbox
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined) {
+			const anchorUnits = this._getAnchor();
+			this._pixi.anchor.x = anchorUnits[0];
+			this._pixi.anchor.y = anchorUnits[1];
 		}
 	}
 
@@ -290,9 +306,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setColor
 	 * @public
 	 * @param {boolean} color - color of the text
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setColor (color, log = false) {
+	setColor (color, log = false)
+	{
 		this._setAttribute('color', color, log);
 		this._needUpdate = true;
 		this._needPixiUpdate = true;
@@ -304,9 +321,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setFillColor
 	 * @public
 	 * @param {boolean} fillColor - fill color of the text box
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setFillColor (fillColor, log = false) {
+	setFillColor (fillColor, log = false)
+	{
 		this._setAttribute('fillColor', fillColor, log);
 		this._needUpdate = true;
 		this._needPixiUpdate = true;
@@ -318,9 +336,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setBorderColor
 	 * @public
 	 * @param {Color} borderColor - border color of the text box
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setBorderColor (borderColor, log = false) {
+	setBorderColor (borderColor, log = false)
+	{
 		this._setAttribute('borderColor', borderColor, log);
 		this._needUpdate = true;
 		this._needPixiUpdate = true;
@@ -332,10 +351,17 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setFitToContent
 	 * @public
 	 * @param {boolean} fitToContent - whether or not to autoresize textbox to fit to text content
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setFitToContent (fitToContent, log = false) {
+	setFitToContent (fitToContent, log = false)
+	{
 		this._setAttribute("fitToContent", fitToContent, log);
+		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
+		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("width", fitToContent ? "auto" : `${width_px}px`);
+			this._pixi.setInputStyle("height", fitToContent ? "auto" : `${height_px}px`);
+		}
 	}
 
 	/**
@@ -344,7 +370,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setSize
 	 * @public
 	 * @param {boolean} size - whether or not to wrap the text at the given width
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setSize(size, log)
 	{
@@ -354,10 +380,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			|| (Array.isArray(size) && size.every((v) => typeof v === "undefined" || v === null))
 		);
 
+		this.fitToContent = isSizeUndefined;
+		
 		if (isSizeUndefined)
 		{
 			size = TextBox._defaultSizeMap.get(this._units);
-			this.fitToContent = true;
 
 			if (typeof size === "undefined")
 			{
@@ -387,12 +414,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#_addEventListeners
 	 * @protected
 	 */
-	_addEventListeners () {
+	_addEventListeners ()
+	{
 		this._pixi.on("input", (textContent) => {
-			const anchor = this._getAnchor();
-			this._pixi.pivot.x = anchor[0] * this._pixi.width;
-			this._pixi.pivot.y = anchor[1] * -this._pixi.height;
 			this._text = textContent;
+			let size = [this._pixi.width, this._pixi.height];
+			size = util.to_unit(size, "pix", this._win, this._units);
+			this._setAttribute("size", size, false);
 		});
 	}
 
@@ -429,8 +457,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
 		const padding_px = Math.round(this._getLengthPix(this._padding));
-		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
+		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const height_px = Math.round(this._getLengthPix(this._size[1]));
 
 		return {
@@ -438,19 +466,19 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			input: {
 				display: "inline-block",
 				fontFamily: this._font,
-				fontSize: letterHeight_px + "px",
+				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
 				textAlign: this._alignment,
-				padding: padding_px + "px",
+				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
-				height: this._fitToContent ? "auto" : (this._multiline ? (height_px - 2 * padding_px) + "px" : undefined),
-				width: this._fitToContent ? "auto" : (width_px - 2 * padding_px) + "px",
-				maxWidth: `${Math.round(this._getLengthPix(1))}px`,
-				maxHeight: `${Math.round(this._getLengthPix(1))}px`,
-				overflow: this._fitToContent ? "hidden" : "auto",
+				height: this._fitToContent ? "auto" : (this._multiline ? `${height_px}px` : undefined),
+				width: this._fitToContent ? "auto" : `${width_px}px`,
+				maxWidth: `${this.win.size[0]}px`,
+				maxHeight: `${this.win.size[1]}px`,
+				overflow: "hidden",
 				pointerEvents: "none"
 			},
 			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
@@ -553,12 +581,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 			// Create new TextInput
 			this._pixi = new TextInput(this._getTextInputOptions());
-			this._addEventListeners();
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
 			if (!(this instanceof ButtonStim))
 			{
 				this._pixi._addListeners();
+				this._addEventListeners();
 			}
 
 			// check if other TextBox instances are already in focus
@@ -585,14 +613,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		this._pixi.disabled = !this._editable;
 
-		const anchor = this._getAnchor();
-
+		// now when this._pixi is available, setting anchor again to trigger internal to this._pixi mechanisms
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
-		this._pixi.pivot.x = anchor[0] * this._pixi.width;
-		// when setting PIXI.Container.scale.y = -1
-		// PIXI.Container.height becomes negative
-		this._pixi.pivot.y = anchor[1] * -this._pixi.height;
 		this._pixi.rotation = -this._ori * Math.PI / 180;
 		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 

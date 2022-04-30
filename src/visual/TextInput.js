@@ -49,6 +49,7 @@ export class TextInput extends PIXI.Container
 			this._multiline = false;
 		}
 
+		this._anchor = new PIXI.ObservablePoint(this._onAnchorUpdate, this, 0, 0);
 		this._box_cache = {};
 		this._previous = {};
 		this._dom_added = false;
@@ -181,7 +182,7 @@ export class TextInput extends PIXI.Container
 		if (this._dom_input.tagName === "INPUT" || this._dom_input.tagName === "TEXTAREA") {
 			this._dom_input.value = text;
 		} else {
-			this._dom_input.textContent = text;
+			this._dom_input.innerText = text;
 		}
 		if (this._substituted)
 		{
@@ -192,6 +193,16 @@ export class TextInput extends PIXI.Container
 	get htmlInput()
 	{
 		return this._dom_input;
+	}
+
+	get anchor ()
+	{
+		return this._anchor;
+	}
+
+	set anchor (v)
+	{
+		this._anchor.copyFrom(v);
 	}
 
 	focus(options = { preventScroll: true })
@@ -275,6 +286,11 @@ export class TextInput extends PIXI.Container
 		this._dom_input.addEventListener("blur", this._onBlurred.bind(this));
 	}
 
+	_onAnchorUpdate () {
+		this.pivot.x = this._anchor.x * this.scale.x * this.width;
+		this.pivot.y = this._anchor.y * this.scale.y * this.height;
+	}
+
 	_onInputKeyDown(e)
 	{
 		this._selection = [
@@ -325,7 +341,7 @@ export class TextInput extends PIXI.Container
 	_onAdded()
 	{
 		document.body.appendChild(this._dom_input);
-		this._dom_input.style.display = "none";
+		this._updateDOMInput();
 		this._dom_added = true;
 	}
 
@@ -418,6 +434,8 @@ export class TextInput extends PIXI.Container
 		this._box.interactive = !this._disabled;
 		this.addChildAt(this._box, 0);
 		this._previous.state = this.state;
+		this.pivot.x = this._anchor.x * this.scale.x * this.width;
+		this.pivot.y = this._anchor.y * this.scale.y * this.height;
 	}
 
 	_updateSubstitution()

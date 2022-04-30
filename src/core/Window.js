@@ -126,6 +126,8 @@ export class Window extends PsychObject
 			return;
 		}
 
+		this._rootContainer.destroy();
+		
 		if (document.body.contains(this._renderer.view))
 		{
 			document.body.removeChild(this._renderer.view);
