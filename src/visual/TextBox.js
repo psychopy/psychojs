@@ -122,14 +122,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"font",
 			font,
-			"Arial",
-			this._onChange(true, true),
+			"Arial"
 		);
 		this._addAttribute(
 			"letterHeight",
 			letterHeight,
-			this._getDefaultLetterHeight(),
-			this._onChange(true, true),
+			this._getDefaultLetterHeight()
 		);
 		this._addAttribute(
 			"bold",
@@ -284,6 +282,39 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Set the font for textbox.
+	 *
+	 * @name module:visual.TextBox#setFont
+	 * @public
+	 * @param {string} text
+	 */
+	setFont(font = "Arial", log = false)
+	{
+		this._setAttribute("font", font, log);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontFamily", font);
+		}
+	}
+
+	/**
+	 * Set letterHeight (font size) for textbox.
+	 *
+	 * @name module:visual.TextBox#setLetterHeight
+	 * @public
+	 * @param {string} text
+	 */
+	setLetterHeight(fontSize = this._getDefaultLetterHeight(), log = false)
+	{
+		this._setAttribute("letterHeight", fontSize, log);
+		const fontSize_px = this._getLengthPix(fontSize);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontSize", `${fontSize_px}px`);
+		}
+	}
+
+	/**
 	 * For accessing the underlying input value.
 	 *
 	 * @name module:visual.TextBox#getText
@@ -381,7 +412,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		);
 
 		this.fitToContent = isSizeUndefined;
-		
+
 		if (isSizeUndefined)
 		{
 			size = TextBox._defaultSizeMap.get(this._units);
