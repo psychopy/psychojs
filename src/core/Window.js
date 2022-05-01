@@ -52,6 +52,7 @@ export class Window extends PsychObject
 		fullscr = false,
 		color = new Color("black"),
 		gamma = 1,
+		contrast = 1,
 		units = "pix",
 		waitBlanking = false,
 		autoLog = true,
@@ -64,7 +65,8 @@ export class Window extends PsychObject
 
 		// storing AdjustmentFilter instance to access later;
 		this._adjustmentFilter = new AdjustmentFilter({
-			gamma
+			gamma,
+			contrast
 		});
 
 		// list of all elements, in the order they are currently drawn:
@@ -74,6 +76,9 @@ export class Window extends PsychObject
 		this._addAttribute("color", color);
 		this._addAttribute("gamma", gamma, 1, () => {
 			this._adjustmentFilter.gamma = this._gamma;
+		});
+		this._addAttribute("contrast", contrast, 1, () => {
+			this._adjustmentFilter.contrast = this._contrast;
 		});
 		this._addAttribute("units", units);
 		this._addAttribute("waitBlanking", waitBlanking);
