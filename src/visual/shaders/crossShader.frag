@@ -16,11 +16,12 @@ out vec4 shaderOut;
 
 #define M_PI 3.14159265358979
 uniform float uThickness;
+uniform vec3 uColor;
 
 void main() {
     vec2 uv = vUvs;
     float sx = step(uThickness, length(uv.x * 2. - 1.));
     float sy = step(uThickness, length(uv.y * 2. - 1.));
     float s = 1. - sx * sy;
-    shaderOut = vec4(vec3(s), 1.0);
+    shaderOut = vec4(vec3(s) * uColor, 1.0);
 }

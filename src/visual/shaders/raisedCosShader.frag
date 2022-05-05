@@ -18,6 +18,7 @@ out vec4 shaderOut;
 #define M_PI 3.14159265358979
 uniform float uBeta;
 uniform float uPeriod;
+uniform vec3 uColor;
 
 void main() {
     vec2 uv = vUvs;
@@ -31,5 +32,5 @@ void main() {
     } else if (absX > edgeArgument2) {
         s = 0.;
     }
-    shaderOut = vec4(vec3(s), 1.0);
+    shaderOut = vec4(vec3(s) * uColor, 1.0);
 }

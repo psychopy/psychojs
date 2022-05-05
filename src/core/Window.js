@@ -26,7 +26,8 @@ import { Logger } from "./Logger.js";
  * @param {string} [options.name] the name of the window
  * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
  * @param {Color} [options.color= Color('black')] the background color of the window
- * @param {number} [options.gamma= 1] sets the delimiter for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
+ * @param {number} [options.gamma= 1] sets the divisor for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
+ * @param {number} [options.contrast= 1] sets the contrast value
  * @param {string} [options.units= 'pix'] the units of the window
  * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
  * before flipping
@@ -73,7 +74,11 @@ export class Window extends PsychObject
 		this._drawList = [];
 
 		this._addAttribute("fullscr", fullscr);
-		this._addAttribute("color", color);
+		this._addAttribute("color", color, new Color("black"), () => {
+			if (this._backgroundSprite) {
+				this._backgroundSprite.tint = color.int;
+			}
+		});
 		this._addAttribute("gamma", gamma, 1, () => {
 			this._adjustmentFilter.gamma = this._gamma;
 		});
@@ -299,6 +304,28 @@ export class Window extends PsychObject
 	}
 
 	/**
+	 * Add PIXI.DisplayObject to the container displayed on the scene (window)
+	 *
+	 * @name module:core.Window#addPixiObject
+	 * @function
+	 * @public
+	 */
+	addPixiObject (pixiObject) {
+		this._stimsContainer.addChild(pixiObject);
+	}
+
+	/**
+	 * Remove PIXI.DisplayObject from the container displayed on the scene (window)
+	 *
+	 * @name module:core.Window#removePixiObject
+	 * @function
+	 * @public
+	 */
+	removePixiObject (pixiObject) {
+		this._stimsContainer.removeChild(pixiObject);	
+	}
+
+	/**
 	 * Render the stimuli onto the canvas.
 	 *
 	 * @name module:core.Window#render
@@ -385,9 +412,9 @@ export class Window extends PsychObject
 		{
 			if (stimulus._needUpdate && typeof stimulus._pixi !== "undefined")
 			{
-				this._rootContainer.removeChild(stimulus._pixi);
+				this._stimsContainer.removeChild(stimulus._pixi);
 				stimulus._updateIfNeeded();
-				this._rootContainer.addChild(stimulus._pixi);
+				this._stimsContainer.addChild(stimulus._pixi);
 			}
 		}
 	}
@@ -432,6 +459,7 @@ export class Window extends PsychObject
 			width: this._size[0],
 			height: this._size[1],
 			backgroundColor: this.color.int,
+			powerPreference: "high-performance",
 			resolution: window.devicePixelRatio,
 		});
 		this._renderer.view.style.transform = "translatez(0)";
@@ -441,8 +469,25 @@ export class Window extends PsychObject
 		// we also change the background color of the body since the dialog popup may be longer than the window's height:
 		document.body.style.backgroundColor = this._color.hex;
 
+		// filters in PIXI work in a slightly unexpected fashion:
+		// when setting this._rootContainer.filters, filtering itself
+		// ignores backgroundColor of this._renderer and in addition to that
+		// all child elements of this._rootContainer ignore backgroundColor when blending.
+		// To circumvent that creating a separate PIXI.Sprite that serves as background color.
+		// Then placing all Stims to a separate this._stimsContainer which hovers on top of
+		// background sprite so that if we need to move all stims at once, the background sprite
+		// won't get affected.
+		this._backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		this._backgroundSprite.tint = this.color.int;
+		this._backgroundSprite.width = this._size[0];
+		this._backgroundSprite.height = this._size[1];
+		this._backgroundSprite.anchor.set(.5);
+		this._stimsContainer = new PIXI.Container();
+		this._stimsContainer.sortableChildren = true;
+
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
+		this._rootContainer.addChild(this._backgroundSprite, this._stimsContainer);
 		this._rootContainer.interactive = true;
 		this._rootContainer.filters = [this._adjustmentFilter];
 

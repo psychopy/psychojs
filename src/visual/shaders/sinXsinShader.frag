@@ -19,11 +19,12 @@ out vec4 shaderOut;
 #define PI2 2.* M_PI
 uniform float uFreq;
 uniform float uPhase;
+uniform vec3 uColor;
 
 void main() {
     vec2 uv = vUvs;
     float sx = sin((uFreq * uv.x + uPhase) * PI2);
     float sy = sin((uFreq * uv.y + uPhase) * PI2);
     float s = sx * sy * .5 + .5;
-    shaderOut = vec4(vec3(s), 1.0);
+    shaderOut = vec4(vec3(s) * uColor, 1.0);
 }
