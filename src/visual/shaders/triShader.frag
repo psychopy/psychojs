@@ -24,6 +24,8 @@ uniform vec3 uColor;
 void main() {
     vec2 uv = vUvs;
     float s = uFreq * uv.x + uPhase;
-    s = 2. * abs(s / uPeriod - floor(s / uPeriod + .5));
-    shaderOut = vec4(vec3(s) * uColor, 1.0);
+    // converting first to [-1, 1] space to get the proper color functionality
+    // then back to [0, 1]
+    s = (2. * abs(s / uPeriod - floor(s / uPeriod + .5))) * 2. - 1.;
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
 }

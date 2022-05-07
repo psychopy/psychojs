@@ -25,6 +25,7 @@ void main() {
     vec2 uv = vUvs;
     float sx = sign(sin((uFreq * uv.x + uPhase) * PI2));
     float sy = sign(sin((uFreq * uv.y + uPhase) * PI2));
-    float s = sx * sy * .5 + .5;
-    shaderOut = vec4(vec3(s) * uColor, 1.0);
+    float s = sx * sy;
+    // it's important to convert to [0, 1] while multiplication to uColor, not before, to preserve desired coloring functionality
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
 }

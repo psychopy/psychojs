@@ -47,7 +47,7 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
  * @param {number} [options.opacity= 1.0] - Set the opacity of the stimulus. Determines how visible the stimulus is relative to background.
  * @param {number} [options.contrast= 1.0] - Set the contrast of the stimulus, i.e. scales how far the stimulus deviates from the middle grey. Ranges [-1, 1].
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated. NOT IMPLEMENTED YET.
+ * @param {boolean} [options.interpolate= false] - Whether to interpolate (linearly) the texture in the stimulus. Currently supports only image based gratings.
  * @param {String} [options.blendmode= "avg"] - blend mode of the stimulus, determines how the stimulus is blended with the background. Supported values: "avg", "add", "mul", "screen".
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
@@ -279,12 +279,7 @@ export class GratingStim extends VisualStim
 			this._adjustmentFilter.contrast = this._contrast;
 		});
 		this._addAttribute("blendmode", blendmode, "avg");
-		this._addAttribute(
-			"interpolate",
-			interpolate,
-			false,
-			this._onChange(true, false),
-		);
+		this._addAttribute("interpolate", interpolate, false);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -551,7 +546,7 @@ export class GratingStim extends VisualStim
 		const colorObj = (colorVal instanceof Color) ? colorVal : new Color(colorVal, Color.COLOR_SPACE[this._colorSpace])
 		this._setAttribute("color", colorObj, log);
 		if (this._pixi instanceof PIXI.Mesh) {
-			this._pixi.shader.uniforms.uColor = colorObj.rgb;
+			this._pixi.shader.uniforms.uColor = colorObj.rgbFull;
 		} else if (this._pixi instanceof PIXI.TilingSprite) {
 			
 		}
@@ -603,6 +598,24 @@ export class GratingStim extends VisualStim
 	}
 
 	/**
+	 * Whether to interpolate (linearly) the texture in the stimulus.
+	 * 
+	 * @name module:visual.GratingStim#setInterpolate
+	 * @public
+	 * @param {boolean} interpolate - interpolate or not.
+	 * @param {boolean} [log=false] - whether or not to log
+	 */ 
+	setInterpolate (interpolate = false, log = false) {
+		this._setAttribute("interpolate", interpolate, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+
+		} else if (this._pixi instanceof PIXI.TilingSprite) {
+			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.texture.baseTexture.update();
+		}
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.GratingStim#_updateIfNeeded
@@ -620,8 +633,12 @@ export class GratingStim extends VisualStim
 		if (this._needPixiUpdate)
 		{
 			this._needPixiUpdate = false;
+			let currentUniforms = {};
 			if (typeof this._pixi !== "undefined")
 			{
+				if (this._pixi instanceof PIXI.Mesh) {
+					Object.assign(currentUniforms, this._pixi.shader.uniforms);
+				}
 				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
@@ -635,6 +652,7 @@ export class GratingStim extends VisualStim
 			if (this._tex instanceof HTMLImageElement)
 			{
 				this._pixi = PIXI.TilingSprite.from(this._tex, {
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
 					width: this._size_px[0],
 					height: this._size_px[1]
 				});
@@ -643,10 +661,14 @@ export class GratingStim extends VisualStim
 			}
 			else
 			{
-				this._pixi = this._getPixiMeshFromPredefinedShaders(this._tex, {
-					uFreq: this._SF,
-					uPhase: this._phase
-				});
+				this._pixi = this._getPixiMeshFromPredefinedShaders(
+					this._tex,
+					Object.assign({
+						uFreq: this._SF,
+						uPhase: this._phase,
+						uColor: this._color.rgbFull
+					}, currentUniforms)
+				);
 			}
 			this._pixi.pivot.set(this._pixi.width * 0.5, this._pixi.width * 0.5);
 			this._pixi.filters = [this._adjustmentFilter];

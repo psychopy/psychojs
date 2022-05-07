@@ -22,6 +22,7 @@ uniform vec3 uColor;
 
 void main() {
     vec2 uv = vUvs;
-    float s = sign(sin((uFreq * uv.x + uPhase) * 2. * M_PI)) * .5 + .5;
-    shaderOut = vec4(vec3(s) * uColor, 1.0);
+    float s = sign(sin((uFreq * uv.x + uPhase) * 2. * M_PI));
+    // it's important to convert to [0, 1] while multiplication to uColor, not before, to preserve desired coloring functionality
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
 }
