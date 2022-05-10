@@ -18,6 +18,7 @@ out vec4 shaderOut;
 uniform float uA;
 uniform float uB;
 uniform float uC;
+uniform vec3 uColor;
 
 #define M_PI 3.14159265358979
 
@@ -25,6 +26,8 @@ void main() {
     vec2 uv = vUvs;
     float c2 = uC * uC;
     float x = length(uv - .5);
-    float g = uA * exp(-pow(x - uB, 2.) / c2 * .5);
-    shaderOut = vec4(vec3(g), 1.);
+    // converting first to [-1, 1] space to get the proper color functionality
+    // then back to [0, 1]
+    float g = uA * exp(-pow(x - uB, 2.) / c2 * .5) * 2. - 1.;
+    shaderOut = vec4(vec3(g) * uColor * .5 + .5, 1.);
 }

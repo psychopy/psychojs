@@ -1009,8 +1009,8 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._stimuliClipMask.clear();
 		this._stimuliClipMask.beginFill(0xFFFFFF);
 		this._stimuliClipMask.drawRect(
-			this._win._rootContainer.position.x + this._leftEdge_px + 2,
-			this._win._rootContainer.position.y + this._bottomEdge_px + 2,
+			this._win._stimsContainer.position.x + this._leftEdge_px + 2,
+			this._win._stimsContainer.position.y + this._bottomEdge_px + 2,
 			this._size_px[0] - 4,
 			this._size_px[1] - 6,
 		);

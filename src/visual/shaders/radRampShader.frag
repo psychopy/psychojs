@@ -14,11 +14,14 @@ precision mediump float;
 in vec2 vUvs;
 out vec4 shaderOut;
 uniform float uSqueeze;
+uniform vec3 uColor;
 
 #define M_PI 3.14159265358979
 
 void main() {
     vec2 uv = vUvs;
-    float s = 1. - length(uv * 2. - 1.) * uSqueeze;
-    shaderOut = vec4(vec3(s), 1.0);
+    // converting first to [-1, 1] space to get the proper color functionality
+    // then back to [0, 1]
+    float s = (1. - length(uv * 2. - 1.) * uSqueeze) * 2. - 1.;
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
 }

@@ -101,7 +101,7 @@ export class MinimalStim extends PsychObject
 				}
 				else
 				{
-					this.win._rootContainer.addChild(this._pixi);
+					this._win.addPixiObject(this._pixi);
 					this.win._drawList.push(this);
 				}
 			}
@@ -111,9 +111,9 @@ export class MinimalStim extends PsychObject
 				// from the window container, update it, then put it back:
 				if (this._needUpdate && typeof this._pixi !== "undefined")
 				{
-					this.win._rootContainer.removeChild(this._pixi);
+					this._win.removePixiObject(this._pixi);
 					this._updateIfNeeded();
-					this.win._rootContainer.addChild(this._pixi);
+					this._win.addPixiObject(this._pixi);
 				}
 			}
 		}
@@ -140,7 +140,7 @@ export class MinimalStim extends PsychObject
 				// if the stimulus has a pixi representation, remove it from the root container:
 				if (typeof this._pixi !== "undefined")
 				{
-					this._win._rootContainer.removeChild(this._pixi);
+					this._win.removePixiObject(this._pixi);
 				}
 			}
 			this.status = PsychoJS.Status.STOPPED;

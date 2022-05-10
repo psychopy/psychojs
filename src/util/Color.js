@@ -127,6 +127,8 @@ export class Color
 		{
 			this._rgb = obj._rgb.slice();
 		}
+
+		this._rgbFull = this._rgb.map(c => c * 2 - 1);
 	}
 
 	/**
@@ -140,6 +142,19 @@ export class Color
 	get rgb()
 	{
 		return this._rgb;
+	}
+
+	/**
+	 * Get the [-1,1] RGB triplet equivalent of this Color.
+	 *
+	 * @name module:util.Color.rgbFull
+	 * @function
+	 * @public
+	 * @return {Array.<number>} the [-1,1] RGB triplet equivalent
+	 */
+	get rgbFull()
+	{
+		return this._rgbFull;
 	}
 
 	/**

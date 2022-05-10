@@ -16,9 +16,12 @@ out vec4 shaderOut;
 
 #define M_PI 3.14159265358979
 uniform float uRadius;
+uniform vec3 uColor;
 
 void main() {
     vec2 uv = vUvs;
-    float s = 1. - step(uRadius, length(uv * 2. - 1.));
-    shaderOut = vec4(vec3(s), 1.0);
+    // converting first to [-1, 1] space to get the proper color functionality
+    // then back to [0, 1]
+    float s = (1. - step(uRadius, length(uv * 2. - 1.))) * 2. - 1.;
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
 }
