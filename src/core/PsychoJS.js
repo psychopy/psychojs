@@ -18,7 +18,6 @@ import { GUI } from "./GUI.js";
 import { Logger } from "./Logger.js";
 import { ServerManager } from "./ServerManager.js";
 import { Window } from "./Window.js";
-// import {Shelf} from "../data/Shelf";
 
 /**
  * <p>PsychoJS manages the lifecycle of an experiment. It initialises the PsychoJS library and its various components (e.g. the {@link ServerManager}, the {@link EventManager}), and is used by the experiment to schedule the various tasks.</p>
@@ -109,11 +108,6 @@ export class PsychoJS
 		return this._browser;
 	}
 
-	// get shelf()
-	// {
-	// 	return this._shelf;
-	// }
-
 	/**
 	 * @constructor
 	 * @public
@@ -157,9 +151,6 @@ export class PsychoJS
 
 		// Window:
 		this._window = undefined;
-
-		// // Shelf:
-		// this._shelf = new Shelf(this);
 
 		// redirection URLs:
 		this._cancellationUrl = undefined;

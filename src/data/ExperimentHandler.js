@@ -338,14 +338,14 @@ export class ExperimentHandler extends PsychObject
 		else if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.DATABASE)
 		{
 			const gitlabConfig = this._psychoJS.config.gitlab;
-			const projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
+			const __projectId = (typeof gitlabConfig !== "undefined" && typeof gitlabConfig.projectId !== "undefined") ? gitlabConfig.projectId : undefined;
 
 			let documents = [];
 
 			for (let r = 0; r < data.length; r++)
 			{
 				let doc = {
-					projectId,
+					__projectId,
 					__experimentName: this._experimentName,
 					__participant: this._participant,
 					__session: this._session,
