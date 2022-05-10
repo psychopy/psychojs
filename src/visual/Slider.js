@@ -81,6 +81,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			lineColor,
 			contrast,
 			opacity,
+			depth,
 			style,
 			ticks,
 			labels,
@@ -99,7 +100,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		} = {},
 	)
 	{
-		super({ name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog });
 
 		this._needMarkerUpdate = false;
 
@@ -732,6 +733,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
+		this._pixi.zIndex = this._depth;
 
 		// make sure that the dependent Stimuli are also updated:
 		for (const dependentStim of this._dependentStims)

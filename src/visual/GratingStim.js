@@ -725,7 +725,7 @@ export class GratingStim extends VisualStim
 		// set the position, rotation, and anchor (image centered on pos):
 		let pos = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.position.set(pos.x, pos.y);
-		this._pixi.rotation = this.ori * Math.PI / 180;
+		this._pixi.rotation = -this.ori * Math.PI / 180;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();

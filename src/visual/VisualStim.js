@@ -150,7 +150,11 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 				[Math.sin(radians), Math.cos(radians)]
 			];
 
-			this._onChange(true, true)();
+			if (this._pixi instanceof PIXI.DisplayObject) {
+				this._pixi.rotation = -ori * Math.PI / 180;
+			} else {
+				this._onChange(true, true)();
+			}
 		}
 	}
 
