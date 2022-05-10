@@ -1,9 +1,9 @@
 /**
  * Editable TextBox Stimulus.
  *
- * @author Alain Pitiot
+ * @author Alain Pitiot, Nikita Agafonov
  * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -28,7 +28,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
  *
- * @param {Color} [options.color= Color('white')] the background color
+ * @param {Color} [options.color= Color('white')] color of the text
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.contrast= 1.0] - the contrast
@@ -39,13 +39,16 @@ import { VisualStim } from "./VisualStim.js";
  * @param {boolean} [options.italic= false] - whether or not the text is italic
  * @param {string} [options.anchor = 'left'] - horizontal alignment
  *
- * @param {boolean} [options.multiline= false] - whether or not a textarea is used
+ * @param {boolean} [options.multiline= false] - whether or not a multiline element is used
  * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+ * @param {Color} [options.fillColor= undefined] - fill color of the text-box
+ * @param {Color} [options.borderColor= undefined] - border color of the text-box
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.fitToContent = false] - whether or not to resize itself automaitcally to fit to the text content
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
@@ -80,6 +83,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			clipMask,
 			autoDraw,
 			autoLog,
+			fitToContent
 		} = {},
 	)
 	{
@@ -88,8 +92,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"text",
 			text,
-			"",
-			this._onChange(true, true),
+			""
 		);
 		this._addAttribute(
 			"placeholder",
@@ -100,8 +103,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"anchor",
 			anchor,
-			"center",
-			this._onChange(false, true),
+			"center"
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -120,14 +122,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"font",
 			font,
-			"Arial",
-			this._onChange(true, true),
+			"Arial"
 		);
 		this._addAttribute(
 			"letterHeight",
 			letterHeight,
-			this._getDefaultLetterHeight(),
-			this._onChange(true, true),
+			this._getDefaultLetterHeight()
 		);
 		this._addAttribute(
 			"bold",
@@ -144,28 +144,24 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"alignment",
 			alignment,
-			"left",
-			this._onChange(true, true),
+			"left"
 		);
 
 		// colors:
 		this._addAttribute(
 			"color",
 			color,
-			"white",
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"fillColor",
 			fillColor,
-			"lightgrey",
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"borderColor",
 			borderColor,
-			this.fillColor,
-			this._onChange(true, false),
+			undefined
 		);
 		this._addAttribute(
 			"contrast",
@@ -198,6 +194,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		// 	assert: v => (v != null) && (typeof v !== 'undefined') && Array.isArray(v) )
 		// 	log);
 
+		this._addAttribute("fitToContent", fitToContent, false);
+		// setting size again since fitToContent field becomes available only at this point
+		// and setSize called from super class would not have a proper effect
+		this.setSize(size);
+
 		// estimate the bounding box:
 		this._estimateBoundingBox();
 
@@ -215,8 +216,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	reset()
 	{
-		const text = this.editable ? "" : this.placeholder;
-
 		this.setText(this.placeholder);
 	}
 
@@ -229,6 +228,40 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	clear()
 	{
 		this.setText();
+	}
+
+	/**
+	 * Setter for the alignment attribute.
+	 *
+	 * @name module:visual.TextBox#setAlignment
+	 * @public
+	 * @param {boolean} alignment - alignment of the text
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAlignment(alignment = "left", log = false)
+	{
+		this._setAttribute("alignment", alignment, log);
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("textAlign", alignment);
+		}
+	}
+
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @name module:visual.TextBox#setAnchor
+	 * @public
+	 * @param {boolean} anchor - anchor of the textbox
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined) {
+			const anchorUnits = this._getAnchor();
+			this._pixi.anchor.x = anchorUnits[0];
+			this._pixi.anchor.y = anchorUnits[1];
+		}
 	}
 
 	/**
@@ -249,6 +282,39 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Set the font for textbox.
+	 *
+	 * @name module:visual.TextBox#setFont
+	 * @public
+	 * @param {string} text
+	 */
+	setFont(font = "Arial", log = false)
+	{
+		this._setAttribute("font", font, log);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontFamily", font);
+		}
+	}
+
+	/**
+	 * Set letterHeight (font size) for textbox.
+	 *
+	 * @name module:visual.TextBox#setLetterHeight
+	 * @public
+	 * @param {string} text
+	 */
+	setLetterHeight(fontSize = this._getDefaultLetterHeight(), log = false)
+	{
+		this._setAttribute("letterHeight", fontSize, log);
+		const fontSize_px = this._getLengthPix(fontSize);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontSize", `${fontSize_px}px`);
+		}
+	}
+
+	/**
 	 * For accessing the underlying input value.
 	 *
 	 * @name module:visual.TextBox#getText
@@ -266,12 +332,76 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextBox#setColor
+	 * @public
+	 * @param {boolean} color - color of the text
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setColor (color, log = false)
+	{
+		this._setAttribute('color', color, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the fillColor attribute.
+	 *
+	 * @name module:visual.TextBox#setFillColor
+	 * @public
+	 * @param {boolean} fillColor - fill color of the text box
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setFillColor (fillColor, log = false)
+	{
+		this._setAttribute('fillColor', fillColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the borderColor attribute.
+	 *
+	 * @name module:visual.TextBox#setBorderColor
+	 * @public
+	 * @param {Color} borderColor - border color of the text box
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setBorderColor (borderColor, log = false)
+	{
+		this._setAttribute('borderColor', borderColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the fitToContent attribute.
+	 *
+	 * @name module:visual.TextBox#setFitToContent
+	 * @public
+	 * @param {boolean} fitToContent - whether or not to autoresize textbox to fit to text content
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setFitToContent (fitToContent, log = false)
+	{
+		this._setAttribute("fitToContent", fitToContent, log);
+		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
+		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("width", fitToContent ? "auto" : `${width_px}px`);
+			this._pixi.setInputStyle("height", fitToContent ? "auto" : `${height_px}px`);
+		}
+	}
+
+	/**
 	 * Setter for the size attribute.
 	 *
 	 * @name module:visual.TextBox#setSize
 	 * @public
 	 * @param {boolean} size - whether or not to wrap the text at the given width
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setSize(size, log)
 	{
@@ -280,6 +410,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			(typeof size === "undefined") || (size === null)
 			|| (Array.isArray(size) && size.every((v) => typeof v === "undefined" || v === null))
 		);
+
+		this.fitToContent = isSizeUndefined;
 
 		if (isSizeUndefined)
 		{
@@ -305,6 +437,22 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			// immediately estimate the bounding box:
 			this._estimateBoundingBox();
 		}
+	}
+
+	/**
+	 * Add event listeners to text-box object. Method is called internally upon object construction.
+	 *
+	 * @name module:visual.TextBox#_addEventListeners
+	 * @protected
+	 */
+	_addEventListeners ()
+	{
+		this._pixi.on("input", (textContent) => {
+			this._text = textContent;
+			let size = [this._pixi.width, this._pixi.height];
+			size = util.to_unit(size, "pix", this._win, this._units);
+			this._setAttribute("size", size, false);
+		});
 	}
 
 	/**
@@ -340,31 +488,39 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
 		const padding_px = Math.round(this._getLengthPix(this._padding));
-		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
+		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const height_px = Math.round(this._getLengthPix(this._size[1]));
-		const multiline = this._multiline;
 
 		return {
+			// input style properties eventually become CSS, so same syntax applies
 			input: {
+				display: "inline-block",
 				fontFamily: this._font,
-				fontSize: letterHeight_px + "px",
-				color: new Color(this._color).hex,
+				fontSize: `${letterHeight_px}px`,
+				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
-
-				padding: padding_px + "px",
-				multiline,
+				textAlign: this._alignment,
+				padding: `${padding_px}px`,
+				multiline: this._multiline,
 				text: this._text,
-				height: multiline ? (height_px - 2 * padding_px) + "px" : undefined,
-				width: (width_px - 2 * padding_px) + "px",
+				height: this._fitToContent ? "auto" : (this._multiline ? `${height_px}px` : undefined),
+				width: this._fitToContent ? "auto" : `${width_px}px`,
+				maxWidth: `${this.win.size[0]}px`,
+				maxHeight: `${this.win.size[1]}px`,
+				overflow: "hidden",
+				pointerEvents: "none"
 			},
+			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
 			box: {
 				fill: new Color(this._fillColor).int,
+				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
 				rounded: 5,
 				stroke: {
 					color: new Color(this._borderColor).int,
 					width: borderWidth_px,
+					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
 				},
 				/*default: {
 					fill: new Color(this._fillColor).int,
@@ -440,12 +596,20 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
+			let enteredText = "";
+			// at this point this._pixi might exist but is removed from the scene, in such cases this._pixi.text
+			// does not retain the information about new lines etc. so we go with a local copy of entered text
+			if (this._pixi !== undefined && this._pixi.parent !== null) {
+				enteredText = this._pixi.text;
+			} else {
+				enteredText = this._text;
+			}
+
 			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
-			// Get the currently entered text
-			let enteredText = this._pixi !== undefined ? this._pixi.text : "";
+
 			// Create new TextInput
 			this._pixi = new TextInput(this._getTextInputOptions());
 
@@ -453,6 +617,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			if (!(this instanceof ButtonStim))
 			{
 				this._pixi._addListeners();
+				this._addEventListeners();
 			}
 
 			// check if other TextBox instances are already in focus
@@ -479,10 +644,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		this._pixi.disabled = !this._editable;
 
-		const anchor = this._getAnchor();
-		this._pixi.pivot.x = anchor[0] * this._pixi.width;
-		this._pixi.pivot.y = anchor[1] * this._pixi.height;
-
+		// now when this._pixi is available, setting anchor again to trigger internal to this._pixi mechanisms
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
 		this._pixi.rotation = -this._ori * Math.PI / 180;
