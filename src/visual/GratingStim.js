@@ -67,6 +67,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} imageShader.uniforms - default uniforms for the image based shader.
 	 * @property {float} imageShader.uniforms.uFreq=1.0 - how much times image repeated within grating stimuli.
 	 * @property {float} imageShader.uniforms.uPhase=0.0 - offset of the image along X axis.
+	 * @property {float} imageShader.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sin - Creates 2d sine wave image as if 1d sine graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
@@ -74,6 +75,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sin.uniforms - default uniforms for sine wave shader
 	 * @property {float} sin.uniforms.uFreq=1.0 - frequency of sine wave.
 	 * @property {float} sin.uniforms.uPhase=0.0 - phase of sine wave.
+	 * @property {float} sin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqr - Creates 2d square wave image as if 1d square graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -81,6 +83,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sqr.uniforms - default uniforms for square wave shader
 	 * @property {float} sqr.uniforms.uFreq=1.0 - frequency of square wave.
 	 * @property {float} sqr.uniforms.uPhase=0.0 - phase of square wave.
+	 * @property {float} sqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} saw - Creates 2d sawtooth wave image as if 1d sawtooth graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sawtooth_wave}
@@ -88,6 +91,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} saw.uniforms - default uniforms for sawtooth wave shader
 	 * @property {float} saw.uniforms.uFreq=1.0 - frequency of sawtooth wave.
 	 * @property {float} saw.uniforms.uPhase=0.0 - phase of sawtooth wave.
+	 * @property {float} saw.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} tri - Creates 2d triangle wave image as if 1d triangle graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Triangle_wave}
@@ -96,6 +100,7 @@ export class GratingStim extends VisualStim
 	 * @property {float} tri.uniforms.uFreq=1.0 - frequency of triangle wave.
 	 * @property {float} tri.uniforms.uPhase=0.0 - phase of triangle wave.
 	 * @property {float} tri.uniforms.uPeriod=1.0 - period of triangle wave.
+	 * @property {float} tri.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sinXsin - Creates an image of two 2d sine waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
@@ -103,6 +108,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sinXsin.uniforms - default uniforms for shader
 	 * @property {float} sinXsin.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sinXsin.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sinXsin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqrXsqr - Creates an image of two 2d square waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -110,12 +116,14 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sqrXsqr.uniforms - default uniforms for shader
 	 * @property {float} sqrXsqr.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sqrXsqr.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sqrXsqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} circle - Creates a filled circle shape with sharp edges.
 	 * @property {String} circle.shader - shader source code for filled circle.
 	 * @property {Object} circle.uniforms - default uniforms for shader.
 	 * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
 	 * and 1.0 is circle that spans from edge to edge of the stim.
+	 * @property {float} circle.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Gaussian_function}
@@ -124,18 +132,21 @@ export class GratingStim extends VisualStim
 	 * @property {float} gauss.uniforms.uA=1.0 - A constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uB=0.0 - B constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uC=0.16 - C constant for gaussian formula (see link).
+	 * @property {float} gauss.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} cross - Creates a filled cross shape with sharp edges.
 	 * @property {String} cross.shader - shader source code for cross shader
 	 * @property {Object} cross.uniforms - default uniforms for shader
 	 * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
 	 * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
+	 * @property {float} cross.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} radRamp - Creates 2d radial ramp image.
 	 * @property {String} radRamp.shader - shader source code for radial ramp shader
 	 * @property {Object} radRamp.uniforms - default uniforms for shader
 	 * @property {float} radRamp.uniforms.uSqueeze=1.0 - coefficient that helps to modify size of the ramp. Ranges [0.0, Infinity], where 0.0 results in ramp being so large
 	 * it fills the entire stim and Infinity makes it so tiny it's invisible.
+	 * @property {float} radRamp.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} raisedCos - Creates 2d raised-cosine image as if 1d raised-cosine graph was rotated around Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Raised-cosine_filter}
@@ -143,6 +154,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} raisedCos.uniforms - default uniforms for shader
 	 * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
 	 * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
+	 * @property {float} raisedCos.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 */
 	static #SHADERS = {
 		imageShader: {
@@ -639,11 +651,10 @@ export class GratingStim extends VisualStim
 	 */ 
 	setInterpolate (interpolate = false, log = false) {
 		this._setAttribute("interpolate", interpolate, log);
-		if (this._pixi === undefined || !this._pixi.shader.uniforms.uTex) {
-			return;
+		if (this._pixi instanceof PIXI.Mesh && this._pixi.shader.uniforms.uTex instanceof PIXI.Texture) {
+			this._pixi.shader.uniforms.uTex.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.shader.uniforms.uTex.baseTexture.update();
 		}
-		this._pixi.shader.uniforms.uTex.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
-		this._pixi.shader.uniforms.uTex.baseTexture.update();
 	}
 
 	/**
