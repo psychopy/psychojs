@@ -14,6 +14,7 @@ import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import defaultQuadVert from "./shaders/defaultQuad.vert";
+import imageShader from "./shaders/imageShader.frag";
 import sinShader from "./shaders/sinShader.frag";
 import sqrShader from "./shaders/sqrShader.frag";
 import sawShader from "./shaders/sawShader.frag";
@@ -60,12 +61,21 @@ export class GratingStim extends VisualStim
 	 * Shader source code is later used for construction of shader programs to create respective visual stimuli.
 	 * @name module:visual.GratingStim.#SHADERS
 	 * @type {Object}
+	 *
+	 * @property {Object} imageShader - Renders provided image with applied effects (coloring, phase, frequency).
+	 * @property {String} imageShader.shader - shader source code for the image based grating stimuli.
+	 * @property {Object} imageShader.uniforms - default uniforms for the image based shader.
+	 * @property {float} imageShader.uniforms.uFreq=1.0 - how much times image repeated within grating stimuli.
+	 * @property {float} imageShader.uniforms.uPhase=0.0 - offset of the image along X axis.
+	 * @property {float} imageShader.uniforms.uAlpha=1.0 - value of the alpha channel.
+	 *
 	 * @property {Object} sin - Creates 2d sine wave image as if 1d sine graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
 	 * @property {String} sin.shader - shader source code for the sine wave stimuli
 	 * @property {Object} sin.uniforms - default uniforms for sine wave shader
 	 * @property {float} sin.uniforms.uFreq=1.0 - frequency of sine wave.
 	 * @property {float} sin.uniforms.uPhase=0.0 - phase of sine wave.
+	 * @property {float} sin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqr - Creates 2d square wave image as if 1d square graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -73,6 +83,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sqr.uniforms - default uniforms for square wave shader
 	 * @property {float} sqr.uniforms.uFreq=1.0 - frequency of square wave.
 	 * @property {float} sqr.uniforms.uPhase=0.0 - phase of square wave.
+	 * @property {float} sqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} saw - Creates 2d sawtooth wave image as if 1d sawtooth graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sawtooth_wave}
@@ -80,6 +91,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} saw.uniforms - default uniforms for sawtooth wave shader
 	 * @property {float} saw.uniforms.uFreq=1.0 - frequency of sawtooth wave.
 	 * @property {float} saw.uniforms.uPhase=0.0 - phase of sawtooth wave.
+	 * @property {float} saw.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} tri - Creates 2d triangle wave image as if 1d triangle graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Triangle_wave}
@@ -88,6 +100,7 @@ export class GratingStim extends VisualStim
 	 * @property {float} tri.uniforms.uFreq=1.0 - frequency of triangle wave.
 	 * @property {float} tri.uniforms.uPhase=0.0 - phase of triangle wave.
 	 * @property {float} tri.uniforms.uPeriod=1.0 - period of triangle wave.
+	 * @property {float} tri.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sinXsin - Creates an image of two 2d sine waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
@@ -95,6 +108,7 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sinXsin.uniforms - default uniforms for shader
 	 * @property {float} sinXsin.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sinXsin.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sinXsin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqrXsqr - Creates an image of two 2d square waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -102,12 +116,14 @@ export class GratingStim extends VisualStim
 	 * @property {Object} sqrXsqr.uniforms - default uniforms for shader
 	 * @property {float} sqrXsqr.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sqrXsqr.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sqrXsqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} circle - Creates a filled circle shape with sharp edges.
 	 * @property {String} circle.shader - shader source code for filled circle.
 	 * @property {Object} circle.uniforms - default uniforms for shader.
 	 * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
 	 * and 1.0 is circle that spans from edge to edge of the stim.
+	 * @property {float} circle.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Gaussian_function}
@@ -116,18 +132,21 @@ export class GratingStim extends VisualStim
 	 * @property {float} gauss.uniforms.uA=1.0 - A constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uB=0.0 - B constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uC=0.16 - C constant for gaussian formula (see link).
+	 * @property {float} gauss.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} cross - Creates a filled cross shape with sharp edges.
 	 * @property {String} cross.shader - shader source code for cross shader
 	 * @property {Object} cross.uniforms - default uniforms for shader
 	 * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
 	 * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
+	 * @property {float} cross.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} radRamp - Creates 2d radial ramp image.
 	 * @property {String} radRamp.shader - shader source code for radial ramp shader
 	 * @property {Object} radRamp.uniforms - default uniforms for shader
 	 * @property {float} radRamp.uniforms.uSqueeze=1.0 - coefficient that helps to modify size of the ramp. Ranges [0.0, Infinity], where 0.0 results in ramp being so large
 	 * it fills the entire stim and Infinity makes it so tiny it's invisible.
+	 * @property {float} radRamp.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} raisedCos - Creates 2d raised-cosine image as if 1d raised-cosine graph was rotated around Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Raised-cosine_filter}
@@ -135,14 +154,25 @@ export class GratingStim extends VisualStim
 	 * @property {Object} raisedCos.uniforms - default uniforms for shader
 	 * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
 	 * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
+	 * @property {float} raisedCos.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 */
 	static #SHADERS = {
+		imageShader: {
+			shader: imageShader,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
 		sin: {
 			shader: sinShader,
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sqr: {
@@ -150,7 +180,8 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		saw: {
@@ -158,7 +189,8 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		tri: {
@@ -167,7 +199,8 @@ export class GratingStim extends VisualStim
 				uFreq: 1.0,
 				uPhase: 0.0,
 				uPeriod: 1.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sinXsin: {
@@ -175,7 +208,8 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sqrXsqr: {
@@ -183,14 +217,16 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		circle: {
 			shader: circleShader,
 			uniforms: {
 				uRadius: 1.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		gauss: {
@@ -199,21 +235,24 @@ export class GratingStim extends VisualStim
 				uA: 1.0,
 				uB: 0.0,
 				uC: 0.16,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		cross: {
 			shader: crossShader,
 			uniforms: {
 				uThickness: 0.2,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		radRamp: {
 			shader: radRampShader,
 			uniforms: {
 				uSqueeze: 1.0,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		raisedCos: {
@@ -221,7 +260,8 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uBeta: 0.25,
 				uPeriod: 0.625,
-				uColor: [1., 1., 1.]
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		}
 	};
@@ -469,11 +509,11 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#_getPixiMeshFromPredefinedShaders
 	 * @function
 	 * @protected
-	 * @param {String} funcName - name of the shader function. Must be one of the SHADERS
+	 * @param {String} shaderName - name of the shader. Must be one of the SHADERS
 	 * @param {Object} uniforms - a set of uniforms to supply to the shader. Mixed together with default uniform values.
 	 * @return {Pixi.Mesh} Pixi.Mesh object that represents shader and later added to the scene.
 	 */
-	_getPixiMeshFromPredefinedShaders (funcName = "", uniforms = {}) {
+	_getPixiMeshFromPredefinedShaders (shaderName = "", uniforms = {}) {
 		const geometry = new PIXI.Geometry();
 		geometry.addAttribute(
 			"aVertexPosition",
@@ -492,8 +532,8 @@ export class GratingStim extends VisualStim
 		);
 		geometry.addIndex([0, 1, 2, 0, 2, 3]);
 		const vertexSrc = defaultQuadVert;
-		const fragmentSrc = GratingStim.#SHADERS[funcName].shader;
-		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[funcName].uniforms, uniforms);
+		const fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
+		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
 		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
 		return new PIXI.Mesh(geometry, shader);
 	}
@@ -509,9 +549,7 @@ export class GratingStim extends VisualStim
 	setPhase (phase, log = false) {
 		this._setAttribute("phase", phase, log);
 		if (this._pixi instanceof PIXI.Mesh) {
-			this._pixi.shader.uniforms.uPhase = phase;
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			this._pixi.tilePosition.x = -phase * (this._size_px[0] * this._pixi.tileScale.x) / (2 * Math.PI)
+			this._pixi.shader.uniforms.uPhase = -phase;
 		}
 	}
 
@@ -547,8 +585,21 @@ export class GratingStim extends VisualStim
 		this._setAttribute("color", colorObj, log);
 		if (this._pixi instanceof PIXI.Mesh) {
 			this._pixi.shader.uniforms.uColor = colorObj.rgbFull;
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			
+		}
+	}
+
+	/**
+	 * Determines how visible the stimulus is relative to background.
+	 * 
+	 * @name module:visual.GratingStim#setOpacity
+	 * @public
+	 * @param {number} [opacity=1] opacity - The value should be a single float ranging 1.0 (opaque) to 0.0 (transparent).
+	 * @param {boolean} [log= false] - whether of not to log
+	 */ 
+	setOpacity (opacity = 1, log = false) {
+		this._setAttribute("opacity", opacity, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+			this._pixi.shader.uniforms.uAlpha = opacity;
 		}
 	}
 
@@ -564,13 +615,6 @@ export class GratingStim extends VisualStim
 		this._setAttribute("SF", sf, log);
 		if (this._pixi instanceof PIXI.Mesh) {
 			this._pixi.shader.uniforms.uFreq = sf;
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			// tileScale units are pixels, so converting function frequency to pixels
-			// and also taking into account possible size difference between used texture and requested stim size
-			this._pixi.tileScale.x = (1 / sf) * (this._pixi.width / this._pixi.texture.width);
-			// since most functions defined in SHADERS assume spatial frequency change along X axis
-			// we assume desired effect for image based stims to be the same so tileScale.y is not affected by spatialFrequency
-			this._pixi.tileScale.y = this._pixi.height / this._pixi.texture.height;
 		}
 	}
 
@@ -607,11 +651,9 @@ export class GratingStim extends VisualStim
 	 */ 
 	setInterpolate (interpolate = false, log = false) {
 		this._setAttribute("interpolate", interpolate, log);
-		if (this._pixi instanceof PIXI.Mesh) {
-
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
-			this._pixi.texture.baseTexture.update();
+		if (this._pixi instanceof PIXI.Mesh && this._pixi.shader.uniforms.uTex instanceof PIXI.Texture) {
+			this._pixi.shader.uniforms.uTex.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.shader.uniforms.uTex.baseTexture.update();
 		}
 	}
 
@@ -633,6 +675,8 @@ export class GratingStim extends VisualStim
 		if (this._needPixiUpdate)
 		{
 			this._needPixiUpdate = false;
+			let shaderName;
+			let shaderUniforms;
 			let currentUniforms = {};
 			if (typeof this._pixi !== "undefined")
 			{
@@ -651,25 +695,28 @@ export class GratingStim extends VisualStim
 
 			if (this._tex instanceof HTMLImageElement)
 			{
-				this._pixi = PIXI.TilingSprite.from(this._tex, {
-					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
-					width: this._size_px[0],
-					height: this._size_px[1]
+				shaderName = "imageShader";
+				let shaderTex = PIXI.Texture.from(this._tex, {
+					wrapMode: PIXI.WRAP_MODES.REPEAT,
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
 				});
-				this.setPhase(this._phase);
-				this.setSF(this._SF);
+				shaderUniforms = {
+					uTex: shaderTex,
+					uFreq: this._SF,
+					uPhase: this._phase,
+					uColor: this._color.rgbFull
+				};
 			}
 			else
 			{
-				this._pixi = this._getPixiMeshFromPredefinedShaders(
-					this._tex,
-					Object.assign({
-						uFreq: this._SF,
-						uPhase: this._phase,
-						uColor: this._color.rgbFull
-					}, currentUniforms)
-				);
+				shaderName = this._tex;
+				shaderUniforms = {
+					uFreq: this._SF,
+					uPhase: this._phase,
+					uColor: this._color.rgbFull
+				};
 			}
+			this._pixi = this._getPixiMeshFromPredefinedShaders(shaderName, Object.assign(shaderUniforms, currentUniforms));
 			this._pixi.pivot.set(this._pixi.width * 0.5, this._pixi.width * 0.5);
 			this._pixi.filters = [this._adjustmentFilter];
 
@@ -712,7 +759,7 @@ export class GratingStim extends VisualStim
 		}
 
 		this._pixi.zIndex = this._depth;
-		this._pixi.alpha = this.opacity;
+		this.opacity = this._opacity;
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();
