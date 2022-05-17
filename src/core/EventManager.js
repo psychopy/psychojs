@@ -409,13 +409,13 @@ export class EventManager
 	}
 
 	/**
-	 * Adds a listener of the event, that is going to be notified if it happens.
+	 * Adds a subscriber/listener of the event, that is going to be notified if it happens.
 	 *
 	 * @name module:core.EventManager#addEventSubscriber
 	 * @function
 	 * @public
 	 * @param {String} eventName - an event of which a subscriber wants to be notified.
-	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of event.
+	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of specified event.
 	 */
 	addEventSubscriber (eventName, subscriber)
 	{
@@ -430,13 +430,13 @@ export class EventManager
 	}
 
 	/**
-	 * Removes event subscriber.
+	 * Removes subscriber/listener of the specified event.
 	 *
 	 * @name module:core.EventManager#removeEventSubscriber
 	 * @function
 	 * @public
 	 * @param {String} eventName - an event of which a subscriber wants to be notified.
-	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of event.
+	 * @param {object|module:visual.VisualStim} subscriber - an object that does not wants to be notified in case of specified event anymore.
 	 */
 	removeEventSubscriber (eventName, subscriber)
 	{
@@ -451,6 +451,14 @@ export class EventManager
 		}
 	}
 
+	/**
+	 * Removes subscriber/listener from all subscriptions.
+	 *
+	 * @name module:core.EventManager#removeEventSubscriber
+	 * @function
+	 * @public
+	 * @param {object|module:visual.VisualStim} subscriber - an object that does not wants to be notified in case of any events anymore.
+	 */
 	removeSubscriberFromAllEvents (subscriber)
 	{
 		if (!subscriber)
@@ -483,6 +491,13 @@ export class EventManager
 		}
 	}
 
+	/**
+	 * Updates the state of EventManager. Runs together with window refresh.
+	 *
+	 * @name module:core.EventManager#update
+	 * @function
+	 * @public
+	 */
 	update ()
 	{
 		// for touchstart/pointerdown/mousedown sorting subscribers in reverse order to which they were added to the scene
@@ -492,6 +507,13 @@ export class EventManager
 		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["touchstart"]);
 	}
 
+	/**
+	 * Sorts the specified subscribers array in opposite order to the positions of their _pixi objects in parent PIXI.Container.
+	 *
+	 * @name module:core._sortSubscribersAccordingToPixiOrder#update
+	 * @function
+	 * @private
+	 */
 	_sortSubscribersAccordingToPixiOrder (subscribers = [])
 	{
 		subscribers.sort((a, b) =>
