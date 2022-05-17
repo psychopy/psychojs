@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>data/QuestHandler.js - PsychoJS API-Documentation</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="module-core.EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="module-core.EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="module-core.EventManager.html#keycode2w3c">keycode2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#pyglet2w3c">pyglet2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#stopMoveClock">stopMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#w3c2pyglet">w3c2pyglet</a></li></ul></li><li><a href="module-core.GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="module-core.GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="module-core.GUI.html#dialog">dialog</a></li><li data-type='method'><a href="module-core.GUI.html#DlgFromDict">DlgFromDict</a></li></ul></li><li><a href="module-core.Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="module-core.Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.Keyboard.html#includes">includes</a></li><li data-type='method'><a href="module-core.Keyboard.html#start">start</a></li><li data-type='method'><a href="module-core.Keyboard.html#stop">stop</a></li></ul></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="module-core.MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="module-core.MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="module-core.MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="module-core.MinimalStim.html#release">release</a></li><li data-type='method'><a href="module-core.MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="module-core.Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="module-core.Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="module-core.Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="module-core.Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="module-core.Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="module-core.Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a><ul class='methods'><li data-type='method'><a href="module-core.Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="module-core.Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#close">close</a></li><li data-type='method'><a href="module-core.Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="module-core.Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#monitorFramePeriod">monitorFramePeriod</a></li><li data-type='method'><a href="module-core.Window.html#render">render</a></li></ul></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="module-data.ExperimentHandler.html#_getLoopAttributes">_getLoopAttributes</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#save">save</a></li></ul></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="module-data.MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="module-data.QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="module-data.QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="module-data.QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="module-data.QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="module-data.QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="module-data.QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="module-data.QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="module-data.QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="module-data.QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#.fromSnapshot">fromSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#.importConditions">importConditions</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-sound.AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClip.html#download">download</a></li><li data-type='method'><a href="module-sound.AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#upload">upload</a></li></ul></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClipPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="module-sound.Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-sound.Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#download">download</a></li><li data-type='method'><a href="module-sound.Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#upload">upload</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TonePlayer.html#._initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TrackPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="module-util.Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="module-util.Clock.html#add">add</a></li><li data-type='method'><a href="module-util.Clock.html#reset">reset</a></li></ul></li><li><a href="module-util.Color.html">Color</a><ul class='methods'><li data-type='method'><a href="module-util.Color.html#.hex">hex</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb">hexToRgb</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb255">hexToRgb255</a></li><li data-type='method'><a href="module-util.Color.html#.int">int</a></li><li data-type='method'><a href="module-util.Color.html#.rgb">rgb</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255">rgb255</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToHex">rgb255ToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToInt">rgb255ToInt</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToHex">rgbToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToInt">rgbToInt</a></li><li data-type='method'><a href="module-util.Color.html#.toString">toString</a></li></ul></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="module-util.CountdownTimer.html#add">add</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="module-util.EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="module-util.EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="module-util.EventEmitter.html#off">off</a></li><li data-type='method'><a href="module-util.EventEmitter.html#on">on</a></li><li data-type='method'><a href="module-util.EventEmitter.html#once">once</a></li></ul></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="module-util.MonotonicClock.html#.getDate">getDate</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#.getDateStr">getDateStr</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getReferenceTime">getReferenceTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-visual.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#download">download</a></li><li data-type='method'><a href="module-visual.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-visual.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-visual.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-visual.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-visual.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-visual.Camera.html#start">start</a></li><li data-type='method'><a href="module-visual.Camera.html#stop">stop</a></li><li data-type='method'><a href="module-visual.Camera.html#upload">upload</a></li></ul></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="module-visual.FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#setCamera">setCamera</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#start">start</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#stop">stop</a></li></ul></li><li><a href="module-visual.Form.html">Form</a><ul class='methods'><li data-type='method'><a href="module-visual.Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="module-visual.Form.html#draw">draw</a></li><li data-type='method'><a href="module-visual.Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="module-visual.Form.html#getData">getData</a></li><li data-type='method'><a href="module-visual.Form.html#hide">hide</a></li><li data-type='method'><a href="module-visual.Form.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.Form.html#reset">reset</a></li></ul></li><li><a href="module-visual.ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="module-visual.Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="module-visual.Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="module-visual.Slider.html#recordRating">recordRating</a></li></ul></li><li><a href="module-visual.TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="module-visual.TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextBox.html#_getAnchor">_getAnchor</a></li></ul></li><li><a href="module-visual.TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="module-visual.TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextStim.html#getBoundingBox">getBoundingBox</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li></li><li></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#.addInfoFromUrl">addInfoFromUrl</a></li><li data-type='method'><a href="module-util.html#.average">average</a></li><li data-type='method'><a href="module-util.html#.count">count</a></li><li data-type='method'><a href="module-util.html#.detectBrowser">detectBrowser</a></li><li data-type='method'><a href="module-util.html#.extensionFromMimeType">extensionFromMimeType</a></li><li data-type='method'><a href="module-util.html#.flattenArray">flattenArray</a></li><li data-type='method'><a href="module-util.html#.getDownloadSpeed">getDownloadSpeed</a></li><li data-type='method'><a href="module-util.html#.getErrorStack">getErrorStack</a></li><li data-type='method'><a href="module-util.html#.getPositionFromObject">getPositionFromObject</a></li><li data-type='method'><a href="module-util.html#.getRequestError">getRequestError</a></li><li data-type='method'><a href="module-util.html#.getUrlParameters">getUrlParameters</a></li><li data-type='method'><a href="module-util.html#.index">index</a></li><li data-type='method'><a href="module-util.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-util.html#.isInt">isInt</a></li><li data-type='method'><a href="module-util.html#.isNumeric">isNumeric</a></li><li data-type='method'><a href="module-util.html#.IsPointInsidePolygon">IsPointInsidePolygon</a></li><li data-type='method'><a href="module-util.html#.makeUuid">makeUuid</a></li><li data-type='method'><a href="module-util.html#.offerDataForDownload">offerDataForDownload</a></li><li data-type='method'><a href="module-util.html#.promiseToTupple">promiseToTupple</a></li><li data-type='method'><a href="module-util.html#.randchoice">randchoice</a></li><li data-type='method'><a href="module-util.html#.randint">randint</a></li><li data-type='method'><a href="module-util.html#.range">range</a></li><li data-type='method'><a href="module-util.html#.round">round</a></li><li data-type='method'><a href="module-util.html#.selectFromArray">selectFromArray</a></li><li data-type='method'><a href="module-util.html#.shuffle">shuffle</a></li><li data-type='method'><a href="module-util.html#.sliceArray">sliceArray</a></li><li data-type='method'><a href="module-util.html#.sort">sort</a></li><li data-type='method'><a href="module-util.html#.sum">sum</a></li><li data-type='method'><a href="module-util.html#.to_height">to_height</a></li><li data-type='method'><a href="module-util.html#.to_norm">to_norm</a></li><li data-type='method'><a href="module-util.html#.to_pixiPoint">to_pixiPoint</a></li><li data-type='method'><a href="module-util.html#.to_px">to_px</a></li><li data-type='method'><a href="module-util.html#.to_unit">to_unit</a></li><li data-type='method'><a href="module-util.html#.to_win">to_win</a></li><li data-type='method'><a href="module-util.html#.toNumerical">toNumerical</a></li><li data-type='method'><a href="module-util.html#.toString">toString</a></li><li data-type='method'><a href="module-util.html#.turnSquareBracketsIntoArrays">turnSquareBracketsIntoArrays</a></li></ul></li><li><a href="module-visual.html">visual</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.SoundPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#stop">stop</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">data/QuestHandler.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module data */
+/**
+ * Quest Trial Handler
+ *
+ * @author Alain Pitiot &amp; Thomas Pronk
+ * @version 2021.2.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ */
+
+
+import {TrialHandler} from "./TrialHandler.js";
+
+/**
+ * &lt;p>A Trial Handler that implements the Quest algorithm for quick measurement of
+    psychophysical thresholds. QuestHandler relies on the [jsQuest]{@link https://github.com/kurokida/jsQUEST} library, a port of Prof Dennis Pelli's QUEST algorithm by [Daiichiro Kuroki]{@link https://github.com/kurokida}.&lt;/p>
+ *
+ * @class module.data.QuestHandler
+ * @extends TrialHandler
+ * @param {Object} options - the handler options
+ * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+ * @param {string} options.varName - the name of the variable / intensity / contrast / threshold manipulated by QUEST
+ * @param {number} options.startVal - initial guess for the threshold
+ * @param {number} options.startValSd - standard deviation of the initial guess
+ * @param {number} options.minVal - minimum value for the threshold
+ * @param {number} options.maxVal - maximum value for the threshold
+ * @param {number} [options.pThreshold=0.82] - threshold criterion expressed as probability of getting a correct response
+ * @param {number} options.nTrials - maximum number of trials
+ * @param {number} options.stopInterval - minimum [5%, 95%] confidence interval required for the loop to stop
+ * @param {module:data.QuestHandler.Method} options.method - the QUEST method
+ * @param {number} [options.beta=3.5] - steepness of the QUEST psychometric function
+ * @param {number} [options.delta=0.01] - fraction of trials with blind responses
+ * @param {number} [options.gamma=0.5] - fraction of trails that would generate a correct response when the threshold is infinitely small
+ * @param {number} [options.grain=0.01] - quantization of the internal table
+ * @param {string} options.name - name of the handler
+ * @param {boolean} [options.autoLog= false] - whether or not to log
+ */
+export class QuestHandler extends TrialHandler
+{
+	/**
+	 * @constructor
+	 * @public
+	 */
+	constructor({
+		psychoJS,
+		varName,
+		startVal,
+		startValSd,
+		minVal,
+		maxVal,
+		pThreshold,
+		nTrials,
+		stopInterval,
+		method,
+		beta,
+		delta,
+		gamma,
+		grain,
+		name,
+		autoLog
+	} = {})
+	{
+		super({
+			psychoJS,
+			name,
+			autoLog,
+			method: TrialHandler.Method.SEQUENTIAL,
+			trialList: Array(nTrials),
+			nReps: 1
+		});
+
+		this._addAttribute("varName", varName);
+		this._addAttribute("startVal", startVal);
+		this._addAttribute("minVal", minVal, Number.MIN_VALUE);
+		this._addAttribute("maxVal", maxVal, Number.MAX_VALUE);
+		this._addAttribute("startValSd", startValSd);
+		this._addAttribute("pThreshold", pThreshold, 0.82);
+		this._addAttribute("nTrials", nTrials);
+		this._addAttribute("stopInterval", stopInterval, Number.MIN_VALUE);
+		this._addAttribute("beta", beta, 3.5);
+		this._addAttribute("delta", delta, 0.01);
+		this._addAttribute("gamma", gamma, 0.5);
+		this._addAttribute("grain", grain, 0.01);
+		this._addAttribute("method", method, QuestHandler.Method.QUANTILE);
+
+		// setup jsQuest:
+		this._setupJsQuest();
+		this._estimateQuestValue();
+	}
+
+	/**
+	 * Setter for the method attribute.
+	 *
+	 * @param {mixed} method - the method value, PsychoPy-style values ("mean", "median", 
+	 * "quantile") are converted to their respective QuestHandler.Method values
+	 * @param {boolean} log - whether or not to log the change of seed
+	 */
+	 setMethod(method, log)
+	 {
+		let methodMapping = {
+			"quantile": QuestHandler.Method.QUANTILE,
+			"mean": QuestHandler.Method.MEAN,
+			"mode": QuestHandler.Method.MODE
+		};
+		// If method is a key in methodMapping, convert method to corresponding value
+		if (methodMapping.hasOwnProperty(method)) 
+		{
+			method = methodMapping[method];
+		}
+		this._setAttribute("method", method, log);
+	}
+
+	/**
+	 * Add a response and update the PDF.
+	 *
+	 * @name module:data.QuestHandler#addResponse
+	 * @function
+	 * @public
+	 * @param{number} response	- the response to the trial, must be either 0 (incorrect or
+	 * non-detected) or 1 (correct or detected)
+	 * @param{number | undefined} value - optional intensity / contrast / threshold
+	 * @param{boolean} [doAddData = true] - whether or not to add the response as data to the
+	 * 	experiment
+	 * @returns {void}
+	 */
+	addResponse(response, value, doAddData = true)
+	{
+		// check that response is either 0 or 1:
+		if (response !== 0 &amp;&amp; response !== 1)
+		{
+			throw {
+				origin: "QuestHandler.addResponse",
+				context: "when adding a trial response",
+				error: `the response must be either 0 or 1, got: ${JSON.stringify(response)}`
+			};
+		}
+
+		if (doAddData)
+		{
+			this._psychoJS.experiment.addData(this._name + '.response', response);
+		}
+
+		// update the QUEST pdf:
+		if (typeof value !== "undefined")
+		{
+			this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, value, response);
+		}
+		else
+		{
+			this._jsQuest = jsQUEST.QuestUpdate(this._jsQuest, this._questValue, response);
+		}
+
+		if (!this._finished)
+		{
+			this.next();
+
+			// estimate the next value of the QUEST variable
+			// (and update the trial list and snapshots):
+			this._estimateQuestValue();
+		}
+	}
+
+	/**
+	 * Simulate a response.
+	 *
+	 * @name module:data.QuestHandler#simulate
+	 * @function
+	 * @public
+	 * @param{number} trueValue - the true, known value of the threshold / contrast / intensity
+	 * @returns{number} the simulated response, 0 or 1
+	 */
+	simulate(trueValue)
+	{
+		const response = jsQUEST.QuestSimulate(this._jsQuest, this._questValue, trueValue);
+
+		// restrict to limits:
+		this._questValue = Math.max(this._minVal, Math.min(this._maxVal, this._questValue));
+
+		this._psychoJS.logger.debug(`simulated response: ${response}`);
+
+		return response;
+	}
+
+	/**
+	 * Get the mean of the Quest posterior PDF.
+	 *
+	 * @name module:data.QuestHandler#mean
+	 * @function
+	 * @public
+	 * @returns {number} the mean
+	 */
+	mean()
+	{
+		return jsQUEST.QuestMean(this._jsQuest);
+	}
+
+	/**
+	 * Get the standard deviation of the Quest posterior PDF.
+	 *
+	 * @name module:data.QuestHandler#sd
+	 * @function
+	 * @public
+	 * @returns {number} the standard deviation
+	 */
+	sd()
+	{
+		return jsQUEST.QuestSd(this._jsQuest);
+	}
+
+	/**
+	 * Get the mode of the Quest posterior PDF.
+	 *
+	 * @name module:data.QuestHandler#mode
+	 * @function
+	 * @public
+	 * @returns {number} the mode
+	 */
+	mode()
+	{
+		const [mode, pdf] = jsQUEST.QuestMode(this._jsQuest);
+		return mode;
+	}
+
+	/**
+	 * Get the standard deviation of the Quest posterior PDF.
+	 *
+	 * @name module:data.QuestHandler#quantile
+	 * @function
+	 * @public
+	 * @param{number} quantileOrder the quantile order
+	 * @returns {number} the quantile
+	 */
+	quantile(quantileOrder)
+	{
+		return jsQUEST.QuestQuantile(this._jsQuest, quantileOrder);
+	}
+
+	/**
+	 * Get the current value of the variable / contrast / threshold.
+	 *
+	 * @name module:data.QuestHandler#getQuestValue
+	 * @function
+	 * @public
+	 * @returns {number} the current QUEST value for the variable / contrast / threshold
+	 */
+	getQuestValue()
+	{
+		return this._questValue;
+	}
+
+	/**
+	 * Get an estimate of the 5%-95% confidence interval (CI).
+	 *
+	 * @name module:data.QuestHandler#confInterval
+	 * @function
+	 * @public
+	 * @param{boolean} [getDifference=false] - if true, return the width of the CI instead of the CI
+	 * @returns{number[] | number} the 5%-95% CI or the width of the CI
+	 */
+	confInterval(getDifference = false)
+	{
+		const CI = [
+			jsQUEST.QuestQuantile(this._jsQuest, 0.05),
+			jsQUEST.QuestQuantile(this._jsQuest, 0.95)
+		];
+
+		if (getDifference)
+		{
+			return Math.abs(CI[0] - CI[1]);
+		}
+		else
+		{
+			return CI;
+		}
+	}
+
+	/**
+	 * Setup the JS Quest object.
+	 *
+	 * @name module:data.QuestHandler#_setupJsQuest
+	 * @function
+	 * @protected
+	 * @returns {void}
+	 */
+	_setupJsQuest()
+	{
+		this._jsQuest = jsQUEST.QuestCreate(
+			this._startVal,
+			this._startValSd,
+			this._pThreshold,
+			this._beta,
+			this._delta,
+			this._gamma,
+			this._grain);
+	}
+
+	/**
+	 * Estimate the next value of the QUEST variable, based on the current value
+	 * and on the selected QUEST method.
+	 *
+	 * @name module:data.QuestHandler#_estimateQuestValue
+	 * @function
+	 * @protected
+	 * @returns {void}
+	 */
+	_estimateQuestValue()
+	{
+		// estimate the value based on the chosen QUEST method:
+		if (this._method === QuestHandler.Method.QUANTILE)
+		{
+			this._questValue = jsQUEST.QuestQuantile(this._jsQuest);
+		}
+		else if (this._method === QuestHandler.Method.MEAN)
+		{
+			this._questValue = jsQUEST.QuestMean(this._jsQuest);
+		}
+		else if (this._method === QuestHandler.Method.MODE)
+		{
+			const [mode, pdf] = jsQUEST.QuestMode(this._jsQuest);
+			this._questValue = mode;
+		}
+		else
+		{
+			throw {
+				origin: "QuestHandler._estimateQuestValue",
+				context: "when estimating the next value of the QUEST variable",
+				error: `unknown method: ${this._method}, please use: mean, mode, or quantile`
+			};
+		}
+
+		this._psychoJS.logger.debug(`estimated value for QUEST variable ${this._varName}: ${this._questValue}`);
+
+		// check whether we should finish the trial:
+		if (this.thisN > 0 &amp;&amp; (this.nRemaining === 0 || this.confInterval(true) &lt; this._stopInterval))
+		{
+			this._finished = true;
+
+			// update the snapshots associated with the current trial in the trial list:
+			for (let t = 0; t &lt; this._snapshots.length - 1; ++t)
+			{
+				// the current trial is the last defined one:
+				if (typeof this._trialList[t + 1] === "undefined")
+				{
+					this._snapshots[t].finished = true;
+					break;
+				}
+			}
+
+			return;
+		}
+
+		// update the next undefined trial in the trial list, and the associated snapshot:
+		for (let t = 0; t &lt; this._trialList.length; ++t)
+		{
+			if (typeof this._trialList[t] === "undefined")
+			{
+				this._trialList[t] = { [this._varName]: this._questValue };
+
+				if (typeof this._snapshots[t] !== "undefined")
+				{
+					this._snapshots[t][this._varName] = this._questValue;
+					this._snapshots[t].trialAttributes.push(this._varName);
+				}
+				break;
+			}
+		}
+	}
+}
+
+/**
+ * QuestHandler method
+ *
+ * @enum {Symbol}
+ * @readonly
+ * @public
+ */
+QuestHandler.Method = {
+	/**
+	 * Quantile threshold estimate.
+	 */
+	QUANTILE: Symbol.for("QUANTILE"),
+
+	/**
+	 * Mean threshold estimate.
+	 */
+	MEAN: Symbol.for("MEAN"),
+
+	/**
+	 * Mode threshold estimate.
+	 */
+	MODE: Symbol.for("MODE")
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Tue May 17 2022 14:04:03 GMT+0200 (Mitteleuropäische Sommerzeit) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

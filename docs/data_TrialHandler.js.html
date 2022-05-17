@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: data/TrialHandler.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>data/TrialHandler.js - PsychoJS API-Documentation</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: data/TrialHandler.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="module-core.EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="module-core.EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="module-core.EventManager.html#keycode2w3c">keycode2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#pyglet2w3c">pyglet2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#stopMoveClock">stopMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#w3c2pyglet">w3c2pyglet</a></li></ul></li><li><a href="module-core.GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="module-core.GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="module-core.GUI.html#dialog">dialog</a></li><li data-type='method'><a href="module-core.GUI.html#DlgFromDict">DlgFromDict</a></li></ul></li><li><a href="module-core.Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="module-core.Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.Keyboard.html#includes">includes</a></li><li data-type='method'><a href="module-core.Keyboard.html#start">start</a></li><li data-type='method'><a href="module-core.Keyboard.html#stop">stop</a></li></ul></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="module-core.MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="module-core.MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="module-core.MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="module-core.MinimalStim.html#release">release</a></li><li data-type='method'><a href="module-core.MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="module-core.Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="module-core.Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="module-core.Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="module-core.Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="module-core.Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="module-core.Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a><ul class='methods'><li data-type='method'><a href="module-core.Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="module-core.Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#close">close</a></li><li data-type='method'><a href="module-core.Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="module-core.Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#monitorFramePeriod">monitorFramePeriod</a></li><li data-type='method'><a href="module-core.Window.html#render">render</a></li></ul></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="module-data.ExperimentHandler.html#_getLoopAttributes">_getLoopAttributes</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#save">save</a></li></ul></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="module-data.MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="module-data.QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="module-data.QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="module-data.QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="module-data.QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="module-data.QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="module-data.QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="module-data.QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="module-data.QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="module-data.QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#.fromSnapshot">fromSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#.importConditions">importConditions</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-sound.AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClip.html#download">download</a></li><li data-type='method'><a href="module-sound.AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#upload">upload</a></li></ul></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClipPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="module-sound.Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-sound.Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#download">download</a></li><li data-type='method'><a href="module-sound.Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#upload">upload</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TonePlayer.html#._initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TrackPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="module-util.Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="module-util.Clock.html#add">add</a></li><li data-type='method'><a href="module-util.Clock.html#reset">reset</a></li></ul></li><li><a href="module-util.Color.html">Color</a><ul class='methods'><li data-type='method'><a href="module-util.Color.html#.hex">hex</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb">hexToRgb</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb255">hexToRgb255</a></li><li data-type='method'><a href="module-util.Color.html#.int">int</a></li><li data-type='method'><a href="module-util.Color.html#.rgb">rgb</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255">rgb255</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToHex">rgb255ToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToInt">rgb255ToInt</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToHex">rgbToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToInt">rgbToInt</a></li><li data-type='method'><a href="module-util.Color.html#.toString">toString</a></li></ul></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="module-util.CountdownTimer.html#add">add</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="module-util.EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="module-util.EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="module-util.EventEmitter.html#off">off</a></li><li data-type='method'><a href="module-util.EventEmitter.html#on">on</a></li><li data-type='method'><a href="module-util.EventEmitter.html#once">once</a></li></ul></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="module-util.MonotonicClock.html#.getDate">getDate</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#.getDateStr">getDateStr</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getReferenceTime">getReferenceTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-visual.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#download">download</a></li><li data-type='method'><a href="module-visual.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-visual.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-visual.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-visual.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-visual.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-visual.Camera.html#start">start</a></li><li data-type='method'><a href="module-visual.Camera.html#stop">stop</a></li><li data-type='method'><a href="module-visual.Camera.html#upload">upload</a></li></ul></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="module-visual.FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#setCamera">setCamera</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#start">start</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#stop">stop</a></li></ul></li><li><a href="module-visual.Form.html">Form</a><ul class='methods'><li data-type='method'><a href="module-visual.Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="module-visual.Form.html#draw">draw</a></li><li data-type='method'><a href="module-visual.Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="module-visual.Form.html#getData">getData</a></li><li data-type='method'><a href="module-visual.Form.html#hide">hide</a></li><li data-type='method'><a href="module-visual.Form.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.Form.html#reset">reset</a></li></ul></li><li><a href="module-visual.ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="module-visual.Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="module-visual.Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="module-visual.Slider.html#recordRating">recordRating</a></li></ul></li><li><a href="module-visual.TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="module-visual.TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextBox.html#_getAnchor">_getAnchor</a></li></ul></li><li><a href="module-visual.TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="module-visual.TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextStim.html#getBoundingBox">getBoundingBox</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li></li><li></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#.addInfoFromUrl">addInfoFromUrl</a></li><li data-type='method'><a href="module-util.html#.average">average</a></li><li data-type='method'><a href="module-util.html#.count">count</a></li><li data-type='method'><a href="module-util.html#.detectBrowser">detectBrowser</a></li><li data-type='method'><a href="module-util.html#.extensionFromMimeType">extensionFromMimeType</a></li><li data-type='method'><a href="module-util.html#.flattenArray">flattenArray</a></li><li data-type='method'><a href="module-util.html#.getDownloadSpeed">getDownloadSpeed</a></li><li data-type='method'><a href="module-util.html#.getErrorStack">getErrorStack</a></li><li data-type='method'><a href="module-util.html#.getPositionFromObject">getPositionFromObject</a></li><li data-type='method'><a href="module-util.html#.getRequestError">getRequestError</a></li><li data-type='method'><a href="module-util.html#.getUrlParameters">getUrlParameters</a></li><li data-type='method'><a href="module-util.html#.index">index</a></li><li data-type='method'><a href="module-util.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-util.html#.isInt">isInt</a></li><li data-type='method'><a href="module-util.html#.isNumeric">isNumeric</a></li><li data-type='method'><a href="module-util.html#.IsPointInsidePolygon">IsPointInsidePolygon</a></li><li data-type='method'><a href="module-util.html#.makeUuid">makeUuid</a></li><li data-type='method'><a href="module-util.html#.offerDataForDownload">offerDataForDownload</a></li><li data-type='method'><a href="module-util.html#.promiseToTupple">promiseToTupple</a></li><li data-type='method'><a href="module-util.html#.randchoice">randchoice</a></li><li data-type='method'><a href="module-util.html#.randint">randint</a></li><li data-type='method'><a href="module-util.html#.range">range</a></li><li data-type='method'><a href="module-util.html#.round">round</a></li><li data-type='method'><a href="module-util.html#.selectFromArray">selectFromArray</a></li><li data-type='method'><a href="module-util.html#.shuffle">shuffle</a></li><li data-type='method'><a href="module-util.html#.sliceArray">sliceArray</a></li><li data-type='method'><a href="module-util.html#.sort">sort</a></li><li data-type='method'><a href="module-util.html#.sum">sum</a></li><li data-type='method'><a href="module-util.html#.to_height">to_height</a></li><li data-type='method'><a href="module-util.html#.to_norm">to_norm</a></li><li data-type='method'><a href="module-util.html#.to_pixiPoint">to_pixiPoint</a></li><li data-type='method'><a href="module-util.html#.to_px">to_px</a></li><li data-type='method'><a href="module-util.html#.to_unit">to_unit</a></li><li data-type='method'><a href="module-util.html#.to_win">to_win</a></li><li data-type='method'><a href="module-util.html#.toNumerical">toNumerical</a></li><li data-type='method'><a href="module-util.html#.toString">toString</a></li><li data-type='method'><a href="module-util.html#.turnSquareBracketsIntoArrays">turnSquareBracketsIntoArrays</a></li></ul></li><li><a href="module-visual.html">visual</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.SoundPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#stop">stop</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">data/TrialHandler.js</h1>
+    
 
     
 
@@ -37,18 +61,17 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import seedrandom from 'seedrandom';
-import * as XLSX from 'xlsx';
-import {PsychObject} from '../util/PsychObject';
-import * as util from '../util/Util';
+import seedrandom from "seedrandom";
+import * as XLSX from "xlsx";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
 
 /**
  * &lt;p>A Trial Handler handles the importing and sequencing of conditions.&lt;/p>
  *
  * @class
  * @extends PsychObject
- * @param {Object} options
+ * @param {Object} options - the handler options
  * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
  * @param {Array.&lt;Object> | String} [options.trialList= [undefined] ] - if it is a string, we treat it as the name of a condition resource
  * @param {number} options.nReps - number of repetitions
@@ -59,7 +82,6 @@ import * as util from '../util/Util';
  */
 export class TrialHandler extends PsychObject
 {
-
 	/**
 	 * Getter for experimentHandler.
 	 *
@@ -84,7 +106,6 @@ export class TrialHandler extends PsychObject
 		this._experimentHandler = exp;
 	}
 
-
 	/**
 	 * @constructor
 	 * @public
@@ -92,27 +113,27 @@ export class TrialHandler extends PsychObject
 	 * @todo extraInfo is not taken into account, we use the expInfo of the ExperimentHandler instead
 	 */
 	constructor({
-								psychoJS,
-								trialList = [undefined],
-								nReps,
-								method = TrialHandler.Method.RANDOM,
-								extraInfo = [],
-								seed,
-								name,
-								autoLog = true
-							} = {})
+		psychoJS,
+		trialList = [undefined],
+		nReps,
+		method = TrialHandler.Method.RANDOM,
+		extraInfo = [],
+		seed,
+		name,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('trialList', trialList);
-		this._addAttribute('nReps', nReps);
-		this._addAttribute('method', method);
-		this._addAttribute('extraInfo', extraInfo);
-		this._addAttribute('name', name);
-		this._addAttribute('autoLog', autoLog);
-		this._addAttribute('seed', seed);
-		this._prepareTrialList(trialList);
-		
+		this._addAttribute("trialList", trialList);
+		this._addAttribute("nReps", nReps);
+		this._addAttribute("method", method);
+		this._addAttribute("extraInfo", extraInfo);
+		this._addAttribute("name", name);
+		this._addAttribute("autoLog", autoLog);
+		this._addAttribute("seed", seed);
+		this._prepareTrialList();
+
 		// number of stimuli
 		this.nStim = this.trialList.length;
 
@@ -140,7 +161,6 @@ export class TrialHandler extends PsychObject
 		// array of current snapshots:
 		this._snapshots = [];
 
-
 		// setup the trial sequence:
 		this._prepareSequence();
 
@@ -149,17 +169,16 @@ export class TrialHandler extends PsychObject
 		this._finished = false;
 	}
 
-
 	/**
 	 * Helps go through each trial in the sequence one by one, mirrors PsychoPy.
 	 */
-	next() {
+	next()
+	{
 		const trialIterator = this[Symbol.iterator]();
 		const { value } = trialIterator.next();
 
 		return value;
 	}
-
 
 	/**
 	 * Iterator over the trial sequence.
@@ -196,7 +215,7 @@ export class TrialHandler extends PsychObject
 				if (this.thisRepN >= this.nReps)
 				{
 					this.thisTrial = null;
-					return {done: true};
+					return { done: true };
 				}
 
 				this.thisIndex = this._trialSequence[this.thisRepN][this.thisTrialN];
@@ -209,11 +228,10 @@ export class TrialHandler extends PsychObject
 					vals = (self.thisRepN, self.thisTrialN, self.thisTrial)
 					logging.exp(msg % vals, obj=self.thisTrial)*/
 
-				return {value: this.thisTrial, done: false};
-			}
+				return { value: this.thisTrial, done: false };
+			},
 		};
 	}
-
 
 	/**
 	 * Execute the callback for each trial in the sequence.
@@ -235,7 +253,6 @@ export class TrialHandler extends PsychObject
 			callback(result.value);
 		}
 	}
-
 
 	/**
 	 * @typedef {Object} Snapshot
@@ -281,12 +298,12 @@ export class TrialHandler extends PsychObject
 			getCurrentTrial: () => this.getTrial(currentIndex),
 			getTrial: (index = 0) => this.getTrial(index),
 
-			addData: (key, value) => this.addData(key, value)
+			addData: (key, value) => this.addData(key, value),
 		};
 
 		// add to the snapshots the current trial's attributes:
 		const currentTrial = this.getCurrentTrial();
-		const excludedAttributes = ['handler', 'name', 'nStim', 'nRemaining', 'thisRepN', 'thisTrialN', 'thisN', 'thisIndex', 'ran', 'finished'];
+		const excludedAttributes = ["handler", "name", "nStim", "nRemaining", "thisRepN", "thisTrialN", "thisN", "thisIndex", "ran", "finished"];
 		const trialAttributes = [];
 		for (const attribute in currentTrial)
 		{
@@ -299,15 +316,14 @@ export class TrialHandler extends PsychObject
 			{
 				this._psychoJS.logger.warn(`attempt to replace the value of protected TrialHandler variable: ${attribute}`);
 			}
-			snapshot.trialAttributes = trialAttributes;
 		}
+		snapshot.trialAttributes = trialAttributes;
 
 		// add the snapshot to the list:
 		this._snapshots.push(snapshot);
 
 		return snapshot;
 	}
-
 
 	/**
 	 * Setter for the seed attribute.
@@ -317,9 +333,9 @@ export class TrialHandler extends PsychObject
 	 */
 	setSeed(seed, log)
 	{
-		this._setAttribute('seed', seed, log);
+		this._setAttribute("seed", seed, log);
 
-		if (typeof seed !== 'undefined')
+		if (typeof seed !== "undefined")
 		{
 			this._randomNumberGenerator = seedrandom(seed);
 		}
@@ -328,7 +344,6 @@ export class TrialHandler extends PsychObject
 			this._randomNumberGenerator = seedrandom();
 		}
 	}
-
 
 	/**
 	 * Set the internal state of this trial handler from the given snapshot.
@@ -340,7 +355,7 @@ export class TrialHandler extends PsychObject
 	static fromSnapshot(snapshot)
 	{
 		// if snapshot is undefined, do nothing:
-		if (typeof snapshot === 'undefined')
+		if (typeof snapshot === "undefined")
 		{
 			return;
 		}
@@ -357,13 +372,22 @@ export class TrialHandler extends PsychObject
 
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
 
-		// add to the trial handler the snapshot's trial attributes:
+		// add the snapshot's trial attributes to a global variable, whose name is derived from
+		// that of the handler: loops -> thisLoop (note the dropped s):
+		let name = snapshot.name;
+		if (name[name.length - 1] === "s")
+		{
+			name = name.substr(0, name.length - 1);
+		}
+		name = `this${name[0].toUpperCase()}${name.substr(1)}`;
+
+		const value = {};
 		for (const attribute of snapshot.trialAttributes)
 		{
-			snapshot.handler[attribute] = snapshot[attribute];
+			value[attribute] = snapshot[attribute];
 		}
+		window[name] = value;
 	}
-
 
 	/**
 	 * Getter for the finished attribute.
@@ -375,7 +399,6 @@ export class TrialHandler extends PsychObject
 		return this._finished;
 	}
 
-
 	/**
 	 * Setter for the finished attribute.
 	 *
@@ -384,13 +407,12 @@ export class TrialHandler extends PsychObject
 	set finished(isFinished)
 	{
 		this._finished = isFinished;
-		
-		this._snapshots.forEach( snapshot =>
+
+		this._snapshots.forEach((snapshot) =>
 		{
 			snapshot.finished = isFinished;
 		});
 	}
-
 
 	/**
 	 * Get the trial index.
@@ -403,7 +425,6 @@ export class TrialHandler extends PsychObject
 		return this.thisIndex;
 	}
 
-
 	/**
 	 * Set the trial index.
 	 *
@@ -413,7 +434,6 @@ export class TrialHandler extends PsychObject
 	{
 		this.thisIndex = index;
 	}
-
 
 	/**
 	 * Get the attributes of the trials.
@@ -440,7 +460,6 @@ export class TrialHandler extends PsychObject
 		return Object.keys(this.trialList[0]);
 	}
 
-
 	/**
 	 * Get the current trial.
 	 *
@@ -451,7 +470,6 @@ export class TrialHandler extends PsychObject
 	{
 		return this.trialList[this.thisIndex];
 	}
-
 
 	/**
 	 * Get the nth trial.
@@ -468,7 +486,6 @@ export class TrialHandler extends PsychObject
 
 		return this.trialList[index];
 	}
-
 
 	/**
 	 * Get the nth future or past trial, without advancing through the trial list.
@@ -488,7 +505,6 @@ export class TrialHandler extends PsychObject
 		return this.trialList[this.thisIndex + n];
 	}
 
-
 	/**
 	 * Get the nth previous trial.
 	 * &lt;p> Note: this is useful for comparisons in n-back tasks.&lt;/p>
@@ -501,7 +517,6 @@ export class TrialHandler extends PsychObject
 	{
 		return getFutureTrial(-abs(n));
 	}
-
 
 	/**
 	 * Add a key/value pair to data about the current trial held by the experiment handler
@@ -517,7 +532,6 @@ export class TrialHandler extends PsychObject
 			this._experimentHandler.addData(key, value);
 		}
 	}
-
 
 	/**
 	 * Import a list of conditions from a .xls, .xlsx, .odp, or .csv resource.
@@ -558,8 +572,8 @@ export class TrialHandler extends PsychObject
 	{
 		try
 		{
-			let resourceExtension = resourceName.split('.').pop();
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(resourceExtension) > -1)
+			const resourceExtension = resourceName.split(".").pop();
+			if (["csv", "odp", "xls", "xlsx"].indexOf(resourceExtension) > -1)
 			{
 				// (*) read conditions from resource:
 				const resourceValue = serverManager.getResource(resourceName, true);
@@ -568,20 +582,20 @@ export class TrialHandler extends PsychObject
 				// which is then read in as a string
 				const decodedResourceMaybe = new Uint8Array(resourceValue);
 				// Could be set to 'buffer' for ASCII .csv
-				const type = resourceExtension === 'csv' ? 'string' : 'array';
-				const decodedResource = type === 'string' ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
+				const type = resourceExtension === "csv" ? "string" : "array";
+				const decodedResource = type === "string" ? (new TextDecoder()).decode(decodedResourceMaybe) : decodedResourceMaybe;
 				const workbook = XLSX.read(decodedResource, { type });
 
 				// we consider only the first worksheet:
 				if (workbook.SheetNames.length === 0)
 				{
-					throw 'workbook should contain at least one worksheet';
+					throw "workbook should contain at least one worksheet";
 				}
 				const sheetName = workbook.SheetNames[0];
 				const worksheet = workbook.Sheets[sheetName];
 
 				// worksheet to array of arrays (the first array contains the fields):
-				const sheet = XLSX.utils.sheet_to_json(worksheet, {header: 1, blankrows: false});
+				const sheet = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false });
 				const fields = sheet.shift();
 
 				// (*) select conditions:
@@ -589,9 +603,9 @@ export class TrialHandler extends PsychObject
 
 				// (*) return the selected conditions as an array of 'object as map':
 				// [
-				// 		{field0: value0-0, field1: value0-1, ...}
-				//		{field0: value1-0, field1: value1-1, ...}
-				//		...
+				// {field0: value0-0, field1: value0-1, ...}
+				// {field0: value1-0, field1: value1-1, ...}
+				// ...
 				// ]
 				let trialList = new Array(selectedRows.length - 1);
 				for (let r = 0; r &lt; selectedRows.length; ++r)
@@ -614,7 +628,7 @@ export class TrialHandler extends PsychObject
 							value = arrayMaybe;
 						}
 
-						if (typeof value === 'string')
+						if (typeof value === "string")
 						{
 							const numberMaybe = Number.parseFloat(value);
 
@@ -626,7 +640,7 @@ export class TrialHandler extends PsychObject
 							else
 							{
 								// Parse doubly escaped line feeds
-								value = value.replace(/(\n)/g, '\n');
+								value = value.replace(/(\n)/g, "\n");
 							}
 						}
 
@@ -637,66 +651,61 @@ export class TrialHandler extends PsychObject
 
 				return trialList;
 			}
-
 			else
 			{
-				throw 'extension: ' + resourceExtension + ' currently not supported.';
+				throw "extension: " + resourceExtension + " currently not supported.";
 			}
 		}
 		catch (error)
 		{
 			throw {
-				origin: 'TrialHandler.importConditions',
+				origin: "TrialHandler.importConditions",
 				context: `when importing condition: ${resourceName}`,
-				error
+				error,
 			};
 		}
 	}
 
-
 	/**
 	 * Prepare the trial list.
 	 *
+	 * @function
 	 * @protected
-	 * @param {Array.&lt;Object> | String} trialList - a list of trials, or the name of a condition resource
+	 * @returns {void}
 	 */
-	_prepareTrialList(trialList)
+	_prepareTrialList()
 	{
 		const response = {
-			origin: 'TrialHandler._prepareTrialList',
-			context: 'when preparing the trial list'
+			origin: "TrialHandler._prepareTrialList",
+			context: "when preparing the trial list",
 		};
 
 		// we treat undefined trialList as a list with a single empty entry:
-		if (typeof trialList === 'undefined')
+		if (typeof this._trialList === "undefined")
 		{
 			this.trialList = [undefined];
 		}
-
 		// if trialList is an array, we make sure it is not empty:
-		else if (Array.isArray(trialList))
+		else if (Array.isArray(this._trialList))
 		{
-			if (trialList.length === 0)
+			if (this._trialList.length === 0)
 			{
 				this.trialList = [undefined];
 			}
 		}
-
 		// if trialList is a string, we treat it as the name of the condition resource:
-		else if (typeof trialList === 'string')
+		else if (typeof this._trialList === "string")
 		{
-			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, trialList);
+			this.trialList = TrialHandler.importConditions(this.psychoJS.serverManager, this._trialList);
 		}
-
 		// unknown type:
 		else
 		{
 			throw Object.assign(response, {
-				error: 'unable to prepare trial list: unknown type: ' + (typeof trialList)
+				error: `unable to prepare trial list: unknown type: ${(typeof this._trialList)}`
 			});
 		}
 	}
-
 
 	/*
 	 * Prepare the sequence of trials.
@@ -704,7 +713,7 @@ export class TrialHandler extends PsychObject
 	 * &lt;p>The returned sequence is a matrix (an array of arrays) of trial indices
 	 * with nStim columns and nReps rows. Note that this is the transpose of the
 	 * matrix return by PsychoPY.
-	 * 
+	 *
 	 * Example: with 3 trial and 5 repetitions, we get:
 	 *   - sequential:
 	 *      [[0 1 2]
@@ -727,21 +736,20 @@ export class TrialHandler extends PsychObject
 	_prepareSequence()
 	{
 		const response = {
-			origin: 'TrialHandler._prepareSequence',
-			context: 'when preparing a sequence of trials'
+			origin: "TrialHandler._prepareSequence",
+			context: "when preparing a sequence of trials",
 		};
 
-		// get an array of the indices of the elements of trialList :
+		// get an array of the indices of the elements of trialList:
 		const indices = Array.from(this.trialList.keys());
 
-		if (this.method === TrialHandler.Method.SEQUENTIAL)
+		if (this._method === TrialHandler.Method.SEQUENTIAL)
 		{
 			this._trialSequence = Array(this.nReps).fill(indices);
 			// transposed version:
-			//this._trialSequence = indices.reduce( (seq, e) => { seq.push( Array(this.nReps).fill(e) ); return seq; }, [] );
+			// this._trialSequence = indices.reduce( (seq, e) => { seq.push( Array(this.nReps).fill(e) ); return seq; }, [] );
 		}
-
-		else if (this.method === TrialHandler.Method.RANDOM)
+		else if (this._method === TrialHandler.Method.RANDOM)
 		{
 			this._trialSequence = [];
 			for (let i = 0; i &lt; this.nReps; ++i)
@@ -749,11 +757,10 @@ export class TrialHandler extends PsychObject
 				this._trialSequence.push(util.shuffle(indices.slice(), this._randomNumberGenerator));
 			}
 		}
-
-		else if (this.method === TrialHandler.Method.FULL_RANDOM)
+		else if (this._method === TrialHandler.Method.FULL_RANDOM)
 		{
 			// create a flat sequence with nReps repeats of indices:
-			let flatSequence = [];
+			const flatSequence = [];
 			for (let i = 0; i &lt; this.nReps; ++i)
 			{
 				flatSequence.push.apply(flatSequence, indices);
@@ -771,14 +778,12 @@ export class TrialHandler extends PsychObject
 		}
 		else
 		{
-			throw Object.assign(response, {error: 'unknown method'});
+			throw Object.assign(response, { error: "unknown method" });
 		}
 
 		return this._trialSequence;
 	}
-
 }
-
 
 /**
  * TrialHandler method
@@ -791,22 +796,22 @@ TrialHandler.Method = {
 	/**
 	 * Conditions are presented in the order they are given.
 	 */
-	SEQUENTIAL: Symbol.for('SEQUENTIAL'),
+	SEQUENTIAL: Symbol.for("SEQUENTIAL"),
 
 	/**
 	 * Conditions are shuffled within each repeat.
 	 */
-	RANDOM: Symbol.for('RANDOM'),
+	RANDOM: Symbol.for("RANDOM"),
 
 	/**
 	 * Conditions are fully randomised across all repeats.
 	 */
-	FULL_RANDOM: Symbol.for('FULL_RANDOM'),
+	FULL_RANDOM: Symbol.for("FULL_RANDOM"),
 
 	/**
 	 * Same as above, but named to reflect PsychoPy boileplate.
 	 */
-	FULLRANDOM: Symbol.for('FULL_RANDOM')
+	FULLRANDOM: Symbol.for("FULL_RANDOM"),
 };
 </code></pre>
         </article>
@@ -815,19 +820,23 @@ TrialHandler.Method = {
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Tue May 17 2022 14:04:03 GMT+0200 (Mitteleuropäische Sommerzeit) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

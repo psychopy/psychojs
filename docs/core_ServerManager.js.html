@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: core/ServerManager.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>core/ServerManager.js - PsychoJS API-Documentation</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: core/ServerManager.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="module-core.EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="module-core.EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="module-core.EventManager.html#keycode2w3c">keycode2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#pyglet2w3c">pyglet2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#stopMoveClock">stopMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#w3c2pyglet">w3c2pyglet</a></li></ul></li><li><a href="module-core.GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="module-core.GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="module-core.GUI.html#dialog">dialog</a></li><li data-type='method'><a href="module-core.GUI.html#DlgFromDict">DlgFromDict</a></li></ul></li><li><a href="module-core.Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="module-core.Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.Keyboard.html#includes">includes</a></li><li data-type='method'><a href="module-core.Keyboard.html#start">start</a></li><li data-type='method'><a href="module-core.Keyboard.html#stop">stop</a></li></ul></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="module-core.MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="module-core.MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="module-core.MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="module-core.MinimalStim.html#release">release</a></li><li data-type='method'><a href="module-core.MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="module-core.Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="module-core.Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="module-core.Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="module-core.Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="module-core.Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="module-core.Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a><ul class='methods'><li data-type='method'><a href="module-core.Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="module-core.Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#close">close</a></li><li data-type='method'><a href="module-core.Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="module-core.Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#monitorFramePeriod">monitorFramePeriod</a></li><li data-type='method'><a href="module-core.Window.html#render">render</a></li></ul></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="module-data.ExperimentHandler.html#_getLoopAttributes">_getLoopAttributes</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#save">save</a></li></ul></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="module-data.MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="module-data.QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="module-data.QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="module-data.QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="module-data.QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="module-data.QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="module-data.QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="module-data.QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="module-data.QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="module-data.QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#.fromSnapshot">fromSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#.importConditions">importConditions</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-sound.AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClip.html#download">download</a></li><li data-type='method'><a href="module-sound.AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#upload">upload</a></li></ul></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClipPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="module-sound.Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-sound.Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#download">download</a></li><li data-type='method'><a href="module-sound.Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#upload">upload</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TonePlayer.html#._initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TrackPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="module-util.Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="module-util.Clock.html#add">add</a></li><li data-type='method'><a href="module-util.Clock.html#reset">reset</a></li></ul></li><li><a href="module-util.Color.html">Color</a><ul class='methods'><li data-type='method'><a href="module-util.Color.html#.hex">hex</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb">hexToRgb</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb255">hexToRgb255</a></li><li data-type='method'><a href="module-util.Color.html#.int">int</a></li><li data-type='method'><a href="module-util.Color.html#.rgb">rgb</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255">rgb255</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToHex">rgb255ToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToInt">rgb255ToInt</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToHex">rgbToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToInt">rgbToInt</a></li><li data-type='method'><a href="module-util.Color.html#.toString">toString</a></li></ul></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="module-util.CountdownTimer.html#add">add</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="module-util.EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="module-util.EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="module-util.EventEmitter.html#off">off</a></li><li data-type='method'><a href="module-util.EventEmitter.html#on">on</a></li><li data-type='method'><a href="module-util.EventEmitter.html#once">once</a></li></ul></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="module-util.MonotonicClock.html#.getDate">getDate</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#.getDateStr">getDateStr</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getReferenceTime">getReferenceTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-visual.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#download">download</a></li><li data-type='method'><a href="module-visual.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-visual.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-visual.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-visual.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-visual.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-visual.Camera.html#start">start</a></li><li data-type='method'><a href="module-visual.Camera.html#stop">stop</a></li><li data-type='method'><a href="module-visual.Camera.html#upload">upload</a></li></ul></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="module-visual.FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#setCamera">setCamera</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#start">start</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#stop">stop</a></li></ul></li><li><a href="module-visual.Form.html">Form</a><ul class='methods'><li data-type='method'><a href="module-visual.Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="module-visual.Form.html#draw">draw</a></li><li data-type='method'><a href="module-visual.Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="module-visual.Form.html#getData">getData</a></li><li data-type='method'><a href="module-visual.Form.html#hide">hide</a></li><li data-type='method'><a href="module-visual.Form.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.Form.html#reset">reset</a></li></ul></li><li><a href="module-visual.ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="module-visual.Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="module-visual.Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="module-visual.Slider.html#recordRating">recordRating</a></li></ul></li><li><a href="module-visual.TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="module-visual.TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextBox.html#_getAnchor">_getAnchor</a></li></ul></li><li><a href="module-visual.TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="module-visual.TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextStim.html#getBoundingBox">getBoundingBox</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li></li><li></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#.addInfoFromUrl">addInfoFromUrl</a></li><li data-type='method'><a href="module-util.html#.average">average</a></li><li data-type='method'><a href="module-util.html#.count">count</a></li><li data-type='method'><a href="module-util.html#.detectBrowser">detectBrowser</a></li><li data-type='method'><a href="module-util.html#.extensionFromMimeType">extensionFromMimeType</a></li><li data-type='method'><a href="module-util.html#.flattenArray">flattenArray</a></li><li data-type='method'><a href="module-util.html#.getDownloadSpeed">getDownloadSpeed</a></li><li data-type='method'><a href="module-util.html#.getErrorStack">getErrorStack</a></li><li data-type='method'><a href="module-util.html#.getPositionFromObject">getPositionFromObject</a></li><li data-type='method'><a href="module-util.html#.getRequestError">getRequestError</a></li><li data-type='method'><a href="module-util.html#.getUrlParameters">getUrlParameters</a></li><li data-type='method'><a href="module-util.html#.index">index</a></li><li data-type='method'><a href="module-util.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-util.html#.isInt">isInt</a></li><li data-type='method'><a href="module-util.html#.isNumeric">isNumeric</a></li><li data-type='method'><a href="module-util.html#.IsPointInsidePolygon">IsPointInsidePolygon</a></li><li data-type='method'><a href="module-util.html#.makeUuid">makeUuid</a></li><li data-type='method'><a href="module-util.html#.offerDataForDownload">offerDataForDownload</a></li><li data-type='method'><a href="module-util.html#.promiseToTupple">promiseToTupple</a></li><li data-type='method'><a href="module-util.html#.randchoice">randchoice</a></li><li data-type='method'><a href="module-util.html#.randint">randint</a></li><li data-type='method'><a href="module-util.html#.range">range</a></li><li data-type='method'><a href="module-util.html#.round">round</a></li><li data-type='method'><a href="module-util.html#.selectFromArray">selectFromArray</a></li><li data-type='method'><a href="module-util.html#.shuffle">shuffle</a></li><li data-type='method'><a href="module-util.html#.sliceArray">sliceArray</a></li><li data-type='method'><a href="module-util.html#.sort">sort</a></li><li data-type='method'><a href="module-util.html#.sum">sum</a></li><li data-type='method'><a href="module-util.html#.to_height">to_height</a></li><li data-type='method'><a href="module-util.html#.to_norm">to_norm</a></li><li data-type='method'><a href="module-util.html#.to_pixiPoint">to_pixiPoint</a></li><li data-type='method'><a href="module-util.html#.to_px">to_px</a></li><li data-type='method'><a href="module-util.html#.to_unit">to_unit</a></li><li data-type='method'><a href="module-util.html#.to_win">to_win</a></li><li data-type='method'><a href="module-util.html#.toNumerical">toNumerical</a></li><li data-type='method'><a href="module-util.html#.toString">toString</a></li><li data-type='method'><a href="module-util.html#.turnSquareBracketsIntoArrays">turnSquareBracketsIntoArrays</a></li></ul></li><li><a href="module-visual.html">visual</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.SoundPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#stop">stop</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">core/ServerManager.js</h1>
+    
 
     
 
@@ -35,13 +59,13 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import { Howl } from 'howler';
-import {PsychoJS} from './PsychoJS';
-import {PsychObject} from '../util/PsychObject';
-import * as util from '../util/Util';
-import {ExperimentHandler} from "../data/ExperimentHandler";
-import {MonotonicClock} from "../util/Clock";
-
+import { Howl } from "howler";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { Clock, MonotonicClock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
+import { Scheduler } from "../util/Scheduler.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * &lt;p>This manager handles all communications between the experiment running in the participant's browser and the [pavlovia.org]{@link http://pavlovia.org} server, &lt;em>in an asynchronous manner&lt;/em>.&lt;/p>
@@ -56,7 +80,7 @@ import {MonotonicClock} from "../util/Clock";
  */
 export class ServerManager extends PsychObject
 {
-	/**
+	/****************************************************************************
 	 * Used to indicate to the ServerManager that all resources must be registered (and
 	 * subsequently downloaded)
 	 *
@@ -64,13 +88,12 @@ export class ServerManager extends PsychObject
 	 * @readonly
 	 * @public
 	 */
-	static ALL_RESOURCES = Symbol.for('ALL_RESOURCES');
-
+	static ALL_RESOURCES = Symbol.for("ALL_RESOURCES");
 
 	constructor({
-								psychoJS,
-								autoLog = false
-							} = {})
+		psychoJS,
+		autoLog = false,
+	} = {})
 	{
 		super(psychoJS);
 
@@ -79,20 +102,22 @@ export class ServerManager extends PsychObject
 
 		// resources is a map of &lt;name: string, { path: string, status: ResourceStatus, data: any }>
 		this._resources = new Map();
+		this._nbLoadedResources = 0;
+		this._setupPreloadQueue();
 
-		this._addAttribute('autoLog', autoLog);
-		this._addAttribute('status', ServerManager.Status.READY);
+
+		this._addAttribute("autoLog", autoLog);
+		this._addAttribute("status", ServerManager.Status.READY);
 	}
 
-
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.GetConfigurationPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.&lt;string, *>} [config] the configuration
 	 * @property {Object.&lt;string, *>} [error] an error message if we could not read the configuration file
 	 */
-	/**
+	/****************************************************************************
 	 * Read the configuration file for the experiment.
 	 *
 	 * @name module:core.ServerManager#getConfiguration
@@ -105,41 +130,40 @@ export class ServerManager extends PsychObject
 	getConfiguration(configURL)
 	{
 		const response = {
-			origin: 'ServerManager.getConfiguration',
-			context: 'when reading the configuration file: ' + configURL
+			origin: "ServerManager.getConfiguration",
+			context: "when reading the configuration file: " + configURL,
 		};
 
-		this._psychoJS.logger.debug('reading the configuration file: ' + configURL);
+		this._psychoJS.logger.debug("reading the configuration file: " + configURL);
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			jQuery.get(configURL, 'json')
+			jQuery.get(configURL, "json")
 				.done((config, textStatus) =>
 				{
 					// resolve({ ...response, config });
-					resolve(Object.assign(response, {config}));
+					resolve(Object.assign(response, { config }));
 				})
 				.fail((jqXHR, textStatus, errorThrown) =>
 				{
 					self.setStatus(ServerManager.Status.ERROR);
 
 					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error('error:', errorMsg);
+					console.error("error:", errorMsg);
 
-					reject(Object.assign(response, {error: errorMsg}));
+					reject(Object.assign(response, { error: errorMsg }));
 				});
 		});
 	}
 
-
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.OpenSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {string} [token] the session token
 	 * @property {Object.&lt;string, *>} [error] an error message if we could not open the session
 	 */
-	/**
+	/****************************************************************************
 	 * Open a session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#openSession
@@ -150,45 +174,47 @@ export class ServerManager extends PsychObject
 	openSession()
 	{
 		const response = {
-			origin: 'ServerManager.openSession',
-			context: 'when opening a session for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager.openSession",
+			context: "when opening a session for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.debug('opening a session for experiment: ' + this._psychoJS.config.experiment.fullpath);
+		this._psychoJS.logger.debug("opening a session for experiment: " + this._psychoJS.config.experiment.fullpath);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
 		// prepare POST query:
 		let data = {};
-		if (this._psychoJS._serverMsg.has('__pilotToken'))
+		if (this._psychoJS._serverMsg.has("__pilotToken"))
 		{
-			data.pilotToken = this._psychoJS._serverMsg.get('__pilotToken');
+			data.pilotToken = this._psychoJS._serverMsg.get("__pilotToken");
 		}
 
 		// query pavlovia server:
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL + '/api/v2/experiments/' + encodeURIComponent(self._psychoJS.config.experiment.fullpath) + '/sessions';
-			jQuery.post(url, data, null, 'json')
+			const url = this._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+				+ "/sessions";
+			jQuery.post(url, data, null, "json")
 				.done((data, textStatus) =>
 				{
-					if (!('token' in data))
+					if (!("token" in data))
 					{
 						self.setStatus(ServerManager.Status.ERROR);
-						reject(Object.assign(response, {error: 'unexpected answer from server: no token'}));
+						reject(Object.assign(response, { error: "unexpected answer from server: no token" }));
 						// reject({...response, error: 'unexpected answer from server: no token'});
 					}
-					if (!('experiment' in data))
+					if (!("experiment" in data))
 					{
 						self.setStatus(ServerManager.Status.ERROR);
 						// reject({...response, error: 'unexpected answer from server: no experiment'});
-						reject(Object.assign(response, {error: 'unexpected answer from server: no experiment'}));
+						reject(Object.assign(response, { error: "unexpected answer from server: no experiment" }));
 					}
 
 					self._psychoJS.config.session = {
 						token: data.token,
-						status: 'OPEN'
+						status: "OPEN",
 					};
 					self._psychoJS.config.experiment.status = data.experiment.status2;
 					self._psychoJS.config.experiment.saveFormat = Symbol.for(data.experiment.saveFormat);
@@ -197,7 +223,7 @@ export class ServerManager extends PsychObject
 					self._psychoJS.config.experiment.runMode = data.experiment.runMode;
 
 					// secret keys for various services, e.g. Google Speech API
-					if ('keys' in data.experiment)
+					if ("keys" in data.experiment)
 					{
 						self._psychoJS.config.experiment.keys = data.experiment.keys;
 					}
@@ -208,28 +234,27 @@ export class ServerManager extends PsychObject
 
 					self.setStatus(ServerManager.Status.READY);
 					// resolve({ ...response, token: data.token, status: data.status });
-					resolve(Object.assign(response, {token: data.token, status: data.status}));
+					resolve(Object.assign(response, { token: data.token, status: data.status }));
 				})
 				.fail((jqXHR, textStatus, errorThrown) =>
 				{
 					self.setStatus(ServerManager.Status.ERROR);
 
 					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error('error:', errorMsg);
+					console.error("error:", errorMsg);
 
-					reject(Object.assign(response, {error: errorMsg}));
+					reject(Object.assign(response, { error: errorMsg }));
 				});
 		});
 	}
 
-
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.CloseSessionPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.&lt;string, *>} [error] an error message if we could not close the session (e.g. if it has not previously been opened)
 	 */
-	/**
+	/****************************************************************************
 	 * Close the session for this experiment on the remote PsychoJS manager.
 	 *
 	 * @name module:core.ServerManager#closeSession
@@ -242,16 +267,18 @@ export class ServerManager extends PsychObject
 	async closeSession(isCompleted = false, sync = false)
 	{
 		const response = {
-			origin: 'ServerManager.closeSession',
-			context: 'when closing the session for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager.closeSession",
+			context: "when closing the session for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.debug('closing the session for experiment: ' + this._psychoJS.config.experiment.name);
+		this._psychoJS.logger.debug("closing the session for experiment: " + this._psychoJS.config.experiment.name);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
 		// prepare DELETE query:
-		const url = this._psychoJS.config.pavlovia.URL + '/api/v2/experiments/' + encodeURIComponent(this._psychoJS.config.experiment.fullpath) + '/sessions/' + this._psychoJS.config.session.token;
+		const url = this._psychoJS.config.pavlovia.URL
+			+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+			+ "/sessions/"  + this._psychoJS.config.session.token;
 
 		// synchronous query the pavlovia server:
 		if (sync)
@@ -262,7 +289,7 @@ export class ServerManager extends PsychObject
 			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 			request.send(JSON.stringify(data));
 			 */
-			/* This does not work in Chrome before of a CORS bug
+			/* This does not work in Chrome because of a CORS bug
 			await fetch(url, {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json;charset=UTF-8' },
@@ -272,9 +299,9 @@ export class ServerManager extends PsychObject
 			});
 			 */
 			const formData = new FormData();
-			formData.append('isCompleted', isCompleted);
-			navigator.sendBeacon(url + '/delete', formData);
-			this._psychoJS.config.session.status = 'CLOSED';
+			formData.append("isCompleted", isCompleted);
+			navigator.sendBeacon(url + "/delete", formData);
+			this._psychoJS.config.session.status = "CLOSED";
 		}
 		// asynchronously query the pavlovia server:
 		else
@@ -284,33 +311,32 @@ export class ServerManager extends PsychObject
 			{
 				jQuery.ajax({
 					url,
-					type: 'delete',
-					data: {isCompleted},
-					dataType: 'json'
+					type: "delete",
+					data: { isCompleted },
+					dataType: "json",
 				})
 					.done((data, textStatus) =>
 					{
 						self.setStatus(ServerManager.Status.READY);
-						self._psychoJS.config.session.status = 'CLOSED';
+						self._psychoJS.config.session.status = "CLOSED";
 
 						// resolve({ ...response, data });
-						resolve(Object.assign(response, {data}));
+						resolve(Object.assign(response, { data }));
 					})
 					.fail((jqXHR, textStatus, errorThrown) =>
 					{
 						self.setStatus(ServerManager.Status.ERROR);
 
 						const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-						console.error('error:', errorMsg);
+						console.error("error:", errorMsg);
 
-						reject(Object.assign(response, {error: errorMsg}));
+						reject(Object.assign(response, { error: errorMsg }));
 					});
 			});
 		}
 	}
 
-
-	/**
+	/****************************************************************************
 	 * Get the value of a resource.
 	 *
 	 * @name module:core.ServerManager#getResource
@@ -326,59 +352,99 @@ export class ServerManager extends PsychObject
 	getResource(name, errorIfNotDownloaded = false)
 	{
 		const response = {
-			origin: 'ServerManager.getResource',
-			context: 'when getting the value of resource: ' + name
+			origin: "ServerManager.getResource",
+			context: "when getting the value of resource: " + name,
 		};
 
 		const pathStatusData = this._resources.get(name);
 
-		if (typeof pathStatusData === 'undefined')
+		if (typeof pathStatusData === "undefined")
 		{
 			// throw { ...response, error: 'unknown resource' };
-			throw Object.assign(response, {error: 'unknown resource'});
+			throw Object.assign(response, { error: "unknown resource" });
 		}
 
 		if (errorIfNotDownloaded &amp;&amp; pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
 		{
 			throw Object.assign(response, {
-				error: name + ' is not available for use (yet), its current status is: ' +
-					util.toString(pathStatusData.status)
+				error: name + " is not available for use (yet), its current status is: "
+					+ util.toString(pathStatusData.status),
 			});
 		}
 
 		return pathStatusData.data;
 	}
 
-
-	/**
-	 * Get the status of a resource.
+	/****************************************************************************
+	 * Get the status of a single resource or the reduced status of an array of resources.
+	 *
+	 * &lt;p>If an array of resources is given, getResourceStatus returns a single, reduced status
+	 * that is the status furthest away from DOWNLOADED, with the status ordered as follow:
+	 * ERROR (furthest from DOWNLOADED), REGISTERED, DOWNLOADING, and DOWNLOADED&lt;/p>
+	 * &lt;p>For example, given three resources:
+	 * &lt;ul>
+	 *   &lt;li>if at least one of the resource status is ERROR, the reduced status is ERROR&lt;/li>
+	 *   &lt;li>if at least one of the resource status is DOWNLOADING, the reduced status is DOWNLOADING&lt;/li>
+	 *   &lt;li>if the status of all three resources is REGISTERED, the reduced status is REGISTERED&lt;/li>
+	 *   &lt;li>if the status of all three resources is DOWNLOADED, the reduced status is DOWNLOADED&lt;/li>
+	 * &lt;/ul>
+	 * &lt;/p>
 	 *
 	 * @name module:core.ServerManager#getResourceStatus
 	 * @function
 	 * @public
-	 * @param {string} name of the requested resource
-	 * @return {core.ServerManager.ResourceStatus} status of the resource
-	 * @throws {Object.&lt;string, *>} exception if no resource with that name has previously been registered
+	 * @param {string | string[]} names names of the resources whose statuses are requested
+	 * @return {core.ServerManager.ResourceStatus} status of the resource if there is only one, or reduced status otherwise
+	 * @throws {Object.&lt;string, *>} if at least one of the names is not that of a previously
+	 * 	registered resource
 	 */
-	getResourceStatus(name)
+	getResourceStatus(names)
 	{
 		const response = {
-			origin: 'ServerManager.getResourceStatus',
-			context: 'when getting the status of resource: ' + name
+			origin: "ServerManager.getResourceStatus",
+			context: `when getting the status of resource(s): ${JSON.stringify(names)}`,
 		};
 
-		const pathStatusData = this._resources.get(name);
-		if (typeof pathStatusData === 'undefined')
+		// sanity checks:
+		if (typeof names === 'string')
 		{
-			// throw { ...response, error: 'unknown resource' };
-			throw Object.assign(response, {error: 'unknown resource'});
+			names = [names];
+		}
+		if (!Array.isArray(names))
+		{
+			throw Object.assign(response, { error: "names should be either a string or an array of strings" });
+		}
+		const statusOrder = new Map([
+			[Symbol.keyFor(ServerManager.ResourceStatus.ERROR), 0],
+			[Symbol.keyFor(ServerManager.ResourceStatus.REGISTERED), 1],
+			[Symbol.keyFor(ServerManager.ResourceStatus.DOWNLOADING), 2],
+			[Symbol.keyFor(ServerManager.ResourceStatus.DOWNLOADED), 3]
+		]);
+		let reducedStatus = ServerManager.ResourceStatus.DOWNLOADED;
+		for (const name of names)
+		{
+			const pathStatusData = this._resources.get(name);
+
+			if (typeof pathStatusData === "undefined")
+			{
+				// throw { ...response, error: 'unknown resource' };
+				throw Object.assign(response, {
+					error: `unable to find a previously registered resource with name: ${name}`
+				});
+			}
+
+			// update the reduced status according to the order given by statusOrder:
+			if (statusOrder.get(Symbol.keyFor(pathStatusData.status)) &lt;
+				statusOrder.get(Symbol.keyFor(reducedStatus)))
+			{
+				reducedStatus = pathStatusData.status;
+			}
 		}
 
-		return pathStatusData.status;
+		return reducedStatus;
 	}
 
-
-	/**
+	/****************************************************************************
 	 * Set the resource manager status.
 	 *
 	 * @name module:core.ServerManager#setStatus
@@ -388,21 +454,19 @@ export class ServerManager extends PsychObject
 	setStatus(status)
 	{
 		const response = {
-			origin: 'ServerManager.setStatus',
-			context: 'when changing the status of the server manager to: ' + util.toString(status)
+			origin: "ServerManager.setStatus",
+			context: "when changing the status of the server manager to: " + util.toString(status),
 		};
 
 		// check status:
-		const statusKey = (typeof status === 'symbol') ? Symbol.keyFor(status) : null;
+		const statusKey = (typeof status === "symbol") ? Symbol.keyFor(status) : null;
 		if (!statusKey)
-		// throw { ...response, error: 'status must be a symbol' };
-		{
-			throw Object.assign(response, {error: 'status must be a symbol'});
+		{ // throw { ...response, error: 'status must be a symbol' };
+			throw Object.assign(response, { error: "status must be a symbol" });
 		}
 		if (!ServerManager.Status.hasOwnProperty(statusKey))
-		// throw { ...response, error: 'unknown status' };
-		{
-			throw Object.assign(response, {error: 'unknown status'});
+		{ // throw { ...response, error: 'unknown status' };
+			throw Object.assign(response, { error: "unknown status" });
 		}
 
 		this._status = status;
@@ -413,8 +477,7 @@ export class ServerManager extends PsychObject
 		return this._status;
 	}
 
-
-	/**
+	/****************************************************************************
 	 * Reset the resource manager status to ServerManager.Status.READY.
 	 *
 	 * @name module:core.ServerManager#resetStatus
@@ -427,8 +490,7 @@ export class ServerManager extends PsychObject
 		return this.setStatus(ServerManager.Status.READY);
 	}
 
-
-	/**
+	/****************************************************************************
 	 * Prepare resources for the experiment: register them with the server manager and possibly
 	 * start downloading them right away.
 	 *
@@ -442,18 +504,18 @@ export class ServerManager extends PsychObject
 	 * &lt;/ul>
 	 *
 	 * @name module:core.ServerManager#prepareResources
-	 * @param {Array.&lt;{name: string, path: string, download: boolean} | Symbol>} [resources=[]] - the list of resources
+	 * @param {String | Array.&lt;{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the list of resources or a single resource
 	 * @function
 	 * @public
 	 */
 	async prepareResources(resources = [])
 	{
 		const response = {
-			origin: 'ServerManager.prepareResources',
-			context: 'when preparing resources for experiment: ' + this._psychoJS.config.experiment.name
+			origin: "ServerManager.prepareResources",
+			context: "when preparing resources for experiment: " + this._psychoJS.config.experiment.name,
 		};
 
-		this._psychoJS.logger.debug('preparing resources for experiment: ' + this._psychoJS.config.experiment.name);
+		this._psychoJS.logger.debug("preparing resources for experiment: " + this._psychoJS.config.experiment.name);
 
 		try
 		{
@@ -462,19 +524,24 @@ export class ServerManager extends PsychObject
 			// register the resources:
 			if (resources !== null)
 			{
+				if (typeof resources === "string")
+				{
+					resources = [resources];
+				}
 				if (!Array.isArray(resources))
 				{
-					throw "resources should be an array of objects";
+					throw "resources should be either (a) a string or (b) an array of string or objects";
 				}
 
 				// whether all resources have been requested:
-				const allResources = (resources.length === 1 &amp;&amp; resources[0] === ServerManager.ALL_RESOURCES);
+				const allResources = (resources.length === 1 &amp;&amp;
+					resources[0] === ServerManager.ALL_RESOURCES);
 
 				// if the experiment is hosted on the pavlovia.org server and
 				// resources is [ServerManager.ALL_RESOURCES], then we register all the resources
 				// in the "resources" sub-directory
-				if (this._psychoJS.config.environment === ExperimentHandler.Environment.SERVER
-					&amp;&amp; allResources)
+				if (this._psychoJS.config.environment === ExperimentHandler.Environment.SERVER &amp;&amp;
+					allResources)
 				{
 					// list the resources from the resources directory of the experiment on the server:
 					const serverResponse = await this._listResources();
@@ -485,53 +552,66 @@ export class ServerManager extends PsychObject
 					{
 						if (!this._resources.has(name))
 						{
-							const path = serverResponse.resourceDirectory + '/' + name;
+							const path = serverResponse.resourceDirectory + "/" + name;
 							this._resources.set(name, {
 								status: ServerManager.ResourceStatus.REGISTERED,
 								path,
-								data: undefined
+								data: undefined,
 							});
-							this._psychoJS.logger.debug('registered resource:', name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 							resourcesToDownload.add(name);
 						}
 					}
 				}
-
 				// if the experiment is hosted locally (localhost) or if specific resources were given
 				// then we register those specific resources, if they have not been registered already
 				else
 				{
 					// we cannot ask for all resources to be registered locally, since we cannot list
 					// them:
-					if (this._psychoJS.config.environment === ExperimentHandler.Environment.LOCAL
-						&amp;&amp; allResources)
+					if (this._psychoJS.config.environment === ExperimentHandler.Environment.LOCAL &amp;&amp;
+						allResources)
 					{
 						throw "resources must be manually specified when the experiment is running locally: ALL_RESOURCES cannot be used";
 					}
 
-					for (let {name, path, download} of resources)
+					// convert those resources that are only a string to an object with name and path:
+					for (let r = 0; r &lt; resources.length; ++r)
+					{
+						const resource = resources[r];
+						if (typeof resource === "string")
+						{
+							resources[r] = {
+								name: resource,
+								path: resource,
+								download: true
+							}
+						}
+					}
+
+					for (let { name, path, download } of resources)
 					{
 						if (!this._resources.has(name))
 						{
 							// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 							// not hosted on pavlovia.org:
-							if ((path.toLowerCase().indexOf('www.') === 0 ||
-								path.toLowerCase().indexOf('http:') === 0 ||
-								path.toLowerCase().indexOf('https:') === 0) &amp;&amp;
-								(path.indexOf('pavlovia.org') === -1))
+							if ( (path.toLowerCase().indexOf("www.") === 0 ||
+									path.toLowerCase().indexOf("http:") === 0 ||
+									path.toLowerCase().indexOf("https:") === 0) &amp;&amp;
+								(path.indexOf("pavlovia.org") === -1) )
 							{
-								path = 'https://pavlovia.org/api/v2/proxy/' + path;
+								path = "https://pavlovia.org/api/v2/proxy/" + path;
 							}
 
 							this._resources.set(name, {
 								status: ServerManager.ResourceStatus.REGISTERED,
 								path,
-								data: undefined
+								data: undefined,
 							});
-							this._psychoJS.logger.debug('registered resource:', name, path);
+							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 
 							// download resources by default:
-							if (typeof download === 'undefined' || download)
+							if (typeof download === "undefined" || download)
 							{
 								resourcesToDownload.add(name);
 							}
@@ -540,19 +620,42 @@ export class ServerManager extends PsychObject
 				}
 			}
 
-			// download those registered resources for which download = true:
-			/*await*/ this._downloadResources(resourcesToDownload);
+			// download those registered resources for which download = true
+			// note: we return a Promise that will be resolved when all the resources are downloaded
+			if (resourcesToDownload.size === 0)
+			{
+				this.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOAD_COMPLETED,
+				});
+
+				return Promise.resolve();
+			}
+			else
+			{
+				return new Promise((resolve, reject) =>
+				{
+					const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
+					{
+						if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
+						{
+							this.off(ServerManager.Event.RESOURCE, uuid);
+							resolve();
+						}
+					});
+
+					this._downloadResources(resourcesToDownload);
+				});
+			}
 		}
 		catch (error)
 		{
-			console.log('error', error);
-			throw Object.assign(response, {error});
+			console.error("error", error);
+			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
 	}
 
-
-	/**
+	/****************************************************************************
 	 * Block the experiment until the specified resources have been downloaded.
 	 *
 	 * @name module:core.ServerManager#waitForResources
@@ -566,11 +669,11 @@ export class ServerManager extends PsychObject
 		this._waitForDownloadComponent = {
 			status: PsychoJS.Status.NOT_STARTED,
 			clock: new Clock(),
-			resources: new Set()
+			resources: new Set(),
 		};
 
 		const self = this;
-		return () =>
+		return async () =>
 		{
 			const t = self._waitForDownloadComponent.clock.getTime();
 
@@ -583,82 +686,84 @@ export class ServerManager extends PsychObject
 				// if resources is an empty array, we consider all registered resources:
 				if (resources.length === 0)
 				{
-					for (const [name, {status, path, data}] of this._resources)
+					for (const [name, { status, path, data }] of this._resources)
 					{
-						resources.append({ name, path });
+						resources.push({ name, path });
 					}
 				}
 
-				// only download those resources not already downloaded or downloading:
+				// only download those resources not already downloaded and not downloading:
 				const resourcesToDownload = new Set();
-				for (let {name, path} of resources)
+				for (let { name, path } of resources)
 				{
 					// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 					// not hosted on pavlovia.org:
-					if ( (path.toLowerCase().indexOf('www.') === 0 ||
-						path.toLowerCase().indexOf('http:') === 0 ||
-						path.toLowerCase().indexOf('https:') === 0) &amp;&amp;
-						(path.indexOf('pavlovia.org') === -1) )
+					if (
+						(path.toLowerCase().indexOf("www.") === 0
+							|| path.toLowerCase().indexOf("http:") === 0
+							|| path.toLowerCase().indexOf("https:") === 0)
+						&amp;&amp; (path.indexOf("pavlovia.org") === -1)
+					)
 					{
-						path = 'https://devlovia.org/api/v2/proxy/' + path;
+						path = "https://devlovia.org/api/v2/proxy/" + path;
 					}
 
 					const pathStatusData = this._resources.get(name);
 
 					// the resource has not been registered yet:
-					if (typeof pathStatusData === 'undefined')
+					if (typeof pathStatusData === "undefined")
 					{
 						self._resources.set(name, {
 							status: ServerManager.ResourceStatus.REGISTERED,
 							path,
-							data: undefined
+							data: undefined,
 						});
 						self._waitForDownloadComponent.resources.add(name);
 						resourcesToDownload.add(name);
-						self._psychoJS.logger.debug('registered resource:', name, path);
+						self._psychoJS.logger.debug("registered resource:", name, path);
 					}
 
 					// the resource has been registered but is not downloaded yet:
 					else if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
-						// else if (typeof pathStatusData.data === 'undefined')
-					{
+					{ // else if (typeof pathStatusData.data === 'undefined')
 						self._waitForDownloadComponent.resources.add(name);
 					}
-
 				}
+
+				self._waitForDownloadComponent.status = PsychoJS.Status.STARTED;
 
 				// start the download:
 				self._downloadResources(resourcesToDownload);
 			}
 
-			// check whether all resources have been downloaded:
-			for (const name of self._waitForDownloadComponent.resources)
+			if (self._waitForDownloadComponent.status === PsychoJS.Status.STARTED)
 			{
-				const pathStatusData = this._resources.get(name);
-
-				// the resource has not been downloaded yet: loop this component
-				if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
-					// if (typeof pathStatusData.data === 'undefined')
+				// check whether all resources have been downloaded:
+				for (const name of self._waitForDownloadComponent.resources)
 				{
-					return Scheduler.Event.FLIP_REPEAT;
+					const pathStatusData = this._resources.get(name);
+
+					// the resource has not been downloaded yet: loop this component
+					if (pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					{ // if (typeof pathStatusData.data === 'undefined')
+						return Scheduler.Event.FLIP_REPEAT;
+					}
 				}
+
+				// all resources have been downloaded: move to the next component:
+				self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
+				return Scheduler.Event.NEXT;
 			}
-
-			// all resources have been downloaded: move to the next component:
-			self._waitForDownloadComponent.status = PsychoJS.Status.FINISHED;
-			return Scheduler.Event.NEXT;
 		};
-
 	}
 
-
-	/**
+	/****************************************************************************
 	 * @typedef ServerManager.UploadDataPromise
 	 * @property {string} origin the calling method
 	 * @property {string} context the context
 	 * @property {Object.&lt;string, *>} [error] an error message if we could not upload the data
 	 */
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment data to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadData
@@ -673,24 +778,24 @@ export class ServerManager extends PsychObject
 	uploadData(key, value, sync = false)
 	{
 		const response = {
-			origin: 'ServerManager.uploadData',
-			context: 'when uploading participant\'s results for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager.uploadData",
+			context: "when uploading participant's results for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.debug('uploading data for experiment: ' + this._psychoJS.config.experiment.fullpath);
+		this._psychoJS.logger.debug("uploading data for experiment: " + this._psychoJS.config.experiment.fullpath);
 		this.setStatus(ServerManager.Status.BUSY);
 
-		const url = this._psychoJS.config.pavlovia.URL +
-			'/api/v2/experiments/' + encodeURIComponent(this._psychoJS.config.experiment.fullpath) +
-			'/sessions/' + this._psychoJS.config.session.token +
-			'/results';
+		const url = this._psychoJS.config.pavlovia.URL
+			+ "/api/v2/experiments/" + encodeURIComponent(this._psychoJS.config.experiment.fullpath)
+			+ "/sessions/" + this._psychoJS.config.session.token
+			+ "/results";
 
 		// synchronous query the pavlovia server:
 		if (sync)
 		{
 			const formData = new FormData();
-			formData.append('key', key);
-			formData.append('value', value);
+			formData.append("key", key);
+			formData.append("value", value);
 			navigator.sendBeacon(url, formData);
 		}
 		// asynchronously query the pavlovia server:
@@ -701,31 +806,29 @@ export class ServerManager extends PsychObject
 			{
 				const data = {
 					key,
-					value
+					value,
 				};
 
-				jQuery.post(url, data, null, 'json')
+				jQuery.post(url, data, null, "json")
 					.done((serverData, textStatus) =>
 					{
 						self.setStatus(ServerManager.Status.READY);
-						resolve(Object.assign(response, {serverData}));
+						resolve(Object.assign(response, { serverData }));
 					})
 					.fail((jqXHR, textStatus, errorThrown) =>
 					{
 						self.setStatus(ServerManager.Status.ERROR);
 
 						const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-						console.error('error:', errorMsg);
+						console.error("error:", errorMsg);
 
-						reject(Object.assign(response, {error: errorMsg}));
+						reject(Object.assign(response, { error: errorMsg }));
 					});
 			});
 		}
 	}
 
-
-
-	/**
+	/****************************************************************************
 	 * Asynchronously upload experiment logs to the pavlovia server.
 	 *
 	 * @name module:core.ServerManager#uploadLog
@@ -738,134 +841,190 @@ export class ServerManager extends PsychObject
 	uploadLog(logs, compressed = false)
 	{
 		const response = {
-			origin: 'ServerManager.uploadLog',
-			context: 'when uploading participant\'s log for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager.uploadLog",
+			context: "when uploading participant's log for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.debug('uploading server log for experiment: ' + this._psychoJS.config.experiment.fullpath);
+		this._psychoJS.logger.debug("uploading server log for experiment: " + this._psychoJS.config.experiment.fullpath);
 		this.setStatus(ServerManager.Status.BUSY);
 
 		// prepare the POST query:
 		const info = this.psychoJS.experiment.extraInfo;
-		const participant = ((typeof info.participant === 'string' &amp;&amp; info.participant.length > 0) ? info.participant : 'PARTICIPANT');
-		const experimentName = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
-		const datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
-		const filename = participant + '_' + experimentName + '_' + datetime + '.log';
+		const participant = ((typeof info.participant === "string" &amp;&amp; info.participant.length > 0) ? info.participant : "PARTICIPANT");
+		const experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
+		const datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
+		const filename = participant + "_" + experimentName + "_" + datetime + ".log";
 		const data = {
 			filename,
 			logs,
-			compressed
+			compressed,
 		};
 
 		// query the pavlovia server:
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			const url = self._psychoJS.config.pavlovia.URL +
-				'/api/v2/experiments/' + encodeURIComponent(self._psychoJS.config.experiment.fullpath) +
-				'/sessions/' + self._psychoJS.config.session.token +
-				'/logs';
+			const url = self._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + encodeURIComponent(self._psychoJS.config.experiment.fullpath)
+				+ "/sessions/" + self._psychoJS.config.session.token
+				+ "/logs";
 
-			jQuery.post(url, data, null, 'json')
+			jQuery.post(url, data, null, "json")
 				.done((serverData, textStatus) =>
 				{
 					self.setStatus(ServerManager.Status.READY);
-					resolve(Object.assign(response, {serverData}));
+					resolve(Object.assign(response, { serverData }));
 				})
 				.fail((jqXHR, textStatus, errorThrown) =>
 				{
 					self.setStatus(ServerManager.Status.ERROR);
 
 					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error('error:', errorMsg);
+					console.error("error:", errorMsg);
 
-					reject(Object.assign(response, {error: errorMsg}));
+					reject(Object.assign(response, { error: errorMsg }));
 				});
 		});
 	}
 
-
-
-	/**
-	 * Asynchronously upload audio data to the pavlovia server.
+	/****************************************************************************
+	 * Synchronously or asynchronously upload audio data to the pavlovia server.
 	 *
-	 * @name module:core.ServerManager#uploadAudio
+	 * @name module:core.ServerManager#uploadAudioVideo
 	 * @function
 	 * @public
-	 * @param {Blob} audioBlob - the audio blob to be uploaded
-	 * @param {string} tag - additional tag
+	 * @param @param {Object} options
+	 * @param {Blob} options.mediaBlob - the audio or video blob to be uploaded
+	 * @param {string} options.tag - additional tag
+	 * @param {boolean} [options.waitForCompletion=false] - whether or not to wait for completion
+	 * 	before returning
+	 * @param {boolean} [options.showDialog=false] - whether or not to open a dialog box to inform the participant to wait for the data to be uploaded to the server
+	 * @param {string} [options.dialogMsg="Please wait a few moments while the data is uploading to the server"] - default message informing the participant to wait for the data to be uploaded to the server
 	 * @returns {Promise&lt;ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudio(audioBlob, tag)
+	async uploadAudioVideo({mediaBlob, tag, waitForCompletion = false, showDialog = false, dialogMsg = "Please wait a few moments while the data is uploading to the server"})
 	{
 		const response = {
-			origin: 'ServerManager.uploadAudio',
-			context: 'when uploading audio data for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager.uploadAudio",
+			context: "when uploading media data for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
 		try
 		{
-			if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-				this._psychoJS.config.experiment.status !== 'RUNNING' ||
-				this._psychoJS._serverMsg.has('__pilotToken'))
+			if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+				|| this._psychoJS.config.experiment.status !== "RUNNING"
+				|| this._psychoJS._serverMsg.has("__pilotToken"))
 			{
-				throw 'audio recordings can only be uploaded to the server for experiments running on the server';
+				throw "media recordings can only be uploaded to the server for experiments running on the server";
 			}
 
-			this._psychoJS.logger.debug('uploading audio data for experiment: ' + this._psychoJS.config.experiment.fullpath);
+			this._psychoJS.logger.debug(`uploading media data for experiment: ${this._psychoJS.config.experiment.fullpath}`);
 			this.setStatus(ServerManager.Status.BUSY);
+
+			// open pop-up dialog:
+			if (showDialog)
+			{
+				this.psychoJS.gui.dialog({
+					warning: dialogMsg,
+					showOK: false,
+				});
+			}
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
-			const participant = ((typeof info.participant === 'string' &amp;&amp; info.participant.length > 0) ? info.participant : 'PARTICIPANT');
-			const experimentName = (typeof info.expName !== 'undefined') ? info.expName : this.psychoJS.config.experiment.name;
-			const datetime = ((typeof info.date !== 'undefined') ? info.date : MonotonicClock.getDateStr());
-			const filename = participant + '_' + experimentName + '_' + datetime + '_' + tag;
+			const participant = ((typeof info.participant === "string" &amp;&amp; info.participant.length > 0) ? info.participant : "PARTICIPANT");
+			const experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
+			const datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
+			const filename = participant + "_" + experimentName + "_" + datetime + "_" + tag;
 
 			const formData = new FormData();
-			formData.append('audio', audioBlob, filename);
+			formData.append("media", mediaBlob, filename);
 
-			const url = this._psychoJS.config.pavlovia.URL +
-				'/api/v2/experiments/' + this._psychoJS.config.gitlab.projectId +
-				'/sessions/' + this._psychoJS.config.session.token +
-				'/audio';
+			let url = this._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+				+ "/sessions/" + this._psychoJS.config.session.token
+				+ "/media";
 
-			// query the pavlovia server:
-			const response = await fetch(url, {
-				method: 'POST',
-				mode: 'cors', // no-cors, *cors, same-origin
-				cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-				credentials: 'same-origin', // include, *same-origin, omit
-				redirect: 'follow', // manual, *follow, error
-				referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-				body: formData
+			// query the server:
+			let response = await fetch(url, {
+				method: "POST",
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				redirect: "follow",
+				referrerPolicy: "no-referrer",
+				body: formData,
 			});
-			const jsonResponse = await response.json();
+			const postMediaResponse = await response.json();
+			this._psychoJS.logger.debug(`post media response: ${JSON.stringify(postMediaResponse)}`);
 
 			// deal with server errors:
 			if (!response.ok)
 			{
-				throw jsonResponse;
+				throw postMediaResponse;
+			}
+
+			// wait until the upload has completed:
+			if (waitForCompletion)
+			{
+				if (!("uploadToken" in postMediaResponse))
+				{
+					throw "incorrect server response: missing uploadToken";
+				}
+				const uploadToken = postMediaResponse['uploadToken'];
+
+				while (true)
+				{
+					// wait a bit:
+					await new Promise(r =>
+					{
+						setTimeout(r, 1000);
+					});
+
+					// check the status of the upload:
+					url = this._psychoJS.config.pavlovia.URL
+						+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+						+ "/sessions/" + this._psychoJS.config.session.token
+						+ "/media/" + uploadToken + "/status";
+
+					response = await fetch(url, {
+						method: "GET",
+						mode: "cors",
+						cache: "no-cache",
+						credentials: "same-origin",
+						redirect: "follow",
+						referrerPolicy: "no-referrer"
+					});
+					const checkStatusResponse = await response.json();
+					this._psychoJS.logger.debug(`check upload status response: ${JSON.stringify(checkStatusResponse)}`);
+
+					if (("status" in checkStatusResponse) &amp;&amp; checkStatusResponse["status"] === "COMPLETED")
+					{
+						break;
+					}
+				}
+			}
+
+			if (showDialog)
+			{
+				this.psychoJS.gui.closeDialog();
 			}
 
 			this.setStatus(ServerManager.Status.READY);
-			return jsonResponse;
+			return postMediaResponse;
 		}
 		catch (error)
 		{
 			this.setStatus(ServerManager.Status.ERROR);
 			console.error(error);
 
-			throw {...response, error};
+			throw { ...response, error };
 		}
-
 	}
 
-
-
-	/**
+	/****************************************************************************
 	 * List the resources available to the experiment.
-
+	 *
 	 * @name module:core.ServerManager#_listResources
 	 * @function
 	 * @private
@@ -873,49 +1032,51 @@ export class ServerManager extends PsychObject
 	_listResources()
 	{
 		const response = {
-			origin: 'ServerManager._listResourcesSession',
-			context: 'when listing the resources for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "ServerManager._listResourcesSession",
+			context: "when listing the resources for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.debug('listing the resources for experiment: ' +
-			this._psychoJS.config.experiment.fullpath);
+		this._psychoJS.logger.debug(
+			"listing the resources for experiment: "
+				+ this._psychoJS.config.experiment.fullpath,
+		);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
 		// prepare GET data:
 		const data = {
-			'token': this._psychoJS.config.session.token
+			"token": this._psychoJS.config.session.token,
 		};
 
 		// query pavlovia server:
 		const self = this;
 		return new Promise((resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL +
-				'/api/v2/experiments/' + encodeURIComponent(this._psychoJS.config.experiment.fullpath) +
-				'/resources';
+			const url = this._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + encodeURIComponent(this._psychoJS.config.experiment.fullpath)
+				+ "/resources";
 
-			jQuery.get(url, data, null, 'json')
+			jQuery.get(url, data, null, "json")
 				.done((data, textStatus) =>
 				{
-					if (!('resources' in data))
+					if (!("resources" in data))
 					{
 						self.setStatus(ServerManager.Status.ERROR);
 						// reject({ ...response, error: 'unexpected answer from server: no resources' });
-						reject(Object.assign(response, {error: 'unexpected answer from server: no resources'}));
+						reject(Object.assign(response, { error: "unexpected answer from server: no resources" }));
 					}
-					if (!('resourceDirectory' in data))
+					if (!("resourceDirectory" in data))
 					{
 						self.setStatus(ServerManager.Status.ERROR);
 						// reject({ ...response, error: 'unexpected answer from server: no resourceDirectory' });
-						reject(Object.assign(response, {error: 'unexpected answer from server: no resourceDirectory'}));
+						reject(Object.assign(response, { error: "unexpected answer from server: no resourceDirectory" }));
 					}
 
 					self.setStatus(ServerManager.Status.READY);
 					// resolve({ ...response, resources: data.resources, resourceDirectory: data.resourceDirectory });
 					resolve(Object.assign(response, {
 						resources: data.resources,
-						resourceDirectory: data.resourceDirectory
+						resourceDirectory: data.resourceDirectory,
 					}));
 				})
 				.fail((jqXHR, textStatus, errorThrown) =>
@@ -923,17 +1084,14 @@ export class ServerManager extends PsychObject
 					self.setStatus(ServerManager.Status.ERROR);
 
 					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error('error:', errorMsg);
+					console.error("error:", errorMsg);
 
-					reject(Object.assign(response, {error: errorMsg}));
+					reject(Object.assign(response, { error: errorMsg }));
 				});
 		});
-
 	}
 
-
-
-	/**
+	/****************************************************************************
 	 * Download the specified resources.
 	 *
 	 * &lt;p>Note: we use the [preloadjs library]{@link https://www.createjs.com/preloadjs}.&lt;/p>
@@ -943,172 +1101,99 @@ export class ServerManager extends PsychObject
 	 * @protected
 	 * @param {Set} resources - a set of names of previously registered resources
 	 */
-	_downloadResources(resources)
+	async _downloadResources(resources)
 	{
 		const response = {
-			origin: 'ServerManager._downloadResources',
-			context: 'when downloading resources for experiment: ' + this._psychoJS.config.experiment.name
+			origin: "ServerManager._downloadResources",
+			context: "when downloading resources for experiment: " + this._psychoJS.config.experiment.name,
 		};
 
-		this._psychoJS.logger.debug('downloading resources for experiment: ' + this._psychoJS.config.experiment.name);
+		this._psychoJS.logger.debug("downloading resources for experiment: " + this._psychoJS.config.experiment.name);
 
 		this.setStatus(ServerManager.Status.BUSY);
 		this.emit(ServerManager.Event.RESOURCE, {
 			message: ServerManager.Event.DOWNLOADING_RESOURCES,
-			count: resources.size
+			count: resources.size,
 		});
 
-		this._nbLoadedResources = 0;
-
-
-		// (*) set-up preload.js:
-		this._resourceQueue = new createjs.LoadQueue(true, '', true);
-
-		const self = this;
-
-		// the loading of a specific resource has started:
-		this._resourceQueue.addEventListener("filestart", event =>
-		{
-			const pathStatusData = self._resources.get(event.item.id);
-			pathStatusData.status =  ServerManager.ResourceStatus.DOWNLOADING;
-
-			self.emit(ServerManager.Event.RESOURCE, {
-				message: ServerManager.Event.DOWNLOADING_RESOURCE,
-				resource: event.item.id
-			});
-		});
-
-		// the loading of a specific resource has completed:
-		this._resourceQueue.addEventListener("fileload", event =>
-		{
-			const pathStatusData = self._resources.get(event.item.id);
-			pathStatusData.data = event.result;
-			pathStatusData.status =  ServerManager.ResourceStatus.DOWNLOADED;
-
-			++ self._nbLoadedResources;
-			self.emit(ServerManager.Event.RESOURCE, {
-				message: ServerManager.Event.RESOURCE_DOWNLOADED,
-				resource: event.item.id
-			});
-		});
-
-		// the loading of all given resources completed:
-		this._resourceQueue.addEventListener("complete", event =>
-		{
-			self._resourceQueue.close();
-			if (self._nbLoadedResources === resources.size)
-			{
-				self.setStatus(ServerManager.Status.READY);
-				self.emit(ServerManager.Event.RESOURCE, {
-					message: ServerManager.Event.DOWNLOAD_COMPLETED
-				});
-			}
-		});
-
-		// error: we throw an exception
-		this._resourceQueue.addEventListener("error", event =>
-		{
-			self.setStatus(ServerManager.Status.ERROR);
-			if (typeof event.item !== 'undefined')
-			{
-				const pathStatusData = self._resources.get(event.item.id);
-				pathStatusData.status =  ServerManager.ResourceStatus.ERROR;
-				throw Object.assign(response, {
-					error: 'unable to download resource: ' + event.item.id + ' (' + event.title + ')'
-				});
-			}
-			else
-			{
-				console.error(event);
-
-				if (event.title === 'FILE_LOAD_ERROR' &amp;&amp; typeof event.data !== 'undefined')
-				{
-					const id = event.data.id;
-					const title = event.data.src;
-
-					throw Object.assign(response, {
-						error: 'unable to download resource: ' + id + ' (' + title + ')'
-					});
-				}
-
-				else
-				{
-					throw Object.assign(response, {
-						error: 'unspecified download error'
-					});
-				}
-
-			}
-		});
-
-
-		// (*) dispatch resources to preload.js or howler.js based on extension:
-		let manifest = [];
+		// based on the resource extension either (a) add it to the preload manifest, (b) mark it for
+		// download by howler, or (c) add it to the document fonts
+		const preloadManifest = [];
 		const soundResources = new Set();
+		const fontResources = [];
 		for (const name of resources)
 		{
-			const nameParts = name.toLowerCase().split('.');
+			const nameParts = name.toLowerCase().split(".");
 			const extension = (nameParts.length > 1) ? nameParts.pop() : undefined;
 
 			// warn the user if the resource does not have any extension:
-			if (typeof extension === 'undefined')
+			if (typeof extension === "undefined")
 			{
 				this.psychoJS.logger.warn(`"${name}" does not appear to have an extension, which may negatively impact its loading. We highly recommend you add an extension.`);
 			}
 
 			const pathStatusData = this._resources.get(name);
-			if (typeof pathStatusData === 'undefined')
+			if (typeof pathStatusData === "undefined")
 			{
-				throw Object.assign(response, {error: name + ' has not been previously registered'});
+				throw Object.assign(response, { error: name + " has not been previously registered" });
 			}
 			if (pathStatusData.status !== ServerManager.ResourceStatus.REGISTERED)
 			{
-				throw Object.assign(response, {error: name + ' is already downloaded or is currently already downloading'});
+				throw Object.assign(response, { error: name + " is already downloaded or is currently already downloading" });
 			}
 
-			// preload.js with forced binary for xls and xlsx:
-			if (['csv', 'odp', 'xls', 'xlsx'].indexOf(extension) > -1)
+			const pathParts = pathStatusData.path.toLowerCase().split(".");
+			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
+
+			// preload.js with forced binary:
+			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
 			{
-				manifest.push(/*new createjs.LoadItem().set(*/{
+				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
 					type: createjs.Types.BINARY,
-					crossOrigin: 'Anonymous'
-				}/*)*/);
+					crossOrigin: "Anonymous",
+				} /*)*/);
 			}
-			/* ascii .csv are adequately handled in binary format
+
+			/* note: ascii .csv are adequately handled in binary format, no need to treat them separately
 			// forced text for .csv:
 			else if (['csv'].indexOf(resourceExtension) > -1)
 				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
 			*/
 
-			// sound files are loaded through howler.js:
-			else if (['mp3', 'mpeg', 'opus', 'ogg', 'oga', 'wav', 'aac', 'caf', 'm4a', 'weba', 'dolby', 'flac'].indexOf(extension) > -1)
+			// sound files:
+			else if (["mp3", "mpeg", "opus", "ogg", "oga", "wav", "aac", "caf", "m4a", "weba", "dolby", "flac"].indexOf(extension) > -1)
 			{
 				soundResources.add(name);
 
-				if (extension === 'wav')
+				if (extension === "wav")
 				{
 					this.psychoJS.logger.warn(`wav files are not supported by all browsers. We recommend you convert "${name}" to another format, e.g. mp3`);
 				}
 			}
 
-			// preload.js for the other extensions (download type decided by preload.js):
+			// font files
+			else if (["ttf", "otf", "woff", "woff2"].indexOf(pathExtension) > -1)
+			{
+				fontResources.push(name);
+			}
+
+			// all other extensions handled by preload.js (download type decided by preload.js):
 			else
 			{
-				manifest.push(/*new createjs.LoadItem().set(*/{
+				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
-					crossOrigin: 'Anonymous'
-				}/*)*/);
+					crossOrigin: "Anonymous",
+				} /*)*/);
 			}
 		}
 
-
-		// (*) start loading non-sound resources:
-		if (manifest.length > 0)
+		// start loading resources marked for preload.js:
+		if (preloadManifest.length > 0)
 		{
-			this._resourceQueue.loadManifest(manifest);
+			this._preloadQueue.loadManifest(preloadManifest);
 		}
 		else
 		{
@@ -1116,60 +1201,196 @@ export class ServerManager extends PsychObject
 			{
 				this.setStatus(ServerManager.Status.READY);
 				this.emit(ServerManager.Event.RESOURCE, {
-					message: ServerManager.Event.DOWNLOAD_COMPLETED});
+					message: ServerManager.Event.DOWNLOAD_COMPLETED,
+				});
 			}
 		}
 
+		// start loading fonts:
+		for (const name of fontResources)
+		{
+			const pathStatusData = this._resources.get(name);
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+			this.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.DOWNLOADING_RESOURCE,
+				resource: name,
+			});
 
-		// (*) prepare and start loading sound resources:
+			const pathExtension = pathStatusData.path.toLowerCase().split(".").pop();
+			try
+			{
+				const newFont = await new FontFace(name, `url('${pathStatusData.path}') format('${pathExtension}')`).load();
+				document.fonts.add(newFont);
+
+				++this._nbLoadedResources;
+
+				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				this.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.RESOURCE_DOWNLOADED,
+					resource: name,
+				});
+
+				if (this._nbLoadedResources === resources.size)
+				{
+					this.setStatus(ServerManager.Status.READY);
+					this.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
+				}
+			}
+			catch (error)
+			{
+				console.error(error);
+				this.setStatus(ServerManager.Status.ERROR);
+				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
+				throw Object.assign(response, {
+					error: `unable to download resource: ${name}: ${error}`
+				});
+			}
+		}
+
+		// start loading resources marked for howler.js:
+		const self = this;
 		for (const name of soundResources)
 		{
 			const pathStatusData = this._resources.get(name);
-			pathStatusData.status =  ServerManager.ResourceStatus.DOWNLOADING;
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
 			this.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.DOWNLOADING_RESOURCE,
-				resource: name
+				resource: name,
 			});
 			const howl = new Howl({
 				src: pathStatusData.path,
 				preload: false,
-				autoplay: false
+				autoplay: false,
 			});
 
-			howl.on('load', (event) =>
+			howl.on("load", (event) =>
 			{
-				++ self._nbLoadedResources;
+				++self._nbLoadedResources;
 				pathStatusData.data = howl;
 
-				pathStatusData.status =  ServerManager.ResourceStatus.DOWNLOADED;
+				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
 				self.emit(ServerManager.Event.RESOURCE, {
 					message: ServerManager.Event.RESOURCE_DOWNLOADED,
-					resource: name
+					resource: name,
 				});
 
 				if (self._nbLoadedResources === resources.size)
 				{
 					self.setStatus(ServerManager.Status.READY);
 					self.emit(ServerManager.Event.RESOURCE, {
-						message: ServerManager.Event.DOWNLOAD_COMPLETED});
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
 				}
 			});
 
-			howl.on('loaderror', (id, error) =>
+			howl.on("loaderror", (id, error) =>
 			{
 				// throw { ...response, error: 'unable to download resource: ' + name + ' (' + util.toString(error) + ')' };
-				throw Object.assign(response, {error: 'unable to download resource: ' + name + ' (' + util.toString(error) + ')'});
+				throw Object.assign(response, { error: "unable to download resource: " + name + " (" + util.toString(error) + ")" });
 			});
 
 			howl.load();
 		}
-
 	}
+
+	/****************************************************************************
+	 * Setup the preload.js queue, and the associated callbacks.
+	 *
+	 * @name module:core.ServerManager#_setupPreloadQueue
+	 * @function
+	 * @protected
+	 */
+	_setupPreloadQueue()
+	{
+		const response = {
+			origin: "ServerManager._setupPreloadQueue",
+			context: "when setting up a preload queue"
+		};
+
+		this._preloadQueue = new createjs.LoadQueue(true, "", true);
+
+		const self = this;
+
+		// the loading of a specific resource has started:
+		this._preloadQueue.addEventListener("filestart", (event) =>
+		{
+			const pathStatusData = self._resources.get(event.item.id);
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+
+			self.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.DOWNLOADING_RESOURCE,
+				resource: event.item.id,
+			});
+		});
+
+		// the loading of a specific resource has completed:
+		this._preloadQueue.addEventListener("fileload", (event) =>
+		{
+			const pathStatusData = self._resources.get(event.item.id);
+			pathStatusData.data = event.result;
+			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+
+			++self._nbLoadedResources;
+			self.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.RESOURCE_DOWNLOADED,
+				resource: event.item.id,
+			});
+		});
+
+		// the loading of all given resources completed:
+		this._preloadQueue.addEventListener("complete", (event) =>
+		{
+			self._preloadQueue.close();
+			if (self._nbLoadedResources === self._resources.size)
+			{
+				self.setStatus(ServerManager.Status.READY);
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOAD_COMPLETED,
+				});
+			}
+		});
+
+		// error: we throw an exception
+		this._preloadQueue.addEventListener("error", (event) =>
+		{
+			self.setStatus(ServerManager.Status.ERROR);
+			if (typeof event.item !== "undefined")
+			{
+				const pathStatusData = self._resources.get(event.item.id);
+				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
+				throw Object.assign(response, {
+					error: "unable to download resource: " + event.item.id + " (" + event.title + ")",
+				});
+			}
+			else
+			{
+				console.error(event);
+
+				if (event.title === "FILE_LOAD_ERROR" &amp;&amp; typeof event.data !== "undefined")
+				{
+					const id = event.data.id;
+					const title = event.data.src;
+
+					throw Object.assign(response, {
+						error: "unable to download resource: " + id + " (" + title + ")",
+					});
+				}
+				else
+				{
+					throw Object.assign(response, {
+						error: "unspecified download error",
+					});
+				}
+			}
+		});
+	}
+
 
 }
 
-
-/**
+/****************************************************************************
  * Server event
  *
  * &lt;p>A server event is emitted by the manager to inform its listeners of either a change of status, or of a resource related event (e.g. download started, download is completed).&lt;/p>
@@ -1183,36 +1404,35 @@ ServerManager.Event = {
 	/**
 	 * Event type: resource event
 	 */
-	RESOURCE: Symbol.for('RESOURCE'),
+	RESOURCE: Symbol.for("RESOURCE"),
 
 	/**
 	 * Event: resources have started to download
 	 */
-	DOWNLOADING_RESOURCES: Symbol.for('DOWNLOADING_RESOURCES'),
+	DOWNLOADING_RESOURCES: Symbol.for("DOWNLOADING_RESOURCES"),
 
 	/**
 	 * Event: a specific resource download has started
 	 */
-	DOWNLOADING_RESOURCE: Symbol.for('DOWNLOADING_RESOURCE'),
+	DOWNLOADING_RESOURCE: Symbol.for("DOWNLOADING_RESOURCE"),
 
 	/**
 	 * Event: a specific resource has been downloaded
 	 */
-	RESOURCE_DOWNLOADED: Symbol.for('RESOURCE_DOWNLOADED'),
+	RESOURCE_DOWNLOADED: Symbol.for("RESOURCE_DOWNLOADED"),
 
 	/**
 	 * Event: resources have all downloaded
 	 */
-	DOWNLOADS_COMPLETED: Symbol.for('DOWNLOAD_COMPLETED'),
+	DOWNLOADS_COMPLETED: Symbol.for("DOWNLOAD_COMPLETED"),
 
 	/**
 	 * Event type: status event
 	 */
-	STATUS: Symbol.for('STATUS')
+	STATUS: Symbol.for("STATUS"),
 };
 
-
-/**
+/****************************************************************************
  * Server status
  *
  * @name module:core.ServerManager#Status
@@ -1224,21 +1444,20 @@ ServerManager.Status = {
 	/**
 	 * The manager is ready.
 	 */
-	READY: Symbol.for('READY'),
+	READY: Symbol.for("READY"),
 
 	/**
 	 * The manager is busy, e.g. it is downloaded resources.
 	 */
-	BUSY: Symbol.for('BUSY'),
+	BUSY: Symbol.for("BUSY"),
 
 	/**
 	 * The manager has encountered an error, e.g. it was unable to download a resource.
 	 */
-	ERROR: Symbol.for('ERROR')
+	ERROR: Symbol.for("ERROR"),
 };
 
-
-/**
+/****************************************************************************
  * Resource status
  *
  * @name module:core.ServerManager#ResourceStatus
@@ -1248,24 +1467,24 @@ ServerManager.Status = {
  */
 ServerManager.ResourceStatus = {
 	/**
+	 * There was an error during downloading, or the resource is in an unknown state.
+	 */
+	ERROR: Symbol.for("ERROR"),
+
+	/**
 	 * The resource has been registered.
 	 */
-	REGISTERED: Symbol.for('REGISTERED'),
+	REGISTERED: Symbol.for("REGISTERED"),
 
 	/**
 	 * The resource is currently downloading.
 	 */
-	DOWNLOADING: Symbol.for('DOWNLOADING'),
+	DOWNLOADING: Symbol.for("DOWNLOADING"),
 
 	/**
 	 * The resource has been downloaded.
 	 */
-	DOWNLOADED: Symbol.for('DOWNLOADED'),
-
-	/**
-	 * There was an error during downloading, or the resource is in an unknown state.
-	 */
-	ERROR: Symbol.for('ERROR'),
+	DOWNLOADED: Symbol.for("DOWNLOADED"),
 };
 </code></pre>
         </article>
@@ -1274,19 +1493,23 @@ ServerManager.ResourceStatus = {
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Tue May 17 2022 14:04:03 GMT+0200 (Mitteleuropäische Sommerzeit) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

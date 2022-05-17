@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Class: VisualStim</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>VisualStim - PsychoJS API-Documentation</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Class: VisualStim</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="module-core.EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="module-core.EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="module-core.EventManager.html#keycode2w3c">keycode2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#pyglet2w3c">pyglet2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#stopMoveClock">stopMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#w3c2pyglet">w3c2pyglet</a></li></ul></li><li><a href="module-core.GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="module-core.GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="module-core.GUI.html#dialog">dialog</a></li><li data-type='method'><a href="module-core.GUI.html#DlgFromDict">DlgFromDict</a></li></ul></li><li><a href="module-core.Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="module-core.Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.Keyboard.html#includes">includes</a></li><li data-type='method'><a href="module-core.Keyboard.html#start">start</a></li><li data-type='method'><a href="module-core.Keyboard.html#stop">stop</a></li></ul></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="module-core.MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="module-core.MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="module-core.MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="module-core.MinimalStim.html#release">release</a></li><li data-type='method'><a href="module-core.MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="module-core.Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="module-core.Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="module-core.Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="module-core.Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="module-core.Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="module-core.Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a><ul class='methods'><li data-type='method'><a href="module-core.Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="module-core.Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#close">close</a></li><li data-type='method'><a href="module-core.Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="module-core.Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#monitorFramePeriod">monitorFramePeriod</a></li><li data-type='method'><a href="module-core.Window.html#render">render</a></li></ul></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="module-data.ExperimentHandler.html#_getLoopAttributes">_getLoopAttributes</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#save">save</a></li></ul></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="module-data.MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="module-data.QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="module-data.QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="module-data.QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="module-data.QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="module-data.QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="module-data.QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="module-data.QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="module-data.QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="module-data.QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#.fromSnapshot">fromSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#.importConditions">importConditions</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-sound.AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClip.html#download">download</a></li><li data-type='method'><a href="module-sound.AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#upload">upload</a></li></ul></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClipPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="module-sound.Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-sound.Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#download">download</a></li><li data-type='method'><a href="module-sound.Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#upload">upload</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TonePlayer.html#._initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TrackPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="module-util.Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="module-util.Clock.html#add">add</a></li><li data-type='method'><a href="module-util.Clock.html#reset">reset</a></li></ul></li><li><a href="module-util.Color.html">Color</a><ul class='methods'><li data-type='method'><a href="module-util.Color.html#.hex">hex</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb">hexToRgb</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb255">hexToRgb255</a></li><li data-type='method'><a href="module-util.Color.html#.int">int</a></li><li data-type='method'><a href="module-util.Color.html#.rgb">rgb</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255">rgb255</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToHex">rgb255ToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToInt">rgb255ToInt</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToHex">rgbToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToInt">rgbToInt</a></li><li data-type='method'><a href="module-util.Color.html#.toString">toString</a></li></ul></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="module-util.CountdownTimer.html#add">add</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="module-util.EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="module-util.EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="module-util.EventEmitter.html#off">off</a></li><li data-type='method'><a href="module-util.EventEmitter.html#on">on</a></li><li data-type='method'><a href="module-util.EventEmitter.html#once">once</a></li></ul></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="module-util.MonotonicClock.html#.getDate">getDate</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#.getDateStr">getDateStr</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getReferenceTime">getReferenceTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-visual.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#download">download</a></li><li data-type='method'><a href="module-visual.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-visual.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-visual.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-visual.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-visual.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-visual.Camera.html#start">start</a></li><li data-type='method'><a href="module-visual.Camera.html#stop">stop</a></li><li data-type='method'><a href="module-visual.Camera.html#upload">upload</a></li></ul></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="module-visual.FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#setCamera">setCamera</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#start">start</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#stop">stop</a></li></ul></li><li><a href="module-visual.Form.html">Form</a><ul class='methods'><li data-type='method'><a href="module-visual.Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="module-visual.Form.html#draw">draw</a></li><li data-type='method'><a href="module-visual.Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="module-visual.Form.html#getData">getData</a></li><li data-type='method'><a href="module-visual.Form.html#hide">hide</a></li><li data-type='method'><a href="module-visual.Form.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.Form.html#reset">reset</a></li></ul></li><li><a href="module-visual.ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="module-visual.Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="module-visual.Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="module-visual.Slider.html#recordRating">recordRating</a></li></ul></li><li><a href="module-visual.TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="module-visual.TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextBox.html#_getAnchor">_getAnchor</a></li></ul></li><li><a href="module-visual.TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="module-visual.TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextStim.html#getBoundingBox">getBoundingBox</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li></li><li></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#.addInfoFromUrl">addInfoFromUrl</a></li><li data-type='method'><a href="module-util.html#.average">average</a></li><li data-type='method'><a href="module-util.html#.count">count</a></li><li data-type='method'><a href="module-util.html#.detectBrowser">detectBrowser</a></li><li data-type='method'><a href="module-util.html#.extensionFromMimeType">extensionFromMimeType</a></li><li data-type='method'><a href="module-util.html#.flattenArray">flattenArray</a></li><li data-type='method'><a href="module-util.html#.getDownloadSpeed">getDownloadSpeed</a></li><li data-type='method'><a href="module-util.html#.getErrorStack">getErrorStack</a></li><li data-type='method'><a href="module-util.html#.getPositionFromObject">getPositionFromObject</a></li><li data-type='method'><a href="module-util.html#.getRequestError">getRequestError</a></li><li data-type='method'><a href="module-util.html#.getUrlParameters">getUrlParameters</a></li><li data-type='method'><a href="module-util.html#.index">index</a></li><li data-type='method'><a href="module-util.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-util.html#.isInt">isInt</a></li><li data-type='method'><a href="module-util.html#.isNumeric">isNumeric</a></li><li data-type='method'><a href="module-util.html#.IsPointInsidePolygon">IsPointInsidePolygon</a></li><li data-type='method'><a href="module-util.html#.makeUuid">makeUuid</a></li><li data-type='method'><a href="module-util.html#.offerDataForDownload">offerDataForDownload</a></li><li data-type='method'><a href="module-util.html#.promiseToTupple">promiseToTupple</a></li><li data-type='method'><a href="module-util.html#.randchoice">randchoice</a></li><li data-type='method'><a href="module-util.html#.randint">randint</a></li><li data-type='method'><a href="module-util.html#.range">range</a></li><li data-type='method'><a href="module-util.html#.round">round</a></li><li data-type='method'><a href="module-util.html#.selectFromArray">selectFromArray</a></li><li data-type='method'><a href="module-util.html#.shuffle">shuffle</a></li><li data-type='method'><a href="module-util.html#.sliceArray">sliceArray</a></li><li data-type='method'><a href="module-util.html#.sort">sort</a></li><li data-type='method'><a href="module-util.html#.sum">sum</a></li><li data-type='method'><a href="module-util.html#.to_height">to_height</a></li><li data-type='method'><a href="module-util.html#.to_norm">to_norm</a></li><li data-type='method'><a href="module-util.html#.to_pixiPoint">to_pixiPoint</a></li><li data-type='method'><a href="module-util.html#.to_px">to_px</a></li><li data-type='method'><a href="module-util.html#.to_unit">to_unit</a></li><li data-type='method'><a href="module-util.html#.to_win">to_win</a></li><li data-type='method'><a href="module-util.html#.toNumerical">toNumerical</a></li><li data-type='method'><a href="module-util.html#.toString">toString</a></li><li data-type='method'><a href="module-util.html#.turnSquareBracketsIntoArrays">turnSquareBracketsIntoArrays</a></li></ul></li><li><a href="module-visual.html">visual</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.SoundPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#stop">stop</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">VisualStim</h1>
+    
 
     
 
@@ -28,30 +52,87 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
+        <h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>
+        
+        VisualStim
+        </h2>
         
     
 </header>
 
 <article>
-    <div class="container-overview">
     
+        <div class="container-overview">
         
+            
 
     
 
-    
     <h4 class="name" id="VisualStim"><span class="type-signature"></span>new VisualStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Base class for all visual stimuli.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li>WindowMixin</li>
+        
+        </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Base class for all visual stimuli.</p>
 </div>
+
+
 
 
 
@@ -160,7 +241,7 @@
                 </td>
             
 
-            <td class="description last">the name used when logging messages from this stimulus</td>
+            <td class="description last"><p>the name used when logging messages from this stimulus</p></td>
         </tr>
 
     
@@ -195,7 +276,7 @@
                 </td>
             
 
-            <td class="description last">the associated Window</td>
+            <td class="description last"><p>the associated Window</p></td>
         </tr>
 
     
@@ -229,12 +310,12 @@
             
                 <td class="default">
                 
-                    "height"
+                    <code>"height"</code>
                 
                 </td>
             
 
-            <td class="description last">the units of the stimulus (e.g. for size, position, vertices)</td>
+            <td class="description last"><p>the units of the stimulus (e.g. for size, position, vertices)</p></td>
         </tr>
 
     
@@ -268,12 +349,12 @@
             
                 <td class="default">
                 
-                    0.0
+                    <code>0.0</code>
                 
                 </td>
             
 
-            <td class="description last">the orientation (in degrees)</td>
+            <td class="description last"><p>the orientation (in degrees)</p></td>
         </tr>
 
     
@@ -307,12 +388,12 @@
             
                 <td class="default">
                 
-                    1.0
+                    <code>1.0</code>
                 
                 </td>
             
 
-            <td class="description last">the opacity</td>
+            <td class="description last"><p>the opacity</p></td>
         </tr>
 
     
@@ -346,12 +427,12 @@
             
                 <td class="default">
                 
-                    0
+                    <code>0</code>
                 
                 </td>
             
 
-            <td class="description last">the depth (i.e. the z order)</td>
+            <td class="description last"><p>the depth (i.e. the z order)</p></td>
         </tr>
 
     
@@ -385,12 +466,12 @@
             
                 <td class="default">
                 
-                    [0, 0]
+                    <code>[0, 0]</code>
                 
                 </td>
             
 
-            <td class="description last">the position of the center of the stimulus</td>
+            <td class="description last"><p>the position of the center of the stimulus</p></td>
         </tr>
 
     
@@ -424,12 +505,12 @@
             
                 <td class="default">
                 
-                    1.0
+                    <code>1.0</code>
                 
                 </td>
             
 
-            <td class="description last">the size</td>
+            <td class="description last"><p>the size</p></td>
         </tr>
 
     
@@ -463,12 +544,12 @@
             
                 <td class="default">
                 
-                    null
+                    <code>null</code>
                 
                 </td>
             
 
-            <td class="description last">the clip mask</td>
+            <td class="description last"><p>the clip mask</p></td>
         </tr>
 
     
@@ -502,12 +583,12 @@
             
                 <td class="default">
                 
-                    false
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">whether or not the stimulus should be automatically drawn on every frame flip</td>
+            <td class="description last"><p>whether or not the stimulus should be automatically drawn on every frame flip</p></td>
         </tr>
 
     
@@ -541,12 +622,12 @@
             
                 <td class="default">
                 
-                    false
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">whether or not to log</td>
+            <td class="description last"><p>whether or not to log</p></td>
         </tr>
 
     
@@ -565,75 +646,22 @@
 
 
 
-<dl class="details">
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-        <dt class="mixes">Mixes In:</dt>
 
-        <dd class="mixes"><ul>
+
+
+
+
+
         
-            <li>WindowMixin</li>
-        
-        </ul></dd>
+        </div>
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line17">line 17</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
 
     
         <h3 class="subsection-title">Extends</h3>
@@ -651,10 +679,10 @@
     
 
     
-
+    
     
 
-    
+     
 
     
 
@@ -668,46 +696,13 @@
 
 
 
-<div class="description">
-    Determine whether an object is inside the bounding box of the stimulus.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line191">line 191</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line180">line 180</a>
     </li></ul></dd>
     
 
@@ -716,7 +711,41 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Determine whether an object is inside the bounding box of the stimulus.</p>
+</div>
+
+
 
 
 
@@ -730,48 +759,13 @@
 
 
 
-<div class="description">
-    Force a refresh of the stimulus.
-
-refresh() is called, in particular, when the Window is resized.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line97">line 97</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -780,7 +774,42 @@ refresh() is called, in particular, when the Window is resized.
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Force a refresh of the stimulus.</p>
+<p>refresh() is called, in particular, when the Window is resized.</p>
+</div>
+
+
 
 
 
@@ -794,46 +823,13 @@ refresh() is called, in particular, when the Window is resized.
 
 
 
-<div class="description">
-    Setter for the orientation attribute.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line142">line 142</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line133">line 133</a>
     </li></ul></dd>
     
 
@@ -842,7 +838,41 @@ refresh() is called, in particular, when the Window is resized.
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for the orientation attribute.</p>
+</div>
+
+
 
 
 
@@ -856,46 +886,13 @@ refresh() is called, in particular, when the Window is resized.
 
 
 
-<div class="description">
-    Setter for the position attribute.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line166">line 166</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line157">line 157</a>
     </li></ul></dd>
     
 
@@ -904,7 +901,41 @@ refresh() is called, in particular, when the Window is resized.
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for the position attribute.</p>
+</div>
+
+
 
 
 
@@ -918,46 +949,13 @@ refresh() is called, in particular, when the Window is resized.
 
 
 
-<div class="description">
-    Setter for the size attribute.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line112">line 112</a>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line105">line 105</a>
     </li></ul></dd>
     
 
@@ -966,7 +964,41 @@ refresh() is called, in particular, when the Window is resized.
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for the size attribute.</p>
+</div>
+
+
 
 
 
@@ -984,16 +1016,59 @@ refresh() is called, in particular, when the Window is resized.
 
     
 
-    
     <h4 class="name" id="_estimateBoundingBox"><span class="type-signature">(protected) </span>_estimateBoundingBox<span class="signature">()</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Estimate the bounding box.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line207">line 207</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Estimate the bounding box.</p>
 </div>
 
 
@@ -1003,50 +1078,6 @@ refresh() is called, in particular, when the Window is resized.
 
 
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line220">line 220</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1072,18 +1103,64 @@ refresh() is called, in particular, when the Window is resized.
 
     
 
-    
     <h4 class="name" id="_onChange"><span class="type-signature">(protected) </span>_onChange<span class="signature">(withPixi<span class="signature-attributes">opt</span>, withBoundingBox<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Generate a callback that prepares updates to the stimulus.
-This is typically called in the constructor of a stimulus, when attributes are added with _addAttribute.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line262">line 262</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Generate a callback that prepares updates to the stimulus.
+This is typically called in the constructor of a stimulus, when attributes are added
+with _addAttribute.</p>
 </div>
+
+
 
 
 
@@ -1149,12 +1226,13 @@ This is typically called in the constructor of a stimulus, when attributes are a
             
                 <td class="default">
                 
-                    false
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">whether or not the PIXI representation must also be updated</td>
+            <td class="description last"><p>whether or not the PIXI representation must
+also be updated</p></td>
         </tr>
 
     
@@ -1188,62 +1266,19 @@ This is typically called in the constructor of a stimulus, when attributes are a
             
                 <td class="default">
                 
-                    false
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">whether or not to immediately estimate the bounding box</td>
+            <td class="description last"><p>whether or not to immediately estimate
+the bounding box</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line279">line 279</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1264,7 +1299,7 @@ This is typically called in the constructor of a stimulus, when attributes are a
         
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1280,23 +1315,64 @@ This is typically called in the constructor of a stimulus, when attributes are a
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="contains"><span class="type-signature">(protected) </span>contains<span class="signature">()</span><span class="type-signature"> &rarr; {PIXI.Rectangle}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the bounding box in pixel coordinates
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line223">line 223</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the bounding box in pixel coordinates</p>
 </div>
 
 
@@ -1308,48 +1384,6 @@ This is typically called in the constructor of a stimulus, when attributes are a
 
 
 
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_VisualStim.js.html">visual/VisualStim.js</a>, <a href="visual_VisualStim.js.html#line238">line 238</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1369,12 +1403,12 @@ This is typically called in the constructor of a stimulus, when attributes are a
 
         
 <div class="param-desc">
-    the bounding box, in pixel coordinates
+    <p>the bounding box, in pixel coordinates</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1387,8 +1421,6 @@ This is typically called in the constructor of a stimulus, when attributes are a
 </dl>
 
     
-
-
 
 
 
@@ -1405,19 +1437,23 @@ This is typically called in the constructor of a stimulus, when attributes are a
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Tue May 17 2022 14:04:03 GMT+0200 (Mitteleuropäische Sommerzeit) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

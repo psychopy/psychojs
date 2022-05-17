@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: sound/AudioClip.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>sound/AudioClip.js - PsychoJS API-Documentation</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: sound/AudioClip.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="module-core.EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="module-core.EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="module-core.EventManager.html#keycode2w3c">keycode2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#pyglet2w3c">pyglet2w3c</a></li><li data-type='method'><a href="module-core.EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#stopMoveClock">stopMoveClock</a></li><li data-type='method'><a href="module-core.EventManager.html#w3c2pyglet">w3c2pyglet</a></li></ul></li><li><a href="module-core.GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="module-core.GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="module-core.GUI.html#dialog">dialog</a></li><li data-type='method'><a href="module-core.GUI.html#DlgFromDict">DlgFromDict</a></li></ul></li><li><a href="module-core.Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="module-core.Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="module-core.Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="module-core.Keyboard.html#includes">includes</a></li><li data-type='method'><a href="module-core.Keyboard.html#start">start</a></li><li data-type='method'><a href="module-core.Keyboard.html#stop">stop</a></li></ul></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="module-core.MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="module-core.MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="module-core.MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="module-core.MinimalStim.html#release">release</a></li><li data-type='method'><a href="module-core.MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="module-core.Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="module-core.Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="module-core.Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="module-core.Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="module-core.Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="module-core.Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="module-core.Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a><ul class='methods'><li data-type='method'><a href="module-core.Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="module-core.Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#close">close</a></li><li data-type='method'><a href="module-core.Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#experimentHandler">experimentHandler</a></li><li data-type='method'><a href="module-core.Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="module-core.Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="module-core.Window.html#monitorFramePeriod">monitorFramePeriod</a></li><li data-type='method'><a href="module-core.Window.html#render">render</a></li></ul></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="module-data.ExperimentHandler.html#_getLoopAttributes">_getLoopAttributes</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#experimentEnded">experimentEnded</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="module-data.ExperimentHandler.html#save">save</a></li></ul></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="module-data.MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="module-data.MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="module-data.QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="module-data.QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="module-data.QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="module-data.QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="module-data.QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="module-data.QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="module-data.QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="module-data.QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="module-data.QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="module-data.QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#.fromSnapshot">fromSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#.importConditions">importConditions</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-sound.AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClip.html#download">download</a></li><li data-type='method'><a href="module-sound.AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="module-sound.AudioClip.html#upload">upload</a></li></ul></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.AudioClipPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="module-sound.Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-sound.Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#download">download</a></li><li data-type='method'><a href="module-sound.Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-sound.Microphone.html#upload">upload</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TonePlayer.html#._initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TonePlayer.html#stop">stop</a></li></ul></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.TrackPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="module-util.Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="module-util.Clock.html#add">add</a></li><li data-type='method'><a href="module-util.Clock.html#reset">reset</a></li></ul></li><li><a href="module-util.Color.html">Color</a><ul class='methods'><li data-type='method'><a href="module-util.Color.html#.hex">hex</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb">hexToRgb</a></li><li data-type='method'><a href="module-util.Color.html#.hexToRgb255">hexToRgb255</a></li><li data-type='method'><a href="module-util.Color.html#.int">int</a></li><li data-type='method'><a href="module-util.Color.html#.rgb">rgb</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255">rgb255</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToHex">rgb255ToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgb255ToInt">rgb255ToInt</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToHex">rgbToHex</a></li><li data-type='method'><a href="module-util.Color.html#.rgbToInt">rgbToInt</a></li><li data-type='method'><a href="module-util.Color.html#.toString">toString</a></li></ul></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="module-util.CountdownTimer.html#add">add</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="module-util.CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="module-util.EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="module-util.EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="module-util.EventEmitter.html#off">off</a></li><li data-type='method'><a href="module-util.EventEmitter.html#on">on</a></li><li data-type='method'><a href="module-util.EventEmitter.html#once">once</a></li></ul></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="module-util.MonotonicClock.html#.getDate">getDate</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#.getDateStr">getDateStr</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getReferenceTime">getReferenceTime</a></li><li data-type='method'><a href="module-util.MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-visual.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#download">download</a></li><li data-type='method'><a href="module-visual.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-visual.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-visual.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-visual.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-visual.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-visual.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-visual.Camera.html#start">start</a></li><li data-type='method'><a href="module-visual.Camera.html#stop">stop</a></li><li data-type='method'><a href="module-visual.Camera.html#upload">upload</a></li></ul></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="module-visual.FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#setCamera">setCamera</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#start">start</a></li><li data-type='method'><a href="module-visual.FaceDetector.html#stop">stop</a></li></ul></li><li><a href="module-visual.Form.html">Form</a><ul class='methods'><li data-type='method'><a href="module-visual.Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="module-visual.Form.html#draw">draw</a></li><li data-type='method'><a href="module-visual.Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="module-visual.Form.html#getData">getData</a></li><li data-type='method'><a href="module-visual.Form.html#hide">hide</a></li><li data-type='method'><a href="module-visual.Form.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.Form.html#reset">reset</a></li></ul></li><li><a href="module-visual.ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="module-visual.ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li></ul></li><li><a href="module-visual.Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="module-visual.Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="module-visual.Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="module-visual.Slider.html#recordRating">recordRating</a></li></ul></li><li><a href="module-visual.TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="module-visual.TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextBox.html#_getAnchor">_getAnchor</a></li></ul></li><li><a href="module-visual.TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="module-visual.TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.TextStim.html#getBoundingBox">getBoundingBox</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li></li><li></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#.addInfoFromUrl">addInfoFromUrl</a></li><li data-type='method'><a href="module-util.html#.average">average</a></li><li data-type='method'><a href="module-util.html#.count">count</a></li><li data-type='method'><a href="module-util.html#.detectBrowser">detectBrowser</a></li><li data-type='method'><a href="module-util.html#.extensionFromMimeType">extensionFromMimeType</a></li><li data-type='method'><a href="module-util.html#.flattenArray">flattenArray</a></li><li data-type='method'><a href="module-util.html#.getDownloadSpeed">getDownloadSpeed</a></li><li data-type='method'><a href="module-util.html#.getErrorStack">getErrorStack</a></li><li data-type='method'><a href="module-util.html#.getPositionFromObject">getPositionFromObject</a></li><li data-type='method'><a href="module-util.html#.getRequestError">getRequestError</a></li><li data-type='method'><a href="module-util.html#.getUrlParameters">getUrlParameters</a></li><li data-type='method'><a href="module-util.html#.index">index</a></li><li data-type='method'><a href="module-util.html#.isEmpty">isEmpty</a></li><li data-type='method'><a href="module-util.html#.isInt">isInt</a></li><li data-type='method'><a href="module-util.html#.isNumeric">isNumeric</a></li><li data-type='method'><a href="module-util.html#.IsPointInsidePolygon">IsPointInsidePolygon</a></li><li data-type='method'><a href="module-util.html#.makeUuid">makeUuid</a></li><li data-type='method'><a href="module-util.html#.offerDataForDownload">offerDataForDownload</a></li><li data-type='method'><a href="module-util.html#.promiseToTupple">promiseToTupple</a></li><li data-type='method'><a href="module-util.html#.randchoice">randchoice</a></li><li data-type='method'><a href="module-util.html#.randint">randint</a></li><li data-type='method'><a href="module-util.html#.range">range</a></li><li data-type='method'><a href="module-util.html#.round">round</a></li><li data-type='method'><a href="module-util.html#.selectFromArray">selectFromArray</a></li><li data-type='method'><a href="module-util.html#.shuffle">shuffle</a></li><li data-type='method'><a href="module-util.html#.sliceArray">sliceArray</a></li><li data-type='method'><a href="module-util.html#.sort">sort</a></li><li data-type='method'><a href="module-util.html#.sum">sum</a></li><li data-type='method'><a href="module-util.html#.to_height">to_height</a></li><li data-type='method'><a href="module-util.html#.to_norm">to_norm</a></li><li data-type='method'><a href="module-util.html#.to_pixiPoint">to_pixiPoint</a></li><li data-type='method'><a href="module-util.html#.to_px">to_px</a></li><li data-type='method'><a href="module-util.html#.to_unit">to_unit</a></li><li data-type='method'><a href="module-util.html#.to_win">to_win</a></li><li data-type='method'><a href="module-util.html#.toNumerical">toNumerical</a></li><li data-type='method'><a href="module-util.html#.toString">toString</a></li><li data-type='method'><a href="module-util.html#.turnSquareBracketsIntoArrays">turnSquareBracketsIntoArrays</a></li></ul></li><li><a href="module-visual.html">visual</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="module-sound.SoundPlayer.html#.accept">accept</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#play">play</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.SoundPlayer.html#stop">stop</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">sound/AudioClip.js</h1>
+    
 
     
 
@@ -27,7 +51,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * AudioClip encapsulate an audio recording.
+ * AudioClip encapsulates an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
  * @version 2021.2.0
@@ -35,14 +59,13 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {PsychObject} from '../util/PsychObject';
-import {PsychoJS} from '../core/PsychoJS';
-import {ExperimentHandler} from '../data/ExperimentHandler';
-import * as util from '../util/Util';
-
+import { PsychoJS } from "../core/PsychoJS.js";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
 
 /**
- * &lt;p>AudioClip encapsulate an audio recording.&lt;/p>
+ * &lt;p>AudioClip encapsulates an audio recording.&lt;/p>
  *
  * @name module:sound.AudioClip
  * @class
@@ -56,17 +79,19 @@ import * as util from '../util/Util';
  */
 export class AudioClip extends PsychObject
 {
-
-	constructor({psychoJS, name, sampleRateHz, format, data, autoLog} = {})
+	constructor({ psychoJS, name, sampleRateHz, format, data, autoLog } = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('name', name, 'audioclip');
-		this._addAttribute('format', format);
-		this._addAttribute('sampleRateHz', sampleRateHz);
-		this._addAttribute('data', data);
-		this._addAttribute('autoLog', false, autoLog);
-		this._addAttribute('status', AudioClip.Status.CREATED);
+		this._addAttribute("name", name, "audioclip");
+		this._addAttribute("format", format);
+		this._addAttribute("sampleRateHz", sampleRateHz);
+		this._addAttribute("data", data);
+		this._addAttribute("autoLog", false, autoLog);
+		this._addAttribute("status", AudioClip.Status.CREATED);
+
+		// add a volume attribute, for playback:
+		this._addAttribute("volume", 1.0);
 
 		if (this._autoLog)
 		{
@@ -77,6 +102,18 @@ export class AudioClip extends PsychObject
 		this._decodeAudio();
 	}
 
+	/**
+	 * Set the volume of the playback.
+	 *
+	 * @name module:sound.AudioClip#setVolume
+	 * @function
+	 * @public
+	 * @param {number} volume - the volume of the playback (must be between 0.0 and 1.0)
+	 */
+	setVolume(volume)
+	{
+		this._volume = volume;
+	}
 
 	/**
 	 * Start playing the audio clip.
@@ -87,22 +124,32 @@ export class AudioClip extends PsychObject
 	 */
 	async startPlayback()
 	{
-		this._psychoJS.logger.debug('request to play the audio clip');
+		this._psychoJS.logger.debug("request to play the audio clip");
 
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
-		// play the audio buffer:
-		if (!this._source)
-		{
-			this._source = this._audioContext.createBufferSource();
-		}
+		// note: we need to prepare the audio graph anew each time since, for instance, an
+		// AudioBufferSourceNode can only be played once
+		// ref: https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode
 
+		// create a source node from the in-memory audio data in _audioBuffer:
+		this._source = this._audioContext.createBufferSource();
 		this._source.buffer = this._audioBuffer;
-		this._source.connect(this._audioContext.destination);
+
+		// create a gain node, so we can control the volume:
+		this._gainNode = this._audioContext.createGain();
+
+		// connect the nodes:
+		this._source.connect(this._gainNode);
+		this._gainNode.connect(this._audioContext.destination);
+
+		// set the volume:
+		this._gainNode.gain.value = this._volume;
+
+		// start the playback:
 		this._source.start();
 	}
-
 
 	/**
 	 * Stop playing the audio clip.
@@ -110,12 +157,31 @@ export class AudioClip extends PsychObject
 	 * @name module:sound.AudioClip#startPlayback
 	 * @function
 	 * @public
+	 * @param {number} [fadeDuration = 17] - how long the fading out should last, in ms
 	 */
-	async stopPlayback()
+	async stopPlayback(fadeDuration = 17)
 	{
-		// TODO
+		// TODO deal with fade duration
+
+		// stop the playback:
+		this._source.stop();
 	}
 
+	/**
+	 * Get the duration of the audio clip, in seconds.
+	 *
+	 * @name module:sound.AudioClip#getDuration
+	 * @function
+	 * @public
+	 * @returns {Promise&lt;number>} the duration of the audio clip
+	 */
+	async getDuration()
+	{
+		// wait for the decoding to complete:
+		await this._decodeAudio();
+
+		return this._audioBuffer.duration;
+	}
 
 	/**
 	 * Upload the audio clip to the pavlovia server.
@@ -126,26 +192,28 @@ export class AudioClip extends PsychObject
 	 */
 	upload()
 	{
-		this._psychoJS.logger.debug('request to upload the audio clip to pavlovia.org');
+		this._psychoJS.logger.debug("request to upload the audio clip to pavlovia.org");
 
 		// add a format-dependent audio extension to the name:
 		const filename = this._name + util.extensionFromMimeType(this._format);
 
-
 		// if the audio recording cannot be uploaded, e.g. the experiment is running locally, or
 		// if it is piloting mode, then we offer the audio clip as a file for download:
-		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-			this._psychoJS.config.experiment.status !== 'RUNNING' ||
-			this._psychoJS._serverMsg.has('__pilotToken'))
+		if (
+			this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			|| this._psychoJS.config.experiment.status !== "RUNNING"
+			|| this._psychoJS._serverMsg.has("__pilotToken")
+		)
 		{
 			return this.download(filename);
 		}
 
 		// upload the data:
-		return this._psychoJS.serverManager.uploadAudio(this._data, filename);
+		return this._psychoJS.serverManager.uploadAudioVideo({
+			mediaBlob: this._data,
+			tag: filename
+		});
 	}
-
-
 
 	/**
 	 * Offer the audio clip to the participant as a sound file to download.
@@ -154,9 +222,9 @@ export class AudioClip extends PsychObject
 	 * @function
 	 * @public
 	 */
-	download(filename = 'audio.webm')
+	download(filename = "audio.webm")
 	{
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(this._data);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
@@ -164,21 +232,24 @@ export class AudioClip extends PsychObject
 		document.body.removeChild(anchor);
 	}
 
-
 	/**
 	 * Transcribe the audio clip.
 	 *
-	 * ref: https://cloud.google.com/speech-to-text/docs/reference/rest/v1/speech/recognize
-	 *
 	 * @param {Object} options
-	 * @param engine
+	 * @param {Symbol} options.engine - the speech-to-text engine
 	 * @param {String} options.languageCode - the BCP-47 language code for the recognition,
-	 * 	e.g. 'en-gb'
-	 * @return {Promise&lt;void>}
+	 * 	e.g. 'en-GB'
+	 * @return {Promise&lt;>} a promise resolving to the transcript and associated
+	 * 	transcription confidence
 	 */
-	async transcribe({engine, languageCode} = {})
+	async transcribe({ engine, languageCode } = {})
 	{
-		this._psychoJS.logger.debug('request to transcribe the audio clip');
+		const response = {
+			origin: "AudioClip.transcribe",
+			context: `when transcribing audio clip: ${this._name}`,
+		};
+
+		this._psychoJS.logger.debug(response);
 
 		// get the secret key from the experiment configuration:
 		const fullEngineName = `sound.AudioClip.Engine.${Symbol.keyFor(engine)}`;
@@ -190,19 +261,43 @@ export class AudioClip extends PsychObject
 				transcriptionKey = key.value;
 			}
 		}
-		if (typeof transcriptionKey === 'undefined')
+		if (typeof transcriptionKey === "undefined")
 		{
 			throw {
-				origin: 'AudioClip.transcribe',
-				context: `when transcribing audio clip: ${this._name}`,
-				error: `missing key for engine: ${fullEngineName}`
+				...response,
+				error: `missing key for engine: ${fullEngineName}`,
 			};
 		}
-
 
 		// wait for the decoding to complete:
 		await this._decodeAudio();
 
+		// dispatch on engine:
+		if (engine === AudioClip.Engine.GOOGLE)
+		{
+			return this._GoogleTranscribe(transcriptionKey, languageCode);
+		}
+		else
+		{
+			throw {
+				...response,
+				error: `unsupported speech-to-text engine: ${engine}`,
+			};
+		}
+	}
+
+	/**
+	 * Transcribe the audio clip using the Google Cloud Speech-To-Text Engine.
+	 *
+	 * ref: https://cloud.google.com/speech-to-text/docs/reference/rest/v1/speech/recognize
+	 *
+	 * @param {String} transcriptionKey - the secret key to the Google service
+	 * @param {String} languageCode - the BCP-47 language code for the recognition, e.g. 'en-GB'
+	 * @return {Promise&lt;>} a promise resolving to the transcript and associated
+	 * 	transcription confidence
+	 */
+	_GoogleTranscribe(transcriptionKey, languageCode)
+	{
 		return new Promise(async (resolve, reject) =>
 		{
 			// convert the Float32 PCM audio data to UInt16:
@@ -221,31 +316,31 @@ export class AudioClip extends PsychObject
 			// query the Google speech-to-text service:
 			const body = {
 				config: {
-					encoding: 'LINEAR16',
+					encoding: "LINEAR16",
 					sampleRateHertz: this._sampleRateHz,
-					languageCode
+					languageCode,
 				},
 				audio: {
-					content: base64Data
+					content: base64Data,
 				},
 			};
 
 			const url = `https://speech.googleapis.com/v1/speech:recognize?key=${transcriptionKey}`;
 
 			const response = await fetch(url, {
-				method: 'POST',
+				method: "POST",
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(body)
+				body: JSON.stringify(body),
 			});
 
 			// convert the response to json:
 			const decodedResponse = await response.json();
-			this._psychoJS.logger.debug('speech.googleapis.com response:', JSON.stringify(decodedResponse));
+			this._psychoJS.logger.debug("speech.googleapis.com response:", JSON.stringify(decodedResponse));
 
 			// TODO deal with more than one results and/or alternatives
-			if (('results' in decodedResponse) &amp;&amp; (decodedResponse.results.length > 0))
+			if (("results" in decodedResponse) &amp;&amp; (decodedResponse.results.length > 0))
 			{
 				resolve(decodedResponse.results[0].alternatives[0]);
 			}
@@ -253,23 +348,20 @@ export class AudioClip extends PsychObject
 			{
 				// no transcription available:
 				resolve({
-					transcript: '',
-					confidence: -1
+					transcript: "",
+					confidence: -1,
 				});
 			}
 		});
 	}
 
-
 	/**
 	 * Decode the formatted audio data (e.g. webm) into a 32bit float PCM audio buffer.
 	 *
-	 * @returns {Promise&lt;unknown>}
-	 * @private
 	 */
 	_decodeAudio()
 	{
-		this._psychoJS.logger.debug('request to decode the data of the audio clip');
+		this._psychoJS.logger.debug("request to decode the data of the audio clip");
 
 		// if the audio clip is ready, the PCM audio data is available in _audioData, a Float32Array:
 		if (this._status === AudioClip.Status.READY)
@@ -277,12 +369,11 @@ export class AudioClip extends PsychObject
 			return;
 		}
 
-
 		// if we are already decoding, wait until the process completed:
 		if (this._status === AudioClip.Status.DECODING)
 		{
 			const self = this;
-			return new Promise(function (resolve, reject)
+			return new Promise(function(resolve, reject)
 			{
 				self._decodingCallbacks.push(resolve);
 
@@ -290,16 +381,16 @@ export class AudioClip extends PsychObject
 			}.bind(this));
 		}
 
-
 		// otherwise, start decoding the input formatted audio data:
 		this._status = AudioClip.Status.DECODING;
 		this._audioData = null;
+		this._source = null;
+		this._gainNode = null;
 		this._decodingCallbacks = [];
 
 		this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
-			sampleRate: this._sampleRateHz
+			sampleRate: this._sampleRateHz,
 		});
-		this._source = null;
 
 		const reader = new window.FileReader();
 		reader.onloadend = async () =>
@@ -333,83 +424,83 @@ export class AudioClip extends PsychObject
 		reader.onerror = (error) =>
 		{
 			// TODO
-		}
+		};
 
 		reader.readAsArrayBuffer(this._data);
 	}
 
-
 	/**
 	 * Convert an array buffer to a base64 string.
 	 *
-	 * @note this is only very lightly adapted from the folowing post of @Grantlyk:
+	 * @note this is heavily inspired by the following post by @Grantlyk:
 	 * https://gist.github.com/jonleighton/958841#gistcomment-1953137
-	 *
-	 * the following only works for small buffers:
+	 * It is necessary since the following approach only works for small buffers:
 	 * const dataAsString = String.fromCharCode.apply(null, new Uint8Array(buffer));
 	 * base64Data = window.btoa(dataAsString);
 	 *
-	 * @param arrayBuffer
+	 * @param arrayBuffer - the input buffer
 	 * @return {string} the base64 encoded input buffer
 	 */
 	_base64ArrayBuffer(arrayBuffer)
 	{
-	let base64 = '';
-	const encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+		let base64 = "";
+		const encodings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-	const bytes = new Uint8Array(arrayBuffer);
-	const byteLength = bytes.byteLength;
-	const byteRemainder = byteLength % 3;
-	const mainLength = byteLength - byteRemainder;
+		const bytes = new Uint8Array(arrayBuffer);
+		const byteLength = bytes.byteLength;
+		const byteRemainder = byteLength % 3;
+		const mainLength = byteLength - byteRemainder;
 
-	let a;
-	let b;
-	let c;
-	let d;
-	let chunk;
+		let a;
+		let b;
+		let c;
+		let d;
+		let chunk;
 
-	// Main loop deals with bytes in chunks of 3
-	for (let i = 0; i &lt; mainLength; i += 3) {
-		// Combine the three bytes into a single integer
-		chunk = (bytes[i] &lt;&lt; 16) | (bytes[i + 1] &lt;&lt; 8) | bytes[i + 2];
+		// Main loop deals with bytes in chunks of 3
+		for (let i = 0; i &lt; mainLength; i += 3)
+		{
+			// Combine the three bytes into a single integer
+			chunk = (bytes[i] &lt;&lt; 16) | (bytes[i + 1] &lt;&lt; 8) | bytes[i + 2];
 
-		// Use bitmasks to extract 6-bit segments from the triplet
-		a = (chunk &amp; 16515072) >> 18; // 16515072 = (2^6 - 1) &lt;&lt; 18
-		b = (chunk &amp; 258048) >> 12; // 258048   = (2^6 - 1) &lt;&lt; 12
-		c = (chunk &amp; 4032) >> 6; // 4032     = (2^6 - 1) &lt;&lt; 6
-		d = chunk &amp; 63;        // 63       = 2^6 - 1
+			// Use bitmasks to extract 6-bit segments from the triplet
+			a = (chunk &amp; 16515072) >> 18; // 16515072 = (2^6 - 1) &lt;&lt; 18
+			b = (chunk &amp; 258048) >> 12; // 258048   = (2^6 - 1) &lt;&lt; 12
+			c = (chunk &amp; 4032) >> 6; // 4032     = (2^6 - 1) &lt;&lt; 6
+			d = chunk &amp; 63; // 63       = 2^6 - 1
 
-		// Convert the raw binary segments to the appropriate ASCII encoding
-		base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+			// Convert the raw binary segments to the appropriate ASCII encoding
+			base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+		}
+
+		// Deal with the remaining bytes and padding
+		if (byteRemainder === 1)
+		{
+			chunk = bytes[mainLength];
+
+			a = (chunk &amp; 252) >> 2; // 252 = (2^6 - 1) &lt;&lt; 2
+
+			// Set the 4 least significant bits to zero
+			b = (chunk &amp; 3) &lt;&lt; 4; // 3   = 2^2 - 1
+
+			base64 += `${encodings[a]}${encodings[b]}==`;
+		}
+		else if (byteRemainder === 2)
+		{
+			chunk = (bytes[mainLength] &lt;&lt; 8) | bytes[mainLength + 1];
+
+			a = (chunk &amp; 64512) >> 10; // 64512 = (2^6 - 1) &lt;&lt; 10
+			b = (chunk &amp; 1008) >> 4; // 1008  = (2^6 - 1) &lt;&lt; 4
+
+			// Set the 2 least significant bits to zero
+			c = (chunk &amp; 15) &lt;&lt; 2; // 15    = 2^4 - 1
+
+			base64 += `${encodings[a]}${encodings[b]}${encodings[c]}=`;
+		}
+
+		return base64;
 	}
-
-	// Deal with the remaining bytes and padding
-	if (byteRemainder === 1) {
-		chunk = bytes[mainLength];
-
-		a = (chunk &amp; 252) >> 2; // 252 = (2^6 - 1) &lt;&lt; 2
-
-		// Set the 4 least significant bits to zero
-		b = (chunk &amp; 3) &lt;&lt; 4; // 3   = 2^2 - 1
-
-		base64 += `${encodings[a]}${encodings[b]}==`;
-	} else if (byteRemainder === 2) {
-		chunk = (bytes[mainLength] &lt;&lt; 8) | bytes[mainLength + 1];
-
-		a = (chunk &amp; 64512) >> 10; // 64512 = (2^6 - 1) &lt;&lt; 10
-		b = (chunk &amp; 1008) >> 4; // 1008  = (2^6 - 1) &lt;&lt; 4
-
-		// Set the 2 least significant bits to zero
-		c = (chunk &amp; 15) &lt;&lt; 2; // 15    = 2^4 - 1
-
-		base64 += `${encodings[a]}${encodings[b]}${encodings[c]}=`;
-	}
-
-	return base64;
 }
-
-}
-
 
 /**
  * Recognition engines.
@@ -423,9 +514,8 @@ AudioClip.Engine = {
 	/**
 	 * Google Cloud Speech-to-Text.
 	 */
-	GOOGLE: Symbol.for('GOOGLE')
+	GOOGLE: Symbol.for("GOOGLE"),
 };
-
 
 /**
  * AudioClip status.
@@ -435,11 +525,11 @@ AudioClip.Engine = {
  * @public
  */
 AudioClip.Status = {
-	CREATED: Symbol.for('CREATED'),
+	CREATED: Symbol.for("CREATED"),
 
-	DECODING: Symbol.for('DECODING'),
+	DECODING: Symbol.for("DECODING"),
 
-	READY: Symbol.for('READY')
+	READY: Symbol.for("READY"),
 };
 </code></pre>
         </article>
@@ -448,19 +538,23 @@ AudioClip.Status = {
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a> on Tue May 17 2022 14:04:03 GMT+0200 (Mitteleuropäische Sommerzeit) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>
