@@ -57,6 +57,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
  *   frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  *
  * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
  * 	which must be updated when this Slider is updated, e.g. a Form.
@@ -97,10 +98,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			autoDraw,
 			autoLog,
 			dependentStims,
+			draggable
 		} = {},
 	)
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog, draggable });
 
 		this._needMarkerUpdate = false;
 

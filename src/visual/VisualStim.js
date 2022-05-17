@@ -31,10 +31,11 @@ import * as util from "../util/Util.js";
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
-	constructor({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog } = {})
+	constructor({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog, draggable } = {})
 	{
 		super({ win, name, autoDraw, autoLog });
 
@@ -77,6 +78,11 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			null,
 			this._onChange(false, false),
 		);
+		this._addAttribute("draggable", draggable, false);
+
+		// data needed to properly support drag and drop functionality
+		this._associatedPointerId = undefined;
+		this._initialPointerOffset = [0, 0];
 
 		// bounding box of the stimulus, in stimulus units
 		// note: boundingBox does not take the orientation into account
@@ -182,6 +188,52 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	}
 
 	/**
+	 * Setter for the draggable attribute.
+	 *
+	 * @name module:visual.VisualStim#setDraggable
+	 * @public
+	 * @param {boolean} [draggable=false] - whether or not to make stim draggable using mouse/touch/other pointer device
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setDraggable (draggable = false, log = false)
+	{
+		const hasChanged = this._setAttribute("draggable", draggable, log);
+		if (hasChanged)
+		{
+			if (draggable)
+			{
+				if ("onpointerdown" in document.documentElement)
+				{
+					this.addEventHandler("pointerdown", this._handlePointerDown.bind(this));
+					this.addEventHandler("pointerup", this._handlePointerUp.bind(this));
+					this.addEventHandler("pointermove", this._handlePointerMove.bind(this));
+				}
+				else if ("ontouchstart" in document.documentElement)
+				{
+					this.addEventHandler("touchstart", this._handleTouchStart.bind(this));
+					this.addEventHandler("touchend", this._handleTouchEnd.bind(this));
+					this.addEventHandler("touchmove", this._handleTouchMove.bind(this));
+				}
+			}
+			else
+			{
+				if ("onpointerdown" in document.documentElement)
+				{
+					this.removeEventHandler("pointerdown");
+					this.removeEventHandler("pointerup");
+					this.removeEventHandler("pointermove");
+				}
+				else if ("ontouchstart" in document.documentElement)
+				{
+					this.removeEventHandler("touchstart");
+					this.removeEventHandler("touchend");
+					this.removeEventHandler("touchmove");
+				}
+			}
+		}
+	}
+
+	/**
 	 * Determine whether an object is inside the bounding box of the stimulus.
 	 *
 	 * @name module:visual.VisualStim#contains
@@ -206,6 +258,149 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		// test for inclusion:
 		return this._getBoundingBox_px().contains(objectPos_px[0], objectPos_px[1]);
+	}
+
+	/**
+	 * Determine whether a point that is nown to have pixel dimensions is inside the bounding box of the stimulus.
+	 *
+	 * @name module:visual.VisualStim#containsPointPx
+	 * @public
+	 * @param {number[]} point_px - the point in pixels
+	 * @return {boolean} whether or not the object is inside the bounding box of the stimulus
+	 */
+	containsPointPx (point_px)
+	{
+		return this._getBoundingBox_px().contains(point_px[0], point_px[1]);
+	}
+
+	/**
+	 * Handler of pointerdown event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerDown
+	 * @private
+	 * @param {Object} e - pointerdown event data.
+	 */
+	_handlePointerDown (e)
+	{
+		if (e.busy)
+		{
+			return;
+		}
+		let relativePos = [];
+		relativePos[0] = e.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
+		relativePos[1] = -(e.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
+		if (this.containsPointPx(relativePos))
+		{
+			e.busy = true;
+			this._associatedPointerId = e.pointerId;
+			this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
+			this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
+			this.emit("pointerdown", e);
+		}
+	}
+
+	/**
+	 * Handler of pointerup event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerUp
+	 * @private
+	 * @param {Object} e - pointerup event data.
+	 */
+	_handlePointerUp (e)
+	{
+		if (e.pointerId === this._associatedPointerId)
+		{
+			this._associatedPointerId = undefined;
+			this._initialPointerOffset.fill(0);
+			this.emit("pointerup", e);
+		}
+	}
+
+	/**
+	 * Handler of pointermove event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerMove
+	 * @private
+	 * @param {Object} e - pointermove event data.
+	 */
+	_handlePointerMove (e)
+	{
+		if (e.pointerId === this._associatedPointerId)
+		{
+			let newPos = [];
+			newPos[0] = e.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
+			newPos[1] = -(e.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
+			this.setPos(newPos);
+			this.emit("pointermove", e);
+		}
+	}
+
+	/**
+	 * Handler of touchstart event.
+	 *
+	 * @name module:visual.VisualStim#_handleTouchStart
+	 * @private
+	 * @param {Object} e - touchstart event data.
+	 */
+	_handleTouchStart (e)
+	{
+		let i;
+		let relativePos = [];
+		for (i = 0; i < e.touchesArray.length; i++)
+		{
+			if (e.touchesArray[i].busy)
+			{
+				continue;
+			}
+			relativePos[0] = e.touchesArray[i].pos[0] - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
+			relativePos[1] = -(e.touchesArray[i].pos[1] - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
+			if (this.containsPointPx(relativePos))
+			{
+				e.touchesArray[i].busy = true;
+				this._associatedPointerId = e.touchesArray[i].id;
+				this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
+				this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
+				this.emit("touchstart", e);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Handler of touchend event.
+	 *
+	 * @name module:visual.VisualStim#_handleTouchEnd
+	 * @private
+	 * @param {Object} e - touchend event data.
+	 */
+	_handleTouchEnd (e)
+	{
+		if (e.touchesMap[this._associatedPointerId] === undefined)
+		{
+			this._associatedPointerId = undefined;
+			this.emit("touchend", e);
+		}
+	}
+
+	/**
+	 * Handler of touchmove event.
+	 *
+	 * @name module:visual.VisualStim#_handleTouchMove
+	 * @private
+	 * @param {Object} e - touchmove event data.
+	 */
+	_handleTouchMove (e) {
+		if (this._associatedPointerId !== undefined)
+		{
+			let newPos = [];
+			let touch = e.touchesMap[this._associatedPointerId];
+			if (touch !== undefined) {
+				newPos[0] = touch.pos[0] - this._win.size[0] * .5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
+				newPos[1] = -(touch.pos[1] - this._win.size[1] * .5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
+				this.setPos(newPos);
+				this.emit("touchmove", e);
+			}
+		}
 	}
 
 	/**

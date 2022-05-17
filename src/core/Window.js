@@ -387,6 +387,7 @@ export class Window extends PsychObject
 			if (this._renderer)
 			{
 				this._renderer.backgroundColor = this._color.int;
+				this._backgroundSprite.tint = this.color.int;
 			}
 
 			// we also change the background color of the body since
@@ -407,6 +408,7 @@ export class Window extends PsychObject
 	_refresh()
 	{
 		this._updateIfNeeded();
+		this._psychoJS.eventManager.update();
 
 		// if a stimuli needs to be updated, we remove it from the window container,
 		// update it, then put it back
@@ -508,6 +510,8 @@ export class Window extends PsychObject
 		this._resizeCallback = (e) =>
 		{
 			Window._resizePixiRenderer(this, e);
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
 			this._fullRefresh();
 		};
 		window.addEventListener("resize", this._resizeCallback);

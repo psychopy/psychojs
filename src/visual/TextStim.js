@@ -42,6 +42,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  *
  * @todo vertical alignment, and orientation are currently NOT implemented
  */
@@ -71,10 +72,11 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			clipMask,
 			autoDraw,
 			autoLog,
+			draggable
 		} = {},
 	)
 	{
-		super({ name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog, draggable });
 
 		// callback to deal with text metrics invalidation:
 		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>

@@ -49,6 +49,7 @@ export class MinimalStim extends PsychObject
 		);
 
 		this._needUpdate = false;
+		this._eventHandlers = {};
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
 
@@ -167,6 +168,92 @@ export class MinimalStim extends PsychObject
 	}
 
 	/**
+	 * Calls an appropriate event handler if it exists.
+	 *
+	 * @name module:core.MinimalStim#handleEvent
+	 * @function
+	 * @public
+	 * @param {String} eventName - name of event of interest
+	 * @param {Object} eventData - data that is used in actual event handling
+	 */
+	handleEvent (eventName, eventData)
+	{
+		if (typeof this._eventHandlers[eventName] === "function")
+		{
+			this._eventHandlers[eventName](eventData);
+		}
+	}
+
+	/**
+	 * Registers event handler in the stim and subscribes to listen to a specified event in the module:core.EventManager
+	 *
+	 * @name module:core.MinimalStim#addEventHandler
+	 * @function
+	 * @public
+	 * @param {String} eventName - name of event of interest
+	 * @param {function} handler - handler of event of interest
+	 */
+	addEventHandler (eventName, handler)
+	{
+		if (typeof handler !== "function" || typeof eventName !== "string")
+		{
+			return;
+		}
+		// this can be further extended to multiple handlers
+		this._eventHandlers[eventName] = handler;
+		this._win.psychoJS.eventManager.addEventSubscriber(eventName, this);
+	}
+
+	/**
+	 * Removes all event handlers for the specified event and unsubscribes from listening to it in the module:core.EventManager
+	 *
+	 * @name module:core.MinimalStim#removeEventHandler
+	 * @function
+	 * @public
+	 * @param {String} eventName - name of event of interest
+	 */
+	removeEventHandler (eventName)
+	{
+		if (typeof eventName !== "string")
+		{
+			return;
+		}
+		this._eventHandlers[eventName] = undefined;
+		this._win.psychoJS.eventManager.removeEventSubscriber(eventName, this);
+	}
+
+	/**
+	 * Removes all event handlers for all events and unsubscribes from listening to all events in the module:core.EventManager
+	 *
+	 * @name module:core.MinimalStim#removeEventHandler
+	 * @function
+	 * @public
+	 */
+	removeAllEventHandlers ()
+	{
+		this._eventHandlers = {};
+		this._win.psychoJS.eventManager.removeSubscriberFromAllEvents(this);
+	}
+
+	/**
+	 * Returns an index of _pixi in the parent container/array.
+	 *
+	 * @name module:core.MinimalStim#getPixiIndexInParentContainer
+	 * @function
+	 * @public
+	 * @return {number} an index of _pixi in the parent container/array
+	 */
+	getPixiIndexInParentContainer ()
+	{
+		if (this._pixi && this._pixi.parent)
+		{
+			return this._pixi.parent.getChildIndex(this._pixi);
+		}
+
+		return -1;
+	}
+
+	/**
 	 * Release the PIXI representation, if there is one.
 	 *
 	 * @name module:core.MinimalStim#release
@@ -179,6 +266,7 @@ export class MinimalStim extends PsychObject
 	{
 		this._setAttribute("autoDraw", false, log);
 		this.status = PsychoJS.Status.STOPPED;
+		this.removeAllEventHandlers();
 
 		if (typeof this._pixi !== "undefined")
 		{

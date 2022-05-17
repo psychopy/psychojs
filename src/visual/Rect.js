@@ -34,10 +34,31 @@ import { ShapeStim } from "./ShapeStim.js";
  * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 export class Rect extends ShapeStim
 {
-	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
+	constructor(
+	{
+		name,
+		win,
+		lineWidth,
+		lineColor,
+		fillColor,
+		opacity,
+		width,
+		height,
+		pos,
+		size,
+		ori,
+		units,
+		contrast,
+		depth,
+		interpolate,
+		autoDraw,
+		autoLog,
+		draggable
+	} = {})
 	{
 		super({
 			name,
@@ -55,6 +76,7 @@ export class Rect extends ShapeStim
 			interpolate,
 			autoDraw,
 			autoLog,
+			draggable
 		});
 
 		this._psychoJS.logger.debug("create a new Rect with name: ", name);

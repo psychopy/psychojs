@@ -50,6 +50,21 @@ export class EventManager
 			// clock reset when mouse is moved:
 			moveClock: new Clock(),
 		};
+
+		// storing touches in both map and array for fast search and fast access if touchID is known
+		this._touchInfo = {
+			touchesArray: [],
+			touchesMap: {}
+		};
+
+		this._eventSubscriptions = {
+			"pointerdown": [],
+			"pointerup": [],
+			"pointermove": [],
+			"touchstart": [],
+			"touchend": [],
+			"touchmove": []
+		};
 	}
 
 	/**
@@ -148,6 +163,19 @@ export class EventManager
 	}
 
 	/**
+	 * Returns all the data gathered about touches.
+	 *
+	 * @name module:core.EventManager#getTouchInfo
+	 * @function
+	 * @public
+	 * @return {object} the touch info.
+	 */
+	getTouchInfo ()
+	{
+		return this._touchInfo;
+	}
+
+	/**
 	 * Clear all events from the event buffer.
 	 *
 	 * @name module:core.EventManager#clearEvents
@@ -230,8 +258,13 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[event.button] = 1;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
-
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
+
+			let i;
+			for (i = 0; i < this._eventSubscriptions["pointerdown"].length; i++)
+			{
+				this._eventSubscriptions["pointerdown"][i].handleEvent("pointerdown", event);
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -242,10 +275,26 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[0] = 1;
 			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY],
+					busy: false
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
+
+			for (i = 0; i < this._eventSubscriptions["touchstart"].length; i++)
+			{
+				this._eventSubscriptions["touchstart"][i].handleEvent("touchstart", this._touchInfo);
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -257,6 +306,12 @@ export class EventManager
 			self._mouseInfo.buttons.pressed[event.button] = 0;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
+
+			let i;
+			for (i = 0; i < this._eventSubscriptions["pointerup"].length; i++)
+			{
+				this._eventSubscriptions["pointerup"][i].handleEvent("pointerup", event);
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -279,10 +334,25 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[0] = 0;
 			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY]
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
+
+			for (i = 0; i < this._eventSubscriptions["touchend"].length; i++)
+			{
+				this._eventSubscriptions["touchend"][i].handleEvent("touchend", this._touchInfo);
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -293,6 +363,13 @@ export class EventManager
 
 			self._mouseInfo.moveClock.reset();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
+
+			let i;
+			for (i = 0; i < this._eventSubscriptions["pointermove"].length; i++)
+			{
+				this._eventSubscriptions["pointermove"][i].handleEvent("pointermove", event);
+			}
+
 		}, false);
 
 		renderer.view.addEventListener("touchmove", (event) =>
@@ -300,10 +377,25 @@ export class EventManager
 			event.preventDefault();
 
 			self._mouseInfo.moveClock.reset();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY]
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
+
+			for (i = 0; i < this._eventSubscriptions["touchmove"].length; i++)
+			{
+				this._eventSubscriptions["touchmove"][i].handleEvent("touchmove", this._touchInfo);
+			}
 		}, false);
 
 		// (*) wheel
@@ -314,6 +406,111 @@ export class EventManager
 
 			this._psychoJS.experimentLogger.data("Mouse: wheel shift=(" + event.deltaX + "," + event.deltaY + "), pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
+	}
+
+	/**
+	 * Adds a listener of the event, that is going to be notified if it happens.
+	 *
+	 * @name module:core.EventManager#addEventSubscriber
+	 * @function
+	 * @public
+	 * @param {String} eventName - an event of which a subscriber wants to be notified.
+	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of event.
+	 */
+	addEventSubscriber (eventName, subscriber)
+	{
+		if (!subscriber || !eventName)
+		{
+			return;
+		}
+		if (this._eventSubscriptions[eventName].indexOf(subscriber) === -1)
+		{
+			this._eventSubscriptions[eventName].push(subscriber);
+		}
+	}
+
+	/**
+	 * Removes event subscriber.
+	 *
+	 * @name module:core.EventManager#removeEventSubscriber
+	 * @function
+	 * @public
+	 * @param {String} eventName - an event of which a subscriber wants to be notified.
+	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of event.
+	 */
+	removeEventSubscriber (eventName, subscriber)
+	{
+		if (!subscriber || !eventName)
+		{
+			return;
+		}
+		const i = this._eventSubscriptions[eventName].indexOf(subscriber);
+		if (i !== -1)
+		{
+			this._eventSubscriptions[eventName].splice(i, 1);
+		}
+	}
+
+	removeSubscriberFromAllEvents (subscriber)
+	{
+		if (!subscriber)
+		{
+			return;
+		}
+		let eventName, idx;
+		for (eventName in this._eventSubscriptions)
+		{
+			idx = this._eventSubscriptions[eventName].indexOf(subscriber);
+			if (idx !== -1) {
+				this._eventSubscriptions[eventName].splice(idx, 1);
+			}
+		}
+	}
+
+	/**
+	 * Clear all event subscriptions.
+	 *
+	 * @name module:core.EventManager#clearEventSubscriptions
+	 * @function
+	 * @public
+	 */
+	clearEventSubscriptions ()
+	{
+		let i;
+		for (i in this._eventSubscriptions)
+		{
+			this._eventSubscriptions[i] = [];
+		}
+	}
+
+	update ()
+	{
+		// for touchstart/pointerdown/mousedown sorting subscribers in reverse order to which they were added to the scene
+		// to ensure that the last added gets notified first, since for the user that object appears on top of others on the screen
+		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["pointerdown"]);
+		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["mousedown"]);
+		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["touchstart"]);
+	}
+
+	_sortSubscribersAccordingToPixiOrder (subscribers = [])
+	{
+		subscribers.sort((a, b) =>
+		{
+			const idxA = a.getPixiIndexInParentContainer();
+			const idxB = b.getPixiIndexInParentContainer();
+			if (idxA > idxB)
+			{
+				return -1;
+			}
+			else if (idxA < idxB)
+			{
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
+		});
 	}
 
 	/**

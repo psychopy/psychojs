@@ -52,6 +52,7 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
  * @param {String} [options.blendmode= "avg"] - blend mode of the stimulus, determines how the stimulus is blended with the background. Supported values: "avg", "add", "mul", "screen".
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 
 export class GratingStim extends VisualStim
@@ -301,10 +302,11 @@ export class GratingStim extends VisualStim
 		blendmode,
 		autoDraw,
 		autoLog,
-		maskParams
+		maskParams,
+		draggable
 	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog, draggable });
 
 		this._adjustmentFilter = new AdjustmentFilter({
 			contrast

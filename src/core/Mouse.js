@@ -204,6 +204,23 @@ export class Mouse extends PsychObject
 		return false;
 	}
 
+	getTouchesInObject (stim)
+	{
+		const touchInfo = this.psychoJS.eventManager.getTouchInfo();
+		let touchesInObject = [];
+		let relativeTouchPos = [];
+		let i;
+		for (i = 0; i < touchInfo.touchesArray.length; i++) {
+			relativeTouchPos[0] = touchInfo.touchesArray[i].pos[0] - this.win.size[0] * .5;
+			relativeTouchPos[1] = -1 * (touchInfo.touchesArray[i].pos[1] - this.win.size[1] * .5);
+			if (stim.containsPointPx(relativeTouchPos)) {
+				touchesInObject.push(Object.assign({}, touchInfo.touchesArray[i]));
+			}
+		}
+
+		return touchesInObject;
+	}
+
 	/**
 	 * Determine whether the mouse has moved beyond a certain distance.
 	 *

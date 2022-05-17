@@ -38,6 +38,7 @@ import * as PIXI from "pixi.js-legacy";
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 export class FaceDetector extends VisualStim
 {
@@ -45,9 +46,9 @@ export class FaceDetector extends VisualStim
 	 * @constructor
 	 * @public
 	 */
-	constructor({name, win, input, modelDir, faceApiUrl, units, ori, opacity, pos, size, autoDraw, autoLog} = {})
+	constructor({name, win, input, modelDir, faceApiUrl, units, ori, opacity, pos, size, autoDraw, autoLog, draggable} = {})
 	{
-		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog});
+		super({name, win, units, ori, opacity, pos, size, autoDraw, autoLog, draggable});
 
 		// TODO deal with onChange (see MovieStim and Camera)
 		this._addAttribute("input", input, undefined);

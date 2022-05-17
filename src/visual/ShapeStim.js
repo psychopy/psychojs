@@ -40,12 +40,33 @@ import { VisualStim } from "./VisualStim.js";
  * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
+	constructor(
 	{
-		super({ name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog });
+		name,
+		win,
+		lineWidth,
+		lineColor,
+		fillColor,
+		opacity,
+		vertices,
+		closeShape,
+		pos,
+		size,
+		ori,
+		units,
+		contrast,
+		depth,
+		interpolate,
+		autoDraw,
+		autoLog,
+		draggable
+	} = {})
+	{
+		super({ name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog, draggable });
 
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
@@ -165,8 +186,8 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		if (typeof objectPos_px === "undefined")
 		{
 			throw {
-				origin: "VisualStim.contains",
-				context: "when determining whether VisualStim: " + this._name + " contains object: " + util.toString(object),
+				origin: "ShapeStim.contains",
+				context: "when determining whether ShapeStim: " + this._name + " contains object: " + util.toString(object),
 				error: "unable to determine the position of the object",
 			};
 		}
@@ -176,6 +197,22 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		this._getVertices_px();
 		const polygon_px = this._vertices_px.map((v) => [v[0] + pos_px[0], v[1] + pos_px[1]]);
 		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
+	}
+
+	/**
+	 * Determine whether a point that is nown to have pixel dimensions is inside the bounding box of the stimulus.
+	 *
+	 * @name module:visual.ShapeStim#containsPointPx
+	 * @public
+	 * @param {number[]} point_px - the point in pixels
+	 * @return {boolean} whether or not the object is inside the bounding box of the stimulus
+	 */
+	containsPointPx (point_px)
+	{
+		const pos_px = util.to_px(this.pos, this.units, this.win);
+		this._getVertices_px();
+		const polygon_px = this._vertices_px.map((v) => [v[0] + pos_px[0], v[1] + pos_px[1]]);
+		return util.IsPointInsidePolygon(point_px, polygon_px);
 	}
 
 	/**
