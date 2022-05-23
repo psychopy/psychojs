@@ -35,12 +35,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "../core/PsychoJS";
-import * as util from '../util/Util';
-import {ExperimentHandler} from "../data/ExperimentHandler";
-import {AudioClip} from "./AudioClip";
+import { PsychoJS } from "../core/PsychoJS.js";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { Clock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import * as util from "../util/Util.js";
+import { AudioClip } from "./AudioClip.js";
 
 /**
  * &lt;p>This manager handles the recording of audio signal.&lt;/p>
@@ -57,18 +57,17 @@ import {AudioClip} from "./AudioClip";
  */
 export class Microphone extends PsychObject
 {
-
-	constructor({win, name, format, sampleRateHz, clock, autoLog} = {})
+	constructor({ win, name, format, sampleRateHz, clock, autoLog } = {})
 	{
 		super(win._psychoJS);
 
-		this._addAttribute('win', win, undefined);
-		this._addAttribute('name', name, 'microphone');
-		this._addAttribute('format', format, 'audio/webm;codecs=opus', this._onChange);
-		this._addAttribute('sampleRateHz', sampleRateHz, 48000, this._onChange);
-		this._addAttribute('clock', clock, new Clock());
-		this._addAttribute('autoLog', false, autoLog);
-		this._addAttribute('status', PsychoJS.Status.NOT_STARTED);
+		this._addAttribute("win", win, undefined);
+		this._addAttribute("name", name, "microphone");
+		this._addAttribute("format", format, "audio/webm;codecs=opus", this._onChange);
+		this._addAttribute("sampleRateHz", sampleRateHz, 48000, this._onChange);
+		this._addAttribute("clock", clock, new Clock());
+		this._addAttribute("autoLog", autoLog, autoLog);
+		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);
 
 		// prepare the recording:
 		this._prepareRecording();
@@ -78,7 +77,6 @@ export class Microphone extends PsychObject
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
 
 	/**
 	 * Submit a request to start the recording.
@@ -96,19 +94,18 @@ export class Microphone extends PsychObject
 		// with a new recording:
 		if (this._status === PsychoJS.Status.PAUSED)
 		{
-			return this.resume({clear: true});
+			return this.resume({ clear: true });
 		}
-
 
 		if (this._status !== PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to start audio recording');
+			this._psychoJS.logger.debug("request to start audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				this._recorder.start();
@@ -124,20 +121,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				this._psychoJS.logger.error('unable to start the audio recording: ' + JSON.stringify(error));
+				this._psychoJS.logger.error("unable to start the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.start',
-					context: 'when starting the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.start",
+					context: "when starting the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
-
 	}
-
 
 	/**
 	 * Submit a request to stop the recording.
@@ -150,14 +144,14 @@ export class Microphone extends PsychObject
 	 * @return {Promise} promise fulfilled when the recording actually stopped, and the recorded
 	 * 	data was made available
 	 */
-	stop({filename} = {})
+	stop({ filename } = {})
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to stop audio recording');
+			this._psychoJS.logger.debug("request to stop audio recording");
 
 			this._stopOptions = {
-				filename
+				filename,
 			};
 
 			// note: calling the stop method of the MediaRecorder will first raise a dataavailable event,
@@ -176,7 +170,6 @@ export class Microphone extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Submit a request to pause the recording.
 	 *
@@ -188,13 +181,13 @@ export class Microphone extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED)
 		{
-			this._psychoJS.logger.debug('request to pause audio recording');
+			this._psychoJS.logger.debug("request to pause audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				// note: calling the pause method of the MediaRecorder raises a pause event
@@ -210,19 +203,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to pause the audio recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to pause the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.pause',
-					context: 'when pausing the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.pause",
+					context: "when pausing the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
 	}
-
 
 	/**
 	 * Submit a request to resume the recording.
@@ -235,17 +226,17 @@ export class Microphone extends PsychObject
 	 * 	resuming the recording
 	 * @return {Promise} promise fulfilled when the recording actually resumed
 	 */
-	resume({clear = false } = {})
+	resume({ clear = false } = {})
 	{
 		if (this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to resume audio recording');
+			this._psychoJS.logger.debug("request to resume audio recording");
 
 			try
 			{
 				if (!this._recorder)
 				{
-					throw 'the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio';
+					throw "the recorder has not been created yet, possibly because the participant has not given the authorisation to record audio";
 				}
 
 				// empty the audio buffer is needed:
@@ -267,19 +258,17 @@ export class Microphone extends PsychObject
 			}
 			catch (error)
 			{
-				self._psychoJS.logger.error('unable to resume the audio recording: ' + JSON.stringify(error));
+				self._psychoJS.logger.error("unable to resume the audio recording: " + JSON.stringify(error));
 				this._status = PsychoJS.Status.ERROR;
 
 				throw {
-					origin: 'Microphone.resume',
-					context: 'when resuming the audio recording for microphone: ' + this._name,
-					error
+					origin: "Microphone.resume",
+					context: "when resuming the audio recording for microphone: " + this._name,
+					error,
 				};
 			}
-
 		}
 	}
-
 
 	/**
 	 * Submit a request to flush the recording.
@@ -292,7 +281,7 @@ export class Microphone extends PsychObject
 	{
 		if (this._status === PsychoJS.Status.STARTED || this._status === PsychoJS.Status.PAUSED)
 		{
-			this._psychoJS.logger.debug('request to flush audio recording');
+			this._psychoJS.logger.debug("request to flush audio recording");
 
 			// note: calling the requestData method of the MediaRecorder will raise a
 			// dataavailable event
@@ -309,7 +298,6 @@ export class Microphone extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Offer the audio recording to the participant as a sound file to download.
 	 *
@@ -318,18 +306,17 @@ export class Microphone extends PsychObject
 	 * @public
 	 * @param {string} filename the filename
 	 */
-	download(filename = 'audio.webm')
+	download(filename = "audio.webm")
 	{
 		const audioBlob = new Blob(this._audioBuffer);
 
-		const anchor = document.createElement('a');
+		const anchor = document.createElement("a");
 		anchor.href = window.URL.createObjectURL(audioBlob);
 		anchor.download = filename;
 		document.body.appendChild(anchor);
 		anchor.click();
 		document.body.removeChild(anchor);
 	}
-
 
 	/**
 	 * Upload the audio recording to the pavlovia server.
@@ -339,10 +326,10 @@ export class Microphone extends PsychObject
 	 * @public
 	 * @param {string} tag an optional tag for the audio file
 	 */
-	async upload({tag} = {})
+	async upload({ tag } = {})
 	{
 		// default tag: the name of this Microphone object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
@@ -350,21 +337,24 @@ export class Microphone extends PsychObject
 		// add a format-dependent audio extension to the tag:
 		tag += util.extensionFromMimeType(this._format);
 
-
 		// if the audio recording cannot be uploaded, e.g. the experiment is running locally, or
 		// if it is piloting mode, then we offer the audio recording as a file for download:
-		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
-			this._psychoJS.config.experiment.status !== 'RUNNING' ||
-			this._psychoJS._serverMsg.has('__pilotToken'))
+		if (
+			this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER
+			|| this._psychoJS.config.experiment.status !== "RUNNING"
+			|| this._psychoJS._serverMsg.has("__pilotToken")
+		)
 		{
 			return this.download(tag);
 		}
 
 		// upload the blob:
 		const audioBlob = new Blob(this._audioBuffer);
-		return this._psychoJS.serverManager.uploadAudio(audioBlob, tag);
+		return this._psychoJS.serverManager.uploadAudioVideo({
+			mediaBlob: audioBlob,
+			tag
+		});
 	}
-
 
 	/**
 	 * Get the current audio recording as an AudioClip in the given format.
@@ -375,26 +365,24 @@ export class Microphone extends PsychObject
  	 * @param {string} tag an optional tag for the audio clip
 	 * @param {boolean} [flush=false] whether or not to first flush the recording
 	 */
-	async getRecording({tag, flush = false} = {})
+	async getRecording({ tag, flush = false } = {})
 	{
 		// default tag: the name of this Microphone object
-		if (typeof tag === 'undefined')
+		if (typeof tag === "undefined")
 		{
 			tag = this._name;
 		}
-
 
 		const audioClip = new AudioClip({
 			psychoJS: this._psychoJS,
 			name: tag,
 			format: this._format,
 			sampleRateHz: this._sampleRateHz,
-			data: new Blob(this._audioBuffer)
+			data: new Blob(this._audioBuffer),
 		});
 
 		return audioClip;
 	}
-
 
 	/**
 	 * Callback for changes to the recording settings.
@@ -417,7 +405,6 @@ export class Microphone extends PsychObject
 		this.start();
 	}
 
-
 	/**
 	 * Prepare the recording.
 	 *
@@ -431,26 +418,21 @@ export class Microphone extends PsychObject
 		this._audioBuffer = [];
 		this._recorder = null;
 
-		// // create an audio context (mostly used for getRecording() ):
-		// this._audioContext = new (window.AudioContext || window.webkitAudioContext)({
-		// 	sampleRate: this._sampleRateHz
-		// });
-
 		// create a new audio recorder:
 		const stream = await navigator.mediaDevices.getUserMedia({
 			audio: {
 				advanced: [
 					{
 						channelCount: 1,
-						sampleRate: this._sampleRateHz
-					}
-				]
-			}
+						sampleRate: this._sampleRateHz,
+					},
+				],
+			},
 		});
 
 		// check that the specified format is supported, use default if it is not:
 		let options;
-		if (typeof this._format === 'string' &amp;&amp; MediaRecorder.isTypeSupported(this._format))
+		if (typeof this._format === "string" &amp;&amp; MediaRecorder.isTypeSupported(this._format))
 		{
 			options = { type: this._format };
 		}
@@ -460,7 +442,6 @@ export class Microphone extends PsychObject
 		}
 
 		this._recorder = new MediaRecorder(stream, options);
-
 
 		// setup the callbacks:
 		const self = this;
@@ -473,7 +454,7 @@ export class Microphone extends PsychObject
 			self._audioBuffer.length = 0;
 			self._clock.reset();
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('audio recording started');
+			self._psychoJS.logger.debug("audio recording started");
 
 			// resolve the Microphone.start promise:
 			if (self._startCallback)
@@ -486,7 +467,7 @@ export class Microphone extends PsychObject
 		this._recorder.onpause = () =>
 		{
 			self._status = PsychoJS.Status.PAUSED;
-			self._psychoJS.logger.debug('audio recording paused');
+			self._psychoJS.logger.debug("audio recording paused");
 
 			// resolve the Microphone.pause promise:
 			if (self._pauseCallback)
@@ -499,7 +480,7 @@ export class Microphone extends PsychObject
 		this._recorder.onresume = () =>
 		{
 			self._status = PsychoJS.Status.STARTED;
-			self._psychoJS.logger.debug('audio recording resumed');
+			self._psychoJS.logger.debug("audio recording resumed");
 
 			// resolve the Microphone.resume promise:
 			if (self._resumeCallback)
@@ -515,7 +496,7 @@ export class Microphone extends PsychObject
 
 			// add data to the buffer:
 			self._audioBuffer.push(data);
-			self._psychoJS.logger.debug('audio data added to the buffer');
+			self._psychoJS.logger.debug("audio data added to the buffer");
 
 			// resolve the data available promise, if needed:
 			if (self._dataAvailableCallback)
@@ -527,7 +508,7 @@ export class Microphone extends PsychObject
 		// called upon Microphone.stop(), after data has been made available:
 		this._recorder.onstop = () =>
 		{
-			self._psychoJS.logger.debug('audio recording stopped');
+			self._psychoJS.logger.debug("audio recording stopped");
 			self._status = PsychoJS.Status.NOT_STARTED;
 
 			// resolve the Microphone.stop promise:
@@ -539,7 +520,7 @@ export class Microphone extends PsychObject
 			// treat stop options if there are any:
 
 			// download to a file, immediately offered to the participant:
-			if (typeof self._stopOptions.filename === 'string')
+			if (typeof self._stopOptions.filename === "string")
 			{
 				self.download(self._stopOptions.filename);
 			}
@@ -549,15 +530,11 @@ export class Microphone extends PsychObject
 		this._recorder.onerror = (event) =>
 		{
 			// TODO
-			self._psychoJS.logger.error('audio recording error: ' + JSON.stringify(event));
+			self._psychoJS.logger.error("audio recording error: " + JSON.stringify(event));
 			self._status = PsychoJS.Status.ERROR;
 		};
-
 	}
-
 }
-
-
 </code></pre>
         </article>
     </section>
@@ -568,13 +545,13 @@ export class Microphone extends PsychObject
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

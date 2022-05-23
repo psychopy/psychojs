@@ -36,14 +36,13 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
-import {WindowMixin} from "../core/WindowMixin";
-
+import * as PIXI from "pixi.js-legacy";
+import { WindowMixin } from "../core/WindowMixin.js";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * &lt;p>This class provides the basic functionality of shape stimuli.&lt;/p>
@@ -72,9 +71,9 @@ import {WindowMixin} from "../core/WindowMixin";
  */
 export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog} = {})
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
-		super({name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog });
 
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
@@ -82,57 +81,55 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		this._vertices_px = undefined;
 
 		// shape:
-		if (typeof size === 'undefined' || size === null)
+		if (typeof size === "undefined" || size === null)
 		{
 			this.size = [1.0, 1.0];
 		}
 		this._addAttribute(
-			'vertices',
+			"vertices",
 			vertices,
-			[[-0.5, 0], [0, 0.5], [0.5, 0]]
+			[[-0.5, 0], [0, 0.5], [0.5, 0]],
 		);
 		this._addAttribute(
-			'closeShape',
+			"closeShape",
 			closeShape,
 			true,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'interpolate',
+			"interpolate",
 			interpolate,
 			true,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		this._addAttribute(
-			'lineWidth',
+			"lineWidth",
 			lineWidth,
 			1.5,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
 		// colors:
 		this._addAttribute(
-			'lineColor',
+			"lineColor",
 			lineColor,
-			'white',
-			this._onChange(true, false)
+			"white",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'fillColor',
+			"fillColor",
 			fillColor,
 			undefined,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 	}
-
-
 
 	/**
 	 * Setter for the vertices attribute.
@@ -145,16 +142,16 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	setVertices(vertices, log = false)
 	{
 		const response = {
-			origin: 'ShapeStim.setVertices',
-			context: 'when setting the vertices of ShapeStim: ' + this._name
+			origin: "ShapeStim.setVertices",
+			context: "when setting the vertices of ShapeStim: " + this._name,
 		};
 
-		this._psychoJS.logger.debug('set the vertices of ShapeStim:', this.name);
+		this._psychoJS.logger.debug("set the vertices of ShapeStim:", this.name);
 
 		try
 		{
 			// if vertices is a string, we check whether it is a known shape:
-			if (typeof vertices === 'string')
+			if (typeof vertices === "string")
 			{
 				if (vertices in ShapeStim.KnownShapes)
 				{
@@ -166,17 +163,15 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 				}
 			}
 
-			this._setAttribute('vertices', vertices, log);
+			this._setAttribute("vertices", vertices, log);
 
 			this._onChange(true, true)();
 		}
 		catch (error)
 		{
-			throw Object.assign(response, {error: error});
+			throw Object.assign(response, { error: error });
 		}
 	}
-
-
 
 	/**
 	 * Determine whether an object is inside the bounding box of the ShapeStim.
@@ -195,23 +190,21 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		// get the position of the object, in pixel coordinates:
 		const objectPos_px = util.getPositionFromObject(object, units);
 
-		if (typeof objectPos_px === 'undefined')
+		if (typeof objectPos_px === "undefined")
 		{
 			throw {
-				origin: 'VisualStim.contains',
-				context: 'when determining whether VisualStim: ' + this._name + ' contains object: ' + util.toString(object),
-				error: 'unable to determine the position of the object'
+				origin: "VisualStim.contains",
+				context: "when determining whether VisualStim: " + this._name + " contains object: " + util.toString(object),
+				error: "unable to determine the position of the object",
 			};
 		}
 
 		// test for inclusion:
 		const pos_px = util.to_px(this.pos, this.units, this.win);
 		this._getVertices_px();
-		const polygon_px = this._vertices_px.map(v => [v[0] + pos_px[0], v[1] + pos_px[1]]);
+		const polygon_px = this._vertices_px.map((v) => [v[0] + pos_px[0], v[1] + pos_px[1]]);
 		return util.IsPointInsidePolygon(objectPos_px, polygon_px);
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -230,7 +223,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			Number.POSITIVE_INFINITY,
 			Number.POSITIVE_INFINITY,
 			Number.NEGATIVE_INFINITY,
-			Number.NEGATIVE_INFINITY
+			Number.NEGATIVE_INFINITY,
 		];
 		for (const vertex of this._vertices_px)
 		{
@@ -244,13 +237,11 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			this._pos[0] + this._getLengthUnits(limits_px[0]),
 			this._pos[1] + this._getLengthUnits(limits_px[1]),
 			this._getLengthUnits(limits_px[2] - limits_px[0]),
-			this._getLengthUnits(limits_px[3] - limits_px[1])
+			this._getLengthUnits(limits_px[3] - limits_px[1]),
 		);
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -271,7 +262,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
@@ -283,24 +274,22 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			// prepare the polygon in the given color and opacity:
 			this._pixi = new PIXI.Graphics();
 			this._pixi.lineStyle(this._lineWidth, this._lineColor.int, this._opacity, 0.5);
-			if (typeof this._fillColor !== 'undefined' &amp;&amp; this._fillColor !== null)
+			if (typeof this._fillColor !== "undefined" &amp;&amp; this._fillColor !== null)
 			{
 				const contrastedColor = this.getContrastedColor(new Color(this._fillColor), this._contrast);
 				this._pixi.beginFill(contrastedColor.int, this._opacity);
 			}
 			this._pixi.drawPolygon(this._pixiPolygon_px);
-			if (typeof this._fillColor !== 'undefined' &amp;&amp; this._fillColor !== null)
+			if (typeof this._fillColor !== "undefined" &amp;&amp; this._fillColor !== null)
 			{
 				this._pixi.endFill();
 			}
 		}
 
 		// set polygon position and rotation:
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
-		this._pixi.rotation = this.ori * Math.PI / 180.0;
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.rotation = -this.ori * Math.PI / 180.0;
 	}
-
-
 
 	/**
 	 * Get the PIXI polygon (in pixel units) corresponding to the vertices.
@@ -339,8 +328,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 		return this._pixiPolygon_px;
 	}
 
-
-
 	/**
 	 * Get the vertices in pixel units.
 	 *
@@ -352,27 +339,27 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	{
 		// handle flipping:
 		let flip = [1.0, 1.0];
-		if ('_flipHoriz' in this &amp;&amp; this._flipHoriz)
+		if ("_flipHoriz" in this &amp;&amp; this._flipHoriz)
 		{
 			flip[0] = -1.0;
 		}
-		if ('_flipVert' in this &amp;&amp; this._flipVert)
+		if ("_flipVert" in this &amp;&amp; this._flipVert)
 		{
 			flip[1] = -1.0;
 		}
 
 		// handle size, flipping, and convert to pixel units:
-		this._vertices_px = this._vertices.map(v => util.to_px(
-			[v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]],
-			this._units,
-			this._win)
+		this._vertices_px = this._vertices.map((v) =>
+			util.to_px(
+				[v[0] * this._size[0] * flip[0], v[1] * this._size[1] * flip[1]],
+				this._units,
+				this._win,
+			)
 		);
 
 		return this._vertices_px;
 	}
-
 }
-
 
 /**
  * Known shapes.
@@ -385,15 +372,15 @@ ShapeStim.KnownShapes = {
 		[-0.1, +0.5], // up
 		[+0.1, +0.5],
 		[+0.1, +0.1],
-		[+0.5, +0.1],  // right
+		[+0.5, +0.1], // right
 		[+0.5, -0.1],
 		[+0.1, -0.1],
-		[+0.1, -0.5],  // down
+		[+0.1, -0.5], // down
 		[-0.1, -0.5],
 		[-0.1, -0.1],
-		[-0.5, -0.1],  // left
+		[-0.5, -0.1], // left
 		[-0.5, +0.1],
-		[-0.1, +0.1]
+		[-0.1, +0.1],
 	],
 
 	star7: [
@@ -410,9 +397,8 @@ ShapeStim.KnownShapes = {
 		[-0.49, -0.11],
 		[-0.19, 0.04],
 		[-0.39, 0.31],
-		[-0.09, 0.18]
-	]
-
+		[-0.09, 0.18],
+	],
 };
 </code></pre>
         </article>
@@ -424,13 +410,13 @@ ShapeStim.KnownShapes = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

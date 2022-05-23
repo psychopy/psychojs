@@ -36,12 +36,13 @@
  */
 
 import * as PIXI from "pixi.js-legacy";
+import {AdjustmentFilter} from "@pixi/filter-adjustment";
 import { Color } from "../util/Color.js";
-import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import defaultQuadVert from "./shaders/defaultQuad.vert";
+import imageShader from "./shaders/imageShader.frag";
 import sinShader from "./shaders/sinShader.frag";
 import sqrShader from "./shaders/sqrShader.frag";
 import sawShader from "./shaders/sawShader.frag";
@@ -60,7 +61,6 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
  * @name module:visual.GratingStim
  * @class
  * @extends VisualStim
- * @mixes ColorMixin
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
@@ -68,33 +68,42 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
  * @param {String | HTMLImageElement} [options.mask] - the name of the mask resource or HTMLImageElement corresponding to the mask
  * @param {String} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
- * @param {number} [options.phase=1.0] - phase of the function used in grating stimulus
+ * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
  * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
- * @param {Color} [options.color= "white"] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
+ * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
+ * @param {number} [options.opacity= 1.0] - Set the opacity of the stimulus. Determines how visible the stimulus is relative to background.
+ * @param {number} [options.contrast= 1.0] - Set the contrast of the stimulus, i.e. scales how far the stimulus deviates from the middle grey. Ranges [-1, 1].
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated. NOT IMPLEMENTED YET.
- * @param {String} [options.blendmode= 'avg'] - blend mode of the stimulus, determines how the stimulus is blended with the background. NOT IMPLEMENTED YET.
+ * @param {boolean} [options.interpolate= false] - Whether to interpolate (linearly) the texture in the stimulus. Currently supports only image based gratings.
+ * @param {String} [options.blendmode= "avg"] - blend mode of the stimulus, determines how the stimulus is blended with the background. Supported values: "avg", "add", "mul", "screen".
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 
-export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
+export class GratingStim extends VisualStim
 {
 	/**
 	 * An object that keeps shaders source code and default uniform values for them.
 	 * Shader source code is later used for construction of shader programs to create respective visual stimuli.
 	 * @name module:visual.GratingStim.#SHADERS
 	 * @type {Object}
+	 *
+	 * @property {Object} imageShader - Renders provided image with applied effects (coloring, phase, frequency).
+	 * @property {String} imageShader.shader - shader source code for the image based grating stimuli.
+	 * @property {Object} imageShader.uniforms - default uniforms for the image based shader.
+	 * @property {float} imageShader.uniforms.uFreq=1.0 - how much times image repeated within grating stimuli.
+	 * @property {float} imageShader.uniforms.uPhase=0.0 - offset of the image along X axis.
+	 * @property {float} imageShader.uniforms.uAlpha=1.0 - value of the alpha channel.
+	 *
 	 * @property {Object} sin - Creates 2d sine wave image as if 1d sine graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
 	 * @property {String} sin.shader - shader source code for the sine wave stimuli
 	 * @property {Object} sin.uniforms - default uniforms for sine wave shader
 	 * @property {float} sin.uniforms.uFreq=1.0 - frequency of sine wave.
 	 * @property {float} sin.uniforms.uPhase=0.0 - phase of sine wave.
+	 * @property {float} sin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqr - Creates 2d square wave image as if 1d square graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -102,6 +111,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {Object} sqr.uniforms - default uniforms for square wave shader
 	 * @property {float} sqr.uniforms.uFreq=1.0 - frequency of square wave.
 	 * @property {float} sqr.uniforms.uPhase=0.0 - phase of square wave.
+	 * @property {float} sqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} saw - Creates 2d sawtooth wave image as if 1d sawtooth graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Sawtooth_wave}
@@ -109,6 +119,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {Object} saw.uniforms - default uniforms for sawtooth wave shader
 	 * @property {float} saw.uniforms.uFreq=1.0 - frequency of sawtooth wave.
 	 * @property {float} saw.uniforms.uPhase=0.0 - phase of sawtooth wave.
+	 * @property {float} saw.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} tri - Creates 2d triangle wave image as if 1d triangle graph was extended across Z axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Triangle_wave}
@@ -117,6 +128,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {float} tri.uniforms.uFreq=1.0 - frequency of triangle wave.
 	 * @property {float} tri.uniforms.uPhase=0.0 - phase of triangle wave.
 	 * @property {float} tri.uniforms.uPeriod=1.0 - period of triangle wave.
+	 * @property {float} tri.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sinXsin - Creates an image of two 2d sine waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Sine_wave}
@@ -124,6 +136,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {Object} sinXsin.uniforms - default uniforms for shader
 	 * @property {float} sinXsin.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sinXsin.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sinXsin.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} sqrXsqr - Creates an image of two 2d square waves multiplied with each other.
 	 * {@link https://en.wikipedia.org/wiki/Square_wave}
@@ -131,60 +144,81 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @property {Object} sqrXsqr.uniforms - default uniforms for shader
 	 * @property {float} sqrXsqr.uniforms.uFreq=1.0 - frequency of sine wave (both of them).
 	 * @property {float} sqrXsqr.uniforms.uPhase=0.0 - phase of sine wave (both of them).
+	 * @property {float} sqrXsqr.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} circle - Creates a filled circle shape with sharp edges.
-     * @property {String} circle.shader - shader source code for filled circle.
-     * @property {Object} circle.uniforms - default uniforms for shader.
-     * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
-     * and 1.0 is circle that spans from edge to edge of the stim.
-     *
-     * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
+	 * @property {String} circle.shader - shader source code for filled circle.
+	 * @property {Object} circle.uniforms - default uniforms for shader.
+	 * @property {float} circle.uniforms.uRadius=1.0 - Radius of the circle. Ranges [0.0, 1.0], where 0.0 is circle so tiny it results in empty stim
+	 * and 1.0 is circle that spans from edge to edge of the stim.
+	 * @property {float} circle.uniforms.uAlpha=1.0 - value of the alpha channel.
+	 *
+	 * @property {Object} gauss - Creates a 2d Gaussian image as if 1d Gaussian graph was rotated arount Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Gaussian_function}
 	 * @property {String} gauss.shader - shader source code for Gaussian shader
 	 * @property {Object} gauss.uniforms - default uniforms for shader
 	 * @property {float} gauss.uniforms.uA=1.0 - A constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uB=0.0 - B constant for gaussian formula (see link).
 	 * @property {float} gauss.uniforms.uC=0.16 - C constant for gaussian formula (see link).
+	 * @property {float} gauss.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} cross - Creates a filled cross shape with sharp edges.
-     * @property {String} cross.shader - shader source code for cross shader
-     * @property {Object} cross.uniforms - default uniforms for shader
-     * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
-     * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
-     *
-     * @property {Object} radRamp - Creates 2d radial ramp image.
+	 * @property {String} cross.shader - shader source code for cross shader
+	 * @property {Object} cross.uniforms - default uniforms for shader
+	 * @property {float} cross.uniforms.uThickness=0.2 - Thickness of the cross. Ranges [0.0, 1.0], where 0.0 thickness makes a cross so thin it becomes
+	 * invisible and results in an empty stim and 1.0 makes it so thick it fills the entire stim.
+	 * @property {float} cross.uniforms.uAlpha=1.0 - value of the alpha channel.
+	 *
+	 * @property {Object} radRamp - Creates 2d radial ramp image.
 	 * @property {String} radRamp.shader - shader source code for radial ramp shader
 	 * @property {Object} radRamp.uniforms - default uniforms for shader
 	 * @property {float} radRamp.uniforms.uSqueeze=1.0 - coefficient that helps to modify size of the ramp. Ranges [0.0, Infinity], where 0.0 results in ramp being so large
 	 * it fills the entire stim and Infinity makes it so tiny it's invisible.
+	 * @property {float} radRamp.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 *
 	 * @property {Object} raisedCos - Creates 2d raised-cosine image as if 1d raised-cosine graph was rotated around Y axis and observed from above.
 	 * {@link https://en.wikipedia.org/wiki/Raised-cosine_filter}
-     * @property {String} raisedCos.shader - shader source code for raised-cosine shader
-     * @property {Object} raisedCos.uniforms - default uniforms for shader
-     * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
-     * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
+	 * @property {String} raisedCos.shader - shader source code for raised-cosine shader
+	 * @property {Object} raisedCos.uniforms - default uniforms for shader
+	 * @property {float} raisedCos.uniforms.uBeta=0.25 - roll-off factor (see link).
+	 * @property {float} raisedCos.uniforms.uPeriod=0.625 - reciprocal of the symbol-rate (see link).
+	 * @property {float} raisedCos.uniforms.uAlpha=1.0 - value of the alpha channel.
 	 */
 	static #SHADERS = {
+		imageShader: {
+			shader: imageShader,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
 		sin: {
 			shader: sinShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sqr: {
 			shader: sqrShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		saw: {
 			shader: sawShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		tri: {
@@ -192,27 +226,35 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			uniforms: {
 				uFreq: 1.0,
 				uPhase: 0.0,
-				uPeriod: 1.0
+				uPeriod: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sinXsin: {
 			shader: sinXsinShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		sqrXsqr: {
 			shader: sqrXsqrShader,
 			uniforms: {
 				uFreq: 1.0,
-				uPhase: 0.0
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		circle: {
 			shader: circleShader,
 			uniforms: {
-				uRadius: 1.0
+				uRadius: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		gauss: {
@@ -220,26 +262,34 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 			uniforms: {
 				uA: 1.0,
 				uB: 0.0,
-				uC: 0.16
+				uC: 0.16,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		cross: {
 			shader: crossShader,
 			uniforms: {
-				uThickness: 0.2
+				uThickness: 0.2,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		radRamp: {
 			shader: radRampShader,
 			uniforms: {
-				uSqueeze: 1.0
+				uSqueeze: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		},
 		raisedCos: {
 			shader: raisedCosShader,
 			uniforms: {
 				uBeta: 0.25,
-				uPeriod: 0.625
+				uPeriod: 0.625,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
 			}
 		}
 	};
@@ -251,6 +301,13 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @default [256, 256]
 	 */
 	static #DEFAULT_STIM_SIZE_PX = [256, 256]; // in pixels
+
+	static #BLEND_MODES_MAP = {
+		avg: PIXI.BLEND_MODES.NORMAL,
+		add: PIXI.BLEND_MODES.ADD,
+		mul: PIXI.BLEND_MODES.MULTIPLY,
+		screen: PIXI.BLEND_MODES.SCREEN
+	};
 
 	constructor({
 		name,
@@ -266,7 +323,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		color,
 		colorSpace,
 		opacity,
-		contrast,
+		contrast = 1,
 		depth,
 		interpolate,
 		blendmode,
@@ -277,42 +334,20 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
 
-		this._addAttribute(
-			"tex",
-			tex,
-		);
-		this._addAttribute(
-			"mask",
-			mask,
-		);
-		this._addAttribute(
-			"SF",
-			sf,
-			GratingStim.#SHADERS[tex] ? GratingStim.#SHADERS[tex].uniforms.uFreq || 1.0 : 1.0
-		);
-		this._addAttribute(
-			"phase",
-			phase,
-			GratingStim.#SHADERS[tex] ? GratingStim.#SHADERS[tex].uniforms.uPhase || 0.0 : 0.0
-		);
-		this._addAttribute(
-			"color",
-			color,
-			"white",
-			this._onChange(true, false),
-		);
-		this._addAttribute(
-			"contrast",
-			contrast,
-			1.0,
-			this._onChange(true, false),
-		);
-		this._addAttribute(
-			"interpolate",
-			interpolate,
-			false,
-			this._onChange(true, false),
-		);
+		this._adjustmentFilter = new AdjustmentFilter({
+			contrast
+		});
+		this._addAttribute("tex", tex);
+		this._addAttribute("mask", mask);
+		this._addAttribute("SF", sf, GratingStim.#SHADERS[tex] ? GratingStim.#SHADERS[tex].uniforms.uFreq || 1.0 : 1.0);
+		this._addAttribute("phase", phase, GratingStim.#SHADERS[tex] ? GratingStim.#SHADERS[tex].uniforms.uPhase || 0.0 : 0.0);
+		this._addAttribute("color", color, "white");
+		this._addAttribute("colorSpace", colorSpace, "RGB");
+		this._addAttribute("contrast", contrast, 1.0, () => {
+			this._adjustmentFilter.contrast = this._contrast;
+		});
+		this._addAttribute("blendmode", blendmode, "avg");
+		this._addAttribute("interpolate", interpolate, false);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -502,11 +537,11 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.GratingStim#_getPixiMeshFromPredefinedShaders
 	 * @function
 	 * @protected
-	 * @param {String} funcName - name of the shader function. Must be one of the SHADERS
+	 * @param {String} shaderName - name of the shader. Must be one of the SHADERS
 	 * @param {Object} uniforms - a set of uniforms to supply to the shader. Mixed together with default uniform values.
 	 * @return {Pixi.Mesh} Pixi.Mesh object that represents shader and later added to the scene.
 	 */
-	_getPixiMeshFromPredefinedShaders (funcName = "", uniforms = {}) {
+	_getPixiMeshFromPredefinedShaders (shaderName = "", uniforms = {}) {
 		const geometry = new PIXI.Geometry();
 		geometry.addAttribute(
 			"aVertexPosition",
@@ -525,8 +560,8 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		);
 		geometry.addIndex([0, 1, 2, 0, 2, 3]);
 		const vertexSrc = defaultQuadVert;
-	    const fragmentSrc = GratingStim.#SHADERS[funcName].shader;
-	    const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[funcName].uniforms, uniforms);
+		const fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
+		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
 		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
 		return new PIXI.Mesh(geometry, shader);
 	}
@@ -542,9 +577,57 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 	setPhase (phase, log = false) {
 		this._setAttribute("phase", phase, log);
 		if (this._pixi instanceof PIXI.Mesh) {
-			this._pixi.shader.uniforms.uPhase = phase;
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			this._pixi.tilePosition.x = -phase * (this._size_px[0] * this._pixi.tileScale.x) / (2 * Math.PI)
+			this._pixi.shader.uniforms.uPhase = -phase;
+		}
+	}
+
+	/**
+	 * Set color space value for the grating stimulus.
+	 * 
+	 * @name module:visual.GratingStim#setColorSpace
+	 * @public
+	 * @param {String} colorSpaceVal - color space value
+	 * @param {boolean} [log= false] - whether of not to log
+	 */ 
+	setColorSpace (colorSpaceVal = "RGB", log = false) {
+		let colorSpaceValU = colorSpaceVal.toUpperCase();
+		if (Color.COLOR_SPACE[colorSpaceValU] === undefined) {
+			colorSpaceValU = "RGB";
+		}
+		const hasChanged = this._setAttribute("colorSpace", colorSpaceValU, log);
+		if (hasChanged) {
+			this.setColor(this._color);
+		}
+	}
+
+	/**
+	 * Set foreground color value for the grating stimulus.
+	 * 
+	 * @name module:visual.GratingStim#setColor
+	 * @public
+	 * @param {Color} colorVal - color value, can be String like "red" or "#ff0000" or Number like 0xff0000.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */ 
+	setColor (colorVal = "white", log = false) {
+		const colorObj = (colorVal instanceof Color) ? colorVal : new Color(colorVal, Color.COLOR_SPACE[this._colorSpace])
+		this._setAttribute("color", colorObj, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+			this._pixi.shader.uniforms.uColor = colorObj.rgbFull;
+		}
+	}
+
+	/**
+	 * Determines how visible the stimulus is relative to background.
+	 * 
+	 * @name module:visual.GratingStim#setOpacity
+	 * @public
+	 * @param {number} [opacity=1] opacity - The value should be a single float ranging 1.0 (opaque) to 0.0 (transparent).
+	 * @param {boolean} [log= false] - whether of not to log
+	 */ 
+	setOpacity (opacity = 1, log = false) {
+		this._setAttribute("opacity", opacity, log);
+		if (this._pixi instanceof PIXI.Mesh) {
+			this._pixi.shader.uniforms.uAlpha = opacity;
 		}
 	}
 
@@ -560,13 +643,45 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		this._setAttribute("SF", sf, log);
 		if (this._pixi instanceof PIXI.Mesh) {
 			this._pixi.shader.uniforms.uFreq = sf;
-		} else if (this._pixi instanceof PIXI.TilingSprite) {
-			// tileScale units are pixels, so converting function frequency to pixels
-			// and also taking into account possible size difference between used texture and requested stim size
-			this._pixi.tileScale.x = (1 / sf) * (this._pixi.width / this._pixi.texture.width);
-			// since most functions defined in SHADERS assume spatial frequency change along X axis
-			// we assume desired effect for image based stims to be the same so tileScale.y is not affected by spatialFrequency
-			this._pixi.tileScale.y = this._pixi.height / this._pixi.texture.height;
+		}
+	}
+
+	/**
+	 * Set blend mode of the grating stimulus.
+	 * 
+	 * @name module:visual.GratingStim#setBlendmode
+	 * @public
+	 * @param {String} blendMode - blend mode, can be one of the following: ["avg", "add", "mul", "screen"].
+	 * @param {boolean} [log=false] - whether or not to log
+	 */ 
+	setBlendmode (blendMode = "avg", log = false) {
+		this._setAttribute("blendmode", blendMode, log);
+		if (this._pixi !== undefined) {
+			let pixiBlendMode = GratingStim.#BLEND_MODES_MAP[blendMode];
+			if (pixiBlendMode === undefined) {
+				pixiBlendMode = PIXI.BLEND_MODES.NORMAL;
+			}
+			if (this._pixi.filters) {
+				this._pixi.filters[this._pixi.filters.length - 1].blendMode = pixiBlendMode;
+			} else {
+				this._pixi.blendMode = pixiBlendMode;
+			}
+		}
+	}
+
+	/**
+	 * Whether to interpolate (linearly) the texture in the stimulus.
+	 * 
+	 * @name module:visual.GratingStim#setInterpolate
+	 * @public
+	 * @param {boolean} interpolate - interpolate or not.
+	 * @param {boolean} [log=false] - whether or not to log
+	 */ 
+	setInterpolate (interpolate = false, log = false) {
+		this._setAttribute("interpolate", interpolate, log);
+		if (this._pixi instanceof PIXI.Mesh &amp;&amp; this._pixi.shader.uniforms.uTex instanceof PIXI.Texture) {
+			this._pixi.shader.uniforms.uTex.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.shader.uniforms.uTex.baseTexture.update();
 		}
 	}
 
@@ -588,8 +703,14 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		if (this._needPixiUpdate)
 		{
 			this._needPixiUpdate = false;
+			let shaderName;
+			let shaderUniforms;
+			let currentUniforms = {};
 			if (typeof this._pixi !== "undefined")
 			{
+				if (this._pixi instanceof PIXI.Mesh) {
+					Object.assign(currentUniforms, this._pixi.shader.uniforms);
+				}
 				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
@@ -602,21 +723,30 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 
 			if (this._tex instanceof HTMLImageElement)
 			{
-				this._pixi = PIXI.TilingSprite.from(this._tex, {
-					width: this._size_px[0],
-					height: this._size_px[1]
+				shaderName = "imageShader";
+				let shaderTex = PIXI.Texture.from(this._tex, {
+					wrapMode: PIXI.WRAP_MODES.REPEAT,
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
 				});
-				this.setPhase(this._phase);
-				this.setSF(this._SF);
+				shaderUniforms = {
+					uTex: shaderTex,
+					uFreq: this._SF,
+					uPhase: this._phase,
+					uColor: this._color.rgbFull
+				};
 			}
 			else
 			{
-				this._pixi = this._getPixiMeshFromPredefinedShaders(this._tex, {
+				shaderName = this._tex;
+				shaderUniforms = {
 					uFreq: this._SF,
-					uPhase: this._phase
-				});
+					uPhase: this._phase,
+					uColor: this._color.rgbFull
+				};
 			}
+			this._pixi = this._getPixiMeshFromPredefinedShaders(shaderName, Object.assign(shaderUniforms, currentUniforms));
 			this._pixi.pivot.set(this._pixi.width * 0.5, this._pixi.width * 0.5);
+			this._pixi.filters = [this._adjustmentFilter];
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
@@ -657,7 +787,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 
 		this._pixi.zIndex = this._depth;
-		this._pixi.alpha = this.opacity;
+		this.opacity = this._opacity;
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();
@@ -670,7 +800,7 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 		// set the position, rotation, and anchor (image centered on pos):
 		let pos = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.position.set(pos.x, pos.y);
-		this._pixi.rotation = this.ori * Math.PI / 180;
+		this._pixi.rotation = -this.ori * Math.PI / 180;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
@@ -686,13 +816,13 @@ export class GratingStim extends util.mix(VisualStim).with(ColorMixin)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="Camera_Camera.html">Camera</a></li><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Mar 21 2022 21:35:47 GMT+0300 (Moscow Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

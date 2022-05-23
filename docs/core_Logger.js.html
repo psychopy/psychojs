@@ -35,12 +35,11 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import log4javascript from 'log4javascript';
-import pako from 'pako';
-import * as util from '../util/Util';
-import {MonotonicClock} from '../util/Clock';
-import {ExperimentHandler} from '../data/ExperimentHandler';
+import log4javascript from "log4javascript";
+import pako from "pako";
+import { ExperimentHandler } from "../data/ExperimentHandler.js";
+import { MonotonicClock } from "../util/Clock.js";
+import * as util from "../util/Util.js";
 
 /**
  * &lt;p>This class handles a variety of loggers, e.g. a browser console one (mostly for debugging),
@@ -54,13 +53,12 @@ import {ExperimentHandler} from '../data/ExperimentHandler';
  */
 export class Logger
 {
-
 	constructor(psychoJS, threshold)
 	{
 		this._psychoJS = psychoJS;
 
 		// browser console logger:
-		this.consoleLogger = log4javascript.getLogger('psychojs');
+		this.consoleLogger = log4javascript.getLogger("psychojs");
 
 		const appender = new log4javascript.BrowserConsoleAppender();
 		appender.setLayout(this._customConsoleLayout());
@@ -68,7 +66,6 @@ export class Logger
 
 		this.consoleLogger.addAppender(appender);
 		this.consoleLogger.setLevel(threshold);
-
 
 		// server logger:
 		this._serverLogs = [];
@@ -93,11 +90,9 @@ export class Logger
 			// throttling message index:
 			index: 0,
 			// whether or not the designer has already been warned:
-			designerWasWarned: false
+			designerWasWarned: false,
 		};
 	}
-
-
 
 	/**
 	 * Change the logging level.
@@ -111,8 +106,6 @@ export class Logger
 		this._serverLevel = serverLevel;
 		this._serverLevelValue = this._getValue(this._serverLevel);
 	}
-
-
 
 	/**
 	 * Log a server message at the EXP level.
@@ -128,8 +121,6 @@ export class Logger
 		this.log(msg, Logger.ServerLevel.EXP, time, obj);
 	}
 
-
-
 	/**
 	 * Log a server message at the DATA level.
 	 *
@@ -143,8 +134,6 @@ export class Logger
 	{
 		this.log(msg, Logger.ServerLevel.DATA, time, obj);
 	}
-
-
 
 	/**
 	 * Log a server message.
@@ -165,7 +154,7 @@ export class Logger
 			return;
 		}
 
-		if (typeof time === 'undefined')
+		if (typeof time === "undefined")
 		{
 			time = MonotonicClock.getReferenceTime();
 		}
@@ -182,11 +171,9 @@ export class Logger
 			msg,
 			level,
 			time,
-			obj: util.toString(obj)
+			obj: util.toString(obj),
 		});
 	}
-
-
 
 	/**
 	 * Check whether or not a log messages must be throttled.
@@ -209,24 +196,26 @@ export class Logger
 				// warn the designer if we are not already throttling:
 				if (!this._throttling.isThrottling)
 				{
-					const msg = `&lt;p>[time= ${time.toFixed(3)}] More than ${this._throttling.threshold} messages were logged in the past ${this._throttling.window}s.&lt;/p>` +
-						`&lt;p>We are now throttling: only 1 in ${this._throttling.factor} messages will be logged.&lt;/p>` +
-						`&lt;p>You may want to change your experiment's logging level. Please see &lt;a href="https://www.psychopy.org/api/logging.html">psychopy.org/api/logging.html&lt;/a> for details.&lt;/p>`;
+					const msg = `&lt;p>[time= ${time.toFixed(3)}] More than ${this._throttling.threshold} messages were logged in the past ${this._throttling.window}s.&lt;/p>`
+						+ `&lt;p>We are now throttling: only 1 in ${this._throttling.factor} messages will be logged.&lt;/p>`
+						+ `&lt;p>You may want to change your experiment's logging level. Please see &lt;a href="https://www.psychopy.org/api/logging.html">psychopy.org/api/logging.html&lt;/a> for details.&lt;/p>`;
 
 					// console warning:
 					this._psychoJS.logger.warn(msg);
 
 					// in PILOTING mode and locally, we also warn the experimenter with a dialog box,
 					// but only once:
-					if (!this._throttling.designerWasWarned &amp;&amp;
-						(this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL ||
-							this._psychoJS.config.experiment.status === 'PILOTING'))
+					if (
+						!this._throttling.designerWasWarned
+						&amp;&amp; (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL
+							|| this._psychoJS.config.experiment.status === "PILOTING")
+					)
 					{
 						this._throttling.designerWasWarned = true;
 
 						this._psychoJS.gui.dialog({
 							warning: msg,
-							showOK: true
+							showOK: true,
 						});
 					}
 
@@ -235,7 +224,7 @@ export class Logger
 					this._throttling.index = 0;
 				}
 
-				++ this._throttling.index;
+				++this._throttling.index;
 				if (this._throttling.index &lt; this._throttling.factor)
 				{
 					// no logging
@@ -248,8 +237,10 @@ export class Logger
 			}
 			else
 			{
-				if (this._throttling.isThrottling &amp;&amp;
-					(time - this._throttling.startOfThrottling) > this._throttling.minimumDuration)
+				if (
+					this._throttling.isThrottling
+					&amp;&amp; (time - this._throttling.startOfThrottling) > this._throttling.minimumDuration
+				)
 				{
 					this._psychoJS.logger.info(`[time= ${time.toFixed(3)}] Log messages are not throttled any longer.`);
 					this._throttling.isThrottling = false;
@@ -259,8 +250,6 @@ export class Logger
 
 		return false;
 	}
-
-
 
 	/**
 	 * Flush all server logs to the server.
@@ -274,39 +263,41 @@ export class Logger
 	async flush()
 	{
 		const response = {
-			origin: 'Logger.flush',
-			context: 'when flushing participant\'s logs for experiment: ' + this._psychoJS.config.experiment.fullpath
+			origin: "Logger.flush",
+			context: "when flushing participant's logs for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 
-		this._psychoJS.logger.info('[PsychoJS] Flush server logs.');
+		this._psychoJS.logger.info("[PsychoJS] Flush server logs.");
 
 		// prepare the formatted logs:
-		let formattedLogs = '';
+		let formattedLogs = "";
 		for (const log of this._serverLogs)
 		{
-			let formattedLog = util.toString(log.time) +
-				'\t' + Symbol.keyFor(log.level) +
-				'\t' + log.msg;
-			if (log.obj !== 'undefined')
+			let formattedLog = util.toString(log.time)
+				+ "\t" + Symbol.keyFor(log.level)
+				+ "\t" + log.msg;
+			if (log.obj !== "undefined")
 			{
-				formattedLog += '\t' + log.obj;
+				formattedLog += "\t" + log.obj;
 			}
-			formattedLog += '\n';
+			formattedLog += "\n";
 
 			formattedLogs += formattedLog;
 		}
 
 		// send logs to the server or display them in the console:
-		if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER &amp;&amp;
-			this._psychoJS.config.experiment.status === 'RUNNING' &amp;&amp;
-			!this._psychoJS._serverMsg.has('__pilotToken'))
+		if (
+			this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
+			&amp;&amp; this._psychoJS.config.experiment.status === "RUNNING"
+			&amp;&amp; !this._psychoJS._serverMsg.has("__pilotToken")
+		)
 		{
 			// if the pako compression library is present, we compress the logs:
-			if (typeof pako !== 'undefined')
+			if (typeof pako !== "undefined")
 			{
 				try
 				{
-					const utf16DeflatedLogs = pako.deflate(formattedLogs, {to: 'string'});
+					const utf16DeflatedLogs = pako.deflate(formattedLogs, { to: "string" });
 					// const utf16DeflatedLogs = pako.deflate(unescape(encodeURIComponent(formattedLogs)), {to: 'string'});
 					const base64DeflatedLogs = btoa(utf16DeflatedLogs);
 
@@ -314,23 +305,21 @@ export class Logger
 				}
 				catch (error)
 				{
-					console.error('log compression error:', error);
-					throw Object.assign(response, {error: error});
+					console.error("log compression error:", error);
+					throw Object.assign(response, { error: error });
 				}
 			}
-			else
 			// the pako compression library is not present, we do not compress the logs:
+			else
 			{
 				return await this._psychoJS.serverManager.uploadLog(formattedLogs, false);
 			}
 		}
 		else
 		{
-			this._psychoJS.logger.debug('\n' + formattedLogs);
+			this._psychoJS.logger.debug("\n" + formattedLogs);
 		}
 	}
-
-
 
 	/**
 	 * Create a custom console layout.
@@ -344,67 +333,65 @@ export class Logger
 		const detectedBrowser = util.detectBrowser();
 
 		const customLayout = new log4javascript.PatternLayout("%p %d{HH:mm:ss.SSS} %f{1} | %m");
-		customLayout.setCustomField('location', function (layout, loggingReference)
+		customLayout.setCustomField("location", function(layout, loggingReference)
 		{
 			// we throw a fake exception to retrieve the stack trace
 			try
 			{
 				// (0)();
-				throw Error('fake exception');
+				throw Error("fake exception");
 			}
 			catch (e)
 			{
-				const stackEntries = e.stack.replace(/^.*?\n/, '').replace(/(?:\n@:0)?\s+$/m, '').replace(/^\(/gm, '{anon}(').split("\n");
+				const stackEntries = e.stack.replace(/^.*?\n/, "").replace(/(?:\n@:0)?\s+$/m, "").replace(/^\(/gm, "{anon}(").split("\n");
 
 				let relevantEntry;
-				if (detectedBrowser === 'Firefox')
+				if (detectedBrowser === "Firefox")
 				{
 					// look for entry immediately after those of log4javascript:
 					for (let entry of stackEntries)
 					{
-						if (entry.indexOf('log4javascript.min.js') &lt;= 0)
+						if (entry.indexOf("log4javascript.min.js") &lt;= 0)
 						{
 							relevantEntry = entry;
 							break;
 						}
 					}
 
-					const buf = relevantEntry.split(':');
+					const buf = relevantEntry.split(":");
 					const line = buf[buf.length - 2];
-					const file = buf[buf.length - 3].split('/').pop();
-					const method = relevantEntry.split('@')[0];
+					const file = buf[buf.length - 3].split("/").pop();
+					const method = relevantEntry.split("@")[0];
 
-					return method + ' ' + file + ':' + line;
+					return method + " " + file + ":" + line;
 				}
-				else if (detectedBrowser === 'Safari')
+				else if (detectedBrowser === "Safari")
 				{
-					return 'unknown';
+					return "unknown";
 				}
-				else if (detectedBrowser === 'Chrome')
+				else if (detectedBrowser === "Chrome")
 				{
 					relevantEntry = stackEntries.pop();
 
-					let buf = relevantEntry.split(' ');
+					let buf = relevantEntry.split(" ");
 					let fileLine = buf.pop();
 					const method = buf.pop();
-					buf = fileLine.split(':');
+					buf = fileLine.split(":");
 					buf.pop();
 					const line = buf.pop();
-					const file = buf.pop().split('/').pop();
+					const file = buf.pop().split("/").pop();
 
-					return method + ' ' + file + ':' + line;
+					return method + " " + file + ":" + line;
 				}
 				else
 				{
-					return 'unknown';
+					return "unknown";
 				}
 			}
 		});
 
 		return customLayout;
 	}
-
-
 
 	/**
 	 * Get the integer value associated with a logging level.
@@ -421,8 +408,6 @@ export class Logger
 	}
 }
 
-
-
 /**
  * Server logging level.
  *
@@ -434,16 +419,15 @@ export class Logger
  * @note These are similar to PsychoPy's logging levels, as defined in logging.py
  */
 Logger.ServerLevel = {
-	CRITICAL: Symbol.for('CRITICAL'),
-	ERROR: Symbol.for('ERROR'),
-	WARNING: Symbol.for('WARNING'),
-	DATA: Symbol.for('DATA'),
-	EXP: Symbol.for('EXP'),
-	INFO: Symbol.for('INFO'),
-	DEBUG: Symbol.for('DEBUG'),
-	NOTSET: Symbol.for('NOTSET')
+	CRITICAL: Symbol.for("CRITICAL"),
+	ERROR: Symbol.for("ERROR"),
+	WARNING: Symbol.for("WARNING"),
+	DATA: Symbol.for("DATA"),
+	EXP: Symbol.for("EXP"),
+	INFO: Symbol.for("INFO"),
+	DEBUG: Symbol.for("DEBUG"),
+	NOTSET: Symbol.for("NOTSET"),
 };
-
 
 /**
  * Server logging level values.
@@ -456,14 +440,14 @@ Logger.ServerLevel = {
  * @protected
  */
 Logger._ServerLevelValue = {
-	'CRITICAL': 50,
-	'ERROR': 40,
-	'WARNING': 30,
-	'DATA': 25,
-	'EXP': 22,
-	'INFO': 20,
-	'DEBUG': 10,
-	'NOTSET': 0
+	"CRITICAL": 50,
+	"ERROR": 40,
+	"WARNING": 30,
+	"DATA": 25,
+	"EXP": 22,
+	"INFO": 20,
+	"DEBUG": 10,
+	"NOTSET": 0,
 };
 </code></pre>
         </article>
@@ -475,13 +459,13 @@ Logger._ServerLevelValue = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

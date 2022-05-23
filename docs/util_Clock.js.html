@@ -35,7 +35,6 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
 /**
  * &lt;p>MonotonicClock offers a convenient way to keep track of time during experiments. An experiment can have as many independent clocks as needed, e.g. one to time responses, another one to keep track of stimuli, etc.&lt;/p>
  *
@@ -50,7 +49,6 @@ export class MonotonicClock
 		this._timeAtLastReset = startTime;
 	}
 
-
 	/**
 	 * Get the current time on this clock.
 	 *
@@ -64,7 +62,6 @@ export class MonotonicClock
 		return MonotonicClock.getReferenceTime() - this._timeAtLastReset;
 	}
 
-
 	/**
 	 * Get the current offset being applied to the high resolution timebase used by this Clock.
 	 *
@@ -77,7 +74,6 @@ export class MonotonicClock
 	{
 		return this._timeAtLastReset;
 	}
-
 
 	/**
 	 * Get the time elapsed since the reference point.
@@ -93,7 +89,6 @@ export class MonotonicClock
 		// return (new Date().getTime()) / 1000.0 - MonotonicClock._referenceTime;
 	}
 
-
 	/**
 	 * Get the current timestamp with language-sensitive formatting rules applied.
 	 *
@@ -107,18 +102,18 @@ export class MonotonicClock
 	 * @param {object} options - An object with detailed date and time styling information.
 	 * @return {string} The current timestamp in the chosen format.
 	 */
-	static getDate(locales = 'en-CA', optionsMaybe)
+	static getDate(locales = "en-CA", optionsMaybe)
 	{
 		const date = new Date();
 		const options = Object.assign({
 			hour12: false,
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric',
-			fractionalSecondDigits: 3
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "numeric",
+			minute: "numeric",
+			second: "numeric",
+			fractionalSecondDigits: 3,
 		}, optionsMaybe);
 
 		const dateTimeFormat = new Intl.DateTimeFormat(locales, options);
@@ -142,14 +137,13 @@ export class MonotonicClock
 		// yyyy-mm-dd, hh:mm:ss.sss
 		return MonotonicClock.getDate()
 			// yyyy-mm-dd_hh:mm:ss.sss
-			.replace(', ', '_')
+			.replace(", ", "_")
 			// yyyy-mm-dd_hh[h]mm:ss.sss
-			.replace(':', 'h')
+			.replace(":", "h")
 			// yyyy-mm-dd_hh[h]mm.ss.sss
-			.replace(':', '.');
+			.replace(":", ".");
 	}
 }
-
 
 /**
  * The clock's referenceTime is the time when the module was loaded (in seconds).
@@ -162,7 +156,6 @@ export class MonotonicClock
 MonotonicClock._referenceTime = performance.now() / 1000.0;
 
 // MonotonicClock._referenceTime = new Date().getTime() / 1000.0;
-
 
 /**
  * &lt;p>Clock is a MonotonicClock that also offers the possibility of being reset.&lt;/p>
@@ -192,7 +185,6 @@ export class Clock extends MonotonicClock
 		this._timeAtLastReset = MonotonicClock.getReferenceTime() + newTime;
 	}
 
-
 	/**
 	 * Add more time to the clock's 'start' time (t0).
 	 *
@@ -209,7 +201,6 @@ export class Clock extends MonotonicClock
 		this._timeAtLastReset += deltaTime;
 	}
 }
-
 
 /**
  * &lt;p>CountdownTimer is a clock counts down from the time of last reset.&lt;/p.
@@ -233,7 +224,6 @@ export class CountdownTimer extends Clock
 		}
 	}
 
-
 	/**
 	 * Add more time to the clock's 'start' time (t0).
 	 *
@@ -250,7 +240,6 @@ export class CountdownTimer extends Clock
 		this._timeAtLastReset += deltaTime;
 	}
 
-
 	/**
 	 * Reset the time on the countdown.
 	 *
@@ -262,7 +251,7 @@ export class CountdownTimer extends Clock
 	 */
 	reset(newTime = undefined)
 	{
-		if (typeof newTime == 'undefined')
+		if (typeof newTime == "undefined")
 		{
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + this._countdown_duration;
 		}
@@ -272,7 +261,6 @@ export class CountdownTimer extends Clock
 			this._timeAtLastReset = MonotonicClock.getReferenceTime() + newTime;
 		}
 	}
-
 
 	/**
 	 * Get the time currently left on the countdown.
@@ -287,7 +275,6 @@ export class CountdownTimer extends Clock
 		return this._timeAtLastReset - MonotonicClock.getReferenceTime();
 	}
 }
-
 </code></pre>
         </article>
     </section>
@@ -298,13 +285,13 @@ export class CountdownTimer extends Clock
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

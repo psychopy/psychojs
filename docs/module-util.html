@@ -203,7 +203,7 @@ since those are reserved for client/server communication</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line783">line 783</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line765">line 765</a>
     </li></ul></dd>
     
 
@@ -342,7 +342,7 @@ If 'input' is not an array, or if it is an empty array, then we return 0.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1112">line 1112</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1087">line 1087</a>
     </li></ul></dd>
     
 
@@ -535,7 +535,7 @@ If 'input' is not an array, or if it is an empty array, then we return 0.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1334">line 1334</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1311">line 1311</a>
     </li></ul></dd>
     
 
@@ -636,7 +636,7 @@ https://stackoverflow.com/a/9851769</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line143">line 143</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -798,7 +798,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1424">line 1424</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1398">line 1398</a>
     </li></ul></dd>
     
 
@@ -957,7 +957,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line879">line 879</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line862">line 862</a>
     </li></ul></dd>
     
 
@@ -998,6 +998,222 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     <dd>
         
 <span class="param-type">Array.&lt;Object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getDownloadSpeed"><span class="type-signature">(static) </span>getDownloadSpeed<span class="signature">(psychoJS, nbDownloads<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get an estimate of the download speed, by repeatedly downloading an image file from a distant
+server.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>psychoJS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="PsychoJS.html">PsychoJS</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">the instance of PsychoJS</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nbDownloads</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">the number of image downloads over which to average
+	the download speed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1439">line 1439</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the download speed, in megabits per second
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
 
 
     </dd>
@@ -1067,7 +1283,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line86">line 86</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -1249,7 +1465,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line361">line 361</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line381">line 381</a>
     </li></ul></dd>
     
 
@@ -1439,7 +1655,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line703">line 703</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line688">line 688</a>
     </li></ul></dd>
     
 
@@ -1527,7 +1743,7 @@ or unknown, then '.dat' is returned, instead of throwing an exception.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line756">line 756</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line739">line 739</a>
     </li></ul></dd>
     
 
@@ -1727,7 +1943,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1379">line 1379</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1355">line 1355</a>
     </li></ul></dd>
     
 
@@ -1886,7 +2102,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line111">line 111</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line104">line 104</a>
     </li></ul></dd>
     
 
@@ -2046,7 +2262,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line734">line 734</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line718">line 718</a>
     </li></ul></dd>
     
 
@@ -2076,6 +2292,165 @@ for (const [key, value] of urlParameters)
         
 <div class="param-desc">
     whether or not the object is an integer or the string representation of an integer
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".isNumeric"><span class="type-signature">(static) </span>isNumeric<span class="signature">(input)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Check whether a value looks like a number
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>input</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Some value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line291">line 291</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Whether or not the value can be converted into a number
 </div>
 
 
@@ -2229,7 +2604,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line303">line 303</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line305">line 305</a>
     </li></ul></dd>
     
 
@@ -2340,7 +2715,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line67">line 67</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -2545,7 +2920,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line948">line 948</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line929">line 929</a>
     </li></ul></dd>
     
 
@@ -2682,7 +3057,7 @@ for (const [key, value] of urlParameters)
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line49">line 49</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -2713,6 +3088,208 @@ for (const [key, value] of urlParameters)
 <div class="param-desc">
     the resulting value in the format [error, return data]
 where error is null if there was no error
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Object></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".randchoice"><span class="type-signature">(static) </span>randchoice<span class="signature">(array, randomNumberGenerator<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;Object>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>array</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Object></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">the input 1-D array</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>randomNumberGenerator</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A function used to generated random numbers in the interal [0, 1). Defaults to Math.random</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line361">line 361</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    a chosen value from the array
 </div>
 
 
@@ -2897,7 +3474,7 @@ where error is null if there was no error
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1028">line 1028</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1006">line 1006</a>
     </li></ul></dd>
     
 
@@ -3154,7 +3731,7 @@ The sequence is such that the integer at index i is: start + step * i, with i >=
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1186">line 1186</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1159">line 1159</a>
     </li></ul></dd>
     
 
@@ -3338,7 +3915,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1062">line 1062</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1039">line 1039</a>
     </li></ul></dd>
     
 
@@ -3543,7 +4120,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line813">line 813</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line794">line 794</a>
     </li></ul></dd>
     
 
@@ -3749,7 +4326,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line335">line 335</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line336">line 336</a>
     </li></ul></dd>
     
 
@@ -4041,7 +4618,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line901">line 901</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line883">line 883</a>
     </li></ul></dd>
     
 
@@ -4200,7 +4777,7 @@ This is the Crib Sheet provided solution, but please note that as of 2020 the mo
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1139">line 1139</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1113">line 1113</a>
     </li></ul></dd>
     
 
@@ -4397,7 +4974,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1081">line 1081</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line1057">line 1057</a>
     </li></ul></dd>
     
 
@@ -4602,7 +5179,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line489">line 489</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line505">line 505</a>
     </li></ul></dd>
     
 
@@ -4807,7 +5384,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line456">line 456</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line473">line 473</a>
     </li></ul></dd>
     
 
@@ -5091,7 +5668,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line605">line 605</a>
+        <a href="util_Pixi.js.html">util/Pixi.js</a>, <a href="util_Pixi.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -5375,7 +5952,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line406">line 406</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line424">line 424</a>
     </li></ul></dd>
     
 
@@ -5603,7 +6180,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line565">line 565</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line579">line 579</a>
     </li></ul></dd>
     
 
@@ -5808,7 +6385,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line526">line 526</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line541">line 541</a>
     </li></ul></dd>
     
 
@@ -5974,7 +6551,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line223">line 223</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line214">line 214</a>
     </li></ul></dd>
     
 
@@ -6138,7 +6715,7 @@ If 'input' is not an array, then we return start.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line631">line 631</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line618">line 618</a>
     </li></ul></dd>
     
 
@@ -6322,7 +6899,7 @@ missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line977">line 977</a>
+        <a href="util_Util.js.html">util/Util.js</a>, <a href="util_Util.js.html#line957">line 957</a>
     </li></ul></dd>
     
 
@@ -6390,13 +6967,13 @@ missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>
