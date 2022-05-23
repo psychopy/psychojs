@@ -20,12 +20,13 @@ out vec4 shaderOut;
 uniform float uFreq;
 uniform float uPhase;
 uniform vec3 uColor;
+uniform float uAlpha;
 
 void main() {
-    vec2 uv = vUvs;
+    vec2 uv = vec2(vUvs.x - .25, vUvs.y * -1. - .25);
     float sx = sin((uFreq * uv.x + uPhase) * PI2);
     float sy = sin((uFreq * uv.y + uPhase) * PI2);
     float s = sx * sy;
-    // it's important to convert to [0, 1] while multiplication to uColor, not before, to preserve desired coloring functionality
-    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
+    // it's important to convert to [0, 1] while multiplying to uColor, not before, to preserve desired coloring functionality
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0) * uAlpha;
 }

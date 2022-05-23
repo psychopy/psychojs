@@ -19,6 +19,7 @@ out vec4 shaderOut;
 uniform float uBeta;
 uniform float uPeriod;
 uniform vec3 uColor;
+uniform float uAlpha;
 
 void main() {
     vec2 uv = vUvs;
@@ -35,5 +36,5 @@ void main() {
     // converting first to [-1, 1] space to get the proper color functionality
     // then back to [0, 1]
     s = s * 2. - 1.;
-    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0);
+    shaderOut = vec4(vec3(s) * uColor * .5 + .5, 1.0) * uAlpha;
 }
