@@ -35,9 +35,9 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import * as Tone from 'tone';
-import {SoundPlayer} from './SoundPlayer';
-
+import * as Tone from "tone";
+import { isNumeric } from "../util/Util.js";
+import { SoundPlayer } from "./SoundPlayer.js";
 
 /**
  * &lt;p>This class handles the playing of tones.&lt;/p>
@@ -55,23 +55,23 @@ import {SoundPlayer} from './SoundPlayer';
 export class TonePlayer extends SoundPlayer
 {
 	constructor({
-								psychoJS,
-								note = 'C4',
-								duration_s = 0.5,
-								volume = 1.0,
-								loops = 0,
-								soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
-								autoLog = true
-							} = {})
+		psychoJS,
+		note = "C4",
+		duration_s = 0.5,
+		volume = 1.0,
+		loops = 0,
+		soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS);
 
-		this._addAttribute('note', note);
-		this._addAttribute('duration_s', duration_s);
-		this._addAttribute('volume', volume);
-		this._addAttribute('loops', loops);
-		this._addAttribute('soundLibrary', soundLibrary);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("note", note);
+		this._addAttribute("duration_s", duration_s);
+		this._addAttribute("volume", volume);
+		this._addAttribute("loops", loops);
+		this._addAttribute("soundLibrary", soundLibrary);
+		this._addAttribute("autoLog", autoLog);
 
 		// initialise the sound library:
 		this._initSoundLibrary();
@@ -84,7 +84,6 @@ export class TonePlayer extends SoundPlayer
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
-
 
 	/**
 	 * Determine whether this player can play the given sound.
@@ -102,39 +101,39 @@ export class TonePlayer extends SoundPlayer
 	static accept(sound)
 	{
 		// if the sound's value is an integer, we interpret it as a frequency:
-		if ($.isNumeric(sound.value))
+		if (isNumeric(sound.value))
 		{
 			return new TonePlayer({
 				psychoJS: sound.psychoJS,
 				note: sound.value,
 				duration_s: sound.secs,
 				volume: sound.volume,
-				loops: sound.loops
+				loops: sound.loops,
 			});
 		}
 
 		// if the sound's value is a string, we check whether it is a note:
-		if (typeof sound.value === 'string')
+		if (typeof sound.value === "string")
 		{
 			// mapping between the PsychoPY notes and the standard ones:
 			let psychopyToToneMap = new Map();
-			for (const note of ['A', 'B', 'C', 'D', 'E', 'F', 'G'])
+			for (const note of ["A", "B", "C", "D", "E", "F", "G"])
 			{
 				psychopyToToneMap.set(note, note);
-				psychopyToToneMap.set(note + 'fl', note + 'b');
-				psychopyToToneMap.set(note + 'sh', note + '#');
+				psychopyToToneMap.set(note + "fl", note + "b");
+				psychopyToToneMap.set(note + "sh", note + "#");
 			}
 
 			// check whether the sound's value is a recognised note:
 			const note = psychopyToToneMap.get(sound.value);
-			if (typeof note !== 'undefined')
+			if (typeof note !== "undefined")
 			{
 				return new TonePlayer({
 					psychoJS: sound.psychoJS,
 					note: note + sound.octave,
 					duration_s: sound.secs,
 					volume: sound.volume,
-					loops: sound.loops
+					loops: sound.loops,
 				});
 			}
 		}
@@ -142,7 +141,6 @@ export class TonePlayer extends SoundPlayer
 		// TonePlayer is not an appropriate player for the given sound:
 		return undefined;
 	}
-
 
 	/**
 	 * Get the duration of the sound.
@@ -157,7 +155,6 @@ export class TonePlayer extends SoundPlayer
 		return this.duration_s;
 	}
 
-
 	/**
 	 * Set the duration of the tone.
 	 *
@@ -171,7 +168,6 @@ export class TonePlayer extends SoundPlayer
 		this.duration_s = duration_s;
 	}
 
-
 	/**
 	 * Set the number of loops.
 	 *
@@ -184,7 +180,6 @@ export class TonePlayer extends SoundPlayer
 	{
 		this._loops = loops;
 	}
-
 
 	/**
 	 * Set the volume of the tone.
@@ -201,7 +196,7 @@ export class TonePlayer extends SoundPlayer
 
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
-			if (typeof this._volumeNode !== 'undefined')
+			if (typeof this._volumeNode !== "undefined")
 			{
 				this._volumeNode.mute = mute;
 				this._volumeNode.volume.value = -60 + volume * 66;
@@ -218,7 +213,6 @@ export class TonePlayer extends SoundPlayer
 		}
 	}
 
-
 	/**
 	 * Start playing the sound.
 	 *
@@ -229,7 +223,7 @@ export class TonePlayer extends SoundPlayer
 	 */
 	play(loops)
 	{
-		if (typeof loops !== 'undefined')
+		if (typeof loops !== "undefined")
 		{
 			this._loops = loops;
 		}
@@ -250,7 +244,7 @@ export class TonePlayer extends SoundPlayer
 			playToneCallback = () =>
 			{
 				self._webAudioOscillator = self._audioContext.createOscillator();
-				self._webAudioOscillator.type = 'sine';
+				self._webAudioOscillator.type = "sine";
 				self._webAudioOscillator.frequency.value = 440;
 				self._webAudioOscillator.connect(self._audioContext.destination);
 				const contextCurrentTime = self._audioContext.currentTime;
@@ -264,7 +258,6 @@ export class TonePlayer extends SoundPlayer
 		{
 			playToneCallback();
 		}
-
 		// repeat forever:
 		else if (this.loops === -1)
 		{
@@ -272,21 +265,20 @@ export class TonePlayer extends SoundPlayer
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				Infinity
+				Infinity,
 			);
 		}
-		else
 		// repeat this._loops times:
+		else
 		{
 			this._toneId = Tone.Transport.scheduleRepeat(
 				playToneCallback,
 				this.duration_s,
 				Tone.now(),
-				this.duration_s * (this._loops + 1)
+				this.duration_s * (this._loops + 1),
 			);
 		}
 	}
-
 
 	/**
 	 * Stop playing the sound immediately.
@@ -315,7 +307,6 @@ export class TonePlayer extends SoundPlayer
 		}
 	}
 
-
 	/**
 	 * Initialise the sound library.
 	 *
@@ -329,24 +320,24 @@ export class TonePlayer extends SoundPlayer
 	_initSoundLibrary()
 	{
 		const response = {
-			origin: 'TonePlayer._initSoundLibrary',
-			context: 'when initialising the sound library'
+			origin: "TonePlayer._initSoundLibrary",
+			context: "when initialising the sound library",
 		};
 
 		if (this._soundLibrary === TonePlayer.SoundLibrary.TONE_JS)
 		{
 			// check that Tone.js is available:
-			if (typeof Tone === 'undefined')
+			if (typeof Tone === "undefined")
 			{
 				throw Object.assign(response, {
-					error: "Tone.js is not available. A different sound library must be selected. Please contact the experiment designer."
+					error: "Tone.js is not available. A different sound library must be selected. Please contact the experiment designer.",
 				});
 			}
 
 			// start the Tone Transport if it has not started already:
-			if (typeof Tone !== 'undefined' &amp;&amp; Tone.Transport.state !== 'started')
+			if (typeof Tone !== "undefined" &amp;&amp; Tone.Transport.state !== "started")
 			{
-				this.psychoJS.logger.info('[PsychoJS] start Tone Transport');
+				this.psychoJS.logger.info("[PsychoJS] start Tone Transport");
 				Tone.Transport.start(Tone.now());
 
 				// this is necessary to prevent Tone from introducing a delay when triggering a note
@@ -357,14 +348,14 @@ export class TonePlayer extends SoundPlayer
 			// create a synth: we use a triangular oscillator with hardly any envelope:
 			this._synthOtions = {
 				oscillator: {
-					type: 'square' //'triangle'
+					type: "square", // 'triangle'
 				},
 				envelope: {
 					attack: 0.001, // 1ms
-					decay: 0.001,  // 1ms
+					decay: 0.001, // 1ms
 					sustain: 1,
-					release: 0.001 // 1ms
-				}
+					release: 0.001, // 1ms
+				},
 			};
 			this._synth = new Tone.Synth(this._synthOtions);
 
@@ -373,7 +364,7 @@ export class TonePlayer extends SoundPlayer
 			this._synth.connect(this._volumeNode);
 
 			// connect the volume node to the master output:
-			if (typeof this._volumeNode.toDestination === 'function')
+			if (typeof this._volumeNode.toDestination === "function")
 			{
 				this._volumeNode.toDestination();
 			}
@@ -385,15 +376,15 @@ export class TonePlayer extends SoundPlayer
 		else
 		{
 			// create an AudioContext:
-			if (typeof this._audioContext === 'undefined')
+			if (typeof this._audioContext === "undefined")
 			{
 				const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 				// if AudioContext is not available (e.g. on IE), we throw an exception:
-				if (typeof AudioContext === 'undefined')
+				if (typeof AudioContext === "undefined")
 				{
 					throw Object.assign(response, {
-						error: `AudioContext is not available on your browser, ${this._psychoJS.browser}, please contact the experiment designer.`
+						error: `AudioContext is not available on your browser, ${this._psychoJS.browser}, please contact the experiment designer.`,
 					});
 				}
 
@@ -401,17 +392,15 @@ export class TonePlayer extends SoundPlayer
 			}
 		}
 	}
-
 }
-
 
 /**
  *
  * @type {{TONE_JS: *, AUDIO_CONTEXT: *}}
  */
 TonePlayer.SoundLibrary = {
-	AUDIO_CONTEXT: Symbol.for('AUDIO_CONTEXT'),
-	TONE_JS: Symbol.for('TONE_JS')
+	AUDIO_CONTEXT: Symbol.for("AUDIO_CONTEXT"),
+	TONE_JS: Symbol.for("TONE_JS"),
 };
 </code></pre>
         </article>
@@ -423,13 +412,13 @@ TonePlayer.SoundLibrary = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

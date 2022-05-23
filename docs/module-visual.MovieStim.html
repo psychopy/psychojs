@@ -29,7 +29,7 @@
 <header>
     
         <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>MovieStim<span class="signature">(options)</span><span class="type-signature"></span></h2>
+            <span class="ancestors"><a href="module-visual.html">visual</a>.</span>MovieStim<span class="signature">(options, movie)</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -42,7 +42,7 @@
     
 
     
-    <h4 class="name" id="MovieStim"><span class="type-signature"></span>new MovieStim<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="MovieStim"><span class="type-signature"></span>new MovieStim<span class="signature">(options, movie)</span><span class="type-signature"></span></h4>
     
 
     
@@ -74,7 +74,11 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -99,7 +103,19 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
             
 
             <td class="description last">
@@ -116,11 +132,7 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -145,19 +157,7 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last">the name used when logging messages from this stimulus</td>
@@ -180,22 +180,17 @@
             </td>
 
             
-                <td class="attributes">
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last">the associated Window</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -212,6 +207,9 @@
 |
 
 <span class="param-type">HTMLVideoElement</span>
+|
+
+<span class="param-type"><a href="module-visual.Camera.html">module:visual.Camera</a></span>
 
 
             
@@ -233,14 +231,15 @@
                 </td>
             
 
-            <td class="description last">the name of the movie resource or the HTMLVideoElement corresponding to the movie</td>
+            <td class="description last">the name of a
+movie resource or of a HTMLVideoElement or of a Camera component</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>units</code></td>
+                <td class="name"><code>options.units</code></td>
             
 
             <td class="type">
@@ -279,7 +278,7 @@
 
         <tr>
             
-                <td class="name"><code>pos</code></td>
+                <td class="name"><code>options.pos</code></td>
             
 
             <td class="type">
@@ -318,7 +317,7 @@
 
         <tr>
             
-                <td class="name"><code>units</code></td>
+                <td class="name"><code>options.units</code></td>
             
 
             <td class="type">
@@ -357,7 +356,7 @@
 
         <tr>
             
-                <td class="name"><code>ori</code></td>
+                <td class="name"><code>options.ori</code></td>
             
 
             <td class="type">
@@ -396,7 +395,7 @@
 
         <tr>
             
-                <td class="name"><code>size</code></td>
+                <td class="name"><code>options.size</code></td>
             
 
             <td class="type">
@@ -433,7 +432,7 @@
 
         <tr>
             
-                <td class="name"><code>color</code></td>
+                <td class="name"><code>options.color</code></td>
             
 
             <td class="type">
@@ -472,7 +471,7 @@
 
         <tr>
             
-                <td class="name"><code>opacity</code></td>
+                <td class="name"><code>options.opacity</code></td>
             
 
             <td class="type">
@@ -511,7 +510,7 @@
 
         <tr>
             
-                <td class="name"><code>contrast</code></td>
+                <td class="name"><code>options.contrast</code></td>
             
 
             <td class="type">
@@ -550,7 +549,7 @@
 
         <tr>
             
-                <td class="name"><code>interpolate</code></td>
+                <td class="name"><code>options.interpolate</code></td>
             
 
             <td class="type">
@@ -589,7 +588,7 @@
 
         <tr>
             
-                <td class="name"><code>flipHoriz</code></td>
+                <td class="name"><code>options.flipHoriz</code></td>
             
 
             <td class="type">
@@ -628,7 +627,7 @@
 
         <tr>
             
-                <td class="name"><code>flipVert</code></td>
+                <td class="name"><code>options.flipVert</code></td>
             
 
             <td class="type">
@@ -667,7 +666,7 @@
 
         <tr>
             
-                <td class="name"><code>loop</code></td>
+                <td class="name"><code>options.loop</code></td>
             
 
             <td class="type">
@@ -706,7 +705,7 @@
 
         <tr>
             
-                <td class="name"><code>volume</code></td>
+                <td class="name"><code>options.volume</code></td>
             
 
             <td class="type">
@@ -745,7 +744,7 @@
 
         <tr>
             
-                <td class="name"><code>noAudio</code></td>
+                <td class="name"><code>options.noAudio</code></td>
             
 
             <td class="type">
@@ -784,7 +783,7 @@
 
         <tr>
             
-                <td class="name"><code>autoPlay</code></td>
+                <td class="name"><code>options.autoPlay</code></td>
             
 
             <td class="type">
@@ -823,7 +822,7 @@
 
         <tr>
             
-                <td class="name"><code>autoDraw</code></td>
+                <td class="name"><code>options.autoDraw</code></td>
             
 
             <td class="type">
@@ -862,7 +861,7 @@
 
         <tr>
             
-                <td class="name"><code>autoLog</code></td>
+                <td class="name"><code>options.autoLog</code></td>
             
 
             <td class="type">
@@ -895,13 +894,6 @@
             
 
             <td class="description last">whether or not to log</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
         </tr>
 
     
@@ -942,7 +934,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line19">line 19</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line20">line 20</a>
     </li></ul></dd>
     
 
@@ -1054,7 +1046,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line136">line 136</a>
+        <a href="visual_MovieStim.js.html">visual/MovieStim.js</a>, <a href="visual_MovieStim.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -1088,13 +1080,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:29 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

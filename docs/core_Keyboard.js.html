@@ -35,11 +35,10 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import {Clock, MonotonicClock} from "../util/Clock";
-import {PsychObject} from "../util/PsychObject";
-import {PsychoJS} from "./PsychoJS";
-import {EventManager} from "./EventManager";
-
+import { Clock, MonotonicClock } from "../util/Clock.js";
+import { PsychObject } from "../util/PsychObject.js";
+import { EventManager } from "./EventManager.js";
+import { PsychoJS } from "./PsychoJS.js";
 
 /**
  * @name module:core.KeyPress
@@ -55,7 +54,7 @@ export class KeyPress
 	{
 		this.code = code;
 		this.tDown = tDown;
-		this.name = (typeof name !== 'undefined') ? name : EventManager.w3c2pyglet(code);
+		this.name = (typeof name !== "undefined") ? name : EventManager.w3c2pyglet(code);
 
 		// duration of the keypress (time between keydown and keyup events) or undefined if there was no keyup
 		this.duration = undefined;
@@ -64,7 +63,6 @@ export class KeyPress
 		this.rt = undefined;
 	}
 }
-
 
 /**
  * &lt;p>This manager handles all keyboard events. It is a substitute for the keyboard component of EventManager. &lt;/p>
@@ -81,38 +79,34 @@ export class KeyPress
  */
 export class Keyboard extends PsychObject
 {
-
 	constructor({
-								psychoJS,
-								bufferSize = 10000,
-								waitForStart = false,
-								clock,
-								autoLog = false,
-							} = {})
+		psychoJS,
+		bufferSize = 10000,
+		waitForStart = false,
+		clock,
+		autoLog = false,
+	} = {})
 	{
-
 		super(psychoJS);
 
-		if (typeof clock === 'undefined')
+		if (typeof clock === "undefined")
 		{
 			clock = new Clock();
-		} //this._psychoJS.monotonicClock;
+		} // this._psychoJS.monotonicClock;
 
-		this._addAttribute('bufferSize', bufferSize);
-		this._addAttribute('waitForStart', waitForStart);
-		this._addAttribute('clock', clock);
-		this._addAttribute('autoLog', autoLog);
+		this._addAttribute("bufferSize", bufferSize);
+		this._addAttribute("waitForStart", waitForStart);
+		this._addAttribute("clock", clock);
+		this._addAttribute("autoLog", autoLog);
 		// start recording key events if need be:
-		this._addAttribute('status', (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
+		this._addAttribute("status", (waitForStart) ? PsychoJS.Status.NOT_STARTED : PsychoJS.Status.STARTED);
 
 		// setup circular buffer:
 		this.clearEvents();
 
 		// add key listeners:
 		this._addKeyListeners();
-
 	}
-
 
 	/**
 	 * Start recording keyboard events.
@@ -127,7 +121,6 @@ export class Keyboard extends PsychObject
 		this._status = PsychoJS.Status.STARTED;
 	}
 
-
 	/**
 	 * Stop recording keyboard events.
 	 *
@@ -140,7 +133,6 @@ export class Keyboard extends PsychObject
 	{
 		this._status = PsychoJS.Status.STOPPED;
 	}
-
 
 	/**
 	 * @typedef Keyboard.KeyEvent
@@ -167,7 +159,6 @@ export class Keyboard extends PsychObject
 			return [];
 		}
 
-
 		// iterate over the buffer, from start to end, and discard the null event:
 		let filteredEvents = [];
 		const bufferWrap = (this._bufferLength === this._bufferSize);
@@ -185,7 +176,6 @@ export class Keyboard extends PsychObject
 		return filteredEvents;
 	}
 
-
 	/**
 	 * Get the list of keys pressed or pushed by the participant.
 	 *
@@ -202,12 +192,11 @@ export class Keyboard extends PsychObject
 	 * (keydown with no subsequent keyup at the time getKeys is called).
 	 */
 	getKeys({
-						keyList = [],
-						waitRelease = true,
-						clear = true
-					} = {})
+		keyList = [],
+		waitRelease = true,
+		clear = true,
+	} = {})
 	{
-
 		// if nothing in the buffer, return immediately:
 		if (this._bufferLength === 0)
 		{
@@ -231,7 +220,7 @@ export class Keyboard extends PsychObject
 				{
 					// look for a corresponding, preceding keydown event:
 					const precedingKeydownIndex = keyEvent.keydownIndex;
-					if (typeof precedingKeydownIndex !== 'undefined')
+					if (typeof precedingKeydownIndex !== "undefined")
 					{
 						const precedingKeydownEvent = this._circularBuffer[precedingKeydownIndex];
 						if (precedingKeydownEvent)
@@ -278,12 +267,9 @@ export class Keyboard extends PsychObject
 					{
 						this._circularBuffer[i] = null;
 					}
-
 				}
 			}
-
 		} while (i !== this._bufferIndex);
-
 
 		// if waitRelease = false, we iterate again over the map of unmatched keydown events:
 		if (!waitRelease)
@@ -331,17 +317,14 @@ export class Keyboard extends PsychObject
 			} while (i !== this._bufferIndex);*/
 		}
 
-
 		// if clear = true and the keyList is empty, we clear all the events:
 		if (clear &amp;&amp; keyList.length === 0)
 		{
 			this.clearEvents();
 		}
 
-
 		return keyPresses;
 	}
-
 
 	/**
 	 * Clear all events and resets the circular buffers.
@@ -361,7 +344,6 @@ export class Keyboard extends PsychObject
 		this._unmatchedKeydownMap = new Map();
 	}
 
-
 	/**
 	 * Test whether a list of KeyPress's contains one with a particular name.
 	 *
@@ -380,9 +362,8 @@ export class Keyboard extends PsychObject
 		}
 
 		const value = keypressList.find((keypress) => keypress.name === keyName);
-		return (typeof value !== 'undefined');
+		return (typeof value !== "undefined");
 	}
-
 
 	/**
 	 * Add key listeners to the document.
@@ -396,10 +377,9 @@ export class Keyboard extends PsychObject
 		this._previousKeydownKey = undefined;
 		const self = this;
 
-
 		// add a keydown listener:
 		window.addEventListener("keydown", (event) =>
-			// document.addEventListener("keydown", (event) =>
+		// document.addEventListener("keydown", (event) =>
 		{
 			// only consider non-repeat events, i.e. only the first keydown event associated with a participant
 			// holding a key down:
@@ -426,13 +406,12 @@ export class Keyboard extends PsychObject
 			let code = event.code;
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
-			if (typeof code === 'undefined')
+			if (typeof code === "undefined")
 			{
 				code = EventManager.keycode2w3c(event.keyCode);
 			}
 
 			let pigletKey = EventManager.w3c2pyglet(code);
-
 
 			self._bufferIndex = (self._bufferIndex + 1) % self._bufferSize;
 			self._bufferLength = Math.min(self._bufferLength + 1, self._bufferSize);
@@ -441,20 +420,19 @@ export class Keyboard extends PsychObject
 				key: event.key,
 				pigletKey,
 				status: Keyboard.KeyStatus.KEY_DOWN,
-				timestamp
+				timestamp,
 			};
 
 			self._unmatchedKeydownMap.set(event.code, self._bufferIndex);
 
-			self._psychoJS.logger.trace('keydown: ', event.key);
+			self._psychoJS.logger.trace("keydown: ", event.key);
 
 			event.stopPropagation();
 		});
 
-
 		// add a keyup listener:
 		window.addEventListener("keyup", (event) =>
-			// document.addEventListener("keyup", (event) =>
+		// document.addEventListener("keyup", (event) =>
 		{
 			const timestamp = MonotonicClock.getReferenceTime(); // timestamp in seconds
 
@@ -468,7 +446,7 @@ export class Keyboard extends PsychObject
 			let code = event.code;
 
 			// take care of legacy Microsoft Edge:
-			if (typeof code === 'undefined')
+			if (typeof code === "undefined")
 			{
 				code = EventManager.keycode2w3c(event.keyCode);
 			}
@@ -482,27 +460,25 @@ export class Keyboard extends PsychObject
 				key: event.key,
 				pigletKey,
 				status: Keyboard.KeyStatus.KEY_UP,
-				timestamp
+				timestamp,
 			};
 
 			// get the corresponding keydown event
 			// note: if more keys are down than there are slots in the circular buffer, there might
 			// not be a corresponding keydown event
 			const correspondingKeydownIndex = self._unmatchedKeydownMap.get(event.code);
-			if (typeof correspondingKeydownIndex !== 'undefined')
+			if (typeof correspondingKeydownIndex !== "undefined")
 			{
 				self._circularBuffer[self._bufferIndex].keydownIndex = correspondingKeydownIndex;
 				self._unmatchedKeydownMap.delete(event.code);
 			}
 
-			self._psychoJS.logger.trace('keyup: ', event.key);
+			self._psychoJS.logger.trace("keyup: ", event.key);
 
 			event.stopPropagation();
 		});
-
 	}
 }
-
 
 /**
  * Keyboard KeyStatus.
@@ -513,8 +489,8 @@ export class Keyboard extends PsychObject
  * @public
  */
 Keyboard.KeyStatus = {
-	KEY_DOWN: Symbol.for('KEY_DOWN'),
-	KEY_UP: Symbol.for('KEY_UP')
+	KEY_DOWN: Symbol.for("KEY_DOWN"),
+	KEY_UP: Symbol.for("KEY_UP"),
 };
 </code></pre>
         </article>
@@ -526,13 +502,13 @@ Keyboard.KeyStatus = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

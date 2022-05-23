@@ -16,7 +16,7 @@ import { Scheduler } from "../util/Scheduler.js";
 
 /**
  * <p>Shelf handles persistent key/value pairs, which are stored in the shelf collection on the
- * server, and accesses in a safe, concurrent fashion.</p>
+ * server, and accessed in a safe, concurrent fashion.</p>
  *
  * @name module:data.Shelf
  * @class
@@ -569,7 +569,7 @@ export class Shelf extends PsychObject
 	}
 
 	/**
-	 * Check whether it is possible to run shelf commands.
+	 * Check whether it is possible to run a given shelf command.
 	 *
 	 * @name module:data.Shelf#_checkAvailability
 	 * @function

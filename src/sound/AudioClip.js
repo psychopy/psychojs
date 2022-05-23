@@ -187,7 +187,7 @@ export class AudioClip extends PsychObject
 	 * @param {Symbol} options.engine - the speech-to-text engine
 	 * @param {String} options.languageCode - the BCP-47 language code for the recognition,
 	 * 	e.g. 'en-GB'
-	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * @return {Promise} a promise resolving to the transcript and associated
 	 * 	transcription confidence
 	 */
 	async transcribe({ engine, languageCode } = {})
@@ -241,7 +241,7 @@ export class AudioClip extends PsychObject
 	 *
 	 * @param {String} transcriptionKey - the secret key to the Google service
 	 * @param {String} languageCode - the BCP-47 language code for the recognition, e.g. 'en-GB'
-	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * @return {Promise} a promise resolving to the transcript and associated
 	 * 	transcription confidence
 	 */
 	_GoogleTranscribe(transcriptionKey, languageCode)

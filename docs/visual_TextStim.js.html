@@ -35,13 +35,12 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import * as util from '../util/Util';
-
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * @name module:visual.TextStim
@@ -76,9 +75,34 @@ import * as util from '../util/Util';
  */
 export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, text, font, pos, color, opacity, depth, contrast, units, ori, height, bold, italic, alignHoriz, alignVert, wrapWidth, flipHoriz, flipVert, clipMask, autoDraw, autoLog} = {})
+	constructor(
+		{
+			name,
+			win,
+			text,
+			font,
+			pos,
+			color,
+			opacity,
+			depth,
+			contrast,
+			units,
+			ori,
+			height,
+			bold,
+			italic,
+			alignHoriz,
+			alignVert,
+			wrapWidth,
+			flipHoriz,
+			flipVert,
+			clipMask,
+			autoDraw,
+			autoLog,
+		} = {},
+	)
 	{
-		super({name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog });
 
 		// callback to deal with text metrics invalidation:
 		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>
@@ -96,80 +120,77 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// text and font:
 		this._addAttribute(
-			'text',
+			"text",
 			text,
-			'Hello World',
-			onChange(true, true, true)
+			"Hello World",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'alignHoriz',
+			"alignHoriz",
 			alignHoriz,
-			'center',
-			onChange(true, true, true)
+			"center",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'alignVert',
+			"alignVert",
 			alignVert,
-			'center',
-			onChange(true, true, true)
+			"center",
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'height',
+			"height",
 			height,
 			this._getDefaultLetterHeight(),
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'wrapWidth',
+			"wrapWidth",
 			wrapWidth,
 			this._getDefaultWrapWidth(),
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
-
-		// color:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			"white"
+			// this._onChange(true, false)
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
 			this._onChange(true, false)
 		);
-
 
 		// estimate the bounding box (using TextMetrics):
 		this._estimateBoundingBox();
@@ -180,28 +201,37 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
-
-
 	/**
 	 * Get the metrics estimated for the text and style.
 	 *
-	 * Note: getTextMetrics does not require the PIXI representation of the stimulus to be instantiated,
-	 * unlike getSize().
+	 * Note: getTextMetrics does not require the PIXI representation of the stimulus
+	 * to be instantiated, unlike getSize().
 	 *
 	 * @name module:visual.TextStim#getTextMetrics
 	 * @public
 	 */
 	getTextMetrics()
 	{
-		if (typeof this._textMetrics === 'undefined')
+		if (typeof this._textMetrics === "undefined")
 		{
 			this._textMetrics = PIXI.TextMetrics.measureText(this._text, this._getTextStyle());
+
+			// since PIXI.TextMetrics does not give us the actual bounding box of the text
+			// (e.g. the height is really just the ascent + descent of the font), we use measureText:
+			const textMetricsCanvas = document.createElement('canvas');
+			document.body.appendChild(textMetricsCanvas);
+
+			const ctx = textMetricsCanvas.getContext("2d");
+			ctx.font = this._getTextStyle().toFontString();
+			ctx.textBaseline = "alphabetic";
+			ctx.textAlign = "left";
+			this._textMetrics.boundingBox = ctx.measureText(this._text);
+
+			document.body.removeChild(textMetricsCanvas);
 		}
 
 		return this._textMetrics;
 	}
-
-
 
 	/**
 	 * Get the default letter height given the stimulus' units.
@@ -214,19 +244,17 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const height = TextStim._defaultLetterHeightMap.get(this._units);
 
-		if (typeof height === 'undefined')
+		if (typeof height === "undefined")
 		{
 			throw {
-				origin: 'TextStim._getDefaultLetterHeight',
-				context: 'when getting the default height of TextStim: ' + this._name,
-				error: 'no default letter height for unit: ' + this._units
+				origin: "TextStim._getDefaultLetterHeight",
+				context: "when getting the default height of TextStim: " + this._name,
+				error: "no default letter height for unit: " + this._units,
 			};
 		}
 
 		return height;
 	}
-
-
 
 	/**
 	 * Get the default wrap width given the stimulus' units.
@@ -239,19 +267,83 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const wrapWidth = TextStim._defaultWrapWidthMap.get(this._units);
 
-		if (typeof wrapWidth === 'undefined')
+		if (typeof wrapWidth === "undefined")
 		{
 			throw {
-				origin: 'TextStim._getDefaultWrapWidth',
-				context: 'when getting the default wrap width of TextStim: ' + this._name,
-				error: 'no default wrap width for unit: ' + this._units
+				origin: "TextStim._getDefaultWrapWidth",
+				context: "when getting the default wrap width of TextStim: " + this._name,
+				error: "no default wrap width for unit: " + this._units,
 			};
 		}
 
 		return wrapWidth;
 	}
 
+	/**
+	 * Get the bounding gox.
+	 *
+	 * @name module:visual.TextStim#getBoundingBox
+	 * @function
+	 * @protected
+	 * @param {boolean} [tight= false] - whether or not to fit as closely as possible to the text
+	 * @return {number[]} - the bounding box, in the units of this TextStim
+	 */
+	getBoundingBox(tight = false)
+	{
+		if (tight)
+		{
+			const textMetrics_px = this.getTextMetrics();
+			let left_px = this._pos[0] - textMetrics_px.boundingBox.actualBoundingBoxLeft;
+			let top_px = this._pos[1] + textMetrics_px.fontProperties.descent - textMetrics_px.boundingBox.actualBoundingBoxDescent;
+			const width_px = textMetrics_px.boundingBox.actualBoundingBoxRight + textMetrics_px.boundingBox.actualBoundingBoxLeft;
+			const height_px = textMetrics_px.boundingBox.actualBoundingBoxAscent + textMetrics_px.boundingBox.actualBoundingBoxDescent;
 
+			// adjust the bounding box position by taking into account the anchoring of the text:
+			const boundingBox_px = this._getBoundingBox_px();
+			switch (this._alignHoriz)
+			{
+				case "left":
+					// nothing to do
+					break;
+				case "right":
+					// TODO
+					break;
+				default:
+				case "center":
+					left_px -= (boundingBox_px.width - width_px) / 2;
+			}
+			switch (this._alignVert)
+			{
+				case "top":
+					// TODO
+					break;
+				case "bottom":
+					// nothing to do
+					break;
+				default:
+				case "center":
+					top_px -= (boundingBox_px.height - height_px) / 2;
+			}
+
+			// convert from pixel to this stimulus' units:
+			const leftTop = util.to_unit(
+				[left_px, top_px],
+				"pix",
+				this._win,
+				this._units);
+			const dimensions = util.to_unit(
+				[width_px, height_px],
+				"pix",
+				this._win,
+				this._units);
+
+			return new PIXI.Rectangle(leftTop[0], leftTop[1], dimensions[0], dimensions[1]);
+		}
+		else
+		{
+			return this._boundingBox.clone();
+		}
+	}
 
 	/**
 	 * Estimate the bounding box.
@@ -265,26 +357,24 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		// size of the text, irrespective of the orientation:
 		const textMetrics = this.getTextMetrics();
-		const textSize =  util.to_unit(
+		const textSize = util.to_unit(
 			[textMetrics.width, textMetrics.height],
-			'pix',
+			"pix",
 			this._win,
-			this._units
+			this._units,
 		);
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - anchor[1] * textSize[1],
+			this._pos[1] - textSize[1] - anchor[1] * textSize[1],
 			textSize[0],
-			textSize[1]
+			textSize[1],
 		);
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text
@@ -297,16 +387,36 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		return new PIXI.TextStyle({
 			fontFamily: this._font,
 			fontSize: Math.round(this._getLengthPix(this._height)),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fontWeight: (this._bold) ? "bold" : "normal",
+			fontStyle: (this._italic) ? "italic" : "normal",
 			fill: this.getContrastedColor(new Color(this._color), this._contrast).hex,
 			align: this._alignHoriz,
-			wordWrap: (typeof this._wrapWidth !== 'undefined'),
-			wordWrapWidth: (typeof this._wrapWidth !== 'undefined') ? this._getHorLengthPix(this._wrapWidth) : 0
+			wordWrap: (typeof this._wrapWidth !== "undefined"),
+			wordWrapWidth: (typeof this._wrapWidth !== "undefined") ? this._getHorLengthPix(this._wrapWidth) : 0,
 		});
 	}
 
+	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextStim#setColor
+	 * @public
+	 * @param {undefined | null | number} color - the color
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setColor(color, log = false)
+	{
+		const hasChanged = this._setAttribute("color", color, log);
 
+		if (hasChanged)
+		{
+			if (typeof this._pixi !== "undefined")
+			{
+				this._pixi.style = this._getTextStyle();
+				this._needUpdate = true;
+			}
+		}
+	}
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -328,11 +438,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
 			this._pixi = new PIXI.Text(this._text, this._getTextStyle());
+			// TODO is updateText necessary?
+			// this._pixi.updateText();
 		}
 
 		const anchor = this._getAnchor();
@@ -341,8 +453,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
 
-		this._pixi.rotation = this._ori * Math.PI / 180;
-		this._pixi.position = util.to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.rotation = -this._ori * Math.PI / 180;
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = this._depth;
@@ -350,23 +462,23 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
 
-		// update the size attributes:
-		this._size = [
-			this._getLengthUnits(Math.abs(this._pixi.width)),
-			this._getLengthUnits(Math.abs(this._pixi.height))
-		];
+		// update the size attribute:
+		this._size = util.to_unit(
+			[Math.abs(this._pixi.width), Math.abs(this._pixi.height)],
+			"pix",
+			this._win,
+			this._units
+		);
 
 		// refine the estimate of the bounding box:
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - anchor[1] * this._size[1],
+			this._pos[1] - this._size[1] - anchor[1] * this._size[1],
 			this._size[0],
-			this._size[1]
+			this._size[1],
 		);
 	}
 
-
-	
 	/**
 	 * Convert the alignment attributes into an anchor.
 	 *
@@ -381,35 +493,32 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 
 		switch (this._alignHoriz)
 		{
-			case 'left':
+			case "left":
 				anchor.push(0);
 				break;
-			case 'right':
+			case "right":
 				anchor.push(1);
 				break;
 			default:
-			case 'center':
+			case "center":
 				anchor.push(0.5);
 		}
 		switch (this._alignVert)
 		{
-			case 'top':
+			case "top":
 				anchor.push(0);
 				break;
-			case 'bottom':
+			case "bottom":
 				anchor.push(1);
 				break;
 			default:
-			case 'center':
+			case "center":
 				anchor.push(0.5);
 		}
 
 		return anchor;
 	}
-
 }
-
-
 
 /**
  * &lt;p>This map associates units to default letter height.&lt;/p>
@@ -419,18 +528,16 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
  * @private
  */
 TextStim._defaultLetterHeightMap = new Map([
-	['cm', 1.0],
-	['deg', 1.0],
-	['degs', 1.0],
-	['degFlatPos', 1.0],
-	['degFlat', 1.0],
-	['norm', 0.1],
-	['height', 0.2],
-	['pix', 20],
-	['pixels', 20]
+	["cm", 1.0],
+	["deg", 1.0],
+	["degs", 1.0],
+	["degFlatPos", 1.0],
+	["degFlat", 1.0],
+	["norm", 0.1],
+	["height", 0.2],
+	["pix", 20],
+	["pixels", 20],
 ]);
-
-
 
 /**
  * &lt;p>This map associates units to default wrap width.&lt;/p>
@@ -440,15 +547,15 @@ TextStim._defaultLetterHeightMap = new Map([
  * @private
  */
 TextStim._defaultWrapWidthMap = new Map([
-	['cm', 15.0],
-	['deg', 15.0],
-	['degs', 15.0],
-	['degFlatPos', 15.0],
-	['degFlat', 15.0],
-	['norm', 1],
-	['height', 1],
-	['pix', 500],
-	['pixels', 500]
+	["cm", 15.0],
+	["deg", 15.0],
+	["degs", 15.0],
+	["degFlatPos", 15.0],
+	["degFlat", 15.0],
+	["norm", 1],
+	["height", 1],
+	["pix", 500],
+	["pixels", 500],
 ]);
 </code></pre>
         </article>
@@ -460,13 +567,13 @@ TextStim._defaultWrapWidthMap = new Map([
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

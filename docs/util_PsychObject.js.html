@@ -36,10 +36,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
-
-import {EventEmitter} from './EventEmitter';
-import * as util from './Util';
-
+import { EventEmitter } from "./EventEmitter.js";
+import * as util from "./Util.js";
 
 /**
  * &lt;p>PsychoObject is the base class for all PsychoJS objects.
@@ -60,13 +58,12 @@ export class PsychObject extends EventEmitter
 		this._userAttributes = new Set();
 
 		// name:
-		if (typeof name === 'undefined')
+		if (typeof name === "undefined")
 		{
 			name = this.constructor.name;
 		}
-		this._addAttribute('name', name);
+		this._addAttribute("name", name);
 	}
-
 
 	/**
 	 * Get the PsychoJS instance.
@@ -79,7 +76,6 @@ export class PsychObject extends EventEmitter
 		return this._psychoJS;
 	}
 
-
 	/**
 	 * Setter for the PsychoJS attribute.
 	 *
@@ -91,7 +87,6 @@ export class PsychObject extends EventEmitter
 		this._psychoJS = psychoJS;
 	}
 
-
 	/**
 	 * String representation of the PsychObject.
 	 *
@@ -102,37 +97,36 @@ export class PsychObject extends EventEmitter
 	 */
 	toString()
 	{
-		let representation = this.constructor.name + '( ';
+		let representation = this.constructor.name + "( ";
 		let addComma = false;
 		for (const attribute of this._userAttributes)
 		{
 			if (addComma)
 			{
-				representation += ', ';
+				representation += ", ";
 			}
 			addComma = true;
 
-			let value = util.toString(this['_' + attribute]);
+			let value = util.toString(this["_" + attribute]);
 			const l = value.length;
 			if (l > 50)
 			{
-				if (value[l - 1] === ')')
+				if (value[l - 1] === ")")
 				{
-					value = value.substring(0, 50) + '~)';
+					value = value.substring(0, 50) + "~)";
 				}
 				else
 				{
-					value = value.substring(0, 50) + '~';
+					value = value.substring(0, 50) + "~";
 				}
 			}
 
-			representation += attribute + '=' + value;
+			representation += attribute + "=" + value;
 		}
-		representation += ' )';
+		representation += " )";
 
 		return representation;
 	}
-
 
 	/**
 	 * Set the value of an attribute.
@@ -149,31 +143,30 @@ export class PsychObject extends EventEmitter
 	_setAttribute(attributeName, attributeValue, log = false, operation = undefined, stealth = false)
 	{
 		const response = {
-			origin: 'PsychObject.setAttribute',
-			context: 'when setting the attribute of an object'
+			origin: "PsychObject.setAttribute",
+			context: "when setting the attribute of an object",
 		};
 
-		if (typeof attributeName == 'undefined')
+		if (typeof attributeName == "undefined")
 		{
 			throw Object.assign(response, {
-				error: 'the attribute name cannot be' +
-					' undefined'
+				error: "the attribute name cannot be"
+					+ " undefined",
 			});
 		}
-		if (typeof attributeValue == 'undefined')
+		if (typeof attributeValue == "undefined")
 		{
-			this._psychoJS.logger.warn('setting the value of attribute: ' + attributeName + ' in PsychObject: ' + this._name + ' as: undefined');
+			this._psychoJS.logger.warn("setting the value of attribute: " + attributeName + " in PsychObject: " + this._name + " as: undefined");
 		}
 
 		// (*) apply operation to old and new values:
-		if (typeof operation !== 'undefined' &amp;&amp; this.hasOwnProperty('_' + attributeName))
+		if (typeof operation !== "undefined" &amp;&amp; this.hasOwnProperty("_" + attributeName))
 		{
-			let oldValue = this['_' + attributeName];
+			let oldValue = this["_" + attributeName];
 
 			// operations can only be applied to numbers and array of numbers (which can be empty):
-			if (typeof attributeValue == 'number' || (Array.isArray(attributeValue) &amp;&amp; (attributeValue.length === 0 || typeof attributeValue[0] == 'number')))
+			if (typeof attributeValue == "number" || (Array.isArray(attributeValue) &amp;&amp; (attributeValue.length === 0 || typeof attributeValue[0] == "number")))
 			{
-
 				// value is an array:
 				if (Array.isArray(attributeValue))
 				{
@@ -183,160 +176,158 @@ export class PsychObject extends EventEmitter
 						if (attributeValue.length !== oldValue.length)
 						{
 							throw Object.assign(response, {
-								error: 'old and new' +
-									' value should have' +
-									' the same size when they are both arrays'
+								error: "old and new"
+									+ " value should have"
+									+ " the same size when they are both arrays",
 							});
 						}
 
 						switch (operation)
 						{
-							case '':
+							case "":
 								// no change to value;
 								break;
-							case '+':
+							case "+":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] + v);
 								break;
-							case '*':
+							case "*":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] * v);
 								break;
-							case '-':
+							case "-":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] - v);
 								break;
-							case '/':
+							case "/":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] / v);
 								break;
-							case '**':
+							case "**":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] ** v);
 								break;
-							case '%':
+							case "%":
 								attributeValue = attributeValue.map((v, i) => oldValue[i] % v);
 								break;
 							default:
 								throw Object.assign(response, {
-									error: 'unsupported' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+									error: "unsupported"
+										+ " operation: " + operation + " when setting: " + attributeName + " in: " + this.name,
 								});
 						}
-
 					}
-					else
 					// old value is a scalar
+					else
 					{
 						switch (operation)
 						{
-							case '':
+							case "":
 								// no change to value;
 								break;
-							case '+':
-								attributeValue = attributeValue.map(v => oldValue + v);
+							case "+":
+								attributeValue = attributeValue.map((v) => oldValue + v);
 								break;
-							case '*':
-								attributeValue = attributeValue.map(v => oldValue * v);
+							case "*":
+								attributeValue = attributeValue.map((v) => oldValue * v);
 								break;
-							case '-':
-								attributeValue = attributeValue.map(v => oldValue - v);
+							case "-":
+								attributeValue = attributeValue.map((v) => oldValue - v);
 								break;
-							case '/':
-								attributeValue = attributeValue.map(v => oldValue / v);
+							case "/":
+								attributeValue = attributeValue.map((v) => oldValue / v);
 								break;
-							case '**':
-								attributeValue = attributeValue.map(v => oldValue ** v);
+							case "**":
+								attributeValue = attributeValue.map((v) => oldValue ** v);
 								break;
-							case '%':
-								attributeValue = attributeValue.map(v => oldValue % v);
+							case "%":
+								attributeValue = attributeValue.map((v) => oldValue % v);
 								break;
 							default:
 								throw Object.assign(response, {
-									error: 'unsupported' +
-										' value: ' + JSON.stringify(attributeValue) + ' for' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+									error: "unsupported"
+										+ " value: " + JSON.stringify(attributeValue) + " for"
+										+ " operation: " + operation + " when setting: " + attributeName + " in: " + this.name,
 								});
 						}
 					}
 				}
-				else
 				// value is a scalar
+				else
 				{
 					// old value is an array
 					if (Array.isArray(oldValue))
 					{
 						switch (operation)
 						{
-							case '':
-								attributeValue = oldValue.map(v => attributeValue);
+							case "":
+								attributeValue = oldValue.map((v) => attributeValue);
 								break;
-							case '+':
-								attributeValue = oldValue.map(v => v + attributeValue);
+							case "+":
+								attributeValue = oldValue.map((v) => v + attributeValue);
 								break;
-							case '*':
-								attributeValue = oldValue.map(v => v * attributeValue);
+							case "*":
+								attributeValue = oldValue.map((v) => v * attributeValue);
 								break;
-							case '-':
-								attributeValue = oldValue.map(v => v - attributeValue);
+							case "-":
+								attributeValue = oldValue.map((v) => v - attributeValue);
 								break;
-							case '/':
-								attributeValue = oldValue.map(v => v / attributeValue);
+							case "/":
+								attributeValue = oldValue.map((v) => v / attributeValue);
 								break;
-							case '**':
-								attributeValue = oldValue.map(v => v ** attributeValue);
+							case "**":
+								attributeValue = oldValue.map((v) => v ** attributeValue);
 								break;
-							case '%':
-								attributeValue = oldValue.map(v => v % attributeValue);
+							case "%":
+								attributeValue = oldValue.map((v) => v % attributeValue);
 								break;
 							default:
 								throw Object.assign(response, {
-									error: 'unsupported' +
-										' operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+									error: "unsupported"
+										+ " operation: " + operation + " when setting: " + attributeName + " in: " + this.name,
 								});
 						}
-
 					}
-					else
 					// old value is a scalar
+					else
 					{
 						switch (operation)
 						{
-							case '':
+							case "":
 								// no change to value;
 								break;
-							case '+':
+							case "+":
 								attributeValue = oldValue + attributeValue;
 								break;
-							case '*':
+							case "*":
 								attributeValue = oldValue * attributeValue;
 								break;
-							case '-':
+							case "-":
 								attributeValue = oldValue - attributeValue;
 								break;
-							case '/':
+							case "/":
 								attributeValue = oldValue / attributeValue;
 								break;
-							case '**':
+							case "**":
 								attributeValue = oldValue ** attributeValue;
 								break;
-							case '%':
+							case "%":
 								attributeValue = oldValue % attributeValue;
 								break;
 							default:
 								throw Object.assign(response, {
-									error: 'unsupported' +
-										' value: ' + JSON.stringify(attributeValue) + ' for operation: ' + operation + ' when setting: ' + attributeName + ' in: ' + this.name
+									error: "unsupported"
+										+ " value: " + JSON.stringify(attributeValue) + " for operation: " + operation + " when setting: " + attributeName + " in: " + this.name,
 								});
 						}
 					}
 				}
-
 			}
 			else
 			{
-				throw Object.assign(response, {error: 'operation: ' + operation + ' is invalid for old value: ' + JSON.stringify(oldValue) + ' and new value: ' + JSON.stringify(attributeValue)});
+				throw Object.assign(response, {
+					error: "operation: " + operation + " is invalid for old value: " + JSON.stringify(oldValue) + " and new value: " + JSON.stringify(attributeValue),
+				});
 			}
 		}
 
-
 		// (*) log if appropriate:
-		if (!stealth &amp;&amp; (log || this._autoLog) &amp;&amp; (typeof this.win !== 'undefined'))
+		if (!stealth &amp;&amp; (log || this._autoLog) &amp;&amp; (typeof this.win !== "undefined"))
 		{
 			const msg = this.name + ": " + attributeName + " = " + util.toString(attributeValue);
 			this.win.logOnFlip({
@@ -345,13 +336,12 @@ export class PsychObject extends EventEmitter
 			});
 		}
 
-
 		// (*) set the value of the attribute and return whether it has changed:
-		const previousAttributeValue = this['_' + attributeName];
-		this['_' + attributeName] = attributeValue;
+		const previousAttributeValue = this["_" + attributeName];
+		this["_" + attributeName] = attributeValue;
 
 		// Things seem OK without this check except for 'vertices'
-		if (typeof previousAttributeValue === 'undefined')
+		if (typeof previousAttributeValue === "undefined")
 		{
 			// Not that any of the following lines should throw, but evaluating
 			// `this._vertices.map` on `ShapeStim._getVertices_px()` seems to
@@ -370,9 +360,8 @@ export class PsychObject extends EventEmitter
 		// `Util.toString()` might try, but fail to stringify in a meaningful way are assigned
 		// an 'Object (circular)' string representation. For being opaque as to their raw
 		// value, those types of input are liable to produce PIXI updates.
-		return prev === 'Object (circular)' || next === 'Object (circular)' || prev !== next;
+		return prev === "Object (circular)" || next === "Object (circular)" || prev !== next;
 	}
-
 
 	/**
 	 * Add an attribute to this instance (e.g. define setters and getters) and affect a value to it.
@@ -383,20 +372,21 @@ export class PsychObject extends EventEmitter
 	 * @param {object} [defaultValue] - the default value for the attribute
 	 * @param {function} [onChange] - function called upon changes to the attribute value
 	 */
-	_addAttribute(name, value, defaultValue = undefined, onChange = () => {})
+	_addAttribute(name, value, defaultValue = undefined, onChange = () =>
+	{})
 	{
-		const getPropertyName = 'get' + name[0].toUpperCase() + name.substr(1);
-		if (typeof this[getPropertyName] === 'undefined')
+		const getPropertyName = "get" + name[0].toUpperCase() + name.substr(1);
+		if (typeof this[getPropertyName] === "undefined")
 		{
-			this[getPropertyName] = () => this['_' + name];
+			this[getPropertyName] = () => this["_" + name];
 		}
 
-		const setPropertyName = 'set' + name[0].toUpperCase() + name.substr(1);
-		if (typeof this[setPropertyName] === 'undefined')
+		const setPropertyName = "set" + name[0].toUpperCase() + name.substr(1);
+		if (typeof this[setPropertyName] === "undefined")
 		{
 			this[setPropertyName] = (value, log = false) =>
 			{
-				if (typeof value === 'undefined' || value === null)
+				if (typeof value === "undefined" || value === null)
 				{
 					value = defaultValue;
 				}
@@ -410,7 +400,7 @@ export class PsychObject extends EventEmitter
 		else
 		{
 			// deal with default value:
-			if (typeof value === 'undefined' || value === null)
+			if (typeof value === "undefined" || value === null)
 			{
 				value = defaultValue;
 			}
@@ -425,18 +415,16 @@ export class PsychObject extends EventEmitter
 			set(value)
 			{
 				this[setPropertyName](value);
-			}
+			},
 		});
-
 
 		// note: we use this[name] instead of this['_' + name] since a this.set&lt;Name> method may available
 		// in the object, in which case we need to call it
 		this[name] = value;
-		//this['_' + name] = value;
+		// this['_' + name] = value;
 
 		this._userAttributes.add(name);
 	}
-
 }
 </code></pre>
         </article>
@@ -448,13 +436,13 @@ export class PsychObject extends EventEmitter
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

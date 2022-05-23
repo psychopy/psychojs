@@ -29,20 +29,19 @@
             <pre class="prettyprint source linenums"><code>/**
  * Editable TextBox Stimulus.
  *
- * @author Alain Pitiot
+ * @author Alain Pitiot, Nikita Agafonov
  * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import {TextInput} from './TextInput';
-import {ButtonStim} from './ButtonStim.js';
-import * as util from '../util/Util';
+import * as PIXI from "pixi.js-legacy";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import * as util from "../util/Util.js";
+import { ButtonStim } from "./ButtonStim.js";
+import { TextInput } from "./TextInput.js";
+import { VisualStim } from "./VisualStim.js";
 
 // TODO finish documenting all options
 /**
@@ -57,7 +56,7 @@ import * as util from '../util/Util';
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the text
  *
- * @param {Color} [options.color= Color('white')] the background color
+ * @param {Color} [options.color= Color('white')] color of the text
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.contrast= 1.0] - the contrast
@@ -68,132 +67,165 @@ import * as util from '../util/Util';
  * @param {boolean} [options.italic= false] - whether or not the text is italic
  * @param {string} [options.anchor = 'left'] - horizontal alignment
  *
- * @param {boolean} [options.multiline= false] - whether or not a textarea is used
+ * @param {boolean} [options.multiline= false] - whether or not a multiline element is used
  * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+ * @param {Color} [options.fillColor= undefined] - fill color of the text-box
+ * @param {Color} [options.borderColor= undefined] - border color of the text-box
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
  * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @param {boolean} [options.fitToContent = false] - whether or not to resize itself automaitcally to fit to the text content
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({name, win, pos, anchor, size, units, ori, opacity, depth, text, font, letterHeight, bold, italic, alignment, color, contrast, flipHoriz, flipVert, fillColor, borderColor, borderWidth, padding, editable, multiline, autofocus, clipMask, autoDraw, autoLog} = {})
+	constructor(
+		{
+			name,
+			win,
+			pos,
+			anchor,
+			size,
+			units,
+			ori,
+			opacity,
+			depth,
+			text,
+			font,
+			letterHeight,
+			bold,
+			italic,
+			alignment,
+			color,
+			contrast,
+			flipHoriz,
+			flipVert,
+			fillColor,
+			borderColor,
+			borderWidth,
+			padding,
+			editable,
+			multiline,
+			autofocus,
+			clipMask,
+			autoDraw,
+			autoLog,
+			fitToContent
+		} = {},
+	)
 	{
-		super({name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog});
+		super({ name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
 
 		this._addAttribute(
-			'text',
+			"text",
 			text,
-			'',
-			this._onChange(true, true)
+			""
 		);
 		this._addAttribute(
-			'placeholder',
+			"placeholder",
 			text,
-			'',
-			this._onChange(true, true)
-		);		
+			"",
+			this._onChange(true, true),
+		);
 		this._addAttribute(
-			'anchor',
+			"anchor",
 			anchor,
-			'center',
-			this._onChange(false, true)
+			"center"
 		);
 		this._addAttribute(
-			'flipHoriz',
+			"flipHoriz",
 			flipHoriz,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'flipVert',
+			"flipVert",
 			flipVert,
 			false,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
 		// font:
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial"
 		);
 		this._addAttribute(
-			'letterHeight',
+			"letterHeight",
 			letterHeight,
-			this._getDefaultLetterHeight(),
-			this._onChange(true, true)
+			this._getDefaultLetterHeight()
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'alignment',
+			"alignment",
 			alignment,
-			'left',
-			this._onChange(true, true)
+			"left"
 		);
 
 		// colors:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'white',
-			this._onChange(true, false)
+			undefined
 		);
 		this._addAttribute(
-			'fillColor',
+			"fillColor",
 			fillColor,
-			'lightgrey',
-			this._onChange(true, false)
+			undefined
 		);
 		this._addAttribute(
-			'borderColor',
+			"borderColor",
 			borderColor,
-			this.fillColor,
-			this._onChange(true, false)
+			undefined
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		// default border width: 1px
 		this._addAttribute(
-			'borderWidth',
+			"borderWidth",
 			borderWidth,
-			util.to_unit([1, 0], 'pix', win, this._units)[0],
-			this._onChange(true, true)
+			util.to_unit([1, 0], "pix", win, this._units)[0],
+			this._onChange(true, true),
 		);
 		// default padding: half of the letter height
 		this._addAttribute(
-			'padding',
+			"padding",
 			padding,
 			this._letterHeight / 2.0,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
-		this._addAttribute('multiline', multiline, false, this._onChange(true, true));
-		this._addAttribute('editable', editable, false, this._onChange(true, true));
-		this._addAttribute('autofocus', autofocus, true, this._onChange(true, false));
-			// this._setAttribute({
-			// 	name: 'vertices',
-			// 	value: vertices,
-			// 	assert: v => (v != null) &amp;&amp; (typeof v !== 'undefined') &amp;&amp; Array.isArray(v) )
-			// 	log);
+		this._addAttribute("multiline", multiline, false, this._onChange(true, true));
+		this._addAttribute("editable", editable, false, this._onChange(true, true));
+		this._addAttribute("autofocus", autofocus, true, this._onChange(true, false));
+		// this._setAttribute({
+		// 	name: 'vertices',
+		// 	value: vertices,
+		// 	assert: v => (v != null) &amp;&amp; (typeof v !== 'undefined') &amp;&amp; Array.isArray(v) )
+		// 	log);
+
+		this._addAttribute("fitToContent", fitToContent, false);
+		// setting size again since fitToContent field becomes available only at this point
+		// and setSize called from super class would not have a proper effect
+		this.setSize(size);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -204,7 +236,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
-
 	/**
 	 * Clears the current text value or sets it back to match the placeholder.
 	 *
@@ -213,12 +244,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	reset()
 	{
-		const text = this.editable ? '' : this.placeholder;
-
 		this.setText(this.placeholder);
 	}
-
-
 
 	/**
 	 * Clears the current text value.
@@ -231,7 +258,39 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this.setText();
 	}
 
+	/**
+	 * Setter for the alignment attribute.
+	 *
+	 * @name module:visual.TextBox#setAlignment
+	 * @public
+	 * @param {boolean} alignment - alignment of the text
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAlignment(alignment = "left", log = false)
+	{
+		this._setAttribute("alignment", alignment, log);
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("textAlign", alignment);
+		}
+	}
 
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @name module:visual.TextBox#setAnchor
+	 * @public
+	 * @param {boolean} anchor - anchor of the textbox
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined) {
+			const anchorUnits = this._getAnchor();
+			this._pixi.anchor.x = anchorUnits[0];
+			this._pixi.anchor.y = anchorUnits[1];
+		}
+	}
 
 	/**
 	 * For tweaking the underlying input value.
@@ -240,9 +299,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @public
 	 * @param {string} text
 	 */
-	setText(text = '')
+	setText(text = "")
 	{
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			this._pixi.text = text;
 		}
@@ -250,6 +309,38 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._text = text;
 	}
 
+	/**
+	 * Set the font for textbox.
+	 *
+	 * @name module:visual.TextBox#setFont
+	 * @public
+	 * @param {string} text
+	 */
+	setFont(font = "Arial", log = false)
+	{
+		this._setAttribute("font", font, log);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontFamily", font);
+		}
+	}
+
+	/**
+	 * Set letterHeight (font size) for textbox.
+	 *
+	 * @name module:visual.TextBox#setLetterHeight
+	 * @public
+	 * @param {string} text
+	 */
+	setLetterHeight(fontSize = this._getDefaultLetterHeight(), log = false)
+	{
+		this._setAttribute("letterHeight", fontSize, log);
+		const fontSize_px = this._getLengthPix(fontSize);
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("fontSize", `${fontSize_px}px`);
+		}
+	}
 
 	/**
 	 * For accessing the underlying input value.
@@ -260,7 +351,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 */
 	getText()
 	{
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
 			return this._pixi.text;
 		}
@@ -268,6 +359,69 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return this._text;
 	}
 
+	/**
+	 * Setter for the color attribute.
+	 *
+	 * @name module:visual.TextBox#setColor
+	 * @public
+	 * @param {boolean} color - color of the text
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setColor (color, log = false)
+	{
+		this._setAttribute('color', color, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the fillColor attribute.
+	 *
+	 * @name module:visual.TextBox#setFillColor
+	 * @public
+	 * @param {boolean} fillColor - fill color of the text box
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setFillColor (fillColor, log = false)
+	{
+		this._setAttribute('fillColor', fillColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the borderColor attribute.
+	 *
+	 * @name module:visual.TextBox#setBorderColor
+	 * @public
+	 * @param {Color} borderColor - border color of the text box
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setBorderColor (borderColor, log = false)
+	{
+		this._setAttribute('borderColor', borderColor, log);
+		this._needUpdate = true;
+		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Setter for the fitToContent attribute.
+	 *
+	 * @name module:visual.TextBox#setFitToContent
+	 * @public
+	 * @param {boolean} fitToContent - whether or not to autoresize textbox to fit to text content
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setFitToContent (fitToContent, log = false)
+	{
+		this._setAttribute("fitToContent", fitToContent, log);
+		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
+		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		if (this._pixi !== undefined) {
+			this._pixi.setInputStyle("width", fitToContent ? "auto" : `${width_px}px`);
+			this._pixi.setInputStyle("height", fitToContent ? "auto" : `${height_px}px`);
+		}
+	}
 
 	/**
 	 * Setter for the size attribute.
@@ -275,31 +429,33 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextBox#setSize
 	 * @public
 	 * @param {boolean} size - whether or not to wrap the text at the given width
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setSize(size, log)
 	{
 		// test with the size is undefined, or [undefined, undefined]:
 		let isSizeUndefined = (
-			(typeof size === 'undefined') || (size === null) ||
-			( Array.isArray(size) &amp;&amp; size.every( v => typeof v === 'undefined' || v === null) )
-		); 
+			(typeof size === "undefined") || (size === null)
+			|| (Array.isArray(size) &amp;&amp; size.every((v) => typeof v === "undefined" || v === null))
+		);
+
+		this.fitToContent = isSizeUndefined;
 
 		if (isSizeUndefined)
 		{
 			size = TextBox._defaultSizeMap.get(this._units);
 
-			if (typeof size === 'undefined')
+			if (typeof size === "undefined")
 			{
 				throw {
-					origin: 'TextBox.setSize',
-					context: 'when setting the size of TextBox: ' + this._name,
-					error: 'no default size for unit: ' + this._units
+					origin: "TextBox.setSize",
+					context: "when setting the size of TextBox: " + this._name,
+					error: "no default size for unit: " + this._units,
 				};
 			}
 		}
 
-		const hasChanged = this._setAttribute('size', size, log);
+		const hasChanged = this._setAttribute("size", size, log);
 
 		if (hasChanged)
 		{
@@ -311,7 +467,21 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
-
+	/**
+	 * Add event listeners to text-box object. Method is called internally upon object construction.
+	 *
+	 * @name module:visual.TextBox#_addEventListeners
+	 * @protected
+	 */
+	_addEventListeners ()
+	{
+		this._pixi.on("input", (textContent) => {
+			this._text = textContent;
+			let size = [this._pixi.width, this._pixi.height];
+			size = util.to_unit(size, "pix", this._win, this._units);
+			this._setAttribute("size", size, false);
+		});
+	}
 
 	/**
 	 * Get the default letter height given the stimulus' units.
@@ -324,19 +494,17 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const height = TextBox._defaultLetterHeightMap.get(this._units);
 
-		if (typeof height === 'undefined')
+		if (typeof height === "undefined")
 		{
 			throw {
-				origin: 'TextBox._getDefaultLetterHeight',
-				context: 'when getting the default height of TextBox: ' + this._name,
-				error: 'no default letter height for unit: ' + this._units
+				origin: "TextBox._getDefaultLetterHeight",
+				context: "when getting the default height of TextBox: " + this._name,
+				error: "no default letter height for unit: " + this._units,
 			};
 		}
 
 		return height;
 	}
-
-
 
 	/**
 	 * Get the TextInput options applied to the PIXI.TextInput.
@@ -348,32 +516,40 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
 		const padding_px = Math.round(this._getLengthPix(this._padding));
-		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
+		const width_px = Math.round(this._getLengthPix(this._size[0]));
 		const height_px = Math.round(this._getLengthPix(this._size[1]));
-		const multiline = this._multiline;
 
 		return {
+			// input style properties eventually become CSS, so same syntax applies
 			input: {
+				display: "inline-block",
 				fontFamily: this._font,
-				fontSize: letterHeight_px + 'px',
-				color: new Color(this._color).hex,
-				fontWeight: (this._bold) ? 'bold' : 'normal',
-				fontStyle: (this._italic) ? 'italic' : 'normal',
-
-				padding: padding_px + 'px',
-				multiline,
+				fontSize: `${letterHeight_px}px`,
+				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
+				fontWeight: (this._bold) ? "bold" : "normal",
+				fontStyle: (this._italic) ? "italic" : "normal",
+				textAlign: this._alignment,
+				padding: `${padding_px}px`,
+				multiline: this._multiline,
 				text: this._text,
-				height: multiline ? (height_px - 2 * padding_px) + 'px' : undefined,
-				width: (width_px - 2 * padding_px) + 'px'
+				height: this._fitToContent ? "auto" : (this._multiline ? `${height_px}px` : undefined),
+				width: this._fitToContent ? "auto" : `${width_px}px`,
+				maxWidth: `${this.win.size[0]}px`,
+				maxHeight: `${this.win.size[1]}px`,
+				overflow: "hidden",
+				pointerEvents: "none"
 			},
+			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
 			box: {
 				fill: new Color(this._fillColor).int,
+				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
 				rounded: 5,
 				stroke: {
 					color: new Color(this._borderColor).int,
-					width: borderWidth_px
-				}
+					width: borderWidth_px,
+					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
+				},
 				/*default: {
 					fill: new Color(this._fillColor).int,
 					rounded: 5,
@@ -398,11 +574,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 						width: borderWidth_px
 					}
 				}*/
-			}
+			},
 		};
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -423,13 +597,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._pos[0] - anchor[0] * this._size[0],
 			this._pos[1] - anchor[1] * boxHeight,
 			this._size[0],
-			boxHeight
+			boxHeight,
 		);
 
 		// TODO take the orientation into account
 	}
-
-
 
 	/**
 	 * Update the stimulus, if necessary.
@@ -452,24 +624,33 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			if (typeof this._pixi !== 'undefined')
+			let enteredText = "";
+			// at this point this._pixi might exist but is removed from the scene, in such cases this._pixi.text
+			// does not retain the information about new lines etc. so we go with a local copy of entered text
+			if (this._pixi !== undefined &amp;&amp; this._pixi.parent !== null) {
+				enteredText = this._pixi.text;
+			} else {
+				enteredText = this._text;
+			}
+
+			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
-			// Get the currently entered text
-			let enteredText = this._pixi !== undefined? this._pixi.text: '';
-			// Create new TextInput 
+
+			// Create new TextInput
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
 			if (!(this instanceof ButtonStim))
 			{
 				this._pixi._addListeners();
+				this._addEventListeners();
 			}
 
 			// check if other TextBox instances are already in focus
 			const { _drawList = [] } = this.psychoJS.window;
-			const otherTextBoxWithFocus = _drawList.some(item => item instanceof TextBox &amp;&amp; item._pixi &amp;&amp; item._pixi._hasFocus());
+			const otherTextBoxWithFocus = _drawList.some((item) => item instanceof TextBox &amp;&amp; item._pixi &amp;&amp; item._pixi._hasFocus());
 			if (this._autofocus &amp;&amp; !otherTextBoxWithFocus)
 			{
 				this._pixi._onSurrogateFocus();
@@ -480,7 +661,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this.text = enteredText;				
+				this.text = enteredText;
 				this._pixi.placeholder = this._placeholder;
 			}
 			else
@@ -491,13 +672,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		this._pixi.disabled = !this._editable;
 
-		const anchor = this._getAnchor();
-		this._pixi.pivot.x = anchor[0] * this._pixi.width;
-		this._pixi.pivot.y = anchor[1] * this._pixi.height;
-
+		// now when this._pixi is available, setting anchor again to trigger internal to this._pixi mechanisms
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
 		this._pixi.scale.y = this._flipVert ? 1 : -1;
-		this._pixi.rotation = this._ori * Math.PI / 180;
+		this._pixi.rotation = -this._ori * Math.PI / 180;
 		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 
 		this._pixi.alpha = this._opacity;
@@ -506,8 +685,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
 	}
-
-
 
 	/**
 	 * Convert the anchor attribute into numerical values.
@@ -521,29 +698,26 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		const anchor = [0.5, 0.5];
 
-		if (this._anchor.indexOf('left') > -1)
+		if (this._anchor.indexOf("left") > -1)
 		{
 			anchor[0] = 0;
 		}
-		else if (this._anchor.indexOf('right') > -1)
+		else if (this._anchor.indexOf("right") > -1)
 		{
 			anchor[0] = 1;
 		}
-		if (this._anchor.indexOf('top') > -1)
+		if (this._anchor.indexOf("top") > -1)
 		{
 			anchor[1] = 0;
 		}
-		else if (this._anchor.indexOf('bottom') > -1)
+		else if (this._anchor.indexOf("bottom") > -1)
 		{
 			anchor[1] = 1;
 		}
 
 		return anchor;
 	}
-
-
 }
-
 
 /**
  * &lt;p>This map associates units to default letter height.&lt;/p>
@@ -553,17 +727,16 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
  * @private
  */
 TextBox._defaultLetterHeightMap = new Map([
-	['cm', 1.0],
-	['deg', 1.0],
-	['degs', 1.0],
-	['degFlatPos', 1.0],
-	['degFlat', 1.0],
-	['norm', 0.1],
-	['height', 0.2],
-	['pix', 20],
-	['pixels', 20]
+	["cm", 1.0],
+	["deg", 1.0],
+	["degs", 1.0],
+	["degFlatPos", 1.0],
+	["degFlat", 1.0],
+	["norm", 0.1],
+	["height", 0.2],
+	["pix", 20],
+	["pixels", 20],
 ]);
-
 
 /**
  * &lt;p>This map associates units to default sizes.&lt;/p>
@@ -573,15 +746,15 @@ TextBox._defaultLetterHeightMap = new Map([
  * @private
  */
 TextBox._defaultSizeMap = new Map([
-	['cm', [15.0, -1]],
-	['deg', [15.0, -1]],
-	['degs', [15.0, -1]],
-	['degFlatPos', [15.0, -1]],
-	['degFlat', [15.0, -1]],
-	['norm', [1, -1]],
-	['height', [1, -1]],
-	['pix', [500, -1]],
-	['pixels', [500, -1]]
+	["cm", [15.0, -1]],
+	["deg", [15.0, -1]],
+	["degs", [15.0, -1]],
+	["degFlatPos", [15.0, -1]],
+	["degFlat", [15.0, -1]],
+	["norm", [1, -1]],
+	["height", [1, -1]],
+	["pix", [500, -1]],
+	["pixels", [500, -1]],
 ]);
 </code></pre>
         </article>
@@ -593,13 +766,13 @@ TextBox._defaultSizeMap = new Map([
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

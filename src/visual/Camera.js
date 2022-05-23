@@ -34,10 +34,6 @@ import {ExperimentHandler} from "../data/ExperimentHandler.js";
  */
 export class Camera extends PsychObject
 {
-	/**
-	 * @constructor
-	 * @public
-	 */
 	constructor({win, name, format, showDialog, dialogMsg = "Please wait a few moments while the camera initialises", clock, autoLog} = {})
 	{
 		super(win._psychoJS);
@@ -86,7 +82,6 @@ export class Camera extends PsychObject
 		return (this._recorder !== null);
 	}
 
-
 	/**
 	 * Get the underlying video stream.
 	 *
@@ -99,7 +94,6 @@ export class Camera extends PsychObject
 	{
 		return this._stream;
 	}
-
 
 	/**
 	 * Get a video element pointing to the Camera stream.
@@ -134,7 +128,6 @@ export class Camera extends PsychObject
 
 		return video;
 	}
-
 
 	/**
 	 * Submit a request to start the recording.
@@ -192,7 +185,6 @@ export class Camera extends PsychObject
 
 	}
 
-
 	/**
 	 * Submit a request to stop the recording.
 	 *
@@ -236,7 +228,6 @@ export class Camera extends PsychObject
 			});
 		}
 	}
-
 
 	/**
 	 * Submit a request to pause the recording.
@@ -284,7 +275,6 @@ export class Camera extends PsychObject
 
 		}
 	}
-
 
 	/**
 	 * Submit a request to resume the recording.
@@ -343,7 +333,6 @@ export class Camera extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Submit a request to flush the recording.
 	 *
@@ -373,7 +362,6 @@ export class Camera extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Offer the audio recording to the participant as a video file to download.
 	 *
@@ -393,7 +381,6 @@ export class Camera extends PsychObject
 		anchor.click();
 		document.body.removeChild(anchor);
 	}
-
 
 	/**
 	 * Upload the video recording to the pavlovia server.
@@ -439,7 +426,6 @@ export class Camera extends PsychObject
 			dialogMsg});
 	}
 
-
 	/**
 	 * Get the current video recording as a VideoClip in the given format.
 	 *
@@ -459,7 +445,6 @@ export class Camera extends PsychObject
 
 		// TODO
 	}
-
 
 	/**
 	 * Callback for changes to the recording settings.
@@ -481,7 +466,6 @@ export class Camera extends PsychObject
 
 		this.start();
 	}
-
 
 	/**
 	 * Prepare the recording.
