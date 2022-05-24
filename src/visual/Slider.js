@@ -876,7 +876,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// markers:
 		this._setupMarker();
-		this.setMarkerPos(this._startValue);
 	}
 
 	/**
@@ -933,7 +932,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// marker:
 		this._marker = new PIXI.Graphics();
-		this._marker.alpha = 0; // invisible until markerPos is defined
+		if (Number.isFinite(this._startValue))
+		{
+			this._markerPos = this._granularise(this._startValue);
+			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
+			this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+		}
+		else
+		{
+			this._marker.alpha = 0; // invisible until markerPos is defined
+		}
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
