@@ -85,6 +85,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			style,
 			ticks,
 			labels,
+			startValue,
 			granularity,
 			flip,
 			readOnly,
@@ -140,6 +141,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			labels,
 			[],
 			onChange(true, true, true),
+		);
+		this._addAttribute(
+			"startValue",
+			startValue,
+			undefined
 		);
 		this._addAttribute(
 			"granularity",
@@ -870,6 +876,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// markers:
 		this._setupMarker();
+		this.setMarkerPos(this._startValue);
 	}
 
 	/**
