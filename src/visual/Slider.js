@@ -932,9 +932,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// marker:
 		this._marker = new PIXI.Graphics();
-		if (Number.isFinite(this._startValue))
+		const markerVal = Number.isFinite(this._rating) ? this._rating : (Number.isFinite(this._startValue) ? this._startValue : undefined);
+		if (Number.isFinite(markerVal))
 		{
-			this._markerPos = this._granularise(this._startValue);
+			this._markerPos = this._granularise(markerVal);
 			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
 			this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
 		}
