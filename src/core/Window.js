@@ -342,6 +342,8 @@ export class Window extends PsychObject
 		}
 
 		this._frameCount++;
+		// update the stimuli (including pixi stuff) before rendering
+		this._refresh();
 
 		// render the PIXI container:
 		this._renderer.render(this._rootContainer);
@@ -368,9 +370,6 @@ export class Window extends PsychObject
 
 		// log:
 		this._writeLogOnFlip();
-
-		// prepare the scene for the next animation frame:
-		this._refresh();
 	}
 
 	/**
