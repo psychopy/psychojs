@@ -837,7 +837,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._body.interactive = true;
 		this._pixi.addChild(this._body);
 
-
 		// ensure that pointer events will be captured along the slider body, even outside of
 		// marker and labels:
 		if (this._tickType === Slider.Shape.DISC)
