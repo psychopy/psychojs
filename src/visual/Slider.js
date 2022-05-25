@@ -244,6 +244,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// the internal response clock, used to time the marker change events:
 		this._responseClock = new Clock();
+		this._pixiLabels = [];
 
 		if (this._autoLog)
 		{
@@ -419,6 +420,28 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 
 		this._setAttribute("rating", rating, log);
+	}
+
+	/**
+	 * Setter for the orientation attribute.
+	 *
+	 * @name module:visual.Slider#setOri
+	 * @public
+	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setOri (ori = 0, log = false)
+	{
+		const oriChanged = this._setAttribute("ori", ori, log);
+		if (oriChanged)
+		{
+			this._pixi.rotation = -this._ori * Math.PI / 180;
+			let i;
+			for (i = 0; i < this._pixiLabels.length; ++i)
+			{
+				this._pixiLabels[i].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			}
+		}
 	}
 
 	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
@@ -1185,6 +1208,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	_setupLabels()
 	{
 		const labelTextStyle = this._getTextStyle();
+		this._pixiLabels = new Array(this._labels.length);
 
 		for (let l = 0; l < this._labels.length; ++l)
 		{
@@ -1194,6 +1218,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			labelText.rotation = -(this._ori + this._labelOri) * Math.PI / 180;
 			labelText.anchor = this._labelAnchor;
 			labelText.alpha = 1;
+			this._pixiLabels[l] = labelText;
 
 			this._pixi.addChild(labelText);
 		}
