@@ -84,23 +84,38 @@ export class ServerManager extends PsychObject
 
 		this._psychoJS.logger.debug("reading the configuration file: " + configURL);
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			jQuery.get(configURL, "json")
-				.done((config, textStatus) =>
-				{
-					// resolve({ ...response, config });
-					resolve(Object.assign(response, { config }));
-				})
-				.fail((jqXHR, textStatus, errorThrown) =>
-				{
-					self.setStatus(ServerManager.Status.ERROR);
-
-					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error("error:", errorMsg);
-
-					reject(Object.assign(response, { error: errorMsg }));
+			try
+			{
+				const getResponse = await fetch(configURL, {
+					method: "GET",
+					mode: "cors",
+					cache: "no-cache",
+					credentials: "same-origin",
+					redirect: "follow",
+					referrerPolicy: "no-referrer"
 				});
+				if (getResponse.status === 404)
+				{
+					throw "the configuration file could not be found";
+				}
+				else if (getResponse.status !== 200)
+				{
+					throw `unable to read the configuration file: status= ${getResponse.status}`;
+				}
+
+				// the configuration file should be valid json:
+				const config = await getResponse.json();
+				resolve(Object.assign(response, { config }));
+			}
+			catch (error)
+			{
+				self.setStatus(ServerManager.Status.ERROR);
+				console.error("error:", error);
+
+				reject(Object.assign(response, { error }));
+			}
 		});
 	}
 
@@ -125,74 +140,76 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager.openSession",
 			context: "when opening a session for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
 		this._psychoJS.logger.debug("opening a session for experiment: " + this._psychoJS.config.experiment.fullpath);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
-		// prepare POST query:
+		// prepare a POST query:
 		let data = {};
 		if (this._psychoJS._serverMsg.has("__pilotToken"))
 		{
 			data.pilotToken = this._psychoJS._serverMsg.get("__pilotToken");
 		}
 
-		// query pavlovia server:
+		// query the server:
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL
-				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
-				+ "/sessions";
-			jQuery.post(url, data, null, "json")
-				.done((data, textStatus) =>
+			try
+			{
+				const postResponse = await this._queryServerAPI(
+					"POST",
+					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions`,
+					data
+				);
+
+				const openSessionResponse = await postResponse.json();
+
+				if (postResponse.status !== 200)
 				{
-					if (!("token" in data))
-					{
-						self.setStatus(ServerManager.Status.ERROR);
-						reject(Object.assign(response, { error: "unexpected answer from server: no token" }));
-						// reject({...response, error: 'unexpected answer from server: no token'});
-					}
-					if (!("experiment" in data))
-					{
-						self.setStatus(ServerManager.Status.ERROR);
-						// reject({...response, error: 'unexpected answer from server: no experiment'});
-						reject(Object.assign(response, { error: "unexpected answer from server: no experiment" }));
-					}
-
-					self._psychoJS.config.session = {
-						token: data.token,
-						status: "OPEN",
-					};
-					self._psychoJS.config.experiment.status = data.experiment.status2;
-					self._psychoJS.config.experiment.saveFormat = Symbol.for(data.experiment.saveFormat);
-					self._psychoJS.config.experiment.saveIncompleteResults = data.experiment.saveIncompleteResults;
-					self._psychoJS.config.experiment.license = data.experiment.license;
-					self._psychoJS.config.experiment.runMode = data.experiment.runMode;
-
-					// secret keys for various services, e.g. Google Speech API
-					if ("keys" in data.experiment)
-					{
-						self._psychoJS.config.experiment.keys = data.experiment.keys;
-					}
-					else
-					{
-						self._psychoJS.config.experiment.keys = [];
-					}
-
-					self.setStatus(ServerManager.Status.READY);
-					// resolve({ ...response, token: data.token, status: data.status });
-					resolve(Object.assign(response, { token: data.token, status: data.status }));
-				})
-				.fail((jqXHR, textStatus, errorThrown) =>
+					throw ('error' in openSessionResponse) ? openSessionResponse.error : openSessionResponse;
+				}
+				if (!("token" in openSessionResponse))
 				{
 					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from the server: no token";
+				}
+				if (!("experiment" in openSessionResponse))
+				{
+					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from server: no experiment";
+				}
 
-					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error("error:", errorMsg);
+				self._psychoJS.config.session = {
+					token: openSessionResponse.token,
+					status: "OPEN",
+				};
+				const experiment = openSessionResponse.experiment;
+				self._psychoJS.config.experiment.status = experiment.status2;
+				self._psychoJS.config.experiment.saveFormat = Symbol.for(experiment.saveFormat);
+				self._psychoJS.config.experiment.saveIncompleteResults = experiment.saveIncompleteResults;
+				self._psychoJS.config.experiment.license = experiment.license;
+				self._psychoJS.config.experiment.runMode = experiment.runMode;
 
-					reject(Object.assign(response, { error: errorMsg }));
-				});
+				// secret keys for various services, e.g. Google Speech API
+				if ("keys" in experiment)
+				{
+					self._psychoJS.config.experiment.keys = experiment.keys;
+				}
+				else
+				{
+					self._psychoJS.config.experiment.keys = [];
+				}
+
+				self.setStatus(ServerManager.Status.READY);
+				resolve({...response, token: openSessionResponse.token, status: openSessionResponse.status });
+			}
+			catch (error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				reject({...response, error});
+			}
 		});
 	}
 
@@ -218,68 +235,53 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager.closeSession",
 			context: "when closing the session for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
 		this._psychoJS.logger.debug("closing the session for experiment: " + this._psychoJS.config.experiment.name);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
-		// prepare DELETE query:
-		const url = this._psychoJS.config.pavlovia.URL
-			+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
-			+ "/sessions/"  + this._psychoJS.config.session.token;
-
-		// synchronous query the pavlovia server:
+		// synchronously query the pavlovia server:
 		if (sync)
 		{
-			/* This is now deprecated in most browsers.
-			const request = new XMLHttpRequest();
-			request.open("DELETE", url, false);
-			request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			request.send(JSON.stringify(data));
-			 */
-			/* This does not work in Chrome because of a CORS bug
-			await fetch(url, {
-				method: 'DELETE',
-				headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-				body: JSON.stringify(data),
-				// keepalive makes it possible for the request to outlive the page (e.g. when the participant closes the tab)
-				keepalive: true
-			});
-			 */
+			const url = this._psychoJS.config.pavlovia.URL
+				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
+				+ "/sessions/"  + this._psychoJS.config.session.token + "/delete";
 			const formData = new FormData();
 			formData.append("isCompleted", isCompleted);
-			navigator.sendBeacon(url + "/delete", formData);
+
+			navigator.sendBeacon(url, formData);
 			this._psychoJS.config.session.status = "CLOSED";
 		}
 		// asynchronously query the pavlovia server:
 		else
 		{
 			const self = this;
-			return new Promise((resolve, reject) =>
+			return new Promise(async (resolve, reject) =>
 			{
-				jQuery.ajax({
-					url,
-					type: "delete",
-					data: { isCompleted },
-					dataType: "json",
-				})
-					.done((data, textStatus) =>
+				try
+				{
+					const deleteResponse = await this._queryServerAPI(
+						"DELETE",
+						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}`,
+						{ isCompleted }
+					);
+
+					const closeSessionResponse = await deleteResponse.json();
+
+					if (deleteResponse.status !== 200)
 					{
-						self.setStatus(ServerManager.Status.READY);
-						self._psychoJS.config.session.status = "CLOSED";
+						throw ('error' in closeSessionResponse) ? closeSessionResponse.error : closeSessionResponse;
+					}
 
-						// resolve({ ...response, data });
-						resolve(Object.assign(response, { data }));
-					})
-					.fail((jqXHR, textStatus, errorThrown) =>
-					{
-						self.setStatus(ServerManager.Status.ERROR);
-
-						const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-						console.error("error:", errorMsg);
-
-						reject(Object.assign(response, { error: errorMsg }));
-					});
+					self.setStatus(ServerManager.Status.READY);
+					self._psychoJS.config.session.status = "CLOSED";
+					resolve({ ...response, ...closeSessionResponse });
+				}
+				catch (error)
+				{
+					console.error(error);
+					self.setStatus(ServerManager.Status.ERROR);
+					reject({...response, error});
+				}
 			});
 		}
 	}
@@ -729,49 +731,51 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager.uploadData",
 			context: "when uploading participant's results for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
 		this._psychoJS.logger.debug("uploading data for experiment: " + this._psychoJS.config.experiment.fullpath);
+
 		this.setStatus(ServerManager.Status.BUSY);
 
-		const url = this._psychoJS.config.pavlovia.URL
-			+ "/api/v2/experiments/" + encodeURIComponent(this._psychoJS.config.experiment.fullpath)
-			+ "/sessions/" + this._psychoJS.config.session.token
-			+ "/results";
+		const path = `experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}/results`;
 
-		// synchronous query the pavlovia server:
+		// synchronously query the pavlovia server:
 		if (sync)
 		{
 			const formData = new FormData();
 			formData.append("key", key);
 			formData.append("value", value);
-			navigator.sendBeacon(url, formData);
+			navigator.sendBeacon(`${this._psychoJS.config.pavlovia.URL}/api/v2/${path}`, formData);
 		}
 		// asynchronously query the pavlovia server:
 		else
 		{
 			const self = this;
-			return new Promise((resolve, reject) =>
+			return new Promise(async (resolve, reject) =>
 			{
-				const data = {
-					key,
-					value,
-				};
+				try
+				{
+					const postResponse = await this._queryServerAPI(
+						"POST",
+						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}/results`,
+						{ key, value },
+						"FORM"
+					);
 
-				jQuery.post(url, data, null, "json")
-					.done((serverData, textStatus) =>
+					const uploadDataResponse = await postResponse.json();
+
+					if (postResponse.status !== 200)
 					{
-						self.setStatus(ServerManager.Status.READY);
-						resolve(Object.assign(response, { serverData }));
-					})
-					.fail((jqXHR, textStatus, errorThrown) =>
-					{
-						self.setStatus(ServerManager.Status.ERROR);
+						throw ('error' in uploadDataResponse) ? uploadDataResponse.error : uploadDataResponse;
+					}
 
-						const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-						console.error("error:", errorMsg);
-
-						reject(Object.assign(response, { error: errorMsg }));
-					});
+					self.setStatus(ServerManager.Status.READY);
+					resolve({ ...response, ...uploadDataResponse });
+				}
+				catch (error)
+				{
+					console.error(error);
+					self.setStatus(ServerManager.Status.ERROR);
+					reject({...response, error});
+				}
 			});
 		}
 	}
@@ -792,46 +796,50 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager.uploadLog",
 			context: "when uploading participant's log for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
 		this._psychoJS.logger.debug("uploading server log for experiment: " + this._psychoJS.config.experiment.fullpath);
+
 		this.setStatus(ServerManager.Status.BUSY);
 
-		// prepare the POST query:
+		// prepare a POST query:
 		const info = this.psychoJS.experiment.extraInfo;
-		const participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
-		const experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
-		const datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
-		const filename = participant + "_" + experimentName + "_" + datetime + ".log";
+		const filenameWithoutPath = this.psychoJS.experiment.dataFileName.split(/[\\/]/).pop();
+		const filename = `${filenameWithoutPath}.log`;
 		const data = {
 			filename,
 			logs,
-			compressed,
+			compressed
 		};
 
 		// query the pavlovia server:
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			const url = self._psychoJS.config.pavlovia.URL
-				+ "/api/v2/experiments/" + encodeURIComponent(self._psychoJS.config.experiment.fullpath)
-				+ "/sessions/" + self._psychoJS.config.session.token
-				+ "/logs";
+			try
+			{
+				const postResponse = await this._queryServerAPI(
+					"POST",
+					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${self._psychoJS.config.session.token}/logs`,
+					data,
+					"FORM"
+				);
 
-			jQuery.post(url, data, null, "json")
-				.done((serverData, textStatus) =>
+				const uploadLogsResponse = await postResponse.json();
+
+				if (postResponse.status !== 200)
 				{
-					self.setStatus(ServerManager.Status.READY);
-					resolve(Object.assign(response, { serverData }));
-				})
-				.fail((jqXHR, textStatus, errorThrown) =>
-				{
-					self.setStatus(ServerManager.Status.ERROR);
+					throw ('error' in uploadLogsResponse) ? uploadLogsResponse.error : uploadLogsResponse;
+				}
 
-					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error("error:", errorMsg);
+				self.setStatus(ServerManager.Status.READY);
+				resolve({...response, ...uploadLogsResponse });
+			}
+			catch (error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				reject({...response, error});
+			}
 
-					reject(Object.assign(response, { error: errorMsg }));
-				});
 		});
 	}
 
@@ -983,59 +991,49 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager._listResourcesSession",
 			context: "when listing the resources for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
-		this._psychoJS.logger.debug(
-			"listing the resources for experiment: "
-				+ this._psychoJS.config.experiment.fullpath,
-		);
+		this._psychoJS.logger.debug(`listing the resources for experiment: ${this._psychoJS.config.experiment.fullpath}`);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
-		// prepare GET data:
+		// prepare a GET query:
 		const data = {
 			"token": this._psychoJS.config.session.token,
 		};
 
-		// query pavlovia server:
+		// query the server:
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL
-				+ "/api/v2/experiments/" + encodeURIComponent(this._psychoJS.config.experiment.fullpath)
-				+ "/resources";
+			try
+			{
+				const getResponse = await this._queryServerAPI(
+					"GET",
+					`experiments/${this._psychoJS.config.gitlab.projectId}/resources`,
+					data
+				);
 
-			jQuery.get(url, data, null, "json")
-				.done((data, textStatus) =>
-				{
-					if (!("resources" in data))
-					{
-						self.setStatus(ServerManager.Status.ERROR);
-						// reject({ ...response, error: 'unexpected answer from server: no resources' });
-						reject(Object.assign(response, { error: "unexpected answer from server: no resources" }));
-					}
-					if (!("resourceDirectory" in data))
-					{
-						self.setStatus(ServerManager.Status.ERROR);
-						// reject({ ...response, error: 'unexpected answer from server: no resourceDirectory' });
-						reject(Object.assign(response, { error: "unexpected answer from server: no resourceDirectory" }));
-					}
+				const getResourcesResponse = await getResponse.json();
 
-					self.setStatus(ServerManager.Status.READY);
-					// resolve({ ...response, resources: data.resources, resourceDirectory: data.resourceDirectory });
-					resolve(Object.assign(response, {
-						resources: data.resources,
-						resourceDirectory: data.resourceDirectory,
-					}));
-				})
-				.fail((jqXHR, textStatus, errorThrown) =>
+				if (!("resources" in getResourcesResponse))
 				{
 					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from server: no resources";
+				}
+				if (!("resourceDirectory" in getResourcesResponse))
+				{
+					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from server: no resourceDirectory";
+				}
 
-					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error("error:", errorMsg);
-
-					reject(Object.assign(response, { error: errorMsg }));
-				});
+				self.setStatus(ServerManager.Status.READY);
+				resolve({ ...response, resources: data.resources, resourceDirectory: data.resourceDirectory });
+			}
+			catch (error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				reject({...response, error});
+			}
 		});
 	}
 
@@ -1335,6 +1333,79 @@ export class ServerManager extends PsychObject
 		});
 	}
 
+	/**
+	 * Query the pavlovia server API.
+	 *
+	 * @name module:core.ServerManager#_queryServerAPI
+	 * @function
+	 * @protected
+	 * @param method	the HTTP method, i.e. GET, PUT, POST, or DELETE
+	 * @param path		the resource path, without the server address
+	 * @param data		the data to be sent
+	 * @param {string} [contentType="JSON"]	the content type, either JSON or FORM
+	 */
+	_queryServerAPI(method, path, data, contentType = "JSON")
+	{
+		const fullPath = `${this._psychoJS.config.pavlovia.URL}/api/v2/${path}`;
+
+		if (method === "PUT" || method === "POST" || method === "DELETE")
+		{
+			if (contentType === "JSON")
+			{
+				return fetch(fullPath, {
+					method,
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)
+				});
+			}
+			else
+			{
+				const formData = new FormData();
+				for (const attribute in data)
+				{
+					formData.append(attribute, data[attribute]);
+				}
+
+				return fetch(fullPath, {
+					method,
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer',
+					body: formData
+				});
+			}
+		}
+
+		if (method === "GET")
+		{
+			let url = new URL(fullPath);
+			url.search = new URLSearchParams(data).toString();
+
+			return fetch(url, {
+				method: "GET",
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				redirect: "follow",
+				referrerPolicy: "no-referrer"
+			});
+		}
+
+		throw {
+			origin: "ServerManager._queryServer",
+			context: "when querying the server",
+			error: "the method should be GET, PUT, POST, or DELETE"
+		};
+	}
 
 }
 

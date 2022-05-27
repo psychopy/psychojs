@@ -13,6 +13,7 @@ import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
+import {Camera} from "../hardware";
 
 /**
  * Image Stimulus.
@@ -133,13 +134,27 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 					image = this.psychoJS.serverManager.getResource(image);
 				}
 
-				// image should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(image instanceof HTMLImageElement))
+				if (image instanceof Camera)
 				{
-					throw "the argument: " + image.toString() + ' is not an image" }';
+					const video = image.getVideo();
+					// TODO remove previous one if there is one
+					// document.body.appendChild(video);
+					image = video;
 				}
 
-				this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: src= " + image.src + ", size= " + image.width + "x" + image.height);
+				// image should now be either an HTMLImageElement or an HTMLVideoElement:
+				if (image instanceof HTMLImageElement)
+				{
+					this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: src= " + image.src + ", size= " + image.width + "x" + image.height);
+				}
+				else if (image instanceof HTMLVideoElement)
+				{
+					this.psychoJS.logger.debug(`set the image of ImageStim: ${this._name} as: src= ${image.src}, size= ${image.videoWidth}x${image.videoHeight}, duration= ${image.duration}s`);
+				}
+				else
+				{
+					throw "the argument: " + image.toString() + ' is neither an image nor a video" }';
+				}
 			}
 
 			const existingImage = this.getImage();
@@ -263,9 +278,18 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				return;
 			}
 
-			const baseTexture = new PIXI.BaseTexture(this._image);
+			// deal with both static images and videos:
+			if (this._image instanceof HTMLImageElement)
+			{
+				this._texture = PIXI.Texture.from(this._image);
+				// const baseTexture = new PIXI.BaseTexture(this._image);
+				// this._texture = new PIXI.Texture(baseTexture);
+			}
+			else if (this._image instanceof HTMLVideoElement)
+			{
+				this._texture = PIXI.Texture.from(this._image, { resourceOptions: { autoPlay: true } });
+			}
 
-			this._texture = new PIXI.Texture(baseTexture);
 			this._pixi = PIXI.Sprite.from(this._texture);
 
 			// add a mask if need be:

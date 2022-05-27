@@ -89,6 +89,43 @@ export class MultiStairHandler extends TrialHandler
 	}
 
 	/**
+	 * Get the current staircase.
+	 *
+	 * @name module:data.MultiStairHandler#currentStaircase
+	 * @function
+	 * @public
+	 * @returns {module.data.TrialHandler} the current staircase, or undefined if the trial has ended
+	 */
+	get currentStaircase()
+	{
+		return this._currentStaircase;
+	}
+
+	/**
+	 * Get the current intensity.
+	 *
+	 * @name module:data.MultiStairHandler#intensity
+	 * @function
+	 * @public
+	 * @returns {number} the intensity of the current staircase, or undefined if the trial has ended
+	 */
+	get intensity()
+	{
+		if (this._currentStaircase instanceof QuestHandler)
+		{
+			return this._currentStaircase.getQuestValue();
+		}
+
+		// TODO similar for simple staircase:
+		// if (this._currentStaircase instanceof StaircaseHandler)
+		// {
+		//    return this._currentStaircase.getStairValue();
+		// }
+
+		return undefined;
+	}
+
+	/**
 	 * Add a response to the current staircase.
 	 *
 	 * @name module:data.MultiStairHandler#addResponse
@@ -344,10 +381,10 @@ export class MultiStairHandler extends TrialHandler
 
 					if (typeof this._snapshots[t] !== "undefined")
 					{
-						let fieldName = this._name + "." + this._varName;
+						let fieldName = /*this._name + "." +*/ this._varName;
 						this._snapshots[t][fieldName] = value;
 						this._snapshots[t].trialAttributes.push(fieldName);
-						fieldName = this._name + ".intensity";
+						fieldName = /*this._name + ".*/ "intensity";
 						this._snapshots[t][fieldName] = value;
 						this._snapshots[t].trialAttributes.push(fieldName);
 
@@ -356,13 +393,13 @@ export class MultiStairHandler extends TrialHandler
 							// "name" becomes "label" again:
 							if (attribute === 'name')
 							{
-								fieldName = this._name + ".label";
+								fieldName = /*this._name + ".*/ "label";
 								this._snapshots[t][fieldName] = this._currentStaircase["_name"];
 								this._snapshots[t].trialAttributes.push(fieldName);
 							}
 							else if (attribute !== 'trialList' && attribute !== 'extraInfo')
 							{
-								fieldName = this._name+"."+attribute;
+								fieldName = /*this._name+"."+*/ attribute;
 								this._snapshots[t][fieldName] = this._currentStaircase["_" + attribute];
 								this._snapshots[t].trialAttributes.push(fieldName);
 							}

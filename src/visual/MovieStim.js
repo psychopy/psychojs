@@ -14,7 +14,7 @@ import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
-import {Camera} from "./Camera.js";
+import {Camera} from "../hardware/Camera.js";
 
 
 /**
@@ -145,14 +145,14 @@ export class MovieStim extends VisualStim
 	{
 		const response = {
 			origin: "MovieStim.setMovie",
-			context: "when setting the movie of MovieStim: " + this._name,
+			context: `when setting the movie of MovieStim: ${this._name}`,
 		};
 
 		try
 		{
 			// movie is undefined: that's fine but we raise a warning in case this is
 			// a symptom of an actual problem
-			if (typeof movie === 'undefined')
+			if (typeof movie === "undefined")
 			{
 				this.psychoJS.logger.warn(
 					`setting the movie of MovieStim: ${this._name} with argument: undefined.`);
@@ -170,16 +170,22 @@ export class MovieStim extends VisualStim
 				// if movie is an instance of camera, get a video element from it:
 				else if (movie instanceof Camera)
 				{
+					// old behaviour: feeding a Camera to MovieStim plays the live stream:
 					const video = movie.getVideo();
 					// TODO remove previous one if there is one
-					// document.body.appendChild(video);
 					movie = video;
+
+					/*
+					// new behaviour: feeding a Camera to MovieStim replays the video previously recorded by the Camera:
+					const video = movie.getRecording();
+					movie = video;
+				 */
 				}
 
 				// check that movie is now an HTMLVideoElement
 				if (!(movie instanceof HTMLVideoElement))
 				{
-					throw movie.toString() + " is not a video";
+					throw `${movie.toString()} is not a video`;
 				}
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
@@ -320,8 +326,8 @@ export class MovieStim extends VisualStim
 		if (typeof size !== "undefined")
 		{
 			this._boundingBox = new PIXI.Rectangle(
-				this._pos[0] - size[0] / 2,
-				this._pos[1] - size[1] / 2,
+				this._pos[0] - (size[0] / 2),
+				this._pos[1] - (size[1] / 2),
 				size[0],
 				size[1],
 			);

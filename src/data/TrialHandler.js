@@ -294,11 +294,12 @@ export class TrialHandler extends PsychObject
 	}
 
 	/**
-	 * Set the internal state of this trial handler from the given snapshot.
+	 * Set the internal state of the snapshot's trial handler from the snapshot.
 	 *
 	 * @public
 	 * @static
-	 * @param {Snapshot} snapshot - the snapshot from which to update the current internal state.
+	 * @param {Snapshot} snapshot - the snapshot from which to update the current internal state of the
+	 * 	snapshot's trial handler
 	 */
 	static fromSnapshot(snapshot)
 	{
@@ -317,7 +318,6 @@ export class TrialHandler extends PsychObject
 		snapshot.handler.thisIndex = snapshot.thisIndex;
 		snapshot.handler.ran = snapshot.ran;
 		snapshot.handler._finished = snapshot._finished;
-
 		snapshot.handler.thisTrial = snapshot.handler.getCurrentTrial();
 
 		// add the snapshot's trial attributes to a global variable, whose name is derived from
