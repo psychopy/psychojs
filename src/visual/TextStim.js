@@ -334,13 +334,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			"pix",
 			this._win,
 			this._units,
-		);
+		); console.log(this._name, '>>', textSize);
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
-			this._pos[1] - textSize[1] - anchor[1] * textSize[1],
+			this._pos[1] - textSize[1] + anchor[1] * textSize[1],
 			textSize[0],
 			textSize[1],
 		);
@@ -445,7 +445,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		// refine the estimate of the bounding box:
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
-			this._pos[1] - this._size[1] - anchor[1] * this._size[1],
+			this._pos[1] - this._size[1] + anchor[1] * this._size[1],
 			this._size[0],
 			this._size[1],
 		);

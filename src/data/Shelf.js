@@ -41,6 +41,14 @@ export class Shelf extends PsychObject
 
 		this._addAttribute('autoLog', autoLog);
 		this._addAttribute('status', Shelf.Status.READY);
+
+		// minimum period of time, in ms, before two calls to Shelf methods, i.e. throttling:
+		this._throttlingPeriod_ms = 5000.0;
+
+		// timestamp of the last actual call to a Shelf method:
+		this._lastCallTimestamp = 0.0;
+		// timestamp of the last scheduled call to a Shelf method:
+		this._lastScheduledCallTimestamp = 0.0;
 	}
 
 	/**
@@ -60,12 +68,9 @@ export class Shelf extends PsychObject
 			context: `when getting the value associated with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("getValue");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("getValue");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -130,12 +135,9 @@ export class Shelf extends PsychObject
 			context: `when setting the value associated with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("setValue");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("setValue");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -195,12 +197,9 @@ export class Shelf extends PsychObject
 			context: `when getting the names of the fields in the dictionary record associated with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("getDictionaryFieldNames");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("getDictionaryFieldNames");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -260,12 +259,9 @@ export class Shelf extends PsychObject
 			context: `when getting value of field: ${fieldName} in the dictionary record associated with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("getDictionaryValue");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("getDictionaryValue");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -330,12 +326,9 @@ export class Shelf extends PsychObject
 			context: `when setting a field with name: ${fieldName} in the dictionary record associated with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("setDictionaryField");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("setDictionaryField");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -451,12 +444,9 @@ export class Shelf extends PsychObject
 			context: `when incrementing the integer counter with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("increment");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("increment");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -518,12 +508,9 @@ export class Shelf extends PsychObject
 			context: `when getting the name of a group, using a counterbalanced design, with key: ${JSON.stringify(key)}`
 		};
 
-		// TODO what to do if the status of shelf is currently BUSY? Wait until it is READY again?
-
 		try
 		{
-			this._checkAvailability("counterBalanceSelect");
-			this._status = Shelf.Status.BUSY;
+			await this._checkAvailability("counterBalanceSelect");
 			this._checkKey(key);
 
 			// prepare the request:
@@ -575,7 +562,7 @@ export class Shelf extends PsychObject
 	 * @function
 	 * @public
 	 * @param {string} [methodName=""] name of the method requiring a check
-	 * @throw {Object.<string, *>} exception when it is not possible to run shelf commands
+	 * @throw {Object.<string, *>} exception when it is not possible to run the given shelf command
 	 */
 	_checkAvailability(methodName = "")
 	{
@@ -588,6 +575,37 @@ export class Shelf extends PsychObject
 				error: 'the experiment has to be run on the server: shelf commands are not available locally'
 			}
 		}
+
+		// throttle calls to Shelf methods:
+		const self = this;
+		return new Promise((resolve, reject) =>
+		{
+			const now = performance.now();
+
+			// if the last scheduled call already occurred, schedule this one as soon as possible,
+			// taking into account the throttling period:
+			let timeoutDuration;
+			if (now > self._lastScheduledCallTimestamp)
+			{
+				timeoutDuration = Math.max(0.0, self._throttlingPeriod_ms - (now - self._lastCallTimestamp));
+				self._lastScheduledCallTimestamp = now + timeoutDuration;
+			}
+			// otherwise, schedule it after the next call:
+			else
+			{
+				self._lastScheduledCallTimestamp += self._throttlingPeriod_ms;
+				timeoutDuration = self._lastScheduledCallTimestamp;
+			}
+
+			setTimeout(
+				() => {
+					self._lastCallTimestamp = performance.now();
+					self._status = Shelf.Status.BUSY;
+					resolve();
+					},
+				timeoutDuration
+			);
+		});
 	}
 
 	/**

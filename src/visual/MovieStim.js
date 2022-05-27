@@ -14,7 +14,7 @@ import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
-import {Camera} from "./Camera.js";
+import {Camera} from "../hardware/Camera.js";
 
 
 /**
