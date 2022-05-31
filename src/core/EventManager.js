@@ -56,15 +56,6 @@ export class EventManager
 			touchesArray: [],
 			touchesMap: {}
 		};
-
-		this._eventSubscriptions = {
-			"pointerdown": [],
-			"pointerup": [],
-			"pointermove": [],
-			"touchstart": [],
-			"touchend": [],
-			"touchmove": []
-		};
 	}
 
 	/**
@@ -260,12 +251,6 @@ export class EventManager
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 
-			let i;
-			for (i = 0; i < this._eventSubscriptions["pointerdown"].length; i++)
-			{
-				this._eventSubscriptions["pointerdown"][i].handleEvent("pointerdown", event);
-			}
-
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
@@ -291,11 +276,6 @@ export class EventManager
 				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
 			}
 
-			for (i = 0; i < this._eventSubscriptions["touchstart"].length; i++)
-			{
-				this._eventSubscriptions["touchstart"][i].handleEvent("touchstart", this._touchInfo);
-			}
-
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
@@ -306,12 +286,6 @@ export class EventManager
 			self._mouseInfo.buttons.pressed[event.button] = 0;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
-
-			let i;
-			for (i = 0; i < this._eventSubscriptions["pointerup"].length; i++)
-			{
-				this._eventSubscriptions["pointerup"][i].handleEvent("pointerup", event);
-			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -349,11 +323,6 @@ export class EventManager
 				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
 			}
 
-			for (i = 0; i < this._eventSubscriptions["touchend"].length; i++)
-			{
-				this._eventSubscriptions["touchend"][i].handleEvent("touchend", this._touchInfo);
-			}
-
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
 
@@ -363,12 +332,6 @@ export class EventManager
 
 			self._mouseInfo.moveClock.reset();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
-
-			let i;
-			for (i = 0; i < this._eventSubscriptions["pointermove"].length; i++)
-			{
-				this._eventSubscriptions["pointermove"][i].handleEvent("pointermove", event);
-			}
 
 		}, false);
 
@@ -391,11 +354,6 @@ export class EventManager
 				};
 				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
 			}
-
-			for (i = 0; i < this._eventSubscriptions["touchmove"].length; i++)
-			{
-				this._eventSubscriptions["touchmove"][i].handleEvent("touchmove", this._touchInfo);
-			}
 		}, false);
 
 		// (*) wheel
@@ -406,133 +364,6 @@ export class EventManager
 
 			this._psychoJS.experimentLogger.data("Mouse: wheel shift=(" + event.deltaX + "," + event.deltaY + "), pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
-	}
-
-	/**
-	 * Adds a subscriber/listener of the event, that is going to be notified if it happens.
-	 *
-	 * @name module:core.EventManager#addEventSubscriber
-	 * @function
-	 * @public
-	 * @param {String} eventName - an event of which a subscriber wants to be notified.
-	 * @param {object|module:visual.VisualStim} subscriber - an object that wants to be notified in case of specified event.
-	 */
-	addEventSubscriber (eventName, subscriber)
-	{
-		if (!subscriber || !eventName)
-		{
-			return;
-		}
-		if (this._eventSubscriptions[eventName].indexOf(subscriber) === -1)
-		{
-			this._eventSubscriptions[eventName].push(subscriber);
-		}
-	}
-
-	/**
-	 * Removes subscriber/listener of the specified event.
-	 *
-	 * @name module:core.EventManager#removeEventSubscriber
-	 * @function
-	 * @public
-	 * @param {String} eventName - an event of which a subscriber wants to be notified.
-	 * @param {object|module:visual.VisualStim} subscriber - an object that does not wants to be notified in case of specified event anymore.
-	 */
-	removeEventSubscriber (eventName, subscriber)
-	{
-		if (!subscriber || !eventName)
-		{
-			return;
-		}
-		const i = this._eventSubscriptions[eventName].indexOf(subscriber);
-		if (i !== -1)
-		{
-			this._eventSubscriptions[eventName].splice(i, 1);
-		}
-	}
-
-	/**
-	 * Removes subscriber/listener from all subscriptions.
-	 *
-	 * @name module:core.EventManager#removeEventSubscriber
-	 * @function
-	 * @public
-	 * @param {object|module:visual.VisualStim} subscriber - an object that does not wants to be notified in case of any events anymore.
-	 */
-	removeSubscriberFromAllEvents (subscriber)
-	{
-		if (!subscriber)
-		{
-			return;
-		}
-		let eventName, idx;
-		for (eventName in this._eventSubscriptions)
-		{
-			idx = this._eventSubscriptions[eventName].indexOf(subscriber);
-			if (idx !== -1) {
-				this._eventSubscriptions[eventName].splice(idx, 1);
-			}
-		}
-	}
-
-	/**
-	 * Clear all event subscriptions.
-	 *
-	 * @name module:core.EventManager#clearEventSubscriptions
-	 * @function
-	 * @public
-	 */
-	clearEventSubscriptions ()
-	{
-		let i;
-		for (i in this._eventSubscriptions)
-		{
-			this._eventSubscriptions[i] = [];
-		}
-	}
-
-	/**
-	 * Updates the state of EventManager. Runs together with window refresh.
-	 *
-	 * @name module:core.EventManager#update
-	 * @function
-	 * @public
-	 */
-	update ()
-	{
-		// for touchstart/pointerdown/mousedown sorting subscribers in reverse order to which they were added to the scene
-		// to ensure that the last added gets notified first, since for the user that object appears on top of others on the screen
-		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["pointerdown"]);
-		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["mousedown"]);
-		this._sortSubscribersAccordingToPixiOrder(this._eventSubscriptions["touchstart"]);
-	}
-
-	/**
-	 * Sorts the specified subscribers array in opposite order to the positions of their _pixi objects in parent PIXI.Container.
-	 *
-	 * @name module:core._sortSubscribersAccordingToPixiOrder#update
-	 * @function
-	 * @private
-	 */
-	_sortSubscribersAccordingToPixiOrder (subscribers = [])
-	{
-		subscribers.sort((a, b) =>
-		{
-			const idxA = a.getPixiIndexInParentContainer();
-			const idxB = b.getPixiIndexInParentContainer();
-			if (idxA > idxB)
-			{
-				return -1;
-			}
-			else if (idxA < idxB)
-			{
-				return 1;
-			}
-			else
-			{
-				return 0;
-			}
-		});
 	}
 
 	/**

@@ -83,6 +83,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		// data needed to properly support drag and drop functionality
 		this._associatedPointerId = undefined;
 		this._initialPointerOffset = [0, 0];
+		this._pointerEventHandlersUuids = {};
 
 		// bounding box of the stimulus, in stimulus units
 		// note: boundingBox does not take the orientation into account
@@ -202,33 +203,21 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		{
 			if (draggable)
 			{
-				if ("onpointerdown" in document.documentElement)
-				{
-					this.addEventHandler("pointerdown", this._handlePointerDown.bind(this));
-					this.addEventHandler("pointerup", this._handlePointerUp.bind(this));
-					this.addEventHandler("pointermove", this._handlePointerMove.bind(this));
-				}
-				else if ("ontouchstart" in document.documentElement)
-				{
-					this.addEventHandler("touchstart", this._handleTouchStart.bind(this));
-					this.addEventHandler("touchend", this._handleTouchEnd.bind(this));
-					this.addEventHandler("touchmove", this._handleTouchMove.bind(this));
-				}
+				// this.addEventHandler("pointerdown", this._handlePointerDown.bind(this));
+				// this.addEventHandler("pointerup", this._handlePointerUp.bind(this));
+				// this.addEventHandler("pointermove", this._handlePointerMove.bind(this));
+				this._pointerEventHandlersUuids["pointerdown"] = this._win.on("pointerdown", this._handlePointerDown.bind(this));
+				this._pointerEventHandlersUuids["pointerup"] = this._win.on("pointerup", this._handlePointerUp.bind(this));
+				this._pointerEventHandlersUuids["pointermove"] = this._win.on("pointermove", this._handlePointerMove.bind(this));
 			}
 			else
 			{
-				if ("onpointerdown" in document.documentElement)
-				{
-					this.removeEventHandler("pointerdown");
-					this.removeEventHandler("pointerup");
-					this.removeEventHandler("pointermove");
-				}
-				else if ("ontouchstart" in document.documentElement)
-				{
-					this.removeEventHandler("touchstart");
-					this.removeEventHandler("touchend");
-					this.removeEventHandler("touchmove");
-				}
+				// this.removeEventHandler("pointerdown");
+				// this.removeEventHandler("pointerup");
+				// this.removeEventHandler("pointermove");
+				this._win.off("pointerdown", this._pointerEventHandlersUuids["pointerdown"]);
+				this._win.off("pointerup", this._pointerEventHandlersUuids["pointerup"]);
+				this._win.off("pointermove", this._pointerEventHandlersUuids["pointermove"]);
 			}
 		}
 	}
@@ -274,6 +263,21 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	}
 
 	/**
+	 * Release the PIXI representation, if there is one.
+	 *
+	 * @name module:core.MinimalStim#release
+	 * @function
+	 * @public
+	 *
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	release(log = false)
+	{
+		this.draggable = false;
+		super.release(log);
+	}
+
+	/**
 	 * Handler of pointerdown event.
 	 *
 	 * @name module:visual.VisualStim#_handlePointerDown
@@ -282,21 +286,17 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	_handlePointerDown (e)
 	{
-		if (e.busy)
+		if (e.pixi === undefined || e.pixi !== this._pixi)
 		{
 			return;
 		}
 		let relativePos = [];
-		relativePos[0] = e.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
-		relativePos[1] = -(e.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
-		if (this.containsPointPx(relativePos))
-		{
-			e.busy = true;
-			this._associatedPointerId = e.pointerId;
-			this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
-			this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
-			this.emit("pointerdown", e);
-		}
+		relativePos[0] = e.originalEvent.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
+		relativePos[1] = -(e.originalEvent.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
+		this._associatedPointerId = e.originalEvent.pointerId;
+		this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
+		this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
+		this.emit("pointerdown", e);
 	}
 
 	/**
@@ -308,7 +308,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	_handlePointerUp (e)
 	{
-		if (e.pointerId === this._associatedPointerId)
+		if (e.originalEvent.pointerId === this._associatedPointerId)
 		{
 			this._associatedPointerId = undefined;
 			this._initialPointerOffset.fill(0);
@@ -325,81 +325,13 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 */
 	_handlePointerMove (e)
 	{
-		if (e.pointerId === this._associatedPointerId)
+		if (e.originalEvent.pointerId === this._associatedPointerId)
 		{
 			let newPos = [];
-			newPos[0] = e.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
-			newPos[1] = -(e.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
+			newPos[0] = e.originalEvent.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
+			newPos[1] = -(e.originalEvent.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
 			this.setPos(newPos);
 			this.emit("pointermove", e);
-		}
-	}
-
-	/**
-	 * Handler of touchstart event.
-	 *
-	 * @name module:visual.VisualStim#_handleTouchStart
-	 * @private
-	 * @param {Object} e - touchstart event data.
-	 */
-	_handleTouchStart (e)
-	{
-		let i;
-		let relativePos = [];
-		for (i = 0; i < e.touchesArray.length; i++)
-		{
-			if (e.touchesArray[i].busy)
-			{
-				continue;
-			}
-			relativePos[0] = e.touchesArray[i].pos[0] - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
-			relativePos[1] = -(e.touchesArray[i].pos[1] - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
-			if (this.containsPointPx(relativePos))
-			{
-				e.touchesArray[i].busy = true;
-				this._associatedPointerId = e.touchesArray[i].id;
-				this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
-				this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
-				this.emit("touchstart", e);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * Handler of touchend event.
-	 *
-	 * @name module:visual.VisualStim#_handleTouchEnd
-	 * @private
-	 * @param {Object} e - touchend event data.
-	 */
-	_handleTouchEnd (e)
-	{
-		if (e.touchesMap[this._associatedPointerId] === undefined)
-		{
-			this._associatedPointerId = undefined;
-			this.emit("touchend", e);
-		}
-	}
-
-	/**
-	 * Handler of touchmove event.
-	 *
-	 * @name module:visual.VisualStim#_handleTouchMove
-	 * @private
-	 * @param {Object} e - touchmove event data.
-	 */
-	_handleTouchMove (e) {
-		if (this._associatedPointerId !== undefined)
-		{
-			let newPos = [];
-			let touch = e.touchesMap[this._associatedPointerId];
-			if (touch !== undefined) {
-				newPos[0] = touch.pos[0] - this._win.size[0] * .5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
-				newPos[1] = -(touch.pos[1] - this._win.size[1] * .5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
-				this.setPos(newPos);
-				this.emit("touchmove", e);
-			}
 		}
 	}
 
