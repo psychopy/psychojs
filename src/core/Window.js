@@ -546,8 +546,11 @@ export class Window extends PsychObject
 		let i;
 		let pickedPixi;
 		const cursorPos = new PIXI.Point(e.pageX, e.pageY);
-		for (i = this._stimsContainer.children.length - 1; i >= 0; i--) {
-			if (this._stimsContainer.children[i].containsPoint(cursorPos)) {
+		for (i = this._stimsContainer.children.length - 1; i >= 0; i--)
+		{
+			if (typeof this._stimsContainer.children[i].containsPoint === "function" &&
+				this._stimsContainer.children[i].containsPoint(cursorPos))
+			{
 				pickedPixi = this._stimsContainer.children[i];
 				break;
 			}
