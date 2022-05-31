@@ -203,18 +203,12 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		{
 			if (draggable)
 			{
-				// this.addEventHandler("pointerdown", this._handlePointerDown.bind(this));
-				// this.addEventHandler("pointerup", this._handlePointerUp.bind(this));
-				// this.addEventHandler("pointermove", this._handlePointerMove.bind(this));
 				this._pointerEventHandlersUuids["pointerdown"] = this._win.on("pointerdown", this._handlePointerDown.bind(this));
 				this._pointerEventHandlersUuids["pointerup"] = this._win.on("pointerup", this._handlePointerUp.bind(this));
 				this._pointerEventHandlersUuids["pointermove"] = this._win.on("pointermove", this._handlePointerMove.bind(this));
 			}
 			else
 			{
-				// this.removeEventHandler("pointerdown");
-				// this.removeEventHandler("pointerup");
-				// this.removeEventHandler("pointermove");
 				this._win.off("pointerdown", this._pointerEventHandlersUuids["pointerdown"]);
 				this._win.off("pointerup", this._pointerEventHandlersUuids["pointerup"]);
 				this._win.off("pointermove", this._pointerEventHandlersUuids["pointermove"]);
@@ -265,7 +259,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Release the PIXI representation, if there is one.
 	 *
-	 * @name module:core.MinimalStim#release
+	 * @name module:core.VisualStim#release
 	 * @function
 	 * @public
 	 *

@@ -150,8 +150,10 @@ export class Window extends PsychObject
 			extension.loseContext();
 		}
 
+		this._renderer.view.removeEventListener("pointerdown");
+		this._renderer.view.removeEventListener("pointerup");
+		this._renderer.view.removeEventListener("pointermove");
 		this._renderer.destroy();
-
 		window.removeEventListener("resize", this._resizeCallback);
 		window.removeEventListener("orientationchange", this._resizeCallback);
 
@@ -505,17 +507,6 @@ export class Window extends PsychObject
 		// touch/mouse events are treated by PsychoJS' event manager:
 		this.psychoJS.eventManager.addMouseListeners(this._renderer);
 		this._addEventListeners();
-
-		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
-		this._resizeCallback = (e) =>
-		{
-			Window._resizePixiRenderer(this, e);
-			this._backgroundSprite.width = this._size[0];
-			this._backgroundSprite.height = this._size[1];
-			this._fullRefresh();
-		};
-		window.addEventListener("resize", this._resizeCallback);
-		window.addEventListener("orientationchange", this._resizeCallback);
 	}
 
 	/**
@@ -586,6 +577,17 @@ export class Window extends PsychObject
 		this._renderer.view.addEventListener("pointerdown", this._handlePointerDown.bind(this));
 		this._renderer.view.addEventListener("pointerup", this._handlePointerUp.bind(this));
 		this._renderer.view.addEventListener("pointermove", this._handlePointerMove.bind(this));
+
+		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
+		this._resizeCallback = (e) =>
+		{
+			Window._resizePixiRenderer(this, e);
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
+			this._fullRefresh();
+		};
+		window.addEventListener("resize", this._resizeCallback);
+		window.addEventListener("orientationchange", this._resizeCallback);
 	}
 
 	/**

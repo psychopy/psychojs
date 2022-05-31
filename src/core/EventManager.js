@@ -332,7 +332,6 @@ export class EventManager
 
 			self._mouseInfo.moveClock.reset();
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
-
 		}, false);
 
 		renderer.view.addEventListener("touchmove", (event) =>
