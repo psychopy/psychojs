@@ -285,11 +285,12 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			return;
 		}
 		let relativePos = [];
+		let pixPos = util.to_unit(this._pos, this._units, this._win, "pix");
 		relativePos[0] = e.originalEvent.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
 		relativePos[1] = -(e.originalEvent.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
 		this._associatedPointerId = e.originalEvent.pointerId;
-		this._initialPointerOffset[0] = relativePos[0] - this._pos[0];
-		this._initialPointerOffset[1] = relativePos[1] - this._pos[1];
+		this._initialPointerOffset[0] = relativePos[0] - pixPos[0];
+		this._initialPointerOffset[1] = relativePos[1] - pixPos[1];
 		this.emit("pointerdown", e);
 	}
 
@@ -324,7 +325,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			let newPos = [];
 			newPos[0] = e.originalEvent.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x - this._initialPointerOffset[0];
 			newPos[1] = -(e.originalEvent.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y - this._initialPointerOffset[1];
-			this.setPos(newPos);
+			this.setPos(util.to_unit(newPos, "pix", this._win, this._units));
 			this.emit("pointermove", e);
 		}
 	}

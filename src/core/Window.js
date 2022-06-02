@@ -545,6 +545,7 @@ export class Window extends PsychObject
 	{
 		let i;
 		let pickedPixi;
+		let tmpPoint = new PIXI.Point();
 		const cursorPos = new PIXI.Point(e.pageX, e.pageY);
 		for (i = this._stimsContainer.children.length - 1; i >= 0; i--)
 		{
@@ -553,6 +554,16 @@ export class Window extends PsychObject
 			{
 				pickedPixi = this._stimsContainer.children[i];
 				break;
+			}
+			else if (this._stimsContainer.children[i].containsPoint === undefined &&
+				this._stimsContainer.children[i] instanceof PIXI.DisplayObject)
+			{
+				this._stimsContainer.children[i].worldTransform.applyInverse(cursorPos, tmpPoint);
+				if (this._stimsContainer.children[i].getLocalBounds().contains(tmpPoint.x, tmpPoint.y))
+				{
+					pickedPixi = this._stimsContainer.children[i];
+					break;
+				}
 			}
 		}
 		this.emit("pointerdown", {
