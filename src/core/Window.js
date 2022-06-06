@@ -150,9 +150,6 @@ export class Window extends PsychObject
 			extension.loseContext();
 		}
 
-		this._renderer.view.removeEventListener("pointerdown");
-		this._renderer.view.removeEventListener("pointerup");
-		this._renderer.view.removeEventListener("pointermove");
 		this._renderer.destroy();
 		window.removeEventListener("resize", this._resizeCallback);
 		window.removeEventListener("orientationchange", this._resizeCallback);
