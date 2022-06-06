@@ -299,13 +299,13 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			// this._pixi.filters = [colorFilter];
 		}
 
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 		this._pixi.alpha = this.opacity;
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();
-		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._texture.width;
+	const size_px = util.to_px(displaySize, this.units, this.win);
+	const scaleX = size_px[0] / this._texture.width;
 		const scaleY = size_px[1] / this._texture.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;

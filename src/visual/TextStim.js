@@ -429,7 +429,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;

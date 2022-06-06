@@ -182,6 +182,21 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	}
 
 	/**
+	 * Setter for the depth attribute.
+	 *
+	 * @name module:visual.VisualStim#setDepth
+	 * @public
+	 * @param {Array.<number>} depth - order in which stimuli is rendered, kind of css's z-index with a negative sign.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setDepth (depth = 0, log = false) {
+		this._setAttribute("depth", depth, log);
+		if (this._pixi) {
+			this._pixi.zIndex = -this._depth;
+		}
+	}
+
+	/**
 	 * Determine whether an object is inside the bounding box of the stimulus.
 	 *
 	 * @name module:visual.VisualStim#contains
