@@ -44,6 +44,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
  * @param {Color} [options.fillColor= undefined] - fill color of the text-box
+ * @param {String} [options.languageStyle= "LTR"] - sets the direction property of the text inputs. Possible values ["LTR", "RTL", "Arabic"]. "Arabic" is added for consistency with PsychoPy
  * @param {Color} [options.borderColor= undefined] - border color of the text-box
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
@@ -74,6 +75,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			flipHoriz,
 			flipVert,
 			fillColor,
+			languageStyle,
 			borderColor,
 			borderWidth,
 			padding,
@@ -145,6 +147,11 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			"alignment",
 			alignment,
 			"left"
+		);
+		this._addAttribute(
+			"languageStyle",
+			languageStyle,
+			"LTR"
 		);
 
 		// colors:
@@ -243,6 +250,27 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
 			this._pixi.setInputStyle("textAlign", alignment);
+		}
+	}
+
+	/**
+	 * Setter for the languageStyle attribute.
+	 *
+	 * @name module:visual.TextBox#setLanguageStyle
+	 * @public
+	 * @param {String} languageStyle - text direction in textbox, accepts values ["LTR", "RTL", "Arabic"]
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setLanguageStyle (languageStyle = "LTR", log = false) {
+		this._setAttribute("languageStyle", languageStyle, log);
+		let langDir = util.TEXT_DIRECTION[languageStyle];
+		if (langDir === undefined)
+		{
+			langDir = util.TEXT_DIRECTION["LTR"];
+		}
+		if (this._pixi !== undefined)
+		{
+			this._pixi.setInputStyle("direction", langDir);
 		}
 	}
 
@@ -501,6 +529,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
+				direction: util.TEXT_DIRECTION[this._languageStyle],
 				textAlign: this._alignment,
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
