@@ -1212,15 +1212,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		for (let l = 0; l < this._labels.length; ++l)
 		{
-			const labelText = new PIXI.Text(this._labels[l], labelTextStyle);
-			labelText.position.x = this._labelPositions_px[l][0];
-			labelText.position.y = this._labelPositions_px[l][1];
-			labelText.rotation = -(this._ori + this._labelOri) * Math.PI / 180;
-			labelText.anchor = this._labelAnchor;
-			labelText.alpha = 1;
-			this._pixiLabels[l] = labelText;
+			this._pixiLabels[l] = new PIXI.Text(this._labels[l], labelTextStyle);
+			this._pixiLabels[l].position.x = this._labelPositions_px[l][0];
+			this._pixiLabels[l].position.y = this._labelPositions_px[l][1];
+			this._pixiLabels[l].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			this._pixiLabels[l].anchor = this._labelAnchor;
+			this._pixiLabels[l].alpha = 1;
 
-			this._pixi.addChild(labelText);
+			this._pixi.addChild(this._pixiLabels[l]);
 		}
 	}
 
