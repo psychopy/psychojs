@@ -843,10 +843,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			const maxTickSize_px = Math.max(this._tickSize_px[0], this._tickSize_px[1]);
 			this._body.hitArea = new PIXI.Rectangle(
-				-this._barSize_px[0] / 2 - maxTickSize_px,
-				-this._barSize_px[1] / 2 - maxTickSize_px,
-				this._barSize_px[0] + maxTickSize_px * 2,
-				this._barSize_px[1] + maxTickSize_px * 2,
+				-(this._barSize_px[0] + maxTickSize_px) * 0.5,
+				-(this._barSize_px[1] + maxTickSize_px) * 0.5,
+				this._barSize_px[0] + maxTickSize_px,
+				this._barSize_px[1] + maxTickSize_px,
 			);
 		}
 		else
@@ -1148,7 +1148,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			else if (this._tickType === Slider.Shape.DISC)
 			{
 				this._body.beginFill(this._tickColor.int, 1);
-				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize);
+				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize * 0.5);
 				this._body.endFill();
 			}
 		}
