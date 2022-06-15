@@ -681,7 +681,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
