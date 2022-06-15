@@ -85,6 +85,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			style,
 			ticks,
 			labels,
+			startValue,
 			granularity,
 			flip,
 			readOnly,
@@ -140,6 +141,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			labels,
 			[],
 			onChange(true, true, true),
+		);
+		this._addAttribute(
+			"startValue",
+			startValue,
+			undefined
 		);
 		this._addAttribute(
 			"granularity",
@@ -949,7 +955,27 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// marker:
 		this._marker = new PIXI.Graphics();
-		this._marker.alpha = 0; // invisible until markerPos is defined
+		let markerVal = undefined;
+
+		if (Number.isFinite(this._rating))
+		{
+			markerVal = this._rating;
+		}
+		else if (Number.isFinite(this._startValue))
+		{
+			markerVal = this._startValue;
+		}
+
+		if (Number.isFinite(markerVal))
+		{
+			this._markerPos = this._granularise(markerVal);
+			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
+			this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+		}
+		else
+		{
+			this._marker.alpha = 0; // invisible until markerPos is defined
+		}
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
