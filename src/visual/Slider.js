@@ -257,6 +257,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 
+		this._handlePointerDownBinded = this._handlePointerDown.bind(this);
 		this._handlePointerUpBinded = this._handlePointerUp.bind(this);
 		this._handlePointerMoveBinded = this._handlePointerMove.bind(this);
 	}
@@ -847,6 +848,27 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	}
 
 	/**
+	 * Handle pointerdown event.
+	 *
+	 * @name module:visual.Slider#_handlePointerDown
+	 * @private
+	 */
+	_handlePointerDown (e) {
+		if (e.data.button === 0)
+		{
+			this._markerDragging = true;
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.setMarkerPos(rating);
+			}
+		}
+
+		e.stopPropagation();
+	}
+
+	/**
 	 * Handle pointermove event.
 	 *
 	 * @name module:visual.Slider#_handlePointerMove
@@ -898,32 +920,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 */
 	_addEventListeners ()
 	{
-		this._marker.pointerdown = (e) =>
-		{
-			if (e.data.button === 0)
-			{
-				this._markerDragging = true;
-			}
-
-			e.stopPropagation();
-		};
-
-		this._pixi.pointerdown = (e) =>
-		{
-			if (e.data.button === 0)
-			{
-				this._markerDragging = true;
-				if (!this._frozenMarker)
-				{
-					const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
-					const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-					this.setMarkerPos(rating);
-				}
-			}
-
-			e.stopPropagation();
-		};
-
+		this._pixi.on("pointerdown", this._handlePointerDownBinded);
 		this._win._rootContainer.on("pointermove", this._handlePointerMoveBinded);
 		this._win._rootContainer.on("pointerup", this._handlePointerUpBinded);
 	}
@@ -938,8 +935,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	{
 		if (this._pixi)
 		{
-			this._marker.pointerdown = undefined;
-			this._pixi.pointerdown = undefined;
+			this._pixi.off("pointerdown", this._handlePointerDownBinded);
 		}
 		this._win._rootContainer.off("pointermove", this._handlePointerMoveBinded);
 		this._win._rootContainer.off("pointerup", this._handlePointerUpBinded);
