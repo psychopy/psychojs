@@ -744,7 +744,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Release the PIXI representation, if there is one.
 	 *
-	 * @name module:core.MinimalStim#release
+	 * @name module:core.Slider#release
 	 * @function
 	 * @public
 	 *
