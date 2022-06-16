@@ -928,6 +928,39 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				this._body.endFill();
 			}
 		}
+
+		this._body.pointerdown = (e) =>
+		{
+			if (e.data.button === 0)
+			{
+				this._markerDragging = true;
+				if (!this._frozenMarker)
+				{
+					const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+					const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+					this.setMarkerPos(rating);
+				}
+			}
+
+			e.stopPropagation();
+		};
+
+		this._body.pointerupoutside = (e) => {
+			console.log("pointerupoutside body");
+			if (this._markerDragging)
+			{
+				this._markerDragging = false;
+
+				if (!this._frozenMarker)
+				{
+					const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+					const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+					this.recordRating(rating);
+				}
+
+				e.stopPropagation();
+			}
+		}
 	}
 
 	/**
@@ -1079,6 +1112,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		// pointer was released outside of the marker: cancel the dragging
 		this._marker.pointerupoutside = this._marker.mouseupoutside = this._marker.touchendoutside = (event) =>
 		{
+			console.log('pointerupoutside')
 			if (self._markerDragging)
 			{
 				self._markerDragging = false;
