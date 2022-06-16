@@ -75,7 +75,6 @@ export class Window extends PsychObject
 
 		this._addAttribute("fullscr", fullscr);
 		this._addAttribute("color", color, new Color("black"), () => {
-			console.log(this._backgroundSprite);
 			if (this._backgroundSprite) {
 				this._backgroundSprite.tint = this._color.int;
 			}
