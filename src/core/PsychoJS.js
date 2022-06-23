@@ -179,7 +179,8 @@ export class PsychoJS
 		this.logger.info("[PsychoJS] @version 2022.2.0");
 
 		// hide the initialisation message:
-		jQuery("#root").addClass("is-ready");
+		const root = document.getElementById("root");
+		root.classList.add("is-ready");
 	}
 
 	/**
@@ -444,10 +445,9 @@ export class PsychoJS
 	}
 
 	/**
-	 * Make the attributes of the given object those of PsychoJS and those of
-	 * the top level variable (e.g. window) as well.
+	 * Make the attributes of the given object those of window, such that they become global.
 	 *
-	 * @param {Object.<string, *>} obj the object whose attributes we will mirror
+	 * @param {Object.<string, *>} obj the object whose attributes are to become global
 	 * @public
 	 */
 	importAttributes(obj)
@@ -461,7 +461,6 @@ export class PsychoJS
 
 		for (const attribute in obj)
 		{
-			// this[attribute] = obj[attribute];
 			window[attribute] = obj[attribute];
 		}
 	}
@@ -678,8 +677,21 @@ export class PsychoJS
 		this._IP = {};
 		try
 		{
-			const geoResponse = await jQuery.get("http://www.geoplugin.net/json.gp");
-			const geoData = JSON.parse(geoResponse);
+			const url = "http://www.geoplugin.net/json.gp";
+			const response = await fetch(url, {
+				method: "GET",
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				redirect: "follow",
+				referrerPolicy: "no-referrer"
+			});
+			if (response.status !== 200)
+			{
+				throw `unable to obtain the IP of the participant: ${response.statusText}`;
+			}
+			const geoData = await response.json();
+
 			this._IP = {
 				IP: geoData.geoplugin_request,
 				country: geoData.geoplugin_countryName,

@@ -249,6 +249,21 @@ export class QuestHandler extends TrialHandler
 	}
 
 	/**
+	 * Get the current value of the variable / contrast / threshold.
+	 *
+	 * <p>This is the getter associated to getQuestValue.</p>
+	 *
+	 * @name module:data.MultiStairHandler#intensity
+	 * @function
+	 * @public
+	 * @returns {number} the intensity of the current staircase, or undefined if the trial has ended
+	 */
+	get intensity()
+	{
+		return this.getQuestValue();
+	}
+
+	/**
 	 * Get an estimate of the 5%-95% confidence interval (CI).
 	 *
 	 * @name module:data.QuestHandler#confInterval

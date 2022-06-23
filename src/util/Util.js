@@ -1353,6 +1353,27 @@ export function count(input, value)
 }
 
 /**
+ * Pad the given floating-point number with however many 0 needed at the start such that
+ * 	the padded integer part of the number is of the given width.
+ *
+ * @param n						- the input floating-point number
+ * @param width				- the desired width
+ * @returns {string}	- the padded number, whose integer part has the given width
+ */
+export function pad(n, width = 2)
+{
+	const integerPart = Number.parseInt(n);
+
+	let decimalPart = (n+'').match(/\.[0-9]*/);
+	if (!decimalPart)
+	{
+		decimalPart = '';
+	}
+
+	return (integerPart+'').padStart(width,'0') + decimalPart;
+}
+
+/**
   * Get the index in the input array of the first element that matches the given value.
   *
   * <p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
@@ -1433,7 +1454,7 @@ export function extensionFromMimeType(mimeType)
 		return ".webm";
 	}
 
-	return '.dat';
+	return ".dat";
 }
 
 /**
@@ -1490,7 +1511,6 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 		download.src = `${imageUrl}?salt=${tic}`;
 	});
 }
-
 
 /**
  * Enum that stores possible text directions.

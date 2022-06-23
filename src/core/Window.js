@@ -312,7 +312,8 @@ export class Window extends PsychObject
 	 * @function
 	 * @public
 	 */
-	addPixiObject (pixiObject) {
+	addPixiObject(pixiObject)
+	{
 		this._stimsContainer.addChild(pixiObject);
 	}
 
@@ -323,7 +324,8 @@ export class Window extends PsychObject
 	 * @function
 	 * @public
 	 */
-	removePixiObject (pixiObject) {
+	removePixiObject(pixiObject)
+	{
 		this._stimsContainer.removeChild(pixiObject);	
 	}
 

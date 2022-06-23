@@ -112,23 +112,38 @@ export class ServerManager extends PsychObject
 
 		this._psychoJS.logger.debug("reading the configuration file: " + configURL);
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			jQuery.get(configURL, "json")
-				.done((config, textStatus) =>
-				{
-					// resolve({ ...response, config });
-					resolve(Object.assign(response, { config }));
-				})
-				.fail((jqXHR, textStatus, errorThrown) =>
-				{
-					self.setStatus(ServerManager.Status.ERROR);
-
-					const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
-					console.error("error:", errorMsg);
-
-					reject(Object.assign(response, { error: errorMsg }));
+			try
+			{
+				const getResponse = await fetch(configURL, {
+					method: "GET",
+					mode: "cors",
+					cache: "no-cache",
+					credentials: "same-origin",
+					redirect: "follow",
+					referrerPolicy: "no-referrer"
 				});
+				if (getResponse.status === 404)
+				{
+					throw "the configuration file could not be found";
+				}
+				else if (getResponse.status !== 200)
+				{
+					throw `unable to read the configuration file: status= ${getResponse.status}`;
+				}
+
+				// the configuration file should be valid json:
+				const config = await getResponse.json();
+				resolve(Object.assign(response, { config }));
+			}
+			catch (error)
+			{
+				self.setStatus(ServerManager.Status.ERROR);
+				console.error("error:", error);
+
+				reject(Object.assign(response, { error }));
+			}
 		});
 	}
 
@@ -153,26 +168,88 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager.openSession",
 			context: "when opening a session for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
 		this._psychoJS.logger.debug("opening a session for experiment: " + this._psychoJS.config.experiment.fullpath);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
-		// prepare POST query:
+		// prepare a POST query:
 		let data = {};
 		if (this._psychoJS._serverMsg.has("__pilotToken"))
 		{
 			data.pilotToken = this._psychoJS._serverMsg.get("__pilotToken");
 		}
 
-		// query pavlovia server:
+		// query the server:
 		const self = this;
-		return new Promise((resolve, reject) =>
+		return new Promise(async (resolve, reject) =>
 		{
-			const url = this._psychoJS.config.pavlovia.URL
-				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
-				+ "/sessions";
-			jQuery.post(url, data, null, "json")
+			try
+			{
+				const url = `${this._psychoJS.config.pavlovia.URL}/api/v2/experiments/${this._psychoJS.config.gitlab.projectId}/sessions`;
+
+				const response = await fetch(url, {
+					method: 'POST',
+					mode: 'cors',
+					cache: 'no-cache',
+					credentials: 'same-origin',
+					redirect: 'follow',
+					referrerPolicy: 'no-referrer',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)
+				});
+
+				const openSessionResponse = await response.json();
+
+				if (openSessionResponse.status !== 200)
+				{
+					throw ('error' in openSessionResponse) ? openSessionResponse.error : openSessionResponse;
+				}
+				if (!("token" in openSessionResponse))
+				{
+					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from the server: no token";
+				}
+				if (!("experiment" in openSessionResponse))
+				{
+					self.setStatus(ServerManager.Status.ERROR);
+					throw "unexpected answer from server: no experiment";
+				}
+
+				self._psychoJS.config.session = {
+					token: openSessionResponse.token,
+					status: "OPEN",
+				};
+				const experiment = openSessionResponse.experiment;
+				self._psychoJS.config.experiment.status = experiment.status2;
+				self._psychoJS.config.experiment.saveFormat = Symbol.for(experiment.saveFormat);
+				self._psychoJS.config.experiment.saveIncompleteResults = experiment.saveIncompleteResults;
+				self._psychoJS.config.experiment.license = experiment.license;
+				self._psychoJS.config.experiment.runMode = experiment.runMode;
+
+				// secret keys for various services, e.g. Google Speech API
+				if ("keys" in experiment)
+				{
+					self._psychoJS.config.experiment.keys = experiment.keys;
+				}
+				else
+				{
+					self._psychoJS.config.experiment.keys = [];
+				}
+
+				self.setStatus(ServerManager.Status.READY);
+				resolve({...response, token: openSessionResponse.token, status: openSessionResponse.status });
+
+			}
+			catch (error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				reject({...response, error});
+			}
+
+			/*jQuery.post(url, data, null, "json")
 				.done((data, textStatus) =>
 				{
 					if (!("token" in data))
@@ -220,7 +297,7 @@ export class ServerManager extends PsychObject
 					console.error("error:", errorMsg);
 
 					reject(Object.assign(response, { error: errorMsg }));
-				});
+				});*/
 		});
 	}
 
@@ -1011,11 +1088,7 @@ export class ServerManager extends PsychObject
 			origin: "ServerManager._listResourcesSession",
 			context: "when listing the resources for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
-
-		this._psychoJS.logger.debug(
-			"listing the resources for experiment: "
-				+ this._psychoJS.config.experiment.fullpath,
-		);
+		this._psychoJS.logger.debug(`listing the resources for experiment: ${this._psychoJS.config.experiment.fullpath}`);
 
 		this.setStatus(ServerManager.Status.BUSY);
 
@@ -1472,13 +1545,13 @@ ServerManager.ResourceStatus = {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Camera.html">Camera</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-hardware.Camera.html">Camera</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#pad">pad</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon May 23 2022 12:29:28 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jun 16 2022 12:47:14 GMT+0200 (Central European Summer Time)
 </footer>
 
 <script> prettyPrint(); </script>

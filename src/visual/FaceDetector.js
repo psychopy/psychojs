@@ -11,7 +11,7 @@ import {PsychoJS} from "../core/PsychoJS.js";
 import * as util from "../util/Util.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import {Color} from "../util/Color.js";
-import {Camera} from "./Camera.js";
+import {Camera} from "../hardware/Camera.js";
 import {VisualStim} from "./VisualStim.js";
 import * as PIXI from "pixi.js-legacy";
 
