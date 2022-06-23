@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
-    "build:docs": "jsdoc src -r -d docs --readme README.md",
+    "build:docs": "jsdoc ./src -c docs\\docs_config\\jsdoc.config & cp docs\\docs_config\\jsdoc_custom.css docs\\styles\\jsdoc.css",
     "build:js": "node ./scripts/build.js.cjs",
     "fmt": "dprint fmt",
     "lint": "npm run lint:js && npm run lint:css",
@@ -27,6 +27,7 @@
     "start": "npm run build"
   },
   "dependencies": {
+    "docdash": "^1.2.0",
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
     "pako": "^1.0.10",
@@ -40,7 +41,8 @@
     "dprint": "^0.15.3",
     "esbuild": "^0.12.1",
     "eslint": "^7.26.0",
-    "jsdoc": "^3.6.7"
+    "jsdoc": "^3.6.7",
+    "jsdoc-to-markdown": "^7.1.1"
   },
   "engines": {
     "node": ">=14.15.0",
