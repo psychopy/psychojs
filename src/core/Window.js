@@ -76,7 +76,7 @@ export class Window extends PsychObject
 		this._addAttribute("fullscr", fullscr);
 		this._addAttribute("color", color, new Color("black"), () => {
 			if (this._backgroundSprite) {
-				this._backgroundSprite.tint = color.int;
+				this._backgroundSprite.tint = this._color.int;
 			}
 		});
 		this._addAttribute("gamma", gamma, 1, () => {
@@ -389,6 +389,7 @@ export class Window extends PsychObject
 			if (this._renderer)
 			{
 				this._renderer.backgroundColor = this._color.int;
+				this._backgroundSprite.tint = this._color.int;
 			}
 
 			// we also change the background color of the body since
@@ -510,6 +511,8 @@ export class Window extends PsychObject
 		this._resizeCallback = (e) =>
 		{
 			Window._resizePixiRenderer(this, e);
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
 			this._fullRefresh();
 		};
 		window.addEventListener("resize", this._resizeCallback);

@@ -36,7 +36,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {Color} [options.color= Color('LightGray')] the color of the slider
  * @param {number} [options.contrast= 1.0] - the contrast of the slider
  * @param {number} [options.opacity= 1.0] - the opacity of the slider
- * @param {number} [options.depth= 0] - the depth (i.e. the z order), note that the text, radio buttons and slider elements are at depth + 1
+ * @param {number} [options.depth= 0] - the depth (i.e. the z order), note that the text, radio buttons and slider elements are at depth - 1
  *
  * @param {number[]} [options.items= []] - the array of labels
  * @param {number} [options.itemPadding= 0.05] - the granularity
@@ -748,7 +748,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			color: this.itemColor,
 			ori: 0,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			clipMask: this._stimuliClipMask,
 		};
 		const sliderOption = {
@@ -766,7 +766,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			color: this.responseColor,
 			markerColor: this.markerColor,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			clipMask: this._stimuliClipMask,
 			granularity: 1,
 		};
@@ -777,7 +777,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			anchor: "left-top",
 			flip: false,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			font: this.font,
 			letterHeight: this._fontSize * this._responseTextHeightRatio,
 			bold: false,
@@ -946,7 +946,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			name: "scrollbar",
 			units: this._units,
 			color: this.itemColor,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			pos: [0, 0],
 			size: [this._scrollbarWidth, this._size[1]],
 			style: [Slider.Style.SLIDER],
@@ -1100,7 +1100,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// apply the form clip mask (n.b., that is not the stimuli clip mask):
 		this._pixi.mask = this._clipMask;
