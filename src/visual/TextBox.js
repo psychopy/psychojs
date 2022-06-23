@@ -477,9 +477,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		this._pixi.on("input", (textContent) => {
 			this._text = textContent;
-			let size = [this._pixi.width, this._pixi.height];
-			size = util.to_unit(size, "pix", this._win, this._units);
-			this._setAttribute("size", size, false);
+			if (this._fitToContent)
+			{
+				// make sure that size attribute is updated when fitToContent = true
+				const size = util.to_unit([this._pixi.width, this._pixi.height], "pix", this._win, this._units);
+				this._setAttribute("size", size, false);
+			}
 		});
 	}
 
@@ -517,8 +520,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const letterHeight_px = Math.round(this._getLengthPix(this._letterHeight));
 		const padding_px = Math.round(this._getLengthPix(this._padding));
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
-		const width_px = Math.round(this._getLengthPix(this._size[0]));
-		const height_px = Math.round(this._getLengthPix(this._size[1]));
+		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
+		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
 
 		return {
 			// input style properties eventually become CSS, so same syntax applies
