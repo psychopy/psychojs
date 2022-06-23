@@ -256,6 +256,8 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			{
 				this._pixi.endFill();
 			}
+
+			this._pixi.zIndex = -this._depth;
 		}
 
 		// set polygon position and rotation:

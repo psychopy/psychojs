@@ -323,7 +323,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			// this._pixi.filters = [colorFilter];
 		}
 
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 		this._pixi.alpha = this.opacity;
 
 		// set the scale:

@@ -797,8 +797,13 @@ export class Shelf extends PsychObject
 	 * @name module:data.Shelf#_checkAvailability
 	 * @function
 	 * @public
+<<<<<<< HEAD
 	 * @param {string} [methodName=""] 	name of the method requiring a check
 	 * @throws {Object.<string, *>} 				exception if it is not possible to run the given shelf command
+=======
+	 * @param {string} [methodName=""] name of the method requiring a check
+	 * @throw {Object.<string, *>} exception when it is not possible to run the given shelf command
+>>>>>>> 8cc27b9cc9844d435c0177263ef7c2991463196c
 	 */
 	_checkAvailability(methodName = "")
 	{

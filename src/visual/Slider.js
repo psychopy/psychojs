@@ -85,6 +85,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			style,
 			ticks,
 			labels,
+			startValue,
 			granularity,
 			flip,
 			readOnly,
@@ -140,6 +141,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			labels,
 			[],
 			onChange(true, true, true),
+		);
+		this._addAttribute(
+			"startValue",
+			startValue,
+			undefined
 		);
 		this._addAttribute(
 			"granularity",
@@ -244,11 +250,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// the internal response clock, used to time the marker change events:
 		this._responseClock = new Clock();
+		this._pixiLabels = [];
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
+
+		this._handlePointerDownBinded = this._handlePointerDown.bind(this);
+		this._handlePointerUpBinded = this._handlePointerUp.bind(this);
+		this._handlePointerMoveBinded = this._handlePointerMove.bind(this);
 	}
 
 	/**
@@ -419,6 +430,28 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 
 		this._setAttribute("rating", rating, log);
+	}
+
+	/**
+	 * Setter for the orientation attribute.
+	 *
+	 * @name module:visual.Slider#setOri
+	 * @public
+	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setOri (ori = 0, log = false)
+	{
+		const oriChanged = this._setAttribute("ori", ori, log);
+		if (oriChanged)
+		{
+			this._pixi.rotation = -this._ori * Math.PI / 180;
+			let i;
+			for (i = 0; i < this._pixiLabels.length; ++i)
+			{
+				this._pixiLabels[i].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			}
+		}
 	}
 
 	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
@@ -709,6 +742,21 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	}
 
 	/**
+	 * Release the PIXI representation, if there is one.
+	 *
+	 * @name module:core.Slider#release
+	 * @function
+	 * @public
+	 *
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	release (log = false)
+	{
+		this._removeEventListeners();
+		super.release(log);
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @name module:visual.Slider#_updateIfNeeded
@@ -733,7 +781,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// make sure that the dependent Stimuli are also updated:
 		for (const dependentStim of this._dependentStims)
@@ -800,6 +848,100 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	}
 
 	/**
+	 * Handle pointerdown event.
+	 *
+	 * @name module:visual.Slider#_handlePointerDown
+	 * @private
+	 */
+	_handlePointerDown (e) {
+		if (e.data.button === 0)
+		{
+			this._markerDragging = true;
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.setMarkerPos(rating);
+			}
+		}
+
+		e.stopPropagation();
+	}
+
+	/**
+	 * Handle pointermove event.
+	 *
+	 * @name module:visual.Slider#_handlePointerMove
+	 * @private
+	 */
+	_handlePointerMove (e)
+	{
+		if (this._markerDragging)
+		{
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.setMarkerPos(rating);
+			}
+
+			e.stopPropagation();
+		}
+	}
+
+	/**
+	 * Handle pointerup event.
+	 *
+	 * @name module:visual.Slider#_handlePointerUp
+	 * @private
+	 */
+	_handlePointerUp (e)
+	{
+		if (this._markerDragging)
+		{
+			this._markerDragging = false;
+
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.recordRating(rating);
+			}
+
+			e.stopPropagation();
+		}
+	}
+
+	/**
+	 * Add event listeners.
+	 *
+	 * @name module:visual.Slider#_addEventListeners
+	 * @private
+	 */
+	_addEventListeners ()
+	{
+		this._pixi.on("pointerdown", this._handlePointerDownBinded);
+		this._win._rootContainer.on("pointermove", this._handlePointerMoveBinded);
+		this._win._rootContainer.on("pointerup", this._handlePointerUpBinded);
+	}
+
+	/**
+	 * Remove event listeners.
+	 *
+	 * @name module:visual.Slider#_removeEventListeners
+	 * @private
+	 */
+	_removeEventListeners ()
+	{
+		if (this._pixi)
+		{
+			this._pixi.off("pointerdown", this._handlePointerDownBinded);
+		}
+		this._win._rootContainer.off("pointermove", this._handlePointerMoveBinded);
+		this._win._rootContainer.off("pointerup", this._handlePointerUpBinded);
+	}
+
+	/**
 	 * Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
 	 *
 	 * @name module:visual.Slider#_setupSlider
@@ -826,6 +968,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		if (typeof this._pixi !== "undefined")
 		{
+			this._removeEventListeners();
 			this._pixi.destroy(true);
 		}
 		this._pixi = new PIXI.Container();
@@ -843,10 +986,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			const maxTickSize_px = Math.max(this._tickSize_px[0], this._tickSize_px[1]);
 			this._body.hitArea = new PIXI.Rectangle(
-				-this._barSize_px[0] / 2 - maxTickSize_px,
-				-this._barSize_px[1] / 2 - maxTickSize_px,
-				this._barSize_px[0] + maxTickSize_px * 2,
-				this._barSize_px[1] + maxTickSize_px * 2,
+				-(this._barSize_px[0] + maxTickSize_px) * 0.5,
+				-(this._barSize_px[1] + maxTickSize_px) * 0.5,
+				this._barSize_px[0] + maxTickSize_px,
+				this._barSize_px[1] + maxTickSize_px,
 			);
 		}
 		else
@@ -870,6 +1013,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// markers:
 		this._setupMarker();
+		this._addEventListeners();
 	}
 
 	/**
@@ -926,7 +1070,27 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// marker:
 		this._marker = new PIXI.Graphics();
-		this._marker.alpha = 0; // invisible until markerPos is defined
+		let markerVal = undefined;
+
+		if (Number.isFinite(this._rating))
+		{
+			markerVal = this._rating;
+		}
+		else if (Number.isFinite(this._startValue))
+		{
+			markerVal = this._startValue;
+		}
+
+		if (Number.isFinite(markerVal))
+		{
+			this._markerPos = this._granularise(markerVal);
+			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
+			this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+		}
+		else
+		{
+			this._marker.alpha = 0; // invisible until markerPos is defined
+		}
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
@@ -991,111 +1155,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		const self = this;
 		self._markerDragging = false;
 
-		this._marker.pointerdown = this._marker.mousedown = this._marker.touchstart = (event) =>
-		{
-			if (event.data.button === 0)
-			{
-				self._markerDragging = true;
-				/* not quite right, just yet (as of May 2020)
-								// set markerPos, but not rating:
-								const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-								const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-								self._markerPos = self._granularise(rating);
-
-								self._needMarkerUpdate = true;
-				 */
-			}
-
-			event.stopPropagation();
-		};
-
-		// pointer was released inside the marker: if we were dragging, we record the rating
-		this._marker.pointerup = this._marker.mouseup = this._marker.touchend = (event) =>
-		{
-			if (self._markerDragging)
-			{
-				self._markerDragging = false;
-
-				if (!this._frozenMarker)
-				{
-					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-					self.recordRating(rating);
-				}
-
-				event.stopPropagation();
-			}
-		};
-
-		// pointer was released outside of the marker: cancel the dragging
-		this._marker.pointerupoutside = this._marker.mouseupoutside = this._marker.touchendoutside = (event) =>
-		{
-			if (self._markerDragging)
-			{
-				self._markerDragging = false;
-
-				if (!this._frozenMarker)
-				{
-					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-					self.recordRating(rating);
-				}
-
-				event.stopPropagation();
-			}
-		};
-
-		// pointer is moving: if we are dragging, we move the marker position
-		this._marker.pointermove = (event) =>
-		{
-			if (self._markerDragging)
-			{
-				if (!this._frozenMarker)
-				{
-					const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-					const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-					self.setMarkerPos(rating);
-				}
-
-				event.stopPropagation();
-			}
-		};
-
-		// (*) slider mouse events outside of marker
-		// note: this only works thanks to eventCaptureRectangle
-		/* not quite right just yet (as of May 2020)
-		this._pixi.pointerdown = this._pixi.mousedown = this._pixi.touchstart = (event) =>
-		{
-			if (event.data.button === 0)
-			{
-				self._markerDragging = true;
-
-				// set markerPos, but not rating:
-				const mouseLocalPos_px = event.data.getLocalPosition(self._body);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self._markerPos = self._granularise(rating);
-
-				// update the marker:
-				self._needMarkerUpdate = true;
-				self._updateMarker();
-			}
-
-			event.stopPropagation();
-		};
-		*/
-
-		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) =>
-		{
-			if (!this._frozenMarker)
-			{
-				const mouseLocalPos_px = event.data.getLocalPosition(self._body);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
-			}
-
-			event.stopPropagation();
-		};
-
 		// mouse wheel over slider:
 		if (this._isSliderStyle)
 		{
@@ -1148,7 +1207,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			else if (this._tickType === Slider.Shape.DISC)
 			{
 				this._body.beginFill(this._tickColor.int, 1);
-				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize);
+				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize * 0.5);
 				this._body.endFill();
 			}
 		}
@@ -1185,17 +1244,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	_setupLabels()
 	{
 		const labelTextStyle = this._getTextStyle();
+		this._pixiLabels = new Array(this._labels.length);
 
 		for (let l = 0; l < this._labels.length; ++l)
 		{
-			const labelText = new PIXI.Text(this._labels[l], labelTextStyle);
-			labelText.position.x = this._labelPositions_px[l][0];
-			labelText.position.y = this._labelPositions_px[l][1];
-			labelText.rotation = -(this._ori + this._labelOri) * Math.PI / 180;
-			labelText.anchor = this._labelAnchor;
-			labelText.alpha = 1;
+			this._pixiLabels[l] = new PIXI.Text(this._labels[l], labelTextStyle);
+			this._pixiLabels[l].position.x = this._labelPositions_px[l][0];
+			this._pixiLabels[l].position.y = this._labelPositions_px[l][1];
+			this._pixiLabels[l].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			this._pixiLabels[l].anchor = this._labelAnchor;
+			this._pixiLabels[l].alpha = 1;
 
-			this._pixi.addChild(labelText);
+			this._pixi.addChild(this._pixiLabels[l]);
 		}
 	}
 

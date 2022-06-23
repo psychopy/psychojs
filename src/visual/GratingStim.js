@@ -758,7 +758,7 @@ export class GratingStim extends VisualStim
 			}
 		}
 
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
 
 		// set the scale:

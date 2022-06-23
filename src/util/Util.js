@@ -1512,3 +1512,17 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 	});
 }
 
+/**
+ * Enum that stores possible text directions.
+ * Note that Arabic is the same as RTL but added here to support PsychoPy's
+ * languageStyle enum. Arabic reshaping is handled by the browser automatically.
+ *
+ * @name module:util.TEXT_DIRECTION
+ * @enum
+ * @public
+ */
+export const TEXT_DIRECTION = {
+	LTR: "ltr",
+	RTL: "rtl",
+	Arabic: "rtl"
+};

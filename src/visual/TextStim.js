@@ -334,7 +334,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			"pix",
 			this._win,
 			this._units,
-		);
+		); console.log(this._name, '>>', textSize);
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
@@ -429,7 +429,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
