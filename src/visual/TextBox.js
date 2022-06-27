@@ -249,7 +249,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
-			this._pixi.setInputStyle("textAlign", alignment);
+			let alignmentStyles = TextBox._alignmentToFlexboxMap.get(alignment);
+			if (!alignmentStyles) {
+				alignmentStyles = ["flex-start", "left"];
+			}
+			this._pixi.setInputStyle("justifyContent", alignmentStyles[0]);
+			this._pixi.setInputStyle("text-align", alignmentStyles[1]);
 		}
 	}
 
@@ -526,7 +531,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
-				display: "inline-block",
+				// display: "inline-block",
+				display: "flex",
+				flexDirection: "column",
+
 				fontFamily: this._font,
 				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
@@ -722,6 +730,18 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return anchor;
 	}
 }
+
+TextBox._alignmentToFlexboxMap = new Map([
+	["center", ["center", "center"]],
+	["top-center", ["flex-start", "center"]],
+	["bottom-center", ["flex-end", "center"]],
+	["center-left", ["center", "left"]],
+	["center-right", ["center", "right"]],
+	["top-left", ["flex-start", "left"]],
+	["top-right", ["flex-start", "right"]],
+	["bottom-left", ["flex-end", "left"]],
+	["bottom-right", ["flex-end", "right"]]
+]);
 
 /**
  * <p>This map associates units to default letter height.</p>
