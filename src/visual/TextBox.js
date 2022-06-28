@@ -254,7 +254,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				alignmentStyles = ["center", "center"];
 			}
 			this._pixi.setInputStyle("justifyContent", alignmentStyles[0]);
-			this._pixi.setInputStyle("text-align", alignmentStyles[1]);
+			this._pixi.setInputStyle("textAlign", alignmentStyles[1]);
 		}
 	}
 
