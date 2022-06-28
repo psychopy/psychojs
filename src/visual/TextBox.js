@@ -251,7 +251,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		if (this._pixi !== undefined) {
 			let alignmentStyles = TextBox._alignmentToFlexboxMap.get(alignment);
 			if (!alignmentStyles) {
-				alignmentStyles = ["flex-start", "left"];
+				alignmentStyles = ["center", "center"];
 			}
 			this._pixi.setInputStyle("justifyContent", alignmentStyles[0]);
 			this._pixi.setInputStyle("text-align", alignmentStyles[1]);
@@ -527,6 +527,10 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
 		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
 		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		let alignmentStyles = TextBox._alignmentToFlexboxMap.get(this._alignment);
+		if (!alignmentStyles) {
+			alignmentStyles = ["center", "center"];
+		}
 
 		return {
 			// input style properties eventually become CSS, so same syntax applies
@@ -539,7 +543,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
 				direction: util.TEXT_DIRECTION[this._languageStyle],
-				textAlign: this._alignment,
+				justifyContent: alignmentStyles[0],
+				textAlign: alignmentStyles[1],
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
