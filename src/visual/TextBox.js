@@ -146,7 +146,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"alignment",
 			alignment,
-			"left"
+			"center"
 		);
 		this._addAttribute(
 			"languageStyle",
@@ -245,7 +245,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} alignment - alignment of the text
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setAlignment(alignment = "left", log = false)
+	setAlignment(alignment = "center", log = false)
 	{
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
@@ -531,10 +531,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
-				// display: "inline-block",
 				display: "flex",
 				flexDirection: "column",
-
 				fontFamily: this._font,
 				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
