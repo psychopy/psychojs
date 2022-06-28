@@ -695,11 +695,15 @@ export class GratingStim extends VisualStim
 
 			if (this._tex instanceof HTMLImageElement)
 			{
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple GratingStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all GratingStims who happen to share that BaseTexture.
 				shaderName = "imageShader";
-				let shaderTex = PIXI.Texture.from(this._tex, {
+				let shaderTex = new PIXI.Texture(new PIXI.BaseTexture(this._tex, {
 					wrapMode: PIXI.WRAP_MODES.REPEAT,
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
-				});
+				}));
 				shaderUniforms = {
 					uTex: shaderTex,
 					uFreq: this._SF,
@@ -725,7 +729,8 @@ export class GratingStim extends VisualStim
 			{
 				if (this._mask instanceof HTMLImageElement)
 				{
-					this._pixi.mask = PIXI.Sprite.from(this._mask);
+					// Building new PIXI.BaseTexture each time we create a mask. See notes on shader texture creation above.
+					this._pixi.mask = PIXI.Sprite.from(new PIXI.Texture(new PIXI.BaseTexture(this._mask)));
 					this._pixi.mask.width = this._size_px[0];
 					this._pixi.mask.height = this._size_px[1];
 					this._pixi.addChild(this._pixi.mask);

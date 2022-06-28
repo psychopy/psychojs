@@ -78,8 +78,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"interpolate",
 			interpolate,
-			false,
-			this._onChange(true, false),
+			false
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -224,6 +223,22 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Whether to interpolate (linearly) the texture in the stimulus.
+	 *
+	 * @name module:visual.ImageStim#setInterpolate
+	 * @public
+	 * @param {boolean} interpolate - interpolate or not.
+	 * @param {boolean} [log=false] - whether or not to log
+	 */
+	setInterpolate (interpolate = false, log = false) {
+		this._setAttribute("interpolate", interpolate, log);
+		if (this._pixi instanceof PIXI.Sprite) {
+			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.texture.baseTexture.update();
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.ImageStim#_estimateBoundingBox
@@ -281,13 +296,24 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			// deal with both static images and videos:
 			if (this._image instanceof HTMLImageElement)
 			{
-				this._texture = PIXI.Texture.from(this._image);
-				// const baseTexture = new PIXI.BaseTexture(this._image);
-				// this._texture = new PIXI.Texture(baseTexture);
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple ImageStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all ImageStims who happen to share that BaseTexture.
+				const texOpts =
+				{
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
+				};
+				this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image, texOpts));
 			}
 			else if (this._image instanceof HTMLVideoElement)
 			{
-				this._texture = PIXI.Texture.from(this._image, { resourceOptions: { autoPlay: true } });
+				const texOpts =
+				{
+					resourceOptions: { autoPlay: true },
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
+				};
+				this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image, texOpts));
 			}
 
 			this._pixi = PIXI.Sprite.from(this._texture);
@@ -295,7 +321,8 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
 			{
-				this._pixi.mask = PIXI.Sprite.from(this._mask);
+				// Building new PIXI.BaseTexture each time we create a mask. See notes on this._texture creation above.
+				this._pixi.mask = PIXI.Sprite.from(new PIXI.Texture(new PIXI.BaseTexture(this._mask)));
 
 				// a 0.5, 0.5 anchor is required for the mask to be aligned with the image
 				this._pixi.mask.anchor.x = 0.5;
