@@ -8,7 +8,6 @@
  */
 
 import { Howl } from "howler";
-// import { Loader } from "@pixi/loaders";
 import { ExperimentHandler } from "../data/ExperimentHandler.js";
 import { Clock, MonotonicClock } from "../util/Clock.js";
 import { PsychObject } from "../util/PsychObject.js";
