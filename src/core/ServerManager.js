@@ -8,6 +8,7 @@
  */
 
 import { Howl } from "howler";
+// import { Loader } from "@pixi/loaders";
 import { ExperimentHandler } from "../data/ExperimentHandler.js";
 import { Clock, MonotonicClock } from "../util/Clock.js";
 import { PsychObject } from "../util/PsychObject.js";
@@ -52,7 +53,6 @@ export class ServerManager extends PsychObject
 		this._resources = new Map();
 		this._nbLoadedResources = 0;
 		this._setupPreloadQueue();
-
 
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("status", ServerManager.Status.READY);
@@ -1092,7 +1092,7 @@ export class ServerManager extends PsychObject
 			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
 
 			// preload.js with forced binary:
-			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
+			if (["csv", "odp", "xls", "xlsx", "json", "gif"].indexOf(extension) > -1)
 			{
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
@@ -1131,7 +1131,7 @@ export class ServerManager extends PsychObject
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
-					crossOrigin: "Anonymous",
+					crossOrigin: "Anonymous"
 				} /*)*/);
 			}
 		}

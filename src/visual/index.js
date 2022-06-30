@@ -2,6 +2,7 @@ export * from "./ButtonStim.js";
 export * from "./Form.js";
 export * from "./ImageStim.js";
 export * from "./GratingStim.js";
+export * from "./GifStim.js";
 export * from "./MovieStim.js";
 export * from "./Polygon.js";
 export * from "./Rect.js";
