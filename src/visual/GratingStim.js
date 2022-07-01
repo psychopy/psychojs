@@ -26,6 +26,7 @@ import gaussShader from "./shaders/gaussShader.frag";
 import crossShader from "./shaders/crossShader.frag";
 import radRampShader from "./shaders/radRampShader.frag";
 import raisedCosShader from "./shaders/raisedCosShader.frag";
+import radialStim from "./shaders/radialShader.frag";
 
 /**
  * Grating Stimulus.
@@ -260,6 +261,15 @@ export class GratingStim extends VisualStim
 			uniforms: {
 				uBeta: 0.25,
 				uPeriod: 0.625,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		radialStim: {
+			shader: radialStim,
+			uniforms: {
+				uFreq: 20.0,
+				uPhase: 0.0,
 				uColor: [1., 1., 1.],
 				uAlpha: 1.0
 			}
@@ -742,7 +752,8 @@ export class GratingStim extends VisualStim
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
 					const rt = PIXI.RenderTexture.create({
 						width: this._size_px[0],
-						height: this._size_px[1]
+						height: this._size_px[1],
+						scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
 					});
 					this.win._renderer.render(maskMesh, {
 						renderTexture: rt
