@@ -287,7 +287,9 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				{
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
 				};
+				let t = performance.now();
 				this._pixi = AnimatedGIF.fromBuffer(this._image, gifOpts);
+				console.log("pixi animated gif took", performance.now() - t);
 			}
 
 
@@ -356,7 +358,7 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		let displaySize = this.size;
 
-		if (typeof displaySize === "undefined")
+		if (this._pixi && typeof displaySize === "undefined")
 		{
 			// use the size of the texture, if we have access to it:
 			if (typeof this._pixi.texture !== "undefined" && this._pixi.texture.width > 0)
