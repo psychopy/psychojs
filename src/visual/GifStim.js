@@ -15,6 +15,7 @@ import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware";
 import { AnimatedGIF } from "@pixi/gif";
+import { parseGIF, decompressFrames } from "gifuct-js";
 
 /**
  * Gif Stimulus.
@@ -288,10 +289,54 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
 				};
 				let t = performance.now();
-				this._pixi = AnimatedGIF.fromBuffer(this._image, gifOpts);
-				console.log("pixi animated gif took", performance.now() - t);
-			}
+				// How GIF works: http://www.matthewflickinger.com/lab/whatsinagif/animation_and_transparency.asp
+				let gif = parseGIF(this._image);
+				let pt = performance.now() - t;
+				let t2 = performance.now();
+				let frames = decompressFrames(gif, true);
+				let dect = performance.now() - t2;
+				window.parsedGif = gif;
+				window.frames = frames;
 
+				let i, j;
+				let patchRow = 0;
+				let patchCol = 0;
+				let time = 0;
+				let idFrames = new Array(frames.length);
+				let pixelData = new Uint8ClampedArray(gif.lsd.width * gif.lsd.height * 4);
+				let offset = 0;
+				let t3 = performance.now();
+				for (i = 0; i < frames.length; i++) {
+					// offset = (gif.lsd.width * frames[i].dims.top + frames[i].dims.left) * 4;
+					// patchRow = 0;
+					// pixelData.set(frames[i].patch, offset);
+					for (j = 0; j < frames[i].patch.length; j += 4) {
+						if (frames[i].patch[j + 3] > 0) {
+							patchRow = (j / (frames[i].dims.width * 4)) | 0;
+							offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
+							patchCol = (j % (frames[i].dims.width * 4));
+							pixelData[offset + patchCol] = frames[i].patch[j];
+							pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
+							pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
+							pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
+						}
+					}
+					idFrames[i] = {
+						imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
+						start: time,
+						end: time + frames[i].delay
+					};
+					time += frames[i].delay;
+				}
+
+				let idcomposet = performance.now() - t3;
+				this._pixi = new AnimatedGIF(idFrames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
+				console.log("animated gif, parse=", pt, "decompress=", dect, "id compose=", idcomposet, "total=", performance.now() - t);
+
+				// t = performance.now();
+				// this._pixi = AnimatedGIF.fromBuffer(this._image, gifOpts);
+				// console.log("pixi animated gif took", performance.now() - t);
+			}
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
