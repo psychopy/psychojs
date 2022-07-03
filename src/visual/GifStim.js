@@ -39,6 +39,9 @@ import { parseGIF, decompressFrames } from "gifuct-js";
  * @param {number} [options.contrast= 1.0] - the contrast
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {number} [options.texRes= 128] - the resolution of the text
+ * @param {boolean} [options.loop= true] - whether or not to loop the animation
+ * @param {boolean} [options.autoPlay= true] - whether or not to autoPlay the animation
+ * @param {boolean} [options.animationSpeed= 1] - animation speed, works as multiplyer e.g. 1 - normal speed, 0.5 - half speed, 2 - twice as fast etc.
  * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
  * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
  * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
@@ -47,7 +50,29 @@ import { parseGIF, decompressFrames } from "gifuct-js";
  */
 export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
+	constructor({
+		name,
+		win,
+		image,
+		mask,
+		pos,
+		units,
+		ori,
+		size,
+		color,
+		opacity,
+		contrast,
+		texRes,
+		depth,
+		interpolate,
+		loop,
+		autoPlay,
+		animationSpeed,
+		flipHoriz,
+		flipVert,
+		autoDraw,
+		autoLog
+	} = {})
 	{
 		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
 
@@ -94,6 +119,21 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			false,
 			this._onChange(false, false),
 		);
+		this._addAttribute(
+			"loop",
+			loop,
+			true
+		);
+		this._addAttribute(
+			"autoPlay",
+			autoPlay,
+			true
+		);
+		this._addAttribute(
+			"animationSpeed",
+			animationSpeed,
+			1
+		);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -105,12 +145,120 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Getter for the playing property.
+	 *
+	 * @name module:visual.GifStim#isPlaying
+	 * @public
+	 */
+	get isPlaying ()
+	{
+		if (this._pixi)
+		{
+			return this._pixi.playing;
+		}
+		return false;
+	}
+
+	/**
+	 * Getter for the duration property. Shows animation duration time in milliseconds.
+	 *
+	 * @name module:visual.GifStim#duration
+	 * @public
+	 */
+	get duration ()
+	{
+		if (this._pixi)
+		{
+			return this._pixi.duration;
+		}
+	}
+
+	/**
+	 * Starts GIF playback.
+	 *
+	 * @name module:visual.GifStim#play
+	 * @public
+	 */
+	play ()
+	{
+		if (this._pixi)
+		{
+			this._pixi.play();
+		}
+	}
+
+	/**
+	 * Pauses GIF playback.
+	 *
+	 * @name module:visual.GifStim#pause
+	 * @public
+	 */
+	pause ()
+	{
+		if (this._pixi)
+		{
+			this._pixi.stop();
+		}
+	}
+
+	/**
+	 * Set wether or not to loop the animation.
+	 *
+	 * @name module:visual.GifStim#setLoop
+	 * @public
+	 * @param {boolean} [loop=true] - flag value
+	 * @param {boolean} [log=false] - whether or not to log.
+	 */
+	setLoop (loop, log = false)
+	{
+		this._setAttribute("loop", loop, log);
+		if (this._pixi)
+		{
+			this._pixi.loop = loop;
+		}
+	}
+
+	/**
+	 * Set wether or not to autoplay the animation.
+	 *
+	 * @name module:visual.GifStim#setAutoPlay
+	 * @public
+	 * @param {boolean} [autoPlay=true] - flag value
+	 * @param {boolean} [log=false] - whether or not to log.
+	 */
+	setAutoPlay (autoPlay, log = false)
+	{
+		this._setAttribute("autoPlay", autoPlay, log);
+		if (this._pixi)
+		{
+			this._pixi.autoPlay = autoPlay;
+		}
+	}
+
+	/**
+	 * Set animation speed of the animation.
+	 *
+	 * @name module:visual.GifStim#setAnimationSpeed
+	 * @public
+	 * @param {boolean} [animationSpeed=1] - multiplyer of the animation speed e.g. 1 - normal, 0.5 - half speed, 2 - twice as fast.
+	 * @param {boolean} [log=false] - whether or not to log.
+	 */
+	setAnimationSpeed (animationSpeed = 1, log = false)
+	{
+		this._setAttribute("animationSpeed", animationSpeed, log);
+		if (this._pixi)
+		{
+			this._pixi.animationSpeed = animationSpeed;
+		}
+	}
+
+	/**
 	 * Setter for the image attribute.
 	 *
 	 * @name module:visual.GifStim#setImage
 	 * @public
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setImage(image, log = false)
 	{
@@ -145,9 +293,7 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				}
 			}
 
-			const existingImage = this.getImage();
-			const hasChanged = existingImage ? existingImage.src !== image.src : true;
-
+			const hasChanged = this.getImage() !== image;
 			this._setAttribute("image", image, log);
 
 			if (hasChanged)
@@ -202,7 +348,6 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			}
 
 			this._setAttribute("mask", mask, log);
-
 			this._onChange(true, false)();
 		}
 		catch (error)
@@ -219,7 +364,8 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} interpolate - interpolate or not.
 	 * @param {boolean} [log=false] - whether or not to log
 	 */
-	setInterpolate (interpolate = false, log = false) {
+	setInterpolate (interpolate = false, log = false)
+	{
 		this._setAttribute("interpolate", interpolate, log);
 		if (this._pixi instanceof PIXI.Sprite) {
 			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
@@ -286,14 +432,17 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				const gifOpts =
 				{
-					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
+					loop: this._loop,
+					autoPlay: this._autoPlay,
+					animationSpeed: this._animationSpeed
 				};
 				let t = performance.now();
 				// How GIF works: http://www.matthewflickinger.com/lab/whatsinagif/animation_and_transparency.asp
 				let gif = parseGIF(this._image);
 				let pt = performance.now() - t;
 				let t2 = performance.now();
-				let frames = decompressFrames(gif, true);
+				let frames = decompressFrames(gif, false);
 				let dect = performance.now() - t2;
 				window.parsedGif = gif;
 				window.frames = frames;
@@ -304,23 +453,41 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				let time = 0;
 				let idFrames = new Array(frames.length);
 				let pixelData = new Uint8ClampedArray(gif.lsd.width * gif.lsd.height * 4);
+				let colorData;
 				let offset = 0;
 				let t3 = performance.now();
 				for (i = 0; i < frames.length; i++) {
 					// offset = (gif.lsd.width * frames[i].dims.top + frames[i].dims.left) * 4;
 					// patchRow = 0;
 					// pixelData.set(frames[i].patch, offset);
-					for (j = 0; j < frames[i].patch.length; j += 4) {
-						if (frames[i].patch[j + 3] > 0) {
-							patchRow = (j / (frames[i].dims.width * 4)) | 0;
+
+					// attempt 1 (needs decompressFrames(gif, true), which is an extra step)
+					// for (j = 0; j < frames[i].patch.length; j += 4) {
+					// 	if (frames[i].patch[j + 3] > 0) {
+					// 		patchRow = (j / (frames[i].dims.width * 4)) | 0;
+					// 		offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
+					// 		patchCol = (j % (frames[i].dims.width * 4));
+					// 		pixelData[offset + patchCol] = frames[i].patch[j];
+					// 		pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
+					// 		pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
+					// 		pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
+					// 	}
+					// }
+
+					// attempt 2
+					for (j = 0; j < frames[i].pixels.length; j++) {
+						colorData = frames[i].colorTable[frames[i].pixels[j]];
+						if (frames[i].pixels[j] !== frames[i].transparentIndex) {
+							patchRow = (j / (frames[i].dims.width)) | 0;
 							offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-							patchCol = (j % (frames[i].dims.width * 4));
-							pixelData[offset + patchCol] = frames[i].patch[j];
-							pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
-							pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
-							pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
+							patchCol = (j % (frames[i].dims.width)) * 4;
+							pixelData[offset + patchCol] = colorData[0];
+							pixelData[offset + patchCol + 1] = colorData[1];
+							pixelData[offset + patchCol + 2] = colorData[2];
+							pixelData[offset + patchCol + 3] = 255;
 						}
 					}
+
 					idFrames[i] = {
 						imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
 						start: time,
