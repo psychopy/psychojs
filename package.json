@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
-    "build:docs": "jsdoc ./src -c docs\\docs_config\\jsdoc.config & cp docs\\docs_config\\jsdoc_custom.css docs\\styles\\jsdoc.css",
+    "build:docs": "jsdoc ./src -c jsdoc.json",
     "build:js": "node ./scripts/build.js.cjs",
     "fmt": "dprint fmt",
     "lint": "npm run lint:js && npm run lint:css",

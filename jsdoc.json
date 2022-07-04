@@ -1,0 +1,72 @@
+{
+    "title": "PsychoJS API-Documentation",
+    "tags": {
+        "allowUnknownTags":  true
+    },
+    "source": {
+        "includePattern": "\\.js$",
+        "excludePattern": "(node_modules/|docs)"
+    },
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "opts": {
+        "readme": "README.md",
+        "template": "./node_modules/docdash",
+        "encoding": "utf8",
+        "destination": "docs/",
+        "recurse": true,
+        "verbose": true
+    },
+    "templates": {
+        "default": {
+            "staticFiles": {
+              "include": [
+                "./docs/jsdoc_custom.css"
+              ]
+            }
+          },
+        "cleverLinks": true,
+        "monospaceLinks": true
+    },
+
+    "docdash": {
+                "static": true,        
+        "sort": true,           
+        "sectionOrder": [ 
+            "Modules",             
+             "Classes",
+             "Interfaces",
+             "Mixins"
+        ],
+        "meta": {                       
+            "title": "PsychoJS API-Documentation",                
+            "description": "",         
+            "keyword": "psychopy, psychojs, api"              
+        },
+        "menu": {                       
+            "Project Website": {        
+                "href":"https://psychopy.org", 
+                "target":"_blank",
+                "class":"menu-item",
+                "id":"website_link"
+            },
+            "Forum": {
+                "href":"https://discourse.psychopy.org/",
+                "target":"_blank",
+                "class":"menu-item",
+                "id":"forum_link"
+            },
+               "Github": {
+                "href":"https://github.com/psychopy/psychojs",
+                "target":"_blank",
+                "class":"menu-item",
+                "id":"github_link"
+            }
+        },
+        "search": true,
+        "scripts": [
+            "jsdoc_custom.css"
+          ]
+    }
+}

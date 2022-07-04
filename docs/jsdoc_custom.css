@@ -1,0 +1,71 @@
+a:active {
+    color: #4582ec;
+    text-decoration: none;
+}
+
+h4.name {
+    color: #fff;
+    background: #458;
+    box-shadow: 0 .25em .5em #d3d3d3;
+    border-top: 1px solid #d3d3d3;
+    border-bottom: 1px solid #d3d3d3;
+    margin: 1.5em 0 0.5em;
+    padding: .75em 0 .75em 10px;
+}
+
+.usertext h1 {
+    font-family: "Source Sans Pro";
+    font-size: 24px;
+    margin: 2.5em 0 1em;
+    font-weight: bold;
+}
+
+.usertext h2 {
+    font-family: "Source Sans Pro";
+    font-size: 18px;
+    margin: 2em 0 0.5em;
+    font-weight: bold;
+
+}
+
+.usertext h3 {
+    font-family: "Source Sans Pro";
+    font-size: 15px;
+    margin: 1.5em 0 0;
+    font-weight: bold;
+}
+
+.usertext h4 {
+    font-family: "Source Sans Pro";
+    font-size: 14px;
+    margin: 0 0 0;
+    font-weight: bold;
+}
+
+
+nav a:hover,
+nav a:active {
+    color: #4582ec;
+}
+
+nav>ul>li>a {
+    color: #4582ec;
+    margin-top: 10px;
+}
+
+
+nav>h2>a {
+    margin: 10px 0 -10px;
+    color: #4582ec !important;
+}
+
+.signature {
+    color: #e9b7c3;
+}
+
+span.param-type,
+.params td .param-type,
+.param-type dd {
+    color: #4582ec;
+    font-family: Consolas, Monaco, 'Andale Mono', monospace
+}
