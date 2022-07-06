@@ -854,15 +854,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @private
 	 */
 	_handlePointerDown (e) {
-		if (e.data.button === 0)
+		if (e.data.pointerType === "mouse" && e.data.button !== 0)
 		{
-			this._markerDragging = true;
-			if (!this._frozenMarker)
-			{
-				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
-				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				this.setMarkerPos(rating);
-			}
+			return;
+		}
+
+		this._markerDragging = true;
+		if (!this._frozenMarker)
+		{
+			const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+			const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+			this.setMarkerPos(rating);
 		}
 
 		e.stopPropagation();
