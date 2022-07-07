@@ -721,7 +721,6 @@ export class GratingStim extends VisualStim
 				};
 			}
 			this._pixi = this._getPixiMeshFromPredefinedShaders(shaderName, Object.assign(shaderUniforms, currentUniforms));
-			this._pixi.pivot.set(this._pixi.width * 0.5, this._pixi.width * 0.5);
 			this._pixi.filters = [this._adjustmentFilter];
 
 			// add a mask if need be:
@@ -765,16 +764,14 @@ export class GratingStim extends VisualStim
 
 		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
+		this.anchor = this._anchor;
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();
 		this._size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = this._size_px[0] / this._pixi.width;
-		const scaleY = this._size_px[1] / this._pixi.height;
-		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+		this._pixi.scale.x = 1;
+		this._pixi.scale.y = -1;
 
-		// set the position, rotation, and anchor (image centered on pos):
 		let pos = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.position.set(pos.x, pos.y);
 		this._pixi.rotation = -this.ori * Math.PI / 180;

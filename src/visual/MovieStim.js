@@ -30,6 +30,7 @@ import {Camera} from "../hardware/Camera.js";
  * movie resource or of a HTMLVideoElement or of a Camera component
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+ * @param {string} [options.anchor = "center"] - sets the origin point of the stim
  * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
@@ -50,9 +51,9 @@ import {Camera} from "../hardware/Camera.js";
  */
 export class MovieStim extends VisualStim
 {
-	constructor({ name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
+	constructor({ name, win, movie, pos, anchor, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
 	{
-		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog });
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
@@ -408,8 +409,7 @@ export class MovieStim extends VisualStim
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
+		this.anchor = this._anchor;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();

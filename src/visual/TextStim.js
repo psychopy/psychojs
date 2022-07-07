@@ -25,6 +25,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {string} [options.text="Hello World"] - the text to be rendered
  * @param {string} [options.font= "Arial"] - the font family
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
+ * @param {string} [options.anchor = "center"] - sets the origin point of the stim
  * @param {Color} [options.color= 'white'] the background color
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
@@ -54,6 +55,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			text,
 			font,
 			pos,
+			anchor,
 			color,
 			opacity,
 			depth,
@@ -74,7 +76,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		} = {},
 	)
 	{
-		super({ name, win, units, ori, opacity, depth, pos, clipMask, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, clipMask, autoDraw, autoLog });
 
 		// callback to deal with text metrics invalidation:
 		const onChange = (withPixi = false, withBoundingBox = false, withMetrics = false) =>
@@ -163,6 +165,13 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			1.0,
 			this._onChange(true, false)
 		);
+
+		// alignHoriz and alignVert should be deprecated and replaced by anchor, but leaving this here
+		// for compatibility for a while.
+		if (typeof alignVert === "string" && typeof alignHoriz === "string")
+		{
+			this.anchor = `${alignVert}-${alignHoriz}`;
+		}
 
 		// estimate the bounding box (using TextMetrics):
 		this._estimateBoundingBox();
@@ -337,7 +346,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 		); console.log(this._name, '>>', textSize);
 
 		// take the alignment into account:
-		const anchor = this._getAnchor();
+		const anchor = this._anchorTextToNum(this._anchor);
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * textSize[0],
 			this._pos[1] - textSize[1] + anchor[1] * textSize[1],
@@ -419,7 +428,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			// this._pixi.updateText();
 		}
 
-		const anchor = this._getAnchor();
+		const anchor = this._anchorTextToNum(this._anchor);
 		[this._pixi.anchor.x, this._pixi.anchor.y] = anchor;
 
 		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
@@ -449,46 +458,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			this._size[0],
 			this._size[1],
 		);
-	}
-
-	/**
-	 * Convert the alignment attributes into an anchor.
-	 *
-	 * @name module:visual.TextStim#_getAnchor
-	 * @function
-	 * @private
-	 * @return {number[]} - the anchor
-	 */
-	_getAnchor()
-	{
-		let anchor = [];
-
-		switch (this._alignHoriz)
-		{
-			case "left":
-				anchor.push(0);
-				break;
-			case "right":
-				anchor.push(1);
-				break;
-			default:
-			case "center":
-				anchor.push(0.5);
-		}
-		switch (this._alignVert)
-		{
-			case "top":
-				anchor.push(0);
-				break;
-			case "bottom":
-				anchor.push(1);
-				break;
-			default:
-			case "center":
-				anchor.push(0.5);
-		}
-
-		return anchor;
 	}
 }
 

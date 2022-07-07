@@ -27,6 +27,7 @@ import * as util from "../util/Util.js";
  * @param {number} [options.opacity= 1.0] - the opacity
  * @param {number} [options.depth= 0] - the depth (i.e. the z order)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+ * @param {string} [options.anchor = "center"] - sets the origin point of the stim
  * @param {number} [options.size= 1.0] - the size
  * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
  * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
@@ -34,7 +35,7 @@ import * as util from "../util/Util.js";
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
-	constructor({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog } = {})
+	constructor({ name, win, units, ori, opacity, depth, pos, anchor, size, clipMask, autoDraw, autoLog } = {})
 	{
 		super({ win, name, autoDraw, autoLog });
 
@@ -48,6 +49,11 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			"pos",
 			pos,
 			[0, 0],
+		);
+		this._addAttribute(
+			"anchor",
+			anchor,
+			"center",
 		);
 		this._addAttribute(
 			"size",
@@ -221,6 +227,66 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		// test for inclusion:
 		return this._getBoundingBox_px().contains(objectPos_px[0], objectPos_px[1]);
+	}
+
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @name module:visual.VisualStim#setAnchor
+	 * @public
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			if (this._pixi.anchor !== undefined)
+			{
+				this._pixi.anchor.x = anchorNum[0];
+				this._pixi.anchor.y = anchorNum[1];
+			}
+			else
+			{
+				this._pixi.pivot.x = anchorNum[0] * this._pixi.scale.x * this._pixi.width;
+				this._pixi.pivot.y = anchorNum[1] * this._pixi.scale.y * this._pixi.height;
+			}
+		}
+	}
+
+	/**
+	 * Convert the anchor attribute into numerical values.
+	 *
+	 * @name module:visual.VisualStim#_anchorTextToNum
+	 * @function
+	 * @protected
+	 * @param {string} anchorText - text version of anchor value ["top-left", "top-right", "center", ...]
+	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
+	 */
+	_anchorTextToNum(anchorText = "")
+	{
+		const anchor = [0.5, 0.5];
+
+		if (anchorText.indexOf("left") > -1)
+		{
+			anchor[0] = 0.0;
+		}
+		else if (anchorText.indexOf("right") > -1)
+		{
+			anchor[0] = 1.0;
+		}
+		if (anchorText.indexOf("top") > -1)
+		{
+			anchor[1] = 0.0;
+		}
+		else if (anchorText.indexOf("bottom") > -1)
+		{
+			anchor[1] = 1.0;
+		}
+
+		return anchor;
 	}
 
 	/**

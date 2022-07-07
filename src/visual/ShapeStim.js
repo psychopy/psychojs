@@ -32,6 +32,7 @@ import { VisualStim } from "./VisualStim.js";
  * @param {Array.<Array.<number>>} [options.vertices= [[-0.5, 0], [0, 0.5], [0.5, 0]]] - the shape vertices
  * @param {boolean} [options.closeShape= true] - whether or not the shape is closed
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the shape
+ * @param {string} [options.anchor = "center"] - sets the origin point of the stim
  * @param {number} [options.size= 1.0] - the size
  * @param {number} [options.ori= 0.0] - the orientation (in degrees)
  * @param {string} options.units - the units of the stimulus vertices, size and position
@@ -43,9 +44,9 @@ import { VisualStim } from "./VisualStim.js";
  */
 export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, anchor, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
-		super({ name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, depth, size, autoDraw, autoLog });
 
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
@@ -179,6 +180,28 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	}
 
 	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @name module:visual.ShapeStim#setAnchor
+	 * @public
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// since vertices are passed directly, usually assuming origin at [0, 0]
+			// and already being centered around it, subtracting 0.5 from anchorNum vals
+			// to get a desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * -this._pixi.scale.y * this._pixi.height;
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.ShapeStim#_estimateBoundingBox
@@ -258,6 +281,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			}
 
 			this._pixi.zIndex = -this._depth;
+			this.anchor = this._anchor;
 		}
 
 		// set polygon position and rotation:
@@ -295,7 +319,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 				coords_px.push(coords_px[1]);
 			}
 		}
-
 		// destroy the previous PIXI polygon and create a new one:
 		this._pixiPolygon_px = new PIXI.Polygon(coords_px);
 		this._pixiPolygon_px.closeStroke = this._closeShape;
