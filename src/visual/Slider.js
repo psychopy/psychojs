@@ -363,7 +363,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @name module:visual.Slider#setReadOnly
 	 * @public
 	 * @param {boolean} [readOnly= true] - whether or not the slider is read-only
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setReadOnly(readOnly = true, log = false)
 	{
@@ -395,7 +395,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @name module:visual.Slider#setMarkerPos
 	 * @public
 	 * @param {number} displayedRating - the displayed rating
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setMarkerPos(displayedRating, log = false)
 	{
@@ -418,7 +418,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @name module:visual.Slider#setRating
 	 * @public
 	 * @param {number} rating - the rating
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setRating(rating, log = false)
 	{
@@ -438,7 +438,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @name module:visual.Slider#setOri
 	 * @public
 	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setOri (ori = 0, log = false)
 	{
@@ -717,7 +717,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @public
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	recordRating(rating, responseTime = undefined, log = false)
 	{

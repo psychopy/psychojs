@@ -48,7 +48,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
 		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
-
+		window.util = util;
 		this._addAttribute(
 			"image",
 			image,
@@ -108,7 +108,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.ImageStim#setImage
 	 * @public
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setImage(image, log = false)
 	{
@@ -178,7 +178,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.ImageStim#setMask
 	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setMask(mask, log = false)
 	{
@@ -235,6 +235,52 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		if (this._pixi instanceof PIXI.Sprite) {
 			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
 			this._pixi.texture.baseTexture.update();
+		}
+	}
+
+	/**
+	 * Setter for the size attribute.
+	 *
+	 * @name module:visual.ImageStim#setSize
+	 * @public
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setSize(size, log = false)
+	{
+		size = util.toNumericalOrNaN(size);
+		if (!Array.isArray(size))
+		{
+			size = [size, size];
+		}
+
+		if (Array.isArray(size) && size.length === 1)
+		{
+			size = [size[0], size[0]];
+		}
+
+		if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+		{
+			// handling of undefined size is covered in _updateIfNeeded()
+			size = undefined;
+		}
+		else if (this._texture !== undefined)
+		{
+			if (Number.isNaN(size[0]))
+			{
+				size[0] = size[1] * (this._texture.width / this._texture.height);
+			}
+			else if (Number.isNaN(size[1]))
+			{
+				size[1] = size[0] / (this._texture.width / this._texture.height);
+			}
+		}
+
+		const hasChanged = this._setAttribute("size", size, log);
+
+		if (hasChanged)
+		{
+			this._onChange(true, true)();
 		}
 	}
 
@@ -352,6 +398,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		this._pixi.zIndex = -this._depth;
 		this._pixi.alpha = this.opacity;
+
+		// go through size setter again since texture is available now
+		this.size = this._size;
 
 		// set the scale:
 		const displaySize = this._getDisplaySize();

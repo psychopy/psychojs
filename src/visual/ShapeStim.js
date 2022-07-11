@@ -109,7 +109,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	 * @name module:visual.ShapeStim#setVertices
 	 * @public
 	 * @param {Array.<Array.<number>>} vertices - the vertices
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setVertices(vertices, log = false)
 	{

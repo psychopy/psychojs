@@ -341,7 +341,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setTex
 	 * @public
 	 * @param {HTMLImageElement | string} tex - the name of built in shader function or name of the image resource or HTMLImageElement corresponding to the image
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setTex(tex, log = false)
 	{
@@ -405,7 +405,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setMask
 	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setMask(mask, log = false)
 	{
@@ -544,7 +544,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setPhase
 	 * @public
 	 * @param {number} phase - phase value
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */ 
 	setPhase (phase, log = false) {
 		this._setAttribute("phase", phase, log);
@@ -559,7 +559,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setColorSpace
 	 * @public
 	 * @param {String} colorSpaceVal - color space value
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */ 
 	setColorSpace (colorSpaceVal = "RGB", log = false) {
 		let colorSpaceValU = colorSpaceVal.toUpperCase();
@@ -578,7 +578,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setColor
 	 * @public
 	 * @param {Color} colorVal - color value, can be String like "red" or "#ff0000" or Number like 0xff0000.
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */ 
 	setColor (colorVal = "white", log = false) {
 		const colorObj = (colorVal instanceof Color) ? colorVal : new Color(colorVal, Color.COLOR_SPACE[this._colorSpace])
@@ -594,7 +594,7 @@ export class GratingStim extends VisualStim
 	 * @name module:visual.GratingStim#setOpacity
 	 * @public
 	 * @param {number} [opacity=1] opacity - The value should be a single float ranging 1.0 (opaque) to 0.0 (transparent).
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */ 
 	setOpacity (opacity = 1, log = false) {
 		this._setAttribute("opacity", opacity, log);

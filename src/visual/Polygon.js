@@ -84,7 +84,7 @@ export class Polygon extends ShapeStim
 	 * @name module:visual.Polygon#setRadius
 	 * @public
 	 * @param {number} radius - the polygon radius
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setRadius(radius, log = false)
 	{
@@ -102,7 +102,7 @@ export class Polygon extends ShapeStim
 	 * @name module:visual.Polygon#setEdges
 	 * @public
 	 * @param {number} edges - the number of edges
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setEdges(edges, log = false)
 	{

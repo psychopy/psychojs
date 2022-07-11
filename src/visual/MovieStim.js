@@ -139,7 +139,7 @@ export class MovieStim extends VisualStim
 	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
 	 * movie resource or of a HTMLVideoElement or of a Camera component
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setMovie(movie, log = false)
 	{
@@ -215,7 +215,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Reset the stimulus.
 	 *
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	reset(log = false)
 	{
@@ -227,7 +227,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Start playing the movie.
 	 *
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	play(log = false)
 	{
@@ -252,7 +252,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Pause the movie.
 	 *
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	pause(log = false)
 	{
@@ -263,7 +263,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Stop the movie and reset to 0s.
 	 *
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	stop(log = false)
 	{
@@ -278,7 +278,7 @@ export class MovieStim extends VisualStim
 	 * <p>Note: seek is experimental and does not work on all browsers at the moment.</p>
 	 *
 	 * @param {number} timePoint - the timepoint to which to jump (in second)
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	seek(timePoint, log = false)
 	{

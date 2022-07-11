@@ -87,7 +87,7 @@ export class FaceDetector extends VisualStim
 	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} input - the name of a
 	 * movie resource or a HTMLVideoElement or a Camera component
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setInput(input, log = false)
 	{
@@ -161,7 +161,7 @@ export class FaceDetector extends VisualStim
 	 * @public
 	 * @param {number} period - the detection period, in ms (e.g. 100 ms for 10Hz)
 	 * @param detectionCallback - the callback triggered when detection results are available
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	start(period, detectionCallback, log = false)
 	{
@@ -198,7 +198,7 @@ export class FaceDetector extends VisualStim
 	 * @name module:visual.FaceDetector#stop
 	 * @function
 	 * @public
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	stop(log = false)
 	{

@@ -108,7 +108,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @name module:visual.VisualStim#setSize
 	 * @public
 	 * @param {undefined | null | number | number[]} size - the stimulus size
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setSize(size, log = false)
 	{
@@ -136,7 +136,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @name module:visual.VisualStim#setOri
 	 * @public
 	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setOri(ori, log = false)
 	{
@@ -164,7 +164,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @name module:visual.VisualStim#setPos
 	 * @public
 	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setPos(pos, log = false)
 	{
@@ -187,7 +187,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @name module:visual.VisualStim#setDepth
 	 * @public
 	 * @param {Array.<number>} depth - order in which stimuli is rendered, kind of css's z-index with a negative sign.
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setDepth (depth = 0, log = false) {
 		this._setAttribute("depth", depth, log);

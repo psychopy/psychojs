@@ -84,7 +84,7 @@ export class Rect extends ShapeStim
 	 * @name module:visual.Rect#setWidth
 	 * @public
 	 * @param {number} width - the rectangle width
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setWidth(width, log = false)
 	{
@@ -104,7 +104,7 @@ export class Rect extends ShapeStim
 	 * @name module:visual.Rect#setHeight
 	 * @public
 	 * @param {number} height - the rectangle height
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setHeight(height, log = false)
 	{

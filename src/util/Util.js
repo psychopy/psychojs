@@ -289,6 +289,71 @@ export function toNumerical(obj)
 }
 
 /**
+ * Same as util.toNumerical method but replace unconvertable values with NaN without throwing exceptions.
+ *
+ * <ul>
+ *   <li>number -> number, e.g. 2 -> 2</li>
+ *   <li>[number] -> [number], e.g. [1,2,3] -> [1,2,3]</li>
+ *   <li>numeral string -> number, e.g. "8" -> 8</li>
+ *   <li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]</li>
+ * </ul>
+ *
+ * @name module:util.toNumerical
+ * @function
+ * @public
+ * @param {Object} obj - the input object
+ * @return {number | number[]} the numerical form of the input object or as is
+ */
+export function toNumericalOrNaN(obj)
+{
+	const response = {
+		origin: "util.toNumerical",
+		context: "when converting an object to its numerical form",
+	};
+
+	try
+	{
+		if (obj === null || typeof obj === "undefined")
+		{
+			return NaN;
+		}
+
+		if (typeof obj === "number")
+		{
+			return obj;
+		}
+
+		const convertToNumber = (input) =>
+		{
+			return Number.parseFloat(input);
+		};
+
+		if (Array.isArray(obj))
+		{
+			return obj.map(convertToNumber);
+		}
+
+		const arrayMaybe = turnSquareBracketsIntoArrays(obj);
+
+		if (Array.isArray(arrayMaybe))
+		{
+			return arrayMaybe.map(convertToNumber);
+		}
+
+		if (typeof obj === "string")
+		{
+			return convertToNumber(obj);
+		}
+
+		throw "unable to convert the object to a number";
+	}
+	catch (error)
+	{
+		throw Object.assign(response, { error });
+	}
+}
+
+/**
  * Check whether a value looks like a number
  *
  * @name module:util.isNumeric

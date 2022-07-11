@@ -106,7 +106,7 @@ export class PsychObject extends EventEmitter
 	 * @protected
 	 * @param {string} attributeName - the name of the attribute
 	 * @param {object} attributeValue - the value of the attribute
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 * @param {string} [operation] - the binary operation such that the new value of the attribute is the result of the application of the operation to the current value of the attribute and attributeValue
 	 * @param {boolean} [stealth= false] - whether or not to call the potential attribute setters when setting the value of this attribute
 	 * @return {boolean} whether or not the value of that attribute has changed (false if the attribute

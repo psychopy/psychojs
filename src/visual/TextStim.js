@@ -334,7 +334,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			"pix",
 			this._win,
 			this._units,
-		); console.log(this._name, '>>', textSize);
+		);
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
@@ -374,7 +374,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @name module:visual.TextStim#setColor
 	 * @public
 	 * @param {undefined | null | number} color - the color
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setColor(color, log = false)
 	{

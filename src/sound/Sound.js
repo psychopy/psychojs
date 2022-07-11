@@ -137,7 +137,7 @@ export class Sound extends PsychObject
 	 * @public
 	 * @param {number} volume - the volume (values should be between 0 and 1)
 	 * @param {boolean} [mute= false] - whether or not to mute the sound
-	 * @param {boolean} [log= true] - whether of not to log
+	 * @param {boolean} [log= true] - whether or not to log
 	 */
 	setVolume(volume, mute = false, log = true)
 	{
@@ -183,7 +183,7 @@ export class Sound extends PsychObject
 	 *
 	 * @public
 	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
-	 * @param {boolean} [log=true] - whether of not to log
+	 * @param {boolean} [log=true] - whether or not to log
 	 */
 	setLoops(loops = 0, log = true)
 	{
