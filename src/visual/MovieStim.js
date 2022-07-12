@@ -213,6 +213,52 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
+	 * Setter for the size attribute.
+	 *
+	 * @name module:visual.MovieStim#setSize
+	 * @public
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setSize(size, log = false)
+	{
+		size = util.toNumericalOrNaN(size);
+		if (!Array.isArray(size))
+		{
+			size = [size, size];
+		}
+
+		if (Array.isArray(size) && size.length === 1)
+		{
+			size = [size[0], size[0]];
+		}
+
+		if (this._texture !== undefined)
+		{
+			if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+			{
+				size = util.to_unit([this._texture.width, this._texture.height], "pix", this._win, this._units);
+			}
+			else if (Number.isNaN(size[0]))
+			{
+				size[0] = size[1] * (this._texture.width / this._texture.height);
+			}
+			else if (Number.isNaN(size[1]))
+			{
+				size[1] = size[0] / (this._texture.width / this._texture.height);
+			}
+
+			const size_px = util.to_px(size, this._units, this._win);
+			const scaleX = size_px[0] / this._texture.width;
+			const scaleY = size_px[1] / this._texture.height;
+			this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+			this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+		}
+
+		this._setAttribute("size", size, log);
+	}
+
+	/**
 	 * Reset the stimulus.
 	 *
 	 * @param {boolean} [log= false] - whether or not to log
@@ -315,7 +361,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
+	 * @name module:visual.MovieStim#_estimateBoundingBox
 	 * @function
 	 * @override
 	 * @protected
@@ -397,13 +443,8 @@ export class MovieStim extends VisualStim
 		// opacity:
 		this._pixi.alpha = this.opacity;
 
-		// set the scale:
-		const displaySize = this._getDisplaySize();
-		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._texture.width;
-		const scaleY = size_px[1] / this._texture.height;
-		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+		// go through size setter again since texture is available now
+		this.size = this._size;
 
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
@@ -416,10 +457,10 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
-	 * Get the size of the display image, which is either that of the ImageStim or that of the image
+	 * Get the size of the display image, which is either that of the MovieStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
+	 * @name module:visual.MovieStim#_getDisplaySize
 	 * @private
 	 * @return {number[]} the size of the displayed image
 	 */
