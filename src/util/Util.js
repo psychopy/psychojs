@@ -298,7 +298,7 @@ export function toNumerical(obj)
  *   <li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]</li>
  * </ul>
  *
- * @name module:util.toNumerical
+ * @name module:util.toNumericalOrNaN
  * @function
  * @public
  * @param {Object} obj - the input object

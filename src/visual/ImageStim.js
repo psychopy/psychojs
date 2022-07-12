@@ -48,7 +48,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
 		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
-		window.util = util;
+
 		this._addAttribute(
 			"image",
 			image,
@@ -259,14 +259,13 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			size = [size[0], size[0]];
 		}
 
-		if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+		if (this._texture !== undefined)
 		{
-			// handling of undefined size is covered in _updateIfNeeded()
-			size = undefined;
-		}
-		else if (this._texture !== undefined)
-		{
-			if (Number.isNaN(size[0]))
+			if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+			{
+				size = util.to_unit([this._texture.width, this._texture.height], "pix", this._win, this._units);
+			}
+			else if (Number.isNaN(size[0]))
 			{
 				size[0] = size[1] * (this._texture.width / this._texture.height);
 			}
@@ -274,14 +273,15 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				size[1] = size[0] / (this._texture.width / this._texture.height);
 			}
+
+			const size_px = util.to_px(size, this._units, this._win);
+			const scaleX = size_px[0] / this._texture.width;
+			const scaleY = size_px[1] / this._texture.height;
+			this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+			this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 		}
 
-		const hasChanged = this._setAttribute("size", size, log);
-
-		if (hasChanged)
-		{
-			this._onChange(true, true)();
-		}
+		this._setAttribute("size", size, log);
 	}
 
 	/**
@@ -401,14 +401,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 		// go through size setter again since texture is available now
 		this.size = this._size;
-
-		// set the scale:
-		const displaySize = this._getDisplaySize();
-		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._texture.width;
-		const scaleY = size_px[1] / this._texture.height;
-		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
