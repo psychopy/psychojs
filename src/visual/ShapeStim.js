@@ -372,6 +372,19 @@ ShapeStim.KnownShapes = {
 		[-0.09, 0.18],
 	],
 
+	triangle: [
+        [+0.0, 0.5],  // Point
+        [-0.5, -0.5],  // Bottom left
+        [+0.5, -0.5],  // Bottom right
+    ],
+
+	rectangle: [
+			[-.5,  .5],  // Top left
+			[ .5,  .5],  // Top right
+			[ .5, -.5],  // Bottom left
+			[-.5, -.5],  // Bottom right
+	],
+
 	arrow: [
 			[0.0, 0.5],
 			[-0.5, 0.0],
