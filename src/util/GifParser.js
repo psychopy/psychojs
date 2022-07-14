@@ -46,7 +46,7 @@ export const deinterlace = (pixels, width) => {
  * Original java author url: https://gist.github.com/devunwired/4479231
  */
 
-export const lzw = (minCodeSize, data, pixelCount) => {
+export const lzw = (minCodeSize, data, pixelCount, memoryBuffer, bufferOffset) => {
   const MAX_STACK_SIZE = 4096
   const nullCode = -1
   const npix = pixelCount
@@ -72,7 +72,7 @@ export const lzw = (minCodeSize, data, pixelCount) => {
   // const suffix = new Array(MAX_STACK_SIZE)
   // const pixelStack = new Array(MAX_STACK_SIZE + 1)
 
-  const dstPixels = new Uint8Array(pixelCount)
+  const dstPixels = new Uint8Array(memoryBuffer, bufferOffset, pixelCount)
   const prefix = new Uint16Array(MAX_STACK_SIZE)
   const suffix = new Uint16Array(MAX_STACK_SIZE)
   const pixelStack = new Uint8Array(MAX_STACK_SIZE + 1)
@@ -331,7 +331,7 @@ const generatePatch = image => {
   return patchData
 }
 
-export const decompressFrame = (frame, gct, buildImagePatch) => {
+export const decompressFrame = (frame, gct, buildImagePatch, memoryBuffer, memoryOffset) => {
   if (!frame.image) {
     console.warn('gif frame does not have associated image.')
     return
@@ -342,7 +342,7 @@ export const decompressFrame = (frame, gct, buildImagePatch) => {
   // get the number of pixels
   const totalPixels = image.descriptor.width * image.descriptor.height
   // do lzw decompression
-  var pixels = lzw(image.data.minCodeSize, image.data.blocks, totalPixels)
+  var pixels = lzw(image.data.minCodeSize, image.data.blocks, totalPixels, memoryBuffer, memoryOffset)
 
   // deal with interlacing if necessary
   if (image.descriptor.lct.interlaced) {
@@ -389,20 +389,31 @@ export const decompressFrames = (parsedGif, buildImagePatches) => {
   //   .filter(f => f.image)
   //   .map(f => decompressFrame(f, parsedGif.gct, buildImagePatches))
   let totalPixels = 0;
-  let out = [];
+  let framesWithData = 0;
+  let out ;
   let i, j = 0;
 
-  // for (i = 0; i < parsedGif.frames.length; i++) {
-  //   totalPixels += parsedGif.frames[i].image.descriptor.width * parsedGif.frames[i].image.descriptor.height;
-  // }
+  for (i = 0; i < parsedGif.frames.length; i++) {
+    if (parsedGif.frames[i].image)
+    {
+      totalPixels += parsedGif.frames[i].image.descriptor.width * parsedGif.frames[i].image.descriptor.height;
+      framesWithData++;
+    }
+  }
 
   // const dstPixels = new Uint16Array(totalPixels);
   // let frameStart = 0;
   // let frameEnd = 0;
 
+  const buf = new ArrayBuffer(totalPixels);
+  let bufOffset = 0;
+  out = new Array(framesWithData);
+
   for (i = 0; i < parsedGif.frames.length; i++) {
-    if (parsedGif.frames[i].image) {
-      out[j] = decompressFrame(parsedGif.frames[i], parsedGif.gct, buildImagePatches);
+    if (parsedGif.frames[i].image)
+    {
+      out[j] = decompressFrame(parsedGif.frames[i], parsedGif.gct, buildImagePatches, buf, bufOffset);
+      bufOffset += parsedGif.frames[i].image.descriptor.width * parsedGif.frames[i].image.descriptor.height;
       // out[j] = decompressFrame(parsedGif.frames[i], parsedGif.gct, buildImagePatches, prefix, suffix, pixelStack, dstPixels, frameStart, frameEnd);
       j++;
     }

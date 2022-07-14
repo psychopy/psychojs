@@ -14,8 +14,8 @@ import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware";
-import { AnimatedGIF } from "@pixi/gif";
 // import { parseGIF, decompressFrames } from "gifuct-js";
+import { AnimatedGIF } from "./AnimatedGIF.js";
 import { parseGIF, decompressFrames, decompressFramesContiguous } from "../util/GifParser.js";
 
 /**
@@ -462,45 +462,45 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				let colorData;
 				let offset = 0;
 				let t3 = performance.now();
-				for (i = 0; i < frames.length; i++) {
-					// offset = (gif.lsd.width * frames[i].dims.top + frames[i].dims.left) * 4;
-					// patchRow = 0;
-					// pixelData.set(frames[i].patch, offset);
+				// for (i = 0; i < frames.length; i++) {
+				// 	// offset = (gif.lsd.width * frames[i].dims.top + frames[i].dims.left) * 4;
+				// 	// patchRow = 0;
+				// 	// pixelData.set(frames[i].patch, offset);
 
-					// attempt 1 (needs decompressFrames(gif, true), which is an extra step)
-					// for (j = 0; j < frames[i].patch.length; j += 4) {
-					// 	if (frames[i].patch[j + 3] > 0) {
-					// 		patchRow = (j / (frames[i].dims.width * 4)) | 0;
-					// 		offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-					// 		patchCol = (j % (frames[i].dims.width * 4));
-					// 		pixelData[offset + patchCol] = frames[i].patch[j];
-					// 		pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
-					// 		pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
-					// 		pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
-					// 	}
-					// }
+				// 	// attempt 1 (needs decompressFrames(gif, true), which is an extra step)
+				// 	// for (j = 0; j < frames[i].patch.length; j += 4) {
+				// 	// 	if (frames[i].patch[j + 3] > 0) {
+				// 	// 		patchRow = (j / (frames[i].dims.width * 4)) | 0;
+				// 	// 		offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
+				// 	// 		patchCol = (j % (frames[i].dims.width * 4));
+				// 	// 		pixelData[offset + patchCol] = frames[i].patch[j];
+				// 	// 		pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
+				// 	// 		pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
+				// 	// 		pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
+				// 	// 	}
+				// 	// }
 
-					// attempt 2
-					for (j = 0; j < frames[i].pixels.length; j++) {
-						colorData = frames[i].colorTable[frames[i].pixels[j]];
-						if (frames[i].pixels[j] !== frames[i].transparentIndex) {
-							patchRow = (j / frames[i].dims.width) | 0;
-							offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-							patchCol = (j % frames[i].dims.width) * 4;
-							pixelData[offset + patchCol] = colorData[0];
-							pixelData[offset + patchCol + 1] = colorData[1];
-							pixelData[offset + patchCol + 2] = colorData[2];
-							pixelData[offset + patchCol + 3] = 255;
-						}
-					}
+				// 	// attempt 2
+				// 	for (j = 0; j < frames[i].pixels.length; j++) {
+				// 		colorData = frames[i].colorTable[frames[i].pixels[j]];
+				// 		if (frames[i].pixels[j] !== frames[i].transparentIndex) {
+				// 			patchRow = (j / frames[i].dims.width) | 0;
+				// 			offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
+				// 			patchCol = (j % frames[i].dims.width) * 4;
+				// 			pixelData[offset + patchCol] = colorData[0];
+				// 			pixelData[offset + patchCol + 1] = colorData[1];
+				// 			pixelData[offset + patchCol + 2] = colorData[2];
+				// 			pixelData[offset + patchCol + 3] = 255;
+				// 		}
+				// 	}
 
-					idFrames[i] = {
-						imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
-						start: time,
-						end: time + frames[i].delay
-					};
-					time += frames[i].delay;
-				}
+				// 	idFrames[i] = {
+				// 		imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
+				// 		start: time,
+				// 		end: time + frames[i].delay
+				// 	};
+				// 	time += frames[i].delay;
+				// }
 
 				// let frameStartIdx = 0;
 				// let frameEndIdx = 0;
@@ -549,8 +549,10 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				// }
 
 				let idcomposet = performance.now() - t3;
-				this._pixi = new AnimatedGIF(idFrames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
-				console.log("animated gif, parse=", pt, "decompress=", dect, "id compose=", idcomposet, "total=", performance.now() - t0);
+				// this._pixi = new AnimatedGIF(idFrames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
+				let t4 = performance.now();
+				this._pixi = new AnimatedGIF(frames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
+				console.log("animated gif, parse=", pt, "decompress=", dect, "animationGif inst=", performance.now() - t4, "total=", performance.now() - t0);
 				console.log("dect2", dect2);
 
 				// t = performance.now();
