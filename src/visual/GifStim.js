@@ -442,6 +442,7 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 
 			const gifOpts =
 			{
+				name: this._name,
 				generateFullFrames: false,
 				scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
 				loop: this._loop,

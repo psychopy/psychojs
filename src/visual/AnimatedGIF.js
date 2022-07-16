@@ -54,7 +54,7 @@ class AnimatedGIF extends PIXI.Sprite
         );
 
         super(new PIXI.Texture(PIXI.BaseTexture.fromBuffer(new Uint8Array(width * height * 4), width, height, options)));
-
+        this._name = options.name;
         this._useFullFrames = options.generateFullFrames;
         this._decompressedFrameData = decompressedFrames;
         this._origDims = { width, height };
@@ -95,18 +95,46 @@ class AnimatedGIF extends PIXI.Sprite
         let patchRow = 0, patchCol = 0;
         let offset = 0;
         let colorData;
-        for (i = 0; i < decompressedFrameData.pixels.length; i++) {
-            colorData = decompressedFrameData.colorTable[decompressedFrameData.pixels[i]];
-            if (decompressedFrameData.pixels[i] !== decompressedFrameData.transparentIndex) {
-                patchRow = (i / decompressedFrameData.dims.width) | 0;
-                offset = (this._origDims.width * (decompressedFrameData.dims.top + patchRow) + decompressedFrameData.dims.left) * 4;
-                patchCol = (i % decompressedFrameData.dims.width) * 4;
-                pixelBuffer[offset + patchCol] = colorData[0];
-                pixelBuffer[offset + patchCol + 1] = colorData[1];
-                pixelBuffer[offset + patchCol + 2] = colorData[2];
-                pixelBuffer[offset + patchCol + 3] = 255;
+        // saving to variable instead of referencing object in the loop wins up to 5ms!
+        // (at the moment of development observed on Win10, Chrome 103.0.5060.114 (Official Build) (64-bit))
+        const gifWidth = this._origDims.width;
+
+        if (decompressedFrameData.pixels.length === pixelBuffer.length / 4)
+        // if (false)
+        {
+            // Not all GIF files are perfectly optimized
+            // and instead of having tiny patch of pixels that actually changed from previous frame
+            // they would have a full next frame.
+            // Knowing that, we can go faster by skipping math needed to determine where to put new pixels
+            // and just place them 1 to 1 over existing frame (probably internal browser optimizations also kick in).
+            // For large amounts of gifs running simultaniously this results in 58+FPS vs 15-25+FPS for "else" case.
+            for (i = 0; i < decompressedFrameData.pixels.length; i++) {
+                if (decompressedFrameData.pixels[i] !== decompressedFrameData.transparentIndex) {
+                    colorData = decompressedFrameData.colorTable[decompressedFrameData.pixels[i]];
+                    offset = i * 4;
+                    pixelBuffer[offset] = colorData[0];
+                    pixelBuffer[offset + 1] = colorData[1];
+                    pixelBuffer[offset + 2] = colorData[2];
+                    pixelBuffer[offset + 3] = 255;
+                }
             }
         }
+        else
+        {
+            for (i = 0; i < decompressedFrameData.pixels.length; i++) {
+                if (decompressedFrameData.pixels[i] !== decompressedFrameData.transparentIndex) {
+                    colorData = decompressedFrameData.colorTable[decompressedFrameData.pixels[i]];
+                    patchRow = (i / decompressedFrameData.dims.width) | 0;
+                    patchCol = i % decompressedFrameData.dims.width;
+                    offset = (gifWidth * (decompressedFrameData.dims.top + patchRow) + decompressedFrameData.dims.left + patchCol) * 4;
+                    pixelBuffer[offset] = colorData[0];
+                    pixelBuffer[offset + 1] = colorData[1];
+                    pixelBuffer[offset + 2] = colorData[2];
+                    pixelBuffer[offset + 3] = 255;
+                }
+            }
+        }
+
     }
 
     _constructFullFrames (decompressedFrames, gifWidth, gifHeight)
@@ -263,7 +291,12 @@ class AnimatedGIF extends PIXI.Sprite
      */
     updateFrame()
     {
-        if (!this.dirty)
+        // if (!this.dirty)
+        // {
+        //     return;
+        // }
+
+        if (this._prevRenderedFrameIdx === this._currentFrame)
         {
             return;
         }
@@ -285,7 +318,7 @@ class AnimatedGIF extends PIXI.Sprite
 
         this.texture.update();
         // Mark as clean
-        this.dirty = false;
+        // this.dirty = false;
         this._prevRenderedFrameIdx = this._currentFrame;
     }
 
@@ -297,7 +330,9 @@ class AnimatedGIF extends PIXI.Sprite
      */
     _render(renderer)
     {
+        let t = performance.now();
         this.updateFrame();
+        // console.log("t2", this._name, performance.now() - t);
         super._render(renderer);
     }
 
@@ -366,7 +401,7 @@ class AnimatedGIF extends PIXI.Sprite
         if (this._currentFrame !== value)
         {
             this._currentFrame = value;
-            this.dirty = true;
+            // this.dirty = true;
             if (typeof this.onFrameChange === "function")
             {
                 this.onFrameChange(value);
