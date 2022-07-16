@@ -77,6 +77,8 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 	{
 		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
 
+		this._resource = undefined;
+
 		this._addAttribute(
 			"image",
 			image,
@@ -276,30 +278,39 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				this.psychoJS.logger.warn("setting the image of GifStim: " + this._name + " with argument: undefined.");
 				this.psychoJS.logger.debug("set the image of GifStim: " + this._name + " as: undefined");
 			}
-			else
+			else if (typeof image === "string")
 			{
 				// image is a string: it should be the name of a resource, which we load
-				if (typeof image === "string")
+				const fullRD = this.psychoJS.serverManager.getFullResourceData(image);
+				console.log("gif resource", fullRD);
+				if (fullRD.cachedData === undefined)
 				{
-					image = this.psychoJS.serverManager.getResource(image);
-				}
-
-				if (image instanceof ArrayBuffer)
-				{
-					this.psychoJS.logger.debug(`set the image of GifStim: ${this._name} as ArrayBuffer(${image.length})`);
+					// How GIF works: http://www.matthewflickinger.com/lab/whatsinagif/animation_and_transparency.asp
+					let t0 = performance.now();
+					let parsedGif = parseGIF(fullRD.data);
+					let pt = performance.now() - t0;
+					let t2 = performance.now();
+					let decompressedFrames = decompressFrames(parsedGif, false);
+					let dect = performance.now() - t2;
+					this._resource = { parsedGif, decompressedFrames };
+					this.psychoJS.serverManager.cacheResourceData(image, this._resource);
+					// let t2c = performance.now();
+					// let pixels2 = decompressFramesContiguous(gif, false);
+					// window.pixels2 = pixels2;
+					// let dect2 = performance.now() - t2c;
+					console.log(`animated gif "${this._name}",`, "parse=", pt, "decompress=", dect);
 				}
 				else
 				{
-					throw "the argument: " + image.toString() + ' is neither an image nor a video" }';
+					this._resource = fullRD.cachedData;
 				}
-			}
 
-			const hasChanged = this.getImage() !== image;
-			this._setAttribute("image", image, log);
-
-			if (hasChanged)
-			{
-				this._onChange(true, true)();
+				// this.psychoJS.logger.debug(`set resource of GifStim: ${this._name} as ArrayBuffer(${this._resource.length})`);
+				const hasChanged = this._setAttribute("image", image, log);
+				if (hasChanged)
+				{
+					this._onChange(true, true)();
+				}
 			}
 		}
 		catch (error)
@@ -424,141 +435,26 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			this._pixi = undefined;
 
 			// no image to draw: return immediately
-			if (typeof this._image === "undefined")
+			if (typeof this._resource === "undefined")
 			{
 				return;
 			}
 
-			if (this._image instanceof ArrayBuffer)
+			const gifOpts =
 			{
-				const gifOpts =
-				{
-					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
-					loop: this._loop,
-					autoPlay: this._autoPlay,
-					animationSpeed: this._animationSpeed
-				};
-				let t0 = performance.now();
-				// How GIF works: http://www.matthewflickinger.com/lab/whatsinagif/animation_and_transparency.asp
-				let gif = parseGIF(this._image);
-				let pt = performance.now() - t0;
-				let t2 = performance.now();
-				let frames = decompressFrames(gif, false);
-				let dect = performance.now() - t2;
+				generateFullFrames: false,
+				scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
+				loop: this._loop,
+				autoPlay: this._autoPlay,
+				animationSpeed: this._animationSpeed
+			};
 
-				let t2c = performance.now();
-				// let pixels2 = decompressFramesContiguous(gif, false);
-				// window.pixels2 = pixels2;
-				let dect2 = performance.now() - t2c;
-				window.parsedGif = gif;
-				window.frames = frames;
-
-				let i, j;
-				let patchRow = 0;
-				let patchCol = 0;
-				let time = 0;
-				let idFrames = new Array(frames.length);
-				let pixelData = new Uint8ClampedArray(gif.lsd.width * gif.lsd.height * 4);
-				let colorData;
-				let offset = 0;
-				let t3 = performance.now();
-				// for (i = 0; i < frames.length; i++) {
-				// 	// offset = (gif.lsd.width * frames[i].dims.top + frames[i].dims.left) * 4;
-				// 	// patchRow = 0;
-				// 	// pixelData.set(frames[i].patch, offset);
-
-				// 	// attempt 1 (needs decompressFrames(gif, true), which is an extra step)
-				// 	// for (j = 0; j < frames[i].patch.length; j += 4) {
-				// 	// 	if (frames[i].patch[j + 3] > 0) {
-				// 	// 		patchRow = (j / (frames[i].dims.width * 4)) | 0;
-				// 	// 		offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-				// 	// 		patchCol = (j % (frames[i].dims.width * 4));
-				// 	// 		pixelData[offset + patchCol] = frames[i].patch[j];
-				// 	// 		pixelData[offset + patchCol + 1] = frames[i].patch[j + 1];
-				// 	// 		pixelData[offset + patchCol + 2] = frames[i].patch[j + 2];
-				// 	// 		pixelData[offset + patchCol + 3] = frames[i].patch[j + 3];
-				// 	// 	}
-				// 	// }
-
-				// 	// attempt 2
-				// 	for (j = 0; j < frames[i].pixels.length; j++) {
-				// 		colorData = frames[i].colorTable[frames[i].pixels[j]];
-				// 		if (frames[i].pixels[j] !== frames[i].transparentIndex) {
-				// 			patchRow = (j / frames[i].dims.width) | 0;
-				// 			offset = (gif.lsd.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-				// 			patchCol = (j % frames[i].dims.width) * 4;
-				// 			pixelData[offset + patchCol] = colorData[0];
-				// 			pixelData[offset + patchCol + 1] = colorData[1];
-				// 			pixelData[offset + patchCol + 2] = colorData[2];
-				// 			pixelData[offset + patchCol + 3] = 255;
-				// 		}
-				// 	}
-
-				// 	idFrames[i] = {
-				// 		imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
-				// 		start: time,
-				// 		end: time + frames[i].delay
-				// 	};
-				// 	time += frames[i].delay;
-				// }
-
-				// let frameStartIdx = 0;
-				// let frameEndIdx = 0;
-				// let t, l, w, h;
-				// let ct;
-				// let delay;
-				// let k = 0;
-				// let m = 0;
-				// for (i = 0; i < parsedGif.frames.length; i++) {
-				// 	if (parsedGif.frames[i].image) {
-				// 		frameEndIdx = frameStartIdx + parsedGif.frames[i].image.descriptor.width * parsedGif.frames[i].image.descriptor.height - 1;
-				// 		t = parsedGif.frames[i].image.descriptor.top;
-				// 		l = parsedGif.frames[i].image.descriptor.left;
-				// 		w = parsedGif.frames[i].image.descriptor.width;
-				// 		h = parsedGif.frames[i].image.descriptor.height;
-				// 		// color table
-				// 		if (parsedGif.frames[i].image.descriptor.lct && parsedGif.frames[i].image.descriptor.lct.exists) {
-				// 			ct = parsedGif.frames[i].image.lct;
-				// 		} else {
-				// 			ct = parsedGif.gct;
-				// 		}
-				// 		delay = (parsedGif.frames[i].gce.delay || 10) * 10;
-
-				// 		for (j = frameStartIdx, m = 0; j <= frameEndIdx; j++, m++) {
-				// 			colorData = ct[pixels2[j]];
-				// 			if (pixels2[j] !== parsedGif.frames[i].gce.transparentColorIndex) {
-				// 				patchRow = (m / w) | 0;
-				// 				offset = (gif.lsd.width * (t + patchRow) + l) * 4;
-				// 				patchCol = (m % w) * 4;
-				// 				pixelData[offset + patchCol] = colorData[0];
-				// 				pixelData[offset + patchCol + 1] = colorData[1];
-				// 				pixelData[offset + patchCol + 2] = colorData[2];
-				// 				pixelData[offset + patchCol + 3] = 255;
-				// 			}
-				// 		}
-
-				// 		idFrames[k] = {
-				// 			imageData: new ImageData(new Uint8ClampedArray(pixelData), gif.lsd.width, gif.lsd.height),
-				// 			start: time,
-				// 			end: time + delay
-				// 		};
-				// 		k++;
-				// 		time += delay;
-				// 		frameStartIdx = frameEndIdx + 1;
-				// 	}
-				// }
-
-				let idcomposet = performance.now() - t3;
-				// this._pixi = new AnimatedGIF(idFrames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
-				let t4 = performance.now();
-				this._pixi = new AnimatedGIF(frames, { width: gif.lsd.width, height: gif.lsd.height, ...gifOpts });
-				console.log("animated gif, parse=", pt, "decompress=", dect, "animationGif inst=", performance.now() - t4, "total=", performance.now() - t0);
-				console.log("dect2", dect2);
-
-				// t = performance.now();
-				// this._pixi = AnimatedGIF.fromBuffer(this._image, gifOpts);
-				// console.log("pixi animated gif took", performance.now() - t);
-			}
+			let t = performance.now();
+			this._pixi = new AnimatedGIF(
+				this._resource.decompressedFrames,
+				{ width: this._resource.parsedGif.lsd.width, height: this._resource.parsedGif.lsd.height, ...gifOpts }
+			);
+			console.log(`animatedGif "${this._name}" instancing:`, performance.now() - t);
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")

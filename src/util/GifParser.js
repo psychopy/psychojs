@@ -2,7 +2,7 @@
  * Tool for parsing gif files and decoding it's data to frames.
  *
  * @author "Matt Way" (https://github.com/matt-way), Nikita Agafonov (https://github.com/lightest)
- * @copyright (c) 2015 Matt Way
+ * @copyright (c) 2015 Matt Way, (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  *
  * @note Based on https://github.com/matt-way/gifuct-js

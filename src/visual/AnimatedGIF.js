@@ -1,62 +1,15 @@
-// import { Sprite } from '@pixi/sprite';
-// import { Texture, Renderer } from '@pixi/core';
-// import { settings } from '@pixi/settings';
-// import { SCALE_MODES } from '@pixi/constants';
-// import { Ticker, UPDATE_PRIORITY } from '@pixi/ticker';
+/**
+ * Animated gif sprite.
+ *
+ * @author Nikita Agafonov (https://github.com/lightest), Matt Karl (https://github.com/bigtimebuddy)
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ *
+ * @note Based on https://github.com/pixijs/gif and heavily modified.
+ *
+ */
 
 import * as PIXI from "pixi.js-legacy";
-
-/**
- * Represents a single frame of a GIF. Includes image and timing data.
- * @memberof PIXI.gif
- */
-// interface FrameObject {
-//     // Image data for the current frame
-//     imageData: ImageData;
-//     // The start of the current frame, in milliseconds
-//     start: number;
-//     // The end of the current frame, in milliseconds
-//     end: number;
-// }
-
-/**
- * Default options for all AnimatedGIF objects.
- * @memberof PIXI.gif
- */
-// interface AnimatedGIFOptions {
-//     // Whether to start playing right away
-//     autoPlay: boolean;
-//     /**
-//      * Scale Mode to use for the texture
-//      * @type {PIXI.SCALE_MODES}
-//      */
-//     scaleMode: SCALE_MODES;
-//     // To enable looping
-//     loop: boolean;
-//     // Speed of the animation
-//     animationSpeed: number;
-//     // Set to `false` to manage updates yourself
-//     autoUpdate: boolean;
-//     // The completed callback, optional
-//     onComplete: () => void;
-//     // The loop callback, optional
-//     onLoop: () => void;
-//     // The frame callback, optional
-//     onFrameChange: (currentFrame: number) => void;
-//     // Fallback FPS if GIF contains no time information
-//     fps?: number;
-// }
-
-/**
- * Options for the AnimatedGIF constructor.
- * @memberof PIXI.gif
- */
-// interface AnimatedGIFSize {
-//     /** Width of the GIF image */
-//     width: number;
-//     /** Height of the GIF image */
-//     height: number;
-// }
 
 /**
  * Runtime object to play animated GIFs. This object is similar to an AnimatedSprite.
@@ -89,107 +42,9 @@ class AnimatedGIF extends PIXI.Sprite
     };
 
     /**
-     * Create an animated GIF animation from a GIF image's ArrayBuffer. The easiest way to get
-     * the buffer is to use the Loader.
-     * @example
-     * const loader = new PIXI.Loader();
-     * loader.add('myFile', 'file.gif');
-     * loader.load((loader, resources) => {
-     *    const gif = resources.myFile.animation;
-     *    // add to the stage...
-     * });
-     * @param buffer - GIF image arraybuffer from loader.
-     * @param options - Options to use.
-     * @returns
-     */
-    // static fromBuffer(buffer, options)
-    // {
-    //     if (!buffer || buffer.byteLength === 0)
-    //     {
-    //         throw new Error('Invalid buffer');
-    //     }
-
-    //     // fix https://github.com/matt-way/gifuct-js/issues/30
-    //     const validateAndFix = (gif) =>
-    //     {
-    //         let currentGce = null;
-
-    //         for (const frame of gif.frames)
-    //         {
-    //             currentGce = frame.gce ?? currentGce;
-
-    //             // fix loosing graphic control extension for same frames
-    //             if ('image' in frame && !('gce' in frame))
-    //             {
-    //                 frame.gce = currentGce;
-    //             }
-    //         }
-    //     };
-
-    //     const gif = parseGIF(buffer);
-
-    //     validateAndFix(gif);
-    //     const gifFrames = decompressFrames(gif, true);
-    //     const frames: FrameObject[] = [];
-
-    //     // Temporary canvases required for compositing frames
-    //     const canvas = document.createElement('canvas');
-    //     const context = canvas.getContext('2d');
-    //     const patchCanvas = document.createElement('canvas');
-    //     const patchContext = patchCanvas.getContext('2d');
-
-    //     canvas.width = gif.lsd.width;
-    //     canvas.height = gif.lsd.height;
-
-    //     let time = 0;
-
-    //     // Some GIFs have a non-zero frame delay, so we need to calculate the fallback
-    //     const { fps } = Object.assign({}, AnimatedGIF.defaultOptions, options);
-    //     const defaultDelay = 1000 / fps;
-
-    //     // Precompute each frame and store as ImageData
-    //     for (let i = 0; i < gifFrames.length; i++)
-    //     {
-    //         // Some GIF's omit the disposalType, so let's assume clear if missing
-    //         const { disposalType = 2, delay = defaultDelay, patch, dims: { width, height, left, top } } = gifFrames[i];
-
-    //         patchCanvas.width = width;
-    //         patchCanvas.height = height;
-    //         patchContext.clearRect(0, 0, width, height);
-    //         const patchData = patchContext.createImageData(width, height);
-
-    //         patchData.data.set(patch);
-    //         patchContext.putImageData(patchData, 0, 0);
-
-    //         context.drawImage(patchCanvas, left, top);
-    //         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-
-    //         if (disposalType === 2 || disposalType === 3)
-    //         {
-    //             context.clearRect(0, 0, canvas.width, canvas.height);
-    //         }
-
-    //         frames.push({
-    //             start: time,
-    //             end: time + delay,
-    //             imageData,
-    //         });
-    //         time += delay;
-    //     }
-
-    //     // clear the canvases
-    //     canvas.width = canvas.height = 0;
-    //     patchCanvas.width = patchCanvas.height = 0;
-    //     const { width, height } = gif.lsd;
-
-    //     return new AnimatedGIF(frames, { width, height, ...options });
-    // }
-
-    /**
      * @param frames - Data of the GIF image.
      * @param options - Options for the AnimatedGIF
      */
-    // constructor(frames, options)
     constructor(decompressedFrames, options)
     {
         // Get the options, apply defaults
@@ -198,47 +53,15 @@ class AnimatedGIF extends PIXI.Sprite
             options
         );
 
-        // Create the texture
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
+        super(new PIXI.Texture(PIXI.BaseTexture.fromBuffer(new Uint8Array(width * height * 4), width, height, options)));
 
-        canvas.width = width;
-        canvas.height = height;
-
-        super(PIXI.Texture.from(canvas, { scaleMode }));
-
-        // this.duration = frames[frames.length - 1].end;
-        // this._frames = frames;
-        this._frameData = decompressedFrames;
+        this._useFullFrames = options.generateFullFrames;
+        this._decompressedFrameData = decompressedFrames;
         this._origDims = { width, height };
-        this._frameTimings = new Array(decompressedFrames.length);
-        this._framePixels = new Array(decompressedFrames.length);
         let i, j, time = 0;
-        let t = performance.now();
-        // let i = this._currentFrame;
-        let patchRow = 0, patchCol = 0;
-        let offset = 0;
-        let colorData;
-        let pixelData = new Uint8ClampedArray(width * height * 4);
-        let fullPixelData = new Uint8ClampedArray(width * height * 4 * decompressedFrames.length);
+        this._frameTimings = new Array(decompressedFrames.length);
         for (i = 0; i < decompressedFrames.length; i++)
         {
-            for (j = 0; j < this._frameData[i].pixels.length; j++)
-            {
-                colorData = this._frameData[i].colorTable[this._frameData[i].pixels[j]];
-                if (frames[i].pixels[j] !== frames[i].transparentIndex)
-                {
-                    patchRow = (j / frames[i].dims.width) | 0;
-                    offset = (this._origDims.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-                    patchCol = (j % frames[i].dims.width) * 4;
-                    pixelData[offset + patchCol] = colorData[0];
-                    pixelData[offset + patchCol + 1] = colorData[1];
-                    pixelData[offset + patchCol + 2] = colorData[2];
-                    pixelData[offset + patchCol + 3] = 255;
-                }
-            }
-            // this._framePixels[i] = new Uint8ClampedArray(pixelData);
-            fullPixelData.set(pixelData, pixelData.length * i);
             this._frameTimings[i] =
             {
                 start: time,
@@ -246,11 +69,12 @@ class AnimatedGIF extends PIXI.Sprite
             };
             time += decompressedFrames[i].delay;
         }
-        this._fullPixelData = fullPixelData;
         this.duration = this._frameTimings[decompressedFrames.length - 1].end;
-        // this._frameImageData = new ImageData(new Uint8ClampedArray(width * height * 4), width, height);
-        this._frameImageDataCache = [];
-        this._context = context;
+        this._fullPixelData = [];
+        if (this._useFullFrames)
+        {
+            this._fullPixelData = this._constructFullFrames(decompressedFrames, width, height);
+        }
         this._playing = false;
         this._currentTime = 0;
         this._isConnectedToTicker = false;
@@ -258,10 +82,73 @@ class AnimatedGIF extends PIXI.Sprite
 
         // Draw the first frame
         this.currentFrame = 0;
+        this._prevRenderedFrameIdx = -1;
         if (this.autoPlay)
         {
             this.play();
         }
+    }
+
+    _updatePixelsForOneFrame (decompressedFrameData, pixelBuffer)
+    {
+        let i = 0;
+        let patchRow = 0, patchCol = 0;
+        let offset = 0;
+        let colorData;
+        for (i = 0; i < decompressedFrameData.pixels.length; i++) {
+            colorData = decompressedFrameData.colorTable[decompressedFrameData.pixels[i]];
+            if (decompressedFrameData.pixels[i] !== decompressedFrameData.transparentIndex) {
+                patchRow = (i / decompressedFrameData.dims.width) | 0;
+                offset = (this._origDims.width * (decompressedFrameData.dims.top + patchRow) + decompressedFrameData.dims.left) * 4;
+                patchCol = (i % decompressedFrameData.dims.width) * 4;
+                pixelBuffer[offset + patchCol] = colorData[0];
+                pixelBuffer[offset + patchCol + 1] = colorData[1];
+                pixelBuffer[offset + patchCol + 2] = colorData[2];
+                pixelBuffer[offset + patchCol + 3] = 255;
+            }
+        }
+    }
+
+    _constructFullFrames (decompressedFrames, gifWidth, gifHeight)
+    {
+        let t = performance.now();
+        let i, j;
+        let patchRow = 0, patchCol = 0;
+        let offset = 0;
+        let colorData;
+        let pixelData = new Uint8Array(gifWidth * gifHeight * 4);
+        let fullPixelData = new Uint8Array(gifWidth * gifHeight * 4 * decompressedFrames.length);
+        for (i = 0; i < decompressedFrames.length; i++)
+        {
+            for (j = 0; j < decompressedFrames[i].pixels.length; j++)
+            {
+                colorData = decompressedFrames[i].colorTable[decompressedFrames[i].pixels[j]];
+                if (decompressedFrames[i].pixels[j] !== decompressedFrames[i].transparentIndex)
+                {
+                    patchRow = (j / decompressedFrames[i].dims.width) | 0;
+                    offset = (gifWidth * (decompressedFrames[i].dims.top + patchRow) + decompressedFrames[i].dims.left) * 4;
+                    patchCol = (j % decompressedFrames[i].dims.width) * 4;
+                    pixelData[offset + patchCol] = colorData[0];
+                    pixelData[offset + patchCol + 1] = colorData[1];
+                    pixelData[offset + patchCol + 2] = colorData[2];
+                    pixelData[offset + patchCol + 3] = 255;
+                }
+            }
+            fullPixelData.set(pixelData, pixelData.length * i);
+        }
+        // console.log("full frames construction time", performance.now() - t);
+        return fullPixelData;
+    }
+
+    _constructNthFullFrame (desiredFrameIdx, prevRenderedFrameIdx, pixelBuffer)
+    {
+        let t = performance.now();
+        let i;
+        for (i = prevRenderedFrameIdx + 1; i <= desiredFrameIdx; i++)
+        {
+            this._updatePixelsForOneFrame(this._decompressedFrameData[i], pixelBuffer);
+        }
+        // console.log("constructed frames from", prevRenderedFrameIdx, "to", desiredFrameIdx, "(", desiredFrameIdx - prevRenderedFrameIdx, ")", performance.now() - t);
     }
 
     /** Stops the animation. */
@@ -296,7 +183,7 @@ class AnimatedGIF extends PIXI.Sprite
         }
 
         // If were on the last frame and stopped, play should resume from beginning
-        if (!this.loop && this.currentFrame === this._frameData.length - 1)
+        if (!this.loop && this.currentFrame === this._decompressedFrameData.length - 1)
         {
             this._currentTime = 0;
         }
@@ -337,6 +224,11 @@ class AnimatedGIF extends PIXI.Sprite
         const localFrame = this._frameTimings.findIndex((ft) =>
             ft.start <= localTime && ft.end > localTime);
 
+        if (this._prevRenderedFrameIdx > localFrame)
+        {
+            this._prevRenderedFrameIdx = -1;
+        }
+
         if (currentTime >= this.duration)
         {
             if (this.loop)
@@ -351,7 +243,7 @@ class AnimatedGIF extends PIXI.Sprite
             else
             {
                 this._currentTime = this.duration;
-                this.updateFrameIndex(this._frameData.length - 1);
+                this.updateFrameIndex(this._decompressedFrameData.length - 1);
                 if (typeof this.onComplete === "function")
                 {
                     this.onComplete();
@@ -376,49 +268,25 @@ class AnimatedGIF extends PIXI.Sprite
             return;
         }
 
-        // let t = performance.now();
-        // let i = this._currentFrame;
-        // let j = 0;
-        // let patchRow = 0, patchCol = 0;
-        // let offset = 0;
-        // let colorData;
-        // for (j = 0; j < this._frameData[i].pixels.length; j++) {
-        //     colorData = this._frameData[i].colorTable[this._frameData[i].pixels[j]];
-        //     if (frames[i].pixels[j] !== frames[i].transparentIndex) {
-        //         patchRow = (j / frames[i].dims.width) | 0;
-        //         offset = (this._origDims.width * (frames[i].dims.top + patchRow) + frames[i].dims.left) * 4;
-        //         patchCol = (j % frames[i].dims.width) * 4;
-        //         this._frameImageData.data[offset + patchCol] = colorData[0];
-        //         this._frameImageData.data[offset + patchCol + 1] = colorData[1];
-        //         this._frameImageData.data[offset + patchCol + 2] = colorData[2];
-        //         this._frameImageData.data[offset + patchCol + 3] = 255;
-        //     }
-        // }
-
         // Update the current frame
-        // const { imageData } = this._frames[this._currentFrame];
-        // this._context.putImageData(imageData, 0, 0);
-        let imageData = this._frameImageDataCache[this._currentFrame];
-        if (imageData === undefined)
+        if (this._useFullFrames)
         {
-            let t = performance.now();
-            let frameLen = this._origDims.width * this._origDims.height * 4;
-            imageData = new ImageData(new Uint8ClampedArray(this._fullPixelData.buffer, frameLen * this._currentFrame, frameLen), this._origDims.width, this._origDims.height);
-            this._frameImageDataCache[this._currentFrame] = imageData;
-            console.log("frame id construction took", performance.now() - t);
+            this.texture.baseTexture.resource.data = new Uint8Array
+            (
+                this._fullPixelData.buffer, this._currentFrame * this._origDims.width * this._origDims.height * 4,
+                this._origDims.width * this._origDims.height * 4
+            );
         }
-        this._context.putImageData(imageData, 0, 0);
-
-        // Workaround hack for Safari & iOS
-        // which fails to upload canvas after putImageData
-        // See: https://bugs.webkit.org/show_bug.cgi?id=229986
-        this._context.fillStyle = "transparent";
-        this._context.fillRect(0, 0, 0, 1);
+        else
+        {
+            // this._updatePixelsForOneFrame(this._decompressedFrameData[this._currentFrame], this.texture.baseTexture.resource.data);
+            this._constructNthFullFrame(this._currentFrame, this._prevRenderedFrameIdx, this.texture.baseTexture.resource.data);
+        }
 
         this.texture.update();
-
         // Mark as clean
         this.dirty = false;
+        this._prevRenderedFrameIdx = this._currentFrame;
     }
 
     /**
@@ -491,7 +359,7 @@ class AnimatedGIF extends PIXI.Sprite
     /** Internally handle updating the frame index */
     updateFrameIndex(value)
     {
-        if (value < 0 || value >= this._frameData.length)
+        if (value < 0 || value >= this._decompressedFrameData.length)
         {
             throw new Error(`Frame index out of range, expecting 0 to ${this.totalFrames}, got ${value}`);
         }
@@ -511,7 +379,7 @@ class AnimatedGIF extends PIXI.Sprite
      */
     get totalFrames()
     {
-        return this._frameData.length;
+        return this._decompressedFrameData.length;
     }
 
     /** Destroy and don't use after this. */
@@ -519,8 +387,7 @@ class AnimatedGIF extends PIXI.Sprite
     {
         this.stop();
         super.destroy(true);
-        this._context = null;
-        this._frameData = null;
+        this._decompressedFrameData = null;
         this.onComplete = null;
         this.onFrameChange = null;
         this.onLoop = null;
@@ -535,14 +402,14 @@ class AnimatedGIF extends PIXI.Sprite
      */
     clone()
     {
-        return new AnimatedGIF([...this._frameData], {
+        return new AnimatedGIF([...this._decompressedFrameData], {
             autoUpdate: this._autoUpdate,
             loop: this.loop,
             autoPlay: this.autoPlay,
             scaleMode: this.texture.baseTexture.scaleMode,
             animationSpeed: this.animationSpeed,
-            width: this._context.canvas.width,
-            height: this._context.canvas.height,
+            width: this._origDims.width,
+            height: this._origDims.height,
             onComplete: this.onComplete,
             onFrameChange: this.onFrameChange,
             onLoop: this.onLoop,
@@ -551,4 +418,3 @@ class AnimatedGIF extends PIXI.Sprite
 }
 
 export { AnimatedGIF };
-// export type { AnimatedGIFOptions };

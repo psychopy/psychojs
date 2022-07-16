@@ -325,6 +325,45 @@ export class ServerManager extends PsychObject
 	}
 
 	/****************************************************************************
+	 * Get full data of a resource.
+	 *
+	 * @name module:core.ServerManager#getFullResourceData
+	 * @function
+	 * @public
+	 * @param {string} name - name of the requested resource
+	 * @param {boolean} [errorIfNotDownloaded = false] whether or not to throw an exception if the
+	 * resource status is not DOWNLOADED
+	 * @return {Object} full available data for resource, or undefined if the resource has been registered
+	 * but not downloaded yet.
+	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
+	 */
+	getFullResourceData (name, errorIfNotDownloaded = false)
+	{
+		const response = {
+			origin: "ServerManager.getResource",
+			context: "when getting the value of resource: " + name,
+		};
+
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		if (errorIfNotDownloaded && pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+		{
+			throw Object.assign(response, {
+				error: name + " is not available for use (yet), its current status is: "
+					+ util.toString(pathStatusData.status),
+			});
+		}
+
+		return pathStatusData;
+	}
+
+	/****************************************************************************
 	 * Get the status of a single resource or the reduced status of an array of resources.
 	 *
 	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
@@ -602,6 +641,19 @@ export class ServerManager extends PsychObject
 			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
+	}
+
+	cacheResourceData (name, dataToCache)
+	{
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		pathStatusData.cachedData = dataToCache;
 	}
 
 	/****************************************************************************
