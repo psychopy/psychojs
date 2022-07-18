@@ -55,7 +55,7 @@ class AnimatedGIF extends PIXI.Sprite
 
         super(new PIXI.Texture(PIXI.BaseTexture.fromBuffer(new Uint8Array(width * height * 4), width, height, options)));
         this._name = options.name;
-        this._useFullFrames = options.generateFullFrames;
+        this._useFullFrames = false;
         this._decompressedFrameData = decompressedFrames;
         this._origDims = { width, height };
         let i, j, time = 0;
@@ -71,9 +71,10 @@ class AnimatedGIF extends PIXI.Sprite
         }
         this.duration = this._frameTimings[decompressedFrames.length - 1].end;
         this._fullPixelData = [];
-        if (this._useFullFrames)
+        if (options.fullFrames !== undefined && options.fullFrames.length > 0)
         {
-            this._fullPixelData = this._constructFullFrames(decompressedFrames, width, height);
+            this._fullPixelData = options.fullFrames;
+            this._useFullFrames = true;
         }
         this._playing = false;
         this._currentTime = 0;
@@ -89,15 +90,12 @@ class AnimatedGIF extends PIXI.Sprite
         }
     }
 
-    _updatePixelsForOneFrame (decompressedFrameData, pixelBuffer)
+    static updatePixelsForOneFrame (decompressedFrameData, pixelBuffer, gifWidth)
     {
         let i = 0;
         let patchRow = 0, patchCol = 0;
         let offset = 0;
         let colorData;
-        // saving to variable instead of referencing object in the loop wins up to 5ms!
-        // (at the moment of development observed on Win10, Chrome 103.0.5060.114 (Official Build) (64-bit))
-        const gifWidth = this._origDims.width;
 
         if (decompressedFrameData.pixels.length === pixelBuffer.length / 4)
         // if (false)
@@ -137,7 +135,7 @@ class AnimatedGIF extends PIXI.Sprite
 
     }
 
-    _constructFullFrames (decompressedFrames, gifWidth, gifHeight)
+    static computeFullFrames (decompressedFrames, gifWidth, gifHeight)
     {
         let t = performance.now();
         let i, j;
@@ -148,33 +146,24 @@ class AnimatedGIF extends PIXI.Sprite
         let fullPixelData = new Uint8Array(gifWidth * gifHeight * 4 * decompressedFrames.length);
         for (i = 0; i < decompressedFrames.length; i++)
         {
-            for (j = 0; j < decompressedFrames[i].pixels.length; j++)
-            {
-                colorData = decompressedFrames[i].colorTable[decompressedFrames[i].pixels[j]];
-                if (decompressedFrames[i].pixels[j] !== decompressedFrames[i].transparentIndex)
-                {
-                    patchRow = (j / decompressedFrames[i].dims.width) | 0;
-                    offset = (gifWidth * (decompressedFrames[i].dims.top + patchRow) + decompressedFrames[i].dims.left) * 4;
-                    patchCol = (j % decompressedFrames[i].dims.width) * 4;
-                    pixelData[offset + patchCol] = colorData[0];
-                    pixelData[offset + patchCol + 1] = colorData[1];
-                    pixelData[offset + patchCol + 2] = colorData[2];
-                    pixelData[offset + patchCol + 3] = 255;
-                }
-            }
+            AnimatedGIF.updatePixelsForOneFrame(decompressedFrames[i], pixelData, gifWidth);
             fullPixelData.set(pixelData, pixelData.length * i);
         }
-        // console.log("full frames construction time", performance.now() - t);
+        console.log("full frames construction time", performance.now() - t);
         return fullPixelData;
     }
 
-    _constructNthFullFrame (desiredFrameIdx, prevRenderedFrameIdx, pixelBuffer)
+    _constructNthFullFrame (desiredFrameIdx, prevRenderedFrameIdx, decompressedFrames, pixelBuffer)
     {
         let t = performance.now();
+        // saving to variable instead of referencing object in the loop wins up to 5ms!
+        // (at the moment of development observed on Win10, Chrome 103.0.5060.114 (Official Build) (64-bit))
+        const gifWidth = this._origDims.width;
         let i;
         for (i = prevRenderedFrameIdx + 1; i <= desiredFrameIdx; i++)
         {
-            this._updatePixelsForOneFrame(this._decompressedFrameData[i], pixelBuffer);
+            // this._updatePixelsForOneFrame(decompressedFrames[i], pixelBuffer);
+            AnimatedGIF.updatePixelsForOneFrame(decompressedFrames[i], pixelBuffer, gifWidth)
         }
         // console.log("constructed frames from", prevRenderedFrameIdx, "to", desiredFrameIdx, "(", desiredFrameIdx - prevRenderedFrameIdx, ")", performance.now() - t);
     }
@@ -313,7 +302,7 @@ class AnimatedGIF extends PIXI.Sprite
         else
         {
             // this._updatePixelsForOneFrame(this._decompressedFrameData[this._currentFrame], this.texture.baseTexture.resource.data);
-            this._constructNthFullFrame(this._currentFrame, this._prevRenderedFrameIdx, this.texture.baseTexture.resource.data);
+            this._constructNthFullFrame(this._currentFrame, this._prevRenderedFrameIdx, this._decompressedFrameData, this.texture.baseTexture.resource.data);
         }
 
         this.texture.update();
@@ -342,12 +331,9 @@ class AnimatedGIF extends PIXI.Sprite
      * @param {PIXI.CanvasRenderer} renderer - The renderer
      * @private
      */
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     _renderCanvas(renderer)
     {
         this.updateFrame();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         super._renderCanvas(renderer);
     }
 
@@ -423,6 +409,7 @@ class AnimatedGIF extends PIXI.Sprite
         this.stop();
         super.destroy(true);
         this._decompressedFrameData = null;
+        this._fullPixelData = null;
         this.onComplete = null;
         this.onFrameChange = null;
         this.onLoop = null;

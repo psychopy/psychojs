@@ -28,8 +28,11 @@ import { parseGIF, decompressFrames, decompressFramesContiguous } from "../util/
  * @param {Object} options
  * @param {String} options.name - the name used when logging messages from this stimulus
  * @param {Window} options.win - the associated Window
+ * @param {boolean} options.precomputeFrames - compute full frames of the GIF and store them. Setting this to true will take the load off the CPU
  * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
  * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
+ * but GIF will take longer to load and occupy more memory space. In case when there's not enough CPU peformance (e.g. due to large amount of GIFs
+ * playing simultaneously or heavy load elsewhere in experiment) and you don't care much about app memory usage, use this flag to easily gain more performance.
  * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
  * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
  * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
@@ -56,6 +59,7 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 		win,
 		image,
 		mask,
+		precomputeFrames,
 		pos,
 		units,
 		ori,
@@ -79,64 +83,18 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 
 		this._resource = undefined;
 
-		this._addAttribute(
-			"image",
-			image,
-		);
-		this._addAttribute(
-			"mask",
-			mask,
-		);
-		this._addAttribute(
-			"color",
-			color,
-			"white",
-			this._onChange(true, false),
-		);
-		this._addAttribute(
-			"contrast",
-			contrast,
-			1.0,
-			this._onChange(true, false),
-		);
-		this._addAttribute(
-			"texRes",
-			texRes,
-			128,
-			this._onChange(true, false),
-		);
-		this._addAttribute(
-			"interpolate",
-			interpolate,
-			false
-		);
-		this._addAttribute(
-			"flipHoriz",
-			flipHoriz,
-			false,
-			this._onChange(false, false),
-		);
-		this._addAttribute(
-			"flipVert",
-			flipVert,
-			false,
-			this._onChange(false, false),
-		);
-		this._addAttribute(
-			"loop",
-			loop,
-			true
-		);
-		this._addAttribute(
-			"autoPlay",
-			autoPlay,
-			true
-		);
-		this._addAttribute(
-			"animationSpeed",
-			animationSpeed,
-			1
-		);
+		this._addAttribute("precomputeFrames", precomputeFrames, false);
+		this._addAttribute("image", image);
+		this._addAttribute("mask", mask);
+		this._addAttribute("color", color, "white", this._onChange(true, false));
+		this._addAttribute("contrast", contrast, 1.0, this._onChange(true, false));
+		this._addAttribute("texRes", texRes, 128, this._onChange(true, false));
+		this._addAttribute("interpolate", interpolate, false);
+		this._addAttribute("flipHoriz", flipHoriz, false, this._onChange(false, false));
+		this._addAttribute("flipVert", flipVert, false, this._onChange(false, false));
+		this._addAttribute("loop", loop, true);
+		this._addAttribute("autoPlay", autoPlay, true);
+		this._addAttribute("animationSpeed", animationSpeed, 1);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -292,7 +250,12 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 					let t2 = performance.now();
 					let decompressedFrames = decompressFrames(parsedGif, false);
 					let dect = performance.now() - t2;
-					this._resource = { parsedGif, decompressedFrames };
+					let fullFrames;
+					if (this._precomputeFrames)
+					{
+						fullFrames = AnimatedGIF.computeFullFrames(decompressedFrames, parsedGif.lsd.width, parsedGif.lsd.height);
+					}
+					this._resource = { parsedGif, decompressedFrames, fullFrames };
 					this.psychoJS.serverManager.cacheResourceData(image, this._resource);
 					// let t2c = performance.now();
 					// let pixels2 = decompressFramesContiguous(gif, false);
@@ -443,7 +406,9 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			const gifOpts =
 			{
 				name: this._name,
-				generateFullFrames: false,
+				width: this._resource.parsedGif.lsd.width,
+				height: this._resource.parsedGif.lsd.height,
+				fullFrames: this._resource.fullFrames,
 				scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST,
 				loop: this._loop,
 				autoPlay: this._autoPlay,
@@ -451,10 +416,7 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 			};
 
 			let t = performance.now();
-			this._pixi = new AnimatedGIF(
-				this._resource.decompressedFrames,
-				{ width: this._resource.parsedGif.lsd.width, height: this._resource.parsedGif.lsd.height, ...gifOpts }
-			);
+			this._pixi = new AnimatedGIF(this._resource.decompressedFrames, gifOpts);
 			console.log(`animatedGif "${this._name}" instancing:`, performance.now() - t);
 
 			// add a mask if need be:
