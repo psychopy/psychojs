@@ -1368,6 +1368,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			this._barLineWidth_px = 0;
 			this._tickType = Slider.Shape.DISC;
+			this.granularity = 1.0;
 
 			if (!this._skin.MARKER_SIZE)
 			{
