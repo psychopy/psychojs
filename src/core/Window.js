@@ -125,8 +125,7 @@ export class Window extends PsychObject
 	static BACKGROUND_FIT_ENUM = {
 		cover: 0,
 		contain: 1,
-		scaledown: 2,
-		none: 3
+		auto: 2
 	};
 
 	/**
@@ -450,8 +449,7 @@ export class Window extends PsychObject
 			return;
 		}
 
-		backgroundFit = backgroundFit.replace("-", "").toLowerCase();
-		const backgroundFitCode = Window.BACKGROUND_FIT_ENUM[backgroundFit];
+		const backgroundFitCode = Window.BACKGROUND_FIT_ENUM[backgroundFit.replace("-", "").toLowerCase()];
 
 		if (backgroundFitCode === undefined)
 		{
@@ -459,51 +457,40 @@ export class Window extends PsychObject
 		}
 
 		this._setAttribute("backgroundFit", backgroundFit, log);
-		let backgroundAspectRatio = this._backgroundSprite.texture.width / this._backgroundSprite.texture.height;
-		let maxScreenDim;
-		let minScreenDim;
-
-		if (this._size[0] > this._size[1])
-		{
-			maxScreenDim = this._size[0];
-			minScreenDim = this._size[1];
-		}
-		else
-		{
-			maxScreenDim = this._size[1];
-			minScreenDim = this._size[0];
-		}
+		const backgroundAspectRatio = this._backgroundSprite.texture.width / this._backgroundSprite.texture.height;
+		const windowAspectRatio = this._size[0] / this._size[1];
 
 		if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.cover)
 		{
-			if (backgroundAspectRatio > 1)
+			if (windowAspectRatio >= backgroundAspectRatio)
 			{
-				this._backgroundSprite.height = maxScreenDim;
-				this._backgroundSprite.width = this._backgroundSprite.height * backgroundAspectRatio;
+				this._backgroundSprite.width = this._size[0];
+				this._backgroundSprite.height = this._size[0] / backgroundAspectRatio;
 			}
 			else
 			{
-				this._backgroundSprite.width = maxScreenDim;
-				this._backgroundSprite.height = this._backgroundSprite.width / backgroundAspectRatio;
+				this._backgroundSprite.height = this._size[1];
+				this._backgroundSprite.width = this._size[1] * backgroundAspectRatio;
 			}
 		}
 		else if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.contain)
 		{
-			if (backgroundAspectRatio > 1)
+			if (windowAspectRatio >= backgroundAspectRatio)
 			{
-				this._backgroundSprite.height = minScreenDim;
-				this._backgroundSprite.width = this._backgroundSprite.height * backgroundAspectRatio;
+				this._backgroundSprite.height = this._size[1];
+				this._backgroundSprite.width = this._size[1] * backgroundAspectRatio;
 			}
 			else
 			{
-				this._backgroundSprite.width = minScreenDim;
-				this._backgroundSprite.height = this._backgroundSprite.width / backgroundAspectRatio;
+				this._backgroundSprite.width = this._size[0];
+				this._backgroundSprite.height = this._size[0] / backgroundAspectRatio;
 			}
 		}
-		// else if (backgroundFit === Window.BACKGROUND_FIT_ENUM.scaledown)
-		// {
-
-		// }
+		else if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.auto)
+		{
+			this._backgroundSprite.width = this._backgroundSprite.texture.width;
+			this._backgroundSprite.height = this._backgroundSprite.texture.height;
+		}
 	}
 
 	/**
@@ -630,6 +617,7 @@ export class Window extends PsychObject
 		// background sprite so that if we need to move all stims at once, the background sprite
 		// won't get affected.
 		this._backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		this._backgroundSprite.scale.y = -1;
 		this._backgroundSprite.tint = this.color.int;
 		this._backgroundSprite.width = this._size[0];
 		this._backgroundSprite.height = this._size[1];
