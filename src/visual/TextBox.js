@@ -146,7 +146,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"alignment",
 			alignment,
-			"left"
+			"center"
 		);
 		this._addAttribute(
 			"languageStyle",
@@ -245,11 +245,16 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} alignment - alignment of the text
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setAlignment(alignment = "left", log = false)
+	setAlignment(alignment = "center", log = false)
 	{
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
-			this._pixi.setInputStyle("textAlign", alignment);
+			let alignmentStyles = TextBox._alignmentToFlexboxMap.get(alignment);
+			if (!alignmentStyles) {
+				alignmentStyles = ["center", "center"];
+			}
+			this._pixi.setInputStyle("justifyContent", alignmentStyles[0]);
+			this._pixi.setInputStyle("textAlign", alignmentStyles[1]);
 		}
 	}
 
@@ -522,18 +527,24 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
 		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
 		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		let alignmentStyles = TextBox._alignmentToFlexboxMap.get(this._alignment);
+		if (!alignmentStyles) {
+			alignmentStyles = ["center", "center"];
+		}
 
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
-				display: "inline-block",
+				display: "flex",
+				flexDirection: "column",
 				fontFamily: this._font,
 				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
 				direction: util.TEXT_DIRECTION[this._languageStyle],
-				textAlign: this._alignment,
+				justifyContent: alignmentStyles[0],
+				textAlign: alignmentStyles[1],
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
@@ -722,6 +733,18 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		return anchor;
 	}
 }
+
+TextBox._alignmentToFlexboxMap = new Map([
+	["center", ["center", "center"]],
+	["top-center", ["flex-start", "center"]],
+	["bottom-center", ["flex-end", "center"]],
+	["center-left", ["center", "left"]],
+	["center-right", ["center", "right"]],
+	["top-left", ["flex-start", "left"]],
+	["top-right", ["flex-start", "right"]],
+	["bottom-left", ["flex-end", "left"]],
+	["bottom-right", ["flex-end", "right"]]
+]);
 
 /**
  * <p>This map associates units to default letter height.</p>
