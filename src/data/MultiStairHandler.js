@@ -1,10 +1,9 @@
-/** @module data */
 /**
  * Multiple Staircase Trial Handler
  *
  * @author Alain Pitiot
- * @version 2021.2.1
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd.
+ * @version 2021.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd.
  *   (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -22,27 +21,25 @@ import seedrandom from "seedrandom";
  * <p>Note that, at the moment, using the MultiStairHandler requires the jsQuest.js
  * library to be loaded as a resource, at the start of the experiment.</p>
  *
- * @class module.data.MultiStairHandler
  * @extends TrialHandler
- * @param {Object} options - the handler options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {string} options.varName - the name of the variable / intensity / contrast
- * 	/ threshold manipulated by the staircases
- * @param {module:data.MultiStairHandler.StaircaseType} [options.stairType="simple"] - the
- * 	handler type
- * @param {Array.<Object> | String} [options.conditions= [undefined] ] - if it is a string,
- * 	we treat it as the name of a conditions resource
- * @param {module:data.TrialHandler.Method} options.method - the trial method
- * @param {number} [options.nTrials=50] - maximum number of trials
- * @param {number} options.randomSeed - seed for the random number generator
- * @param {string} options.name - name of the handler
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class MultiStairHandler extends TrialHandler
 {
 	/**
-	 * @constructor
-	 * @public
+	 * @memberof module:data
+	 * @param {Object} options - the handler options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {string} options.varName - the name of the variable / intensity / contrast
+	 * 	/ threshold manipulated by the staircases
+	 * @param {MultiStairHandler.StaircaseType} [options.stairType="simple"] - the
+	 * 	handler type
+	 * @param {Array.<Object> | String} [options.conditions= [undefined] ] - if it is a string,
+	 * 	we treat it as the name of a conditions resource
+	 * @param {module:data.TrialHandler.Method} options.method - the trial method
+	 * @param {number} [options.nTrials=50] - maximum number of trials
+	 * @param {number} options.randomSeed - seed for the random number generator
+	 * @param {string} options.name - name of the handler
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
 	constructor({
 		psychoJS,
@@ -91,10 +88,7 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Get the current staircase.
 	 *
-	 * @name module:data.MultiStairHandler#currentStaircase
-	 * @function
-	 * @public
-	 * @returns {module.data.TrialHandler} the current staircase, or undefined if the trial has ended
+	 * @returns {TrialHandler} the current staircase, or undefined if the trial has ended
 	 */
 	get currentStaircase()
 	{
@@ -104,9 +98,6 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Get the current intensity.
 	 *
-	 * @name module:data.MultiStairHandler#intensity
-	 * @function
-	 * @public
 	 * @returns {number} the intensity of the current staircase, or undefined if the trial has ended
 	 */
 	get intensity()
@@ -128,13 +119,9 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Add a response to the current staircase.
 	 *
-	 * @name module:data.MultiStairHandler#addResponse
-	 * @function
-	 * @public
 	 * @param{number} response - the response to the trial, must be either 0 (incorrect or
 	 * non-detected) or 1 (correct or detected)
 	 * @param{number | undefined} [value] - optional intensity / contrast / threshold
-	 * @returns {void}
 	 */
 	addResponse(response, value)
 	{
@@ -163,10 +150,7 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Validate the conditions.
 	 *
-	 * @name module:data.MultiStairHandler#_validateConditions
-	 * @function
 	 * @protected
-	 * @returns {void}
 	 */
 	_validateConditions()
 	{
@@ -222,10 +206,7 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Setup the staircases, according to the conditions.
 	 *
-	 * @name module:data.MultiStairHandler#_prepareStaircases
-	 * @function
 	 * @protected
-	 * @returns {void}
 	 */
 	_prepareStaircases()
 	{
@@ -282,10 +263,7 @@ export class MultiStairHandler extends TrialHandler
 	/**
 	 * Move onto the next trial.
 	 *
-	 * @name module:data.MultiStairHandler#_nextTrial
-	 * @function
 	 * @protected
-	 * @returns {void}
 	 */
 	_nextTrial()
 	{
@@ -425,7 +403,6 @@ export class MultiStairHandler extends TrialHandler
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 MultiStairHandler.StaircaseType = {
 	/**
@@ -444,7 +421,6 @@ MultiStairHandler.StaircaseType = {
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 MultiStairHandler.StaircaseStatus = {
 	/**

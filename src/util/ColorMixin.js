@@ -2,8 +2,8 @@
  * Color Mixin.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -28,7 +28,6 @@ export let ColorMixin = (superclass) =>
 	 *
 	 * @name module:util.ColorMixin#setColor
 	 * @function
-	 * @public
 	 * @param {Color} color - the new color
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -45,7 +44,6 @@ export let ColorMixin = (superclass) =>
 	 *
 	 * @name module:util.ColorMixin#setContrast
 	 * @function
-	 * @public
 	 * @param {number} contrast - the new contrast (must be between 0 and 1)
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -62,7 +60,6 @@ export let ColorMixin = (superclass) =>
 	 *
 	 * @name module:util.ColorMixin#getContrastedColor
 	 * @function
-	 * @public
 	 * @param {string|number|Array.<number>} color - the color
 	 * @param {number} contrast - the contrast (must be between 0 and 1)
 	 */

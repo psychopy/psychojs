@@ -1,9 +1,10 @@
+/** @module util */
 /**
  * Various utilities.
  *
  * @authors Alain Pitiot, Sotiri Bakagiannis, Thomas Pronk
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -12,8 +13,6 @@
  *
  * <p>This is heavily adapted from: http://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/</p>
  *
- * @name module:util.MixinBuilder
- * @class
  * @param {Object} superclass
  *
  * @example
@@ -32,7 +31,6 @@ class MixinBuilder
 	}
 
 	/**
-	 *
 	 * @param mixins
 	 * @returns {*}
 	 */
@@ -45,9 +43,6 @@ class MixinBuilder
 /**
  * Convert the resulting value of a promise into a tupple.
  *
- * @name module:util.promiseToTupple
- * @function
- * @public
  * @param {Promise} promise - the promise
  * @return {Object[]} the resulting value in the format [error, return data]
  * where error is null if there was no error
@@ -63,9 +58,6 @@ export function promiseToTupple(promise)
  * Get a Universally Unique Identifier (RFC4122 version 4)
  * <p> See details here: https://www.ietf.org/rfc/rfc4122.txt</p>
  *
- * @name module:util.makeUuid
- * @function
- * @public
  * @return {string} the uuid
  */
 export function makeUuid()
@@ -80,9 +72,6 @@ export function makeUuid()
 /**
  * Get the error stack of the calling, exception-throwing function.
  *
- * @name module:util.getErrorStack
- * @function
- * @public
  * @return {string} the error stack as a string
  */
 export function getErrorStack()
@@ -104,9 +93,6 @@ export function getErrorStack()
 /**
  * Test if x is an 'empty' value.
  *
- * @name module:util.isEmpty
- * @function
- * @public
  * @param {Object} x the value to test
  * @return {boolean} true if x is one of the following: undefined, [], [undefined]
  */
@@ -138,9 +124,6 @@ export function isEmpty(x)
  * <p> Note: since user agent is easily spoofed, we use a more sophisticated approach, as described here:
  * https://stackoverflow.com/a/9851769</p>
  *
- * @name module:util.detectBrowser
- * @function
- * @public
  * @return {string} the detected browser, one of 'Opera', 'Firefox', 'Safari',
  * 'IE', 'Edge', 'EdgeChromium', 'Chrome', 'unknown'
  */
@@ -221,9 +204,6 @@ export function detectBrowser()
  *   <li>[number | numeral string] -> [number], e.g. [1, 2, "3"] -> [1,2,3]</li>
  * </ul>
  *
- * @name module:util.toNumerical
- * @function
- * @public
  * @param {Object} obj - the input object
  * @return {number | number[]} the numerical form of the input object
  */
@@ -291,9 +271,6 @@ export function toNumerical(obj)
 /**
  * Check whether a value looks like a number
  *
- * @name module:util.isNumeric
- * @function
- * @public
  * @param {*} input - Some value
  * @return {boolean} Whether or not the value can be converted into a number
  */
@@ -306,9 +283,6 @@ export function isNumeric(input)
  * Check whether a point lies within a polygon
  * <p>We are using the algorithm described here: https://wrf.ecse.rpi.edu//Research/Short_Notes/pnpoly.html</p>
  *
- * @name module:util.IsPointInsidePolygon
- * @function
- * @public
  * @param {number[]} point - the point
  * @param {Object} vertices - the vertices defining the polygon
  * @return {boolean} whether or not the point lies within the polygon
@@ -337,9 +311,6 @@ export function IsPointInsidePolygon(point, vertices)
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
- * @name module:util.shuffle
- * @function
- * @public
  * @param {Object[]} array - the input 1-D array
  * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} the shuffled array
@@ -361,9 +332,6 @@ export function shuffle(array, randomNumberGenerator = undefined)
 /**
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
- * @name module:util.randchoice
- * @function
- * @public
  * @param {Object[]} array - the input 1-D array
  * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} a chosen value from the array
@@ -381,9 +349,6 @@ export function randchoice(array, randomNumberGenerator = undefined)
 /**
  * Get the position of the object, in pixel units
  *
- * @name module:util.getPositionFromObject
- * @function
- * @public
  * @param {Object} object - the input object
  * @param {string} units - the units
  * @returns {number[]} the position of the object, in pixel units
@@ -424,9 +389,6 @@ export function getPositionFromObject(object, units)
 /**
  * Convert the position to pixel units.
  *
- * @name module:util.to_px
- * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
@@ -473,9 +435,6 @@ export function to_px(pos, posUnit, win, integerCoordinates = false)
 /**
  * Convert the position to norm units.
  *
- * @name module:util.to_norm
- * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
@@ -505,9 +464,6 @@ export function to_norm(pos, posUnit, win)
 /**
  * Convert the position to height units.
  *
- * @name module:util.to_height
- * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
@@ -541,9 +497,6 @@ export function to_height(pos, posUnit, win)
 /**
  * Convert the position to window units.
  *
- * @name module:util.to_win
- * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
@@ -579,9 +532,6 @@ export function to_win(pos, posUnit, win)
 /**
  * Convert the position to given units.
  *
- * @name module:util.to_unit
- * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window
@@ -620,9 +570,6 @@ export function to_unit(pos, posUnit, win, targetUnit)
  *
  * <p>Note: if the object is not already a string, we JSON stringify it and detect circularity.</p>
  *
- * @name module:util.toString
- * @function
- * @public
  * @param {Object} object - the input object
  * @return {string} a string representation of the object or 'Object (circular)'
  */
@@ -688,9 +635,6 @@ if (!String.prototype.format)
 /**
  * Get the most informative error from the server response from a jquery server request.
  *
- * @name module:util.getRequestError
- * @function
- * @public
  * @param jqXHR
  * @param textStatus
  * @param errorThrown
@@ -719,9 +663,6 @@ export function getRequestError(jqXHR, textStatus, errorThrown)
  * Test whether an object is either an integer or the string representation of an integer.
  * <p>This is adapted from: https://stackoverflow.com/a/14794066</p>
  *
- * @name module:util.isInt
- * @function
- * @public
  * @param {Object} obj - the input object
  * @returns {boolean} whether or not the object is an integer or the string representation of an integer
  */
@@ -739,9 +680,6 @@ export function isInt(obj)
 /**
  * Get the URL parameters.
  *
- * @name module:util.getUrlParameters
- * @function
- * @public
  * @returns {URLSearchParams} the iterable URLSearchParams
  *
  * @example
@@ -768,9 +706,6 @@ export function getUrlParameters()
  * <p>We exclude all URL parameters starting with a double underscore
  * since those are reserved for client/server communication</p>
  *
- * @name module:util.addInfoFromUrl
- * @function
- * @public
  * @param {Object} info - the dictionary
  */
 export function addInfoFromUrl(info)
@@ -804,9 +739,6 @@ export function addInfoFromUrl(info)
  *   <li>'-5:-2, 9, 11:5:22'</li>
  * </ul></p>
  *
- * @name module:util.selectFromArray
- * @function
- * @public
  * @param {Array.<Object>} array - the input array
  * @param {number | Array.<number> | string} selection -  the selection
  * @returns {Object | Array.<Object>} the array of selected items
@@ -862,9 +794,6 @@ export function selectFromArray(array, selection)
 /**
  * Recursively flatten an array of arrays.
  *
- * @name module:util.flattenArray
- * @function
- * @public
  * @param {Array.<Object>} array - the input array of arrays
  * @returns {Array.<Object>} the flatten array
  */
@@ -883,9 +812,6 @@ export function flattenArray(array)
 /**
  * Slice an array.
  *
- * @name module:util.sliceArray
- * @function
- * @public
  * @param {Array.<Object>} array - the input array
  * @param {number} [from= NaN] - the start of the slice
  * @param {number} [to= NaN] - the end of the slice
@@ -929,9 +855,6 @@ export function sliceArray(array, from = NaN, to = NaN, step = NaN)
 /**
  * Offer data as download in the browser.
  *
- * @name module:util.offerDataForDownload
- * @function
- * @public
  * @param {string} filename - the name of the file to be downloaded
  * @param {*} data - the data
  * @param {string} type - the MIME type of the data, e.g. 'text/csv' or 'application/json'
@@ -959,9 +882,6 @@ export function offerDataForDownload(filename, data, type)
  * This approach overcomes the built-in JSON parsing limitations when it comes to eg. floats
  * missing the naught prefix, and is able to process several arrays, e.g. "[1,2][3,4]".
  *
- * @name module:util.turnSquareBracketsIntoArrays
- * @function
- * @public
  * @param {string} input - string potentially containing JSON arrays
  * @param {string} max - how many matches to return, unwrap resulting array if less than two
  * @returns {array} an array if arrays were found, undefined otherwise
@@ -1006,9 +926,6 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 /**
  * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
  *
- * @name module:util.randint
- * @function
- * @public
  * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
  * @param {number} max - one above the largest integer to be drawn
  * @returns {number} a random integer in the requested range (signed)
@@ -1041,9 +958,6 @@ export function randint(min = 0, max)
  *
  * This is the Crib Sheet provided solution, but please note that as of 2020 the most popular SO answer is different.
  *
- * @name module:util.round
- * @function
- * @public
  * @see {@link https://stackoverflow.com/questions/11832914|Stack Overflow}
  * @param {number} input - the number to be rounded
  * @param {number} places - the max number of decimals desired
@@ -1059,9 +973,6 @@ export function round(input, places = 0)
  *
  * If 'input' is not an array, then we return start.
  *
- * @name module:util.sum
- * @function
- * @public
  * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
  * @param {number} start - value added to the sum of numbers (a la Python)
  * @returns {number} the sum of the elements in the array + start
@@ -1089,9 +1000,6 @@ export function sum(input = [], start = 0)
  *
  * If 'input' is not an array, or if it is an empty array, then we return 0.
  *
- * @name module:util.average
- * @function
- * @public
  * @param {array} input - an array of numbers, or of objects that can be cast into a number, e.g. ['1', 2.5, 3e1]
  * @returns {number} the average of the elements in the array
  */
@@ -1113,9 +1021,6 @@ export function average(input = [])
 /**
  * Sort the elements of the input array, in increasing alphabetical or numerical order.
  *
- * @name module:util.sort
- * @function
- * @public
  * @param {array} input - an array of numbers or of strings
  * @return {array} the sorted array
  * @throws if 'input' is not an array, or if its elements are not consistent in types, or if they are not all either numbers or
@@ -1163,9 +1068,6 @@ export function sort(input)
  *
  * <p> Note: this is a JavaScript implement of the Python range function, which explains the unusual management of arguments.</p>
  *
- * @name module:util.range
- * @function
- * @public
  * @param {Number} [start=0] - the value of start
  * @param {Number} stop - the value of stop
  * @param {Number} [step=1] - the value of step
@@ -1250,9 +1152,7 @@ export function range(...args)
 /**
  * Create a boolean function that compares an input element to the given value.
  *
- * @name module:util._match
- * @function
- * @private
+ * @protected
  * @param {Number|string|object|null} value the matching value
  * @return {} a function that compares an input element to the given value
  */
@@ -1313,9 +1213,6 @@ function _match(value)
   *
   * <p> Note: count is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
   *
-  * @name module:util.count
-  * @function
-  * @public
   * @param {array} input the input array
   * @param {Number|string|object|null} value the matching value
   * @returns the number of matching elements
@@ -1378,9 +1275,6 @@ export function pad(n, width = 2)
   *
   * <p> Note: index is able to handle NaN, null, as well as any value convertible to a JSON string.</p>
   *
-  * @name module:util.index
-  * @function
-  * @public
   * @param {array} input the input array
   * @param {Number|string|object|null} value the matching value
   * @returns the index of the first element that matches the value
@@ -1421,9 +1315,6 @@ export function index(input, value)
  * If the provided mimeType is not a string (e.g. null, undefined, an array)
  * or unknown, then '.dat' is returned, instead of throwing an exception.
  *
- * @name module:util.extensionFromMimeType
- * @function
- * @public
  * @param {string} mimeType the MIME type, e.g. 'audio/webm;codecs=opus'
  * @return {string} the corresponding file extension, e.g. '.webm'
  */
@@ -1461,9 +1352,6 @@ export function extensionFromMimeType(mimeType)
  * Get an estimate of the download speed, by repeatedly downloading an image file from a distant
  * server.
  *
- * @name module:util.getDownloadSpeed
- * @function
- * @public
  * @param {PsychoJS} psychoJS the instance of PsychoJS
  * @param {number} [nbDownloads = 1] the number of image downloads over which to average
  * 	the download speed
@@ -1517,9 +1405,7 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
  * Note that Arabic is the same as RTL but added here to support PsychoPy's
  * languageStyle enum. Arabic reshaping is handled by the browser automatically.
  *
- * @name module:util.TEXT_DIRECTION
  * @enum
- * @public
  */
 export const TEXT_DIRECTION = {
 	LTR: "ltr",

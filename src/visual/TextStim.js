@@ -2,8 +2,8 @@
  * Text Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -15,38 +15,40 @@ import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 
 /**
- * @name module:visual.TextStim
- * @class
+ * <p>TextStim handles text stimuli.</p>
+ *
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {string} [options.text="Hello World"] - the text to be rendered
- * @param {string} [options.font= "Arial"] - the font family
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
- * @param {Color} [options.color= 'white'] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {string} [options.units= "norm"] - the units of the text size and position
- * @param {number} options.ori - the orientation (in degrees)
- * @param {number} [options.height= 0.1] - the height of the text
- * @param {boolean} [options.bold= false] - whether or not the text is bold
- * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [options.alignHoriz = 'center'] - horizontal alignment
- * @param {string} [options.alignVert = 'center'] - vertical alignment
- * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
- * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- *
  * @todo vertical alignment, and orientation are currently NOT implemented
  */
 export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string} [options.text="Hello World"] - the text to be rendered
+	 * @param {string} [options.font= "Arial"] - the font family
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
+	 * @param {Color} [options.color= 'white'] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {string} [options.units= "norm"] - the units of the text size and position
+	 * @param {number} options.ori - the orientation (in degrees)
+	 * @param {number} [options.height= 0.1] - the height of the text
+	 * @param {boolean} [options.bold= false] - whether or not the text is bold
+	 * @param {boolean} [options.italic= false] - whether or not the text is italic
+	 * @param {string} [options.alignHoriz = 'center'] - horizontal alignment
+	 * @param {string} [options.alignVert = 'center'] - vertical alignment
+	 * @param {boolean} options.wrapWidth - whether or not to wrap the text horizontally
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+	 * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor(
 		{
 			name,
@@ -178,9 +180,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	 *
 	 * Note: getTextMetrics does not require the PIXI representation of the stimulus
 	 * to be instantiated, unlike getSize().
-	 *
-	 * @name module:visual.TextStim#getTextMetrics
-	 * @public
 	 */
 	getTextMetrics()
 	{
@@ -208,8 +207,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the default letter height given the stimulus' units.
 	 *
-	 * @name module:visual.TextStim#_getDefaultLetterHeight
-	 * @return {number} - the letter height corresponding to this stimulus' units.
 	 * @protected
 	 */
 	_getDefaultLetterHeight()
@@ -231,8 +228,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the default wrap width given the stimulus' units.
 	 *
-	 * @name module:visual.TextStim#_getDefaultWrapWidth
-	 * @return {number} - the wrap width corresponding to this stimulus' units.
 	 * @protected
 	 */
 	_getDefaultWrapWidth()
@@ -254,8 +249,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the bounding gox.
 	 *
-	 * @name module:visual.TextStim#getBoundingBox
-	 * @function
 	 * @protected
 	 * @param {boolean} [tight= false] - whether or not to fit as closely as possible to the text
 	 * @return {number[]} - the bounding box, in the units of this TextStim
@@ -320,8 +313,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.TextStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -334,7 +325,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 			"pix",
 			this._win,
 			this._units,
-		); console.log(this._name, '>>', textSize);
+		);
 
 		// take the alignment into account:
 		const anchor = this._getAnchor();
@@ -351,8 +342,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text
 	 *
-	 * @name module:visual.TextStim#_getTextStyle
-	 * @private
+	 * @protected
 	 */
 	_getTextStyle()
 	{
@@ -371,8 +361,6 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the color attribute.
 	 *
-	 * @name module:visual.TextStim#setColor
-	 * @public
 	 * @param {undefined | null | number} color - the color
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -393,9 +381,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.TextStim#_updateIfNeeded
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -454,9 +440,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Convert the alignment attributes into an anchor.
 	 *
-	 * @name module:visual.TextStim#_getAnchor
-	 * @function
-	 * @private
+	 * @protected
 	 * @return {number[]} - the anchor
 	 */
 	_getAnchor()
@@ -495,9 +479,8 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
 /**
  * <p>This map associates units to default letter height.</p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
  * @readonly
- * @private
+ * @protected
  */
 TextStim._defaultLetterHeightMap = new Map([
 	["cm", 1.0],
@@ -514,9 +497,8 @@ TextStim._defaultLetterHeightMap = new Map([
 /**
  * <p>This map associates units to default wrap width.</p>
  *
- * @name module:visual.TextStim#_defaultLetterHeightMap
  * @readonly
- * @private
+ * @protected
  */
 TextStim._defaultWrapWidthMap = new Map([
 	["cm", 15.0],

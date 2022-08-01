@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Class: TrialHandler</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>TrialHandler - PsychoJS API</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Class: TrialHandler</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#~_match">_match</a></li></ul></li><li></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="AudioClip.html#_base64ArrayBuffer">_base64ArrayBuffer</a></li><li data-type='method'><a href="AudioClip.html#_decodeAudio">_decodeAudio</a></li><li data-type='method'><a href="AudioClip.html#_GoogleTranscribe">_GoogleTranscribe</a></li><li data-type='method'><a href="AudioClip.html#download">download</a></li><li data-type='method'><a href="AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="AudioClip.html#stopPlayback">stopPlayback</a></li><li data-type='method'><a href="AudioClip.html#transcribe">transcribe</a></li><li data-type='method'><a href="AudioClip.html#upload">upload</a></li></ul></li><li><a href="AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="ButtonStim.html">ButtonStim</a><ul class='methods'><li data-type='method'><a href="ButtonStim.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="ButtonStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ButtonStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="ButtonStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="ButtonStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ButtonStim.html#clear">clear</a></li><li data-type='method'><a href="ButtonStim.html#getText">getText</a></li><li data-type='method'><a href="ButtonStim.html#reset">reset</a></li><li data-type='method'><a href="ButtonStim.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="ButtonStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="ButtonStim.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="ButtonStim.html#setColor">setColor</a></li><li data-type='method'><a href="ButtonStim.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="ButtonStim.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="ButtonStim.html#setFont">setFont</a></li><li data-type='method'><a href="ButtonStim.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="ButtonStim.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#setSize">setSize</a></li><li data-type='method'><a href="ButtonStim.html#setText">setText</a></li></ul></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="Clock.html#add">add</a></li><li data-type='method'><a href="Clock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="Clock.html#getTime">getTime</a></li><li data-type='method'><a href="Clock.html#reset">reset</a></li></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method'><a href="Color.html#toString">toString</a></li></ul></li><li><a href="CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="CountdownTimer.html#add">add</a></li><li data-type='method'><a href="CountdownTimer.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="EventEmitter.html#off">off</a></li><li data-type='method'><a href="EventEmitter.html#on">on</a></li><li data-type='method'><a href="EventEmitter.html#once">once</a></li></ul></li><li><a href="EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="EventManager.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="EventManager.html#stopMoveClock">stopMoveClock</a></li></ul></li><li><a href="ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#save">save</a></li></ul></li><li><a href="FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="FaceDetector.html#setInput">setInput</a></li><li data-type='method'><a href="FaceDetector.html#start">start</a></li><li data-type='method'><a href="FaceDetector.html#stop">stop</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Form.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Form.html#_importItems">_importItems</a></li><li data-type='method'><a href="Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="Form.html#_processItems">_processItems</a></li><li data-type='method'><a href="Form.html#_sanitizeItems">_sanitizeItems</a></li><li data-type='method'><a href="Form.html#_setupStimuli">_setupStimuli</a></li><li data-type='method'><a href="Form.html#_updateDecorations">_updateDecorations</a></li><li data-type='method'><a href="Form.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Form.html#_updateVisibleStimuli">_updateVisibleStimuli</a></li><li data-type='method'><a href="Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="Form.html#contains">contains</a></li><li data-type='method'><a href="Form.html#draw">draw</a></li><li data-type='method'><a href="Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="Form.html#getData">getData</a></li><li data-type='method'><a href="Form.html#hide">hide</a></li><li data-type='method'><a href="Form.html#refresh">refresh</a></li><li data-type='method'><a href="Form.html#release">release</a></li><li data-type='method'><a href="Form.html#reset">reset</a></li><li data-type='method'><a href="Form.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Form.html#setDepth">setDepth</a></li><li data-type='method'><a href="Form.html#setOri">setOri</a></li><li data-type='method'><a href="Form.html#setPos">setPos</a></li><li data-type='method'><a href="Form.html#setSize">setSize</a></li></ul></li><li><a href="GratingStim.html">GratingStim</a><ul class='methods'><li data-type='method'><a href="GratingStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="GratingStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="GratingStim.html#_getPixiMeshFromPredefinedShaders">_getPixiMeshFromPredefinedShaders</a></li><li data-type='method'><a href="GratingStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="GratingStim.html#setBlendmode">setBlendmode</a></li><li data-type='method'><a href="GratingStim.html#setColor">setColor</a></li><li data-type='method'><a href="GratingStim.html#setColorSpace">setColorSpace</a></li><li data-type='method'><a href="GratingStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="GratingStim.html#setMask">setMask</a></li><li data-type='method'><a href="GratingStim.html#setOpacity">setOpacity</a></li><li data-type='method'><a href="GratingStim.html#setPhase">setPhase</a></li><li data-type='method'><a href="GratingStim.html#setSF">setSF</a></li><li data-type='method'><a href="GratingStim.html#setTex">setTex</a></li></ul></li><li><a href="GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="GUI.html#_onCancelExperiment">_onCancelExperiment</a></li><li data-type='method'><a href="GUI.html#_onResourceEvents">_onResourceEvents</a></li><li data-type='method'><a href="GUI.html#_onStartExperiment">_onStartExperiment</a></li><li data-type='method'><a href="GUI.html#_setProgressMessage">_setProgressMessage</a></li><li data-type='method'><a href="GUI.html#_updateDialog">_updateDialog</a></li><li data-type='method'><a href="GUI.html#_updateProgressBar">_updateProgressBar</a></li><li data-type='method'><a href="GUI.html#_userFriendlyError">_userFriendlyError</a></li><li data-type='method'><a href="GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="GUI.html#dialog">dialog</a></li><li data-type='method'><a href="GUI.html#DlgFromDict">DlgFromDict</a></li><li data-type='method'><a href="GUI.html#finishDialog">finishDialog</a></li></ul></li><li><a href="ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ImageStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="ImageStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ImageStim.html#setImage">setImage</a></li><li data-type='method'><a href="ImageStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="ImageStim.html#setMask">setMask</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="Keyboard.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="Keyboard.html#start">start</a></li><li data-type='method'><a href="Keyboard.html#stop">stop</a></li></ul></li><li><a href="KeyPress.html">KeyPress</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#_customConsoleLayout">_customConsoleLayout</a></li><li data-type='method'><a href="Logger.html#_getValue">_getValue</a></li><li data-type='method'><a href="Logger.html#_throttle">_throttle</a></li><li data-type='method'><a href="Logger.html#data">data</a></li><li data-type='method'><a href="Logger.html#exp">exp</a></li><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#log">log</a></li><li data-type='method'><a href="Logger.html#setLevel">setLevel</a></li></ul></li><li><a href="Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="Microphone.html#download">download</a></li><li data-type='method'><a href="Microphone.html#flush">flush</a></li><li data-type='method'><a href="Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="Microphone.html#pause">pause</a></li><li data-type='method'><a href="Microphone.html#resume">resume</a></li><li data-type='method'><a href="Microphone.html#start">start</a></li><li data-type='method'><a href="Microphone.html#stop">stop</a></li><li data-type='method'><a href="Microphone.html#upload">upload</a></li></ul></li><li><a href="MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="MinimalStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="MinimalStim.html#release">release</a></li><li data-type='method'><a href="MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_makeStatusTopLevel">_makeStatusTopLevel</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#_prepareSequence">_prepareSequence</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-hardware.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-hardware.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-hardware.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#_upload">_upload</a></li><li data-type='method'><a href="module-hardware.Camera.html#authorize">authorize</a></li><li data-type='method'><a href="module-hardware.Camera.html#close">close</a></li><li data-type='method'><a href="module-hardware.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-hardware.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-hardware.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-hardware.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-hardware.Camera.html#open">open</a></li><li data-type='method'><a href="module-hardware.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-hardware.Camera.html#record">record</a></li><li data-type='method'><a href="module-hardware.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-hardware.Camera.html#stop">stop</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#emit">emit</a></li><li data-type='method'><a href="module-util.PsychObject.html#off">off</a></li><li data-type='method'><a href="module-util.PsychObject.html#on">on</a></li><li data-type='method'><a href="module-util.PsychObject.html#once">once</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li><li data-type='method'><a href="module-visual.VisualStim.html#draw">draw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#hide">hide</a></li><li data-type='method'><a href="module-visual.VisualStim.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.VisualStim.html#release">release</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setDepth">setDepth</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setOri">setOri</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setPos">setPos</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setSize">setSize</a></li></ul></li><li><a href="MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="MovieStim.html">MovieStim</a><ul class='methods'><li data-type='method'><a href="MovieStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="MovieStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="MovieStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MovieStim.html#pause">pause</a></li><li data-type='method'><a href="MovieStim.html#play">play</a></li><li data-type='method'><a href="MovieStim.html#reset">reset</a></li><li data-type='method'><a href="MovieStim.html#seek">seek</a></li><li data-type='method'><a href="MovieStim.html#setMovie">setMovie</a></li><li data-type='method'><a href="MovieStim.html#stop">stop</a></li></ul></li><li><a href="MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="Polygon.html">Polygon</a><ul class='methods'><li data-type='method'><a href="Polygon.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Polygon.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Polygon.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Polygon.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Polygon.html#contains">contains</a></li><li data-type='method'><a href="Polygon.html#setEdges">setEdges</a></li><li data-type='method'><a href="Polygon.html#setRadius">setRadius</a></li><li data-type='method'><a href="Polygon.html#setVertices">setVertices</a></li></ul></li><li><a href="QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="Rect.html">Rect</a><ul class='methods'><li data-type='method'><a href="Rect.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Rect.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Rect.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Rect.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Rect.html#_updateVertices">_updateVertices</a></li><li data-type='method'><a href="Rect.html#contains">contains</a></li><li data-type='method'><a href="Rect.html#setHeight">setHeight</a></li><li data-type='method'><a href="Rect.html#setVertices">setVertices</a></li><li data-type='method'><a href="Rect.html#setWidth">setWidth</a></li></ul></li><li><a href="Scheduler.html">Scheduler</a><ul class='methods'><li data-type='method'><a href="Scheduler.html#add">add</a></li><li data-type='method'><a href="Scheduler.html#addConditional">addConditional</a></li><li data-type='method'><a href="Scheduler.html#start">start</a></li><li data-type='method'><a href="Scheduler.html#stop">stop</a></li></ul></li><li><a href="ServerManager.html">ServerManager</a><ul class='methods'><li data-type='method'><a href="ServerManager.html#_downloadResources">_downloadResources</a></li><li data-type='method'><a href="ServerManager.html#_listResources">_listResources</a></li><li data-type='method'><a href="ServerManager.html#_queryServerAPI">_queryServerAPI</a></li><li data-type='method'><a href="ServerManager.html#_setupPreloadQueue">_setupPreloadQueue</a></li><li data-type='method'><a href="ServerManager.html#closeSession">closeSession</a></li><li data-type='method'><a href="ServerManager.html#getConfiguration">getConfiguration</a></li><li data-type='method'><a href="ServerManager.html#getResource">getResource</a></li><li data-type='method'><a href="ServerManager.html#getResourceStatus">getResourceStatus</a></li><li data-type='method'><a href="ServerManager.html#openSession">openSession</a></li><li data-type='method'><a href="ServerManager.html#prepareResources">prepareResources</a></li><li data-type='method'><a href="ServerManager.html#resetStatus">resetStatus</a></li><li data-type='method'><a href="ServerManager.html#setStatus">setStatus</a></li><li data-type='method'><a href="ServerManager.html#uploadAudioVideo">uploadAudioVideo</a></li><li data-type='method'><a href="ServerManager.html#uploadData">uploadData</a></li><li data-type='method'><a href="ServerManager.html#uploadLog">uploadLog</a></li><li data-type='method'><a href="ServerManager.html#waitForResources">waitForResources</a></li></ul></li><li><a href="ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ShapeStim.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="ShapeStim.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="ShapeStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ShapeStim.html#contains">contains</a></li><li data-type='method'><a href="ShapeStim.html#setVertices">setVertices</a></li></ul></li><li><a href="Shelf.html">Shelf</a><ul class='methods'><li data-type='method'><a href="Shelf.html#_checkAvailability">_checkAvailability</a></li><li data-type='method'><a href="Shelf.html#_checkKey">_checkKey</a></li><li data-type='method'><a href="Shelf.html#_getValue">_getValue</a></li><li data-type='method'><a href="Shelf.html#_updateValue">_updateValue</a></li><li data-type='method'><a href="Shelf.html#addIntegerValue">addIntegerValue</a></li><li data-type='method'><a href="Shelf.html#appendListValue">appendListValue</a></li><li data-type='method'><a href="Shelf.html#clearListValue">clearListValue</a></li><li data-type='method'><a href="Shelf.html#counterBalanceSelect">counterBalanceSelect</a></li><li data-type='method'><a href="Shelf.html#flipBooleanValue">flipBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getBooleanValue">getBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldNames">getDictionaryFieldNames</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldValue">getDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryValue">getDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#getIntegerValue">getIntegerValue</a></li><li data-type='method'><a href="Shelf.html#getListValue">getListValue</a></li><li data-type='method'><a href="Shelf.html#getTextValue">getTextValue</a></li><li data-type='method'><a href="Shelf.html#incrementComponent">incrementComponent</a></li><li data-type='method'><a href="Shelf.html#popListValue">popListValue</a></li><li data-type='method'><a href="Shelf.html#setBooleanValue">setBooleanValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryFieldValue">setDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryValue">setDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#setIntegerValue">setIntegerValue</a></li><li data-type='method'><a href="Shelf.html#setListValue">setListValue</a></li><li data-type='method'><a href="Shelf.html#setTextValue">setTextValue</a></li><li data-type='method'><a href="Shelf.html#shuffleListValue">shuffleListValue</a></li></ul></li><li><a href="Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="Slider.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Slider.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Slider.html#_getPosition_px">_getPosition_px</a></li><li data-type='method'><a href="Slider.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="Slider.html#_granularise">_granularise</a></li><li data-type='method'><a href="Slider.html#_handlePointerDown">_handlePointerDown</a></li><li data-type='method'><a href="Slider.html#_handlePointerMove">_handlePointerMove</a></li><li data-type='method'><a href="Slider.html#_handlePointerUp">_handlePointerUp</a></li><li data-type='method'><a href="Slider.html#_isHorizontal">_isHorizontal</a></li><li data-type='method'><a href="Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="Slider.html#_posToRating">_posToRating</a></li><li data-type='method'><a href="Slider.html#_ratingToPos">_ratingToPos</a></li><li data-type='method'><a href="Slider.html#_removeEventListeners">_removeEventListeners</a></li><li data-type='method'><a href="Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="Slider.html#_setupBar">_setupBar</a></li><li data-type='method'><a href="Slider.html#_setupLabels">_setupLabels</a></li><li data-type='method'><a href="Slider.html#_setupMarker">_setupMarker</a></li><li data-type='method'><a href="Slider.html#_setupSlider">_setupSlider</a></li><li data-type='method'><a href="Slider.html#_setupStyle">_setupStyle</a></li><li data-type='method'><a href="Slider.html#_setupTicks">_setupTicks</a></li><li data-type='method'><a href="Slider.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Slider.html#contains">contains</a></li><li data-type='method'><a href="Slider.html#draw">draw</a></li><li data-type='method'><a href="Slider.html#getRating">getRating</a></li><li data-type='method'><a href="Slider.html#getRT">getRT</a></li><li data-type='method'><a href="Slider.html#hide">hide</a></li><li data-type='method'><a href="Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="Slider.html#recordRating">recordRating</a></li><li data-type='method'><a href="Slider.html#refresh">refresh</a></li><li data-type='method'><a href="Slider.html#release">release</a></li><li data-type='method'><a href="Slider.html#reset">reset</a></li><li data-type='method'><a href="Slider.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Slider.html#setDepth">setDepth</a></li><li data-type='method'><a href="Slider.html#setMarkerPos">setMarkerPos</a></li><li data-type='method'><a href="Slider.html#setOri">setOri</a></li><li data-type='method'><a href="Slider.html#setPos">setPos</a></li><li data-type='method'><a href="Slider.html#setRating">setRating</a></li><li data-type='method'><a href="Slider.html#setReadOnly">setReadOnly</a></li><li data-type='method'><a href="Slider.html#setSize">setSize</a></li></ul></li><li><a href="SpeechRecognition.html">SpeechRecognition</a><ul class='methods'><li data-type='method'><a href="SpeechRecognition.html#_onChange">_onChange</a></li><li data-type='method'><a href="SpeechRecognition.html#_prepareRecognition">_prepareRecognition</a></li><li data-type='method'><a href="SpeechRecognition.html#clearTranscripts">clearTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#getTranscripts">getTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#start">start</a></li><li data-type='method'><a href="SpeechRecognition.html#stop">stop</a></li></ul></li><li><a href="TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="TextBox.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextBox.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextBox.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextBox.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="TextBox.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextBox.html#clear">clear</a></li><li data-type='method'><a href="TextBox.html#getText">getText</a></li><li data-type='method'><a href="TextBox.html#reset">reset</a></li><li data-type='method'><a href="TextBox.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="TextBox.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="TextBox.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="TextBox.html#setColor">setColor</a></li><li data-type='method'><a href="TextBox.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="TextBox.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="TextBox.html#setFont">setFont</a></li><li data-type='method'><a href="TextBox.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="TextBox.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="TextBox.html#setSize">setSize</a></li><li data-type='method'><a href="TextBox.html#setText">setText</a></li></ul></li><li><a href="TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextStim.html#_getDefaultWrapWidth">_getDefaultWrapWidth</a></li><li data-type='method'><a href="TextStim.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="TextStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextStim.html#getBoundingBox">getBoundingBox</a></li><li data-type='method'><a href="TextStim.html#getTextMetrics">getTextMetrics</a></li><li data-type='method'><a href="TextStim.html#setColor">setColor</a></li></ul></li><li><a href="TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="TonePlayer.html#_initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TonePlayer.html#play">play</a></li><li data-type='method'><a href="TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TonePlayer.html#stop">stop</a></li></ul></li><li><a href="TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TrackPlayer.html#play">play</a></li><li data-type='method'><a href="TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="Transcript.html">Transcript</a></li><li><a href="Window.html">Window</a><ul class='methods'><li data-type='method'><a href="Window.html#_fullRefresh">_fullRefresh</a></li><li data-type='method'><a href="Window.html#_refresh">_refresh</a></li><li data-type='method'><a href="Window.html#_setupPixi">_setupPixi</a></li><li data-type='method'><a href="Window.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Window.html#_writeLogOnFlip">_writeLogOnFlip</a></li><li data-type='method'><a href="Window.html#addPixiObject">addPixiObject</a></li><li data-type='method'><a href="Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="Window.html#close">close</a></li><li data-type='method'><a href="Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="Window.html#removePixiObject">removePixiObject</a></li><li data-type='method'><a href="Window.html#render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="SoundPlayer.html#play">play</a></li><li data-type='method'><a href="SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="SoundPlayer.html#stop">stop</a></li></ul></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">TrialHandler</h1>
+    
 
     
 
@@ -28,28 +52,84 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>
-            <span class="ancestors"><a href="module-data.html">data</a>.</span>TrialHandler<span class="signature">(options)</span><span class="type-signature"></span></h2>
+        <h2>
+            <span class="ancestors"><a href="module-data.html">data</a>.</span>
         
-            <div class="class-description"><p>A Trial Handler handles the importing and sequencing of conditions.</p></div>
+        TrialHandler
+        </h2>
+        
+            <div class="class-description usertext"><p>A Trial Handler handles the importing and sequencing of conditions.</p></div>
         
     
 </header>
 
 <article>
-    <div class="container-overview">
     
+        <div class="container-overview">
         
+            
 
     
     <h2>Constructor</h2>
     
 
-    
     <h4 class="name" id="TrialHandler"><span class="type-signature"></span>new TrialHandler<span class="signature">(options)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line22">line 22</a>
+    </li></ul></dd>
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-todo">To Do:</dt>
+    <dd class="tag-todo">
+        <ul>
+            <li>extraInfo is not taken into account, we use the expInfo of the ExperimentHandler instead</li>
+        </ul>
+    </dd>
+    
+</dl>
+
+
+
+
 
 
 
@@ -102,7 +182,7 @@
 
             
 
-            <td class="description last">the handler options
+            <td class="description last"><p>the handler options</p>
                 <h6>Properties</h6>
                 
 
@@ -160,7 +240,7 @@
                 </td>
             
 
-            <td class="description last">the PsychoJS instance</td>
+            <td class="description last"><p>the PsychoJS instance</p></td>
         </tr>
 
     
@@ -197,12 +277,12 @@
             
                 <td class="default">
                 
-                    [undefined]
+                    <code>[undefined]</code>
                 
                 </td>
             
 
-            <td class="description last">if it is a string, we treat it as the name of a condition resource</td>
+            <td class="description last"><p>if it is a string, we treat it as the name of a condition resource</p></td>
         </tr>
 
     
@@ -237,7 +317,7 @@
                 </td>
             
 
-            <td class="description last">number of repetitions</td>
+            <td class="description last"><p>number of repetitions</p></td>
         </tr>
 
     
@@ -272,7 +352,7 @@
                 </td>
             
 
-            <td class="description last">the trial method</td>
+            <td class="description last"><p>the trial method</p></td>
         </tr>
 
     
@@ -307,7 +387,7 @@
                 </td>
             
 
-            <td class="description last">additional information to be stored alongside the trial data, e.g. session ID, participant ID, etc.</td>
+            <td class="description last"><p>additional information to be stored alongside the trial data, e.g. session ID, participant ID, etc.</p></td>
         </tr>
 
     
@@ -342,7 +422,7 @@
                 </td>
             
 
-            <td class="description last">seed for the random number generator</td>
+            <td class="description last"><p>seed for the random number generator</p></td>
         </tr>
 
     
@@ -376,12 +456,12 @@
             
                 <td class="default">
                 
-                    false
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">whether or not to log</td>
+            <td class="description last"><p>whether or not to log</p></td>
         </tr>
 
     
@@ -400,74 +480,22 @@
 
 
 
-<dl class="details">
 
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-    <dt class="tag-todo">To Do:</dt>
-    <dd class="tag-todo">
-        <ul>
-            <li>extraInfo is not taken into account, we use the expInfo of the ExperimentHandler instead</li>
-        </ul>
-    </dd>
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
 
     
         <h3 class="subsection-title">Extends</h3>
@@ -485,10 +513,10 @@
     
 
     
-
+    
     
 
-    
+     
 
     
 
@@ -502,23 +530,46 @@
 
 
 
-<div class="description">
-    TrialHandler method
-</div>
 
+<dl class="details">
 
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line719">line 719</a>
+    </li></ul></dd>
+    
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Symbol</span>
+    
 
+    
 
-        </li>
-    </ul>
+    
 
+    
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -564,7 +615,7 @@
 
             
 
-            <td class="description last">Conditions are presented in the order they are given.</td>
+            <td class="description last"><p>Conditions are presented in the order they are given.</p></td>
         </tr>
 
     
@@ -587,7 +638,7 @@
 
             
 
-            <td class="description last">Conditions are shuffled within each repeat.</td>
+            <td class="description last"><p>Conditions are shuffled within each repeat.</p></td>
         </tr>
 
     
@@ -610,7 +661,7 @@
 
             
 
-            <td class="description last">Conditions are fully randomised across all repeats.</td>
+            <td class="description last"><p>Conditions are fully randomised across all repeats.</p></td>
         </tr>
 
     
@@ -633,7 +684,7 @@
 
             
 
-            <td class="description last">Same as above, but named to reflect PsychoPy boileplate.</td>
+            <td class="description last"><p>Same as above, but named to reflect PsychoPy boileplate.</p></td>
         </tr>
 
     
@@ -643,36 +694,43 @@
 
 
 
+
+
+<div class="description usertext">
+    <p>TrialHandler method</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="experimentHandler"><span class="type-signature"></span>experimentHandler<span class="type-signature"></span></h4>
+
+
+
+
+
 <dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line743">line 743</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line27">line 27</a>
     </li></ul></dd>
     
 
@@ -681,7 +739,104 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Getter for experimentHandler.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="experimentHandler"><span class="type-signature"></span>experimentHandler<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line35">line 35</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for experimentHandler.</p>
+</div>
+
+
 
 
 
@@ -695,46 +850,13 @@
 
 
 
-<div class="description">
-    Getter for the finished attribute.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line345">line 345</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line331">line 331</a>
     </li></ul></dd>
     
 
@@ -743,7 +865,41 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Getter for the finished attribute.</p>
+</div>
+
+
 
 
 
@@ -757,46 +913,13 @@
 
 
 
-<div class="description">
-    Setter for the finished attribute.
-</div>
-
-
-
-
-
-
 
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line355">line 355</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line341">line 341</a>
     </li></ul></dd>
     
 
@@ -805,7 +928,41 @@
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for the finished attribute.</p>
+</div>
+
+
 
 
 
@@ -823,17 +980,62 @@
 
     
 
-    
     <h4 class="name" id=".fromSnapshot"><span class="type-signature">(static) </span>fromSnapshot<span class="signature">(snapshot)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Set the internal state of the snapshot's trial handler from the snapshot.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line290">line 290</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Set the internal state of the snapshot's trial handler from the snapshot.</p>
 </div>
+
+
 
 
 
@@ -884,59 +1086,13 @@
 
             
 
-            <td class="description last">the snapshot from which to update the current internal state of the
-	snapshot's trial handler</td>
+            <td class="description last"><p>the snapshot from which to update the current internal state of the
+snapshot's trial handler</p></td>
         </tr>
 
     
     </tbody>
 </table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line304">line 304</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
 
 
 
@@ -961,20 +1117,61 @@
 
     
 
-    
     <h4 class="name" id=".importConditions"><span class="type-signature">(static) </span>importConditions<span class="signature">(serverManager, resourceName, selection<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Import a list of conditions from a .xls, .xlsx, .odp, or .csv resource.
 
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line497">line 497</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Import a list of conditions from a .xls, .xlsx, .odp, or .csv resource.</p>
 <p>The output is suitable as an input to 'TrialHandler', 'trialTypes' or
 'MultiStairHandler' as a 'conditions' list.</p>
-
 <p>The resource should contain one row per type of trial needed and one column
 for each parameter that defines the trial type. The first row should give
 parameter names, which should:
@@ -983,10 +1180,7 @@ parameter names, which should:
 <li>begin with a letter (upper or lower case)</li>
 <li>contain no spaces or other punctuation (underscores are permitted)</li>
 </ul></p>
-
 <p>Note that we only consider the first worksheet for .xls, .xlsx and .odp resource.</p>
-
-
 <p> 'selection' is used to select a subset of condition indices to be used
 It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 	5
@@ -996,6 +1190,8 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 	'5:'
 	'-5:-2, 9, 11:5:22'
 </div>
+
+
 
 
 
@@ -1040,7 +1236,7 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
             <td class="type">
             
                 
-<span class="param-type"><a href="module-core.ServerManager.html">module:core.ServerManager</a></span>
+<span class="param-type">module:core.ServerManager</span>
 
 
             
@@ -1062,7 +1258,7 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
                 </td>
             
 
-            <td class="description last">the server manager</td>
+            <td class="description last"><p>the server manager</p></td>
         </tr>
 
     
@@ -1097,7 +1293,7 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
                 </td>
             
 
-            <td class="description last">the name of the resource containing the list of conditions, which must have been registered with the server manager.</td>
+            <td class="description last"><p>the name of the resource containing the list of conditions, which must have been registered with the server manager.</p></td>
         </tr>
 
     
@@ -1131,62 +1327,18 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
             
                 <td class="default">
                 
-                    null
+                    <code>null</code>
                 
                 </td>
             
 
-            <td class="description last">the selection</td>
+            <td class="description last"><p>the selection</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line519">line 519</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1206,13 +1358,13 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
 <dl>
     <dt>
-        <div class="param-desc">
-        Throws an exception if importing the conditions failed.
+        <div class="param-desc usertext">
+        <p>Throws an exception if importing the conditions failed.</p>
         </div>
     </dt>
     <dd></dd>
     <dt>
-        <dl>
+        <dl class="param-type">
             <dt>
                 Type
             </dt>
@@ -1235,12 +1387,12 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
         
 <div class="param-desc">
-    the parsed conditions as an array of 'object as map'
+    <p>the parsed conditions as an array of 'object as map'</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1256,23 +1408,86 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
 
 
-
-
         
             
 
     
 
-    
-    <h4 class="name" id="_prepareTrialList"><span class="type-signature">(protected) </span>_prepareTrialList<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
-    
+    <h4 class="name" id="_prepareSequence"><span class="type-signature">(protected) </span>_prepareSequence<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
 
 
-<div class="description">
-    Prepare the trial list.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line661">line 661</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Prepare the sequence of trials.</p>
+<p>The returned sequence is a matrix (an array of arrays) of trial indices
+with nStim columns and nReps rows. Note that this is the transpose of the
+matrix return by PsychoPY.
+<p>Example: with 3 trial and 5 repetitions, we get:</p>
+<ul>
+<li>sequential:
+[[0 1 2]
+[0 1 2]
+[0 1 2]
+[0 1 2]
+[0 1 2]]</li>
+</ul>
+<p>These 3*5 = 15 trials will be returned by the TrialHandler generator</p>
+<ul>
+<li>with method = 'sequential' in the order:
+0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2</li>
+<li>with method = 'random' in the order (amongst others):
+2, 1, 0, 0, 2, 1, 0, 1, 2, 0, 1, 2, 1, 2, 0</li>
+<li>with method = 'fullRandom' in the order (amongst others):
+2, 0, 0, 1, 0, 2, 1, 2, 0, 1, 1, 1, 2, 0, 2</li>
+</ul>
+</p>
 </div>
 
 
@@ -1287,36 +1502,39 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_prepareTrialList"><span class="type-signature">(protected) </span>_prepareTrialList<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
 <dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line624">line 624</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line601">line 601</a>
     </li></ul></dd>
     
 
@@ -1325,7 +1543,49 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
     
 
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 </dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Prepare the trial list.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1346,7 +1606,7 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
         
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1362,24 +1622,67 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="addData"><span class="type-signature"></span>addData<span class="signature">(key, value)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Add a key/value pair to data about the current trial held by the experiment handler
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line456">line 456</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Add a key/value pair to data about the current trial held by the experiment handler</p>
 </div>
+
+
 
 
 
@@ -1430,7 +1733,7 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
             
 
-            <td class="description last">the key</td>
+            <td class="description last"><p>the key</p></td>
         </tr>
 
     
@@ -1453,58 +1756,12 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
             
 
-            <td class="description last">the value</td>
+            <td class="description last"><p>the value</p></td>
         </tr>
 
     
     </tbody>
 </table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line476">line 476</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
 
 
 
@@ -1529,17 +1786,62 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
     
 
-    
     <h4 class="name" id="forEach"><span class="type-signature"></span>forEach<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Execute the callback for each trial in the sequence.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line178">line 178</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Execute the callback for each trial in the sequence.</p>
 </div>
+
+
 
 
 
@@ -1597,52 +1899,6 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line189">line 189</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
 
 
 
@@ -1661,17 +1917,59 @@ It can be a single integer, an array of indices, or a string to be parsed, e.g.:
 
     
 
-    
     <h4 class="name" id="getAttributes"><span class="type-signature"></span>getAttributes<span class="signature">()</span><span class="type-signature"> &rarr; {Array.string}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the attributes of the trials.
 
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line379">line 379</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the attributes of the trials.</p>
 <p>Note: we assume that all trials in the trialList share the same attributes
 and consequently consider only the attributes of the first trial.</p>
 </div>
@@ -1688,48 +1986,6 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line395">line 395</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
 
 
 
@@ -1746,12 +2002,12 @@ and consequently consider only the attributes of the first trial.</p>
 
         
 <div class="param-desc">
-    the attributes
+    <p>the attributes</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1767,23 +2023,64 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getCurrentTrial"><span class="type-signature"></span>getCurrentTrial<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the current trial.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line400">line 400</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the current trial.</p>
 </div>
 
 
@@ -1795,48 +2092,6 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line417">line 417</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -1856,12 +2111,12 @@ and consequently consider only the attributes of the first trial.</p>
 
         
 <div class="param-desc">
-    the current trial
+    <p>the current trial</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -1877,23 +2132,64 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getEarlierTrial"><span class="type-signature"></span>getEarlierTrial<span class="signature">(n<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object|undefined}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the nth previous trial.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line445">line 445</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the nth previous trial.</p>
 <p> Note: this is useful for comparisons in n-back tasks.</p>
 </div>
 
@@ -1905,6 +2201,8 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
+
+
     <h5>Parameters:</h5>
     
 
@@ -1961,62 +2259,18 @@ and consequently consider only the attributes of the first trial.</p>
             
                 <td class="default">
                 
-                    -1
+                    <code>-1</code>
                 
                 </td>
             
 
-            <td class="description last">increment</td>
+            <td class="description last"><p>increment</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line464">line 464</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -2036,12 +2290,12 @@ and consequently consider only the attributes of the first trial.</p>
 
         
 <div class="param-desc">
-    the past trial or undefined if attempting to go prior to the first trial.
+    <p>the past trial or undefined if attempting to go prior to the first trial.</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -2060,24 +2314,67 @@ and consequently consider only the attributes of the first trial.</p>
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getFutureTrial"><span class="type-signature"></span>getFutureTrial<span class="signature">(n<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object|undefined}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the nth future or past trial, without advancing through the trial list.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line428">line 428</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the nth future or past trial, without advancing through the trial list.</p>
 </div>
+
+
 
 
 
@@ -2143,62 +2440,18 @@ and consequently consider only the attributes of the first trial.</p>
             
                 <td class="default">
                 
-                    1
+                    <code>1</code>
                 
                 </td>
             
 
-            <td class="description last">increment</td>
+            <td class="description last"><p>increment</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line446">line 446</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -2218,13 +2471,13 @@ and consequently consider only the attributes of the first trial.</p>
 
         
 <div class="param-desc">
-    the future trial (if n is positive) or past trial (if n is negative)
-or undefined if attempting to go beyond the last trial.
+    <p>the future trial (if n is positive) or past trial (if n is negative)
+or undefined if attempting to go beyond the last trial.</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -2243,25 +2496,65 @@ or undefined if attempting to go beyond the last trial.
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getSnapshot"><span class="type-signature"></span>getSnapshot<span class="signature">()</span><span class="type-signature"> &rarr; {Snapshot}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
-number of trial remaining).
 
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line217">line 217</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get a snapshot of the current internal state of the trial handler (e.g. current trial number,
+number of trial remaining).</p>
 <p>This is typically used in the LoopBegin function, in order to capture the current state of a TrialHandler</p>
 </div>
 
@@ -2277,48 +2570,6 @@ number of trial remaining).
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line229">line 229</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
 
 
 
@@ -2335,12 +2586,14 @@ number of trial remaining).
 
         
 <div class="param-desc">
-    - a snapshot of the current internal state.
+    <ul>
+<li>a snapshot of the current internal state.</li>
+</ul>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -2356,24 +2609,67 @@ number of trial remaining).
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getTrial"><span class="type-signature"></span>getTrial<span class="signature">(index)</span><span class="type-signature"> &rarr; {Object|undefined}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the nth trial.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line411">line 411</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the nth trial.</p>
 </div>
+
+
 
 
 
@@ -2427,62 +2723,18 @@ number of trial remaining).
             
                 <td class="default">
                 
-                    0
+                    <code>0</code>
                 
                 </td>
             
 
-            <td class="description last">the trial index</td>
+            <td class="description last"><p>the trial index</p></td>
         </tr>
 
     
     </tbody>
 </table>
 
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line428">line 428</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -2502,12 +2754,12 @@ number of trial remaining).
 
         
 <div class="param-desc">
-    the requested trial or undefined if attempting to go beyond the last trial.
+    <p>the requested trial or undefined if attempting to go beyond the last trial.</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -2526,23 +2778,64 @@ number of trial remaining).
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="getTrialIndex"><span class="type-signature"></span>getTrialIndex<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Get the trial index.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line356">line 356</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the trial index.</p>
 </div>
 
 
@@ -2554,48 +2847,6 @@ number of trial remaining).
 
 
 
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line371">line 371</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
 
 
 
@@ -2615,12 +2866,12 @@ number of trial remaining).
 
         
 <div class="param-desc">
-    the current trial index
+    <p>the current trial index</p>
 </div>
 
 
 
-<dl>
+<dl class="param-type">
     <dt>
         Type
     </dt>
@@ -2636,33 +2887,14 @@ number of trial remaining).
 
 
 
-
-
         
             
 
     
 
-    
     <h4 class="name" id="next"><span class="type-signature"></span>next<span class="signature">()</span><span class="type-signature"></span></h4>
-    
 
     
-
-
-
-<div class="description">
-    Helps go through each trial in the sequence one by one, mirrors PsychoPy.
-</div>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2670,34 +2902,34 @@ number of trial remaining).
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line123">line 123</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line112">line 112</a>
     </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     
@@ -2711,6 +2943,22 @@ number of trial remaining).
 
 
 
+<div class="description usertext">
+    <p>Helps go through each trial in the sequence one by one, mirrors PsychoPy.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2731,17 +2979,62 @@ number of trial remaining).
 
     
 
-    
     <h4 class="name" id="setSeed"><span class="type-signature"></span>setSeed<span class="signature">(seed, log)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Setter for the seed attribute.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line270">line 270</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setter for the seed attribute.</p>
 </div>
+
+
 
 
 
@@ -2792,7 +3085,7 @@ number of trial remaining).
 
             
 
-            <td class="description last">the seed value</td>
+            <td class="description last"><p>the seed value</p></td>
         </tr>
 
     
@@ -2815,58 +3108,12 @@ number of trial remaining).
 
             
 
-            <td class="description last">whether or not to log the change of seed</td>
+            <td class="description last"><p>whether or not to log the change of seed</p></td>
         </tr>
 
     
     </tbody>
 </table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line282">line 282</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
 
 
 
@@ -2891,17 +3138,62 @@ number of trial remaining).
 
     
 
-    
     <h4 class="name" id="setTrialIndex"><span class="type-signature"></span>setTrialIndex<span class="signature">(index)</span><span class="type-signature"></span></h4>
-    
 
     
 
 
 
-<div class="description">
-    Set the trial index.
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line366">line 366</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Set the trial index.</p>
 </div>
+
+
 
 
 
@@ -2952,58 +3244,12 @@ number of trial remaining).
 
             
 
-            <td class="description last">the new trial index</td>
+            <td class="description last"><p>the new trial index</p></td>
         </tr>
 
     
     </tbody>
 </table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line381">line 381</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
 
 
 
@@ -3028,28 +3274,9 @@ number of trial remaining).
 
     
 
-    
     <h4 class="name" id="Symbol.iterator"><span class="type-signature"></span>Symbol.iterator<span class="signature">()</span><span class="type-signature"></span></h4>
-    
 
     
-
-
-
-<div class="description">
-    Iterator over the trial sequence.
-
-<p>This makes it possible to iterate over all trials.</p>
-</div>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -3057,34 +3284,34 @@ number of trial remaining).
 <dl class="details">
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line139">line 139</a>
+        <a href="data_TrialHandler.js.html">data/TrialHandler.js</a>, <a href="data_TrialHandler.js.html#line128">line 128</a>
     </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
     
 
     
@@ -3098,11 +3325,10 @@ number of trial remaining).
 
 
 
-
-
-
-
-
+<div class="description usertext">
+    <p>Iterator over the trial sequence.</p>
+<p>This makes it possible to iterate over all trials.</p>
+</div>
 
 
 
@@ -3119,6 +3345,24 @@ for (const thisTrial of handler) { console.log(thisTrial); }</code></pre>
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
     
 
@@ -3132,19 +3376,23 @@ for (const thisTrial of handler) { console.log(thisTrial); }</code></pre>
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="FaceDetector_FaceDetector.html">FaceDetector</a></li><li><a href="module.data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module.data.QuestHandler.html">QuestHandler</a></li><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.MultiStairHandler.html">MultiStairHandler</a></li><li><a href="module-data.QuestHandler.html">QuestHandler</a></li><li><a href="module-data.Shelf.html">Shelf</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-hardware.Camera.html">Camera</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-sound.Transcriber.html">Transcriber</a></li><li><a href="module-sound.Transcript.html">Transcript</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.FaceDetector.html">FaceDetector</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.GratingStim.html">GratingStim</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul><h3>Global</h3><ul><li><a href="global.html#pad">pad</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Thu Jun 16 2022 12:47:14 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 01 2022 09:56:49 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

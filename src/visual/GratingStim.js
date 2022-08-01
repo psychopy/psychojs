@@ -1,8 +1,8 @@
 /**
  * Grating Stimulus.
  *
- * @author Alain Pitiot, Nikita Agafonov
- * @version 2021.2.0
+ * @author Nikita Agafonov
+ * @version 2021.2.3
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -30,38 +30,15 @@ import raisedCosShader from "./shaders/raisedCosShader.frag";
 /**
  * Grating Stimulus.
  *
- * @name module:visual.GratingStim
- * @class
  * @extends VisualStim
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {String | HTMLImageElement} [options.tex="sin"] - the name of the predefined grating texture or image resource or the HTMLImageElement corresponding to the texture
- * @param {String | HTMLImageElement} [options.mask] - the name of the mask resource or HTMLImageElement corresponding to the mask
- * @param {String} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
- * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
- * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
- * @param {number} [options.opacity= 1.0] - Set the opacity of the stimulus. Determines how visible the stimulus is relative to background.
- * @param {number} [options.contrast= 1.0] - Set the contrast of the stimulus, i.e. scales how far the stimulus deviates from the middle grey. Ranges [-1, 1].
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {boolean} [options.interpolate= false] - Whether to interpolate (linearly) the texture in the stimulus. Currently supports only image based gratings.
- * @param {String} [options.blendmode= "avg"] - blend mode of the stimulus, determines how the stimulus is blended with the background. Supported values: "avg", "add", "mul", "screen".
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
-
 export class GratingStim extends VisualStim
 {
 	/**
 	 * An object that keeps shaders source code and default uniform values for them.
 	 * Shader source code is later used for construction of shader programs to create respective visual stimuli.
-	 * @name module:visual.GratingStim.#SHADERS
-	 * @type {Object}
 	 *
+	 * @type {Object}
 	 * @property {Object} imageShader - Renders provided image with applied effects (coloring, phase, frequency).
 	 * @property {String} imageShader.shader - shader source code for the image based grating stimuli.
 	 * @property {Object} imageShader.uniforms - default uniforms for the image based shader.
@@ -268,7 +245,7 @@ export class GratingStim extends VisualStim
 
 	/**
 	 * Default size of the Grating Stimuli in pixels.
-	 * @name module:visual.GratingStim.#DEFAULT_STIM_SIZE_PX
+	 *
 	 * @type {Array}
 	 * @default [256, 256]
 	 */
@@ -281,6 +258,28 @@ export class GratingStim extends VisualStim
 		screen: PIXI.BLEND_MODES.SCREEN
 	};
 
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {String | HTMLImageElement} [options.tex="sin"] - the name of the predefined grating texture or image resource or the HTMLImageElement corresponding to the texture
+	 * @param {String | HTMLImageElement} [options.mask] - the name of the mask resource or HTMLImageElement corresponding to the mask
+	 * @param {String} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
+	 * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
+	 * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
+	 * @param {number} [options.opacity= 1.0] - Set the opacity of the stimulus. Determines how visible the stimulus is relative to background.
+	 * @param {number} [options.contrast= 1.0] - Set the contrast of the stimulus, i.e. scales how far the stimulus deviates from the middle grey. Ranges [-1, 1].
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {boolean} [options.interpolate= false] - Whether to interpolate (linearly) the texture in the stimulus. Currently supports only image based gratings.
+	 * @param {String} [options.blendmode= "avg"] - blend mode of the stimulus, determines how the stimulus is blended with the background. Supported values: "avg", "add", "mul", "screen".
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({
 		name,
 		tex = "sin",
@@ -338,8 +337,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Setter for the tex attribute.
 	 *
-	 * @name module:visual.GratingStim#setTex
-	 * @public
 	 * @param {HTMLImageElement | string} tex - the name of built in shader function or name of the image resource or HTMLImageElement corresponding to the image
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -402,8 +399,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.GratingStim#setMask
-	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -458,8 +453,7 @@ export class GratingStim extends VisualStim
 	 * Get the size of the display image, which is either that of the GratingStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.GratingStim#_getDisplaySize
-	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()
@@ -482,8 +476,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.GratingStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -506,8 +498,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Generate PIXI.Mesh object based on provided shader function name and uniforms.
 	 * 
-	 * @name module:visual.GratingStim#_getPixiMeshFromPredefinedShaders
-	 * @function
 	 * @protected
 	 * @param {String} shaderName - name of the shader. Must be one of the SHADERS
 	 * @param {Object} uniforms - a set of uniforms to supply to the shader. Mixed together with default uniform values.
@@ -541,8 +531,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Set phase value for the function.
 	 * 
-	 * @name module:visual.GratingStim#setPhase
-	 * @public
 	 * @param {number} phase - phase value
 	 * @param {boolean} [log= false] - whether of not to log
 	 */ 
@@ -556,8 +544,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Set color space value for the grating stimulus.
 	 * 
-	 * @name module:visual.GratingStim#setColorSpace
-	 * @public
 	 * @param {String} colorSpaceVal - color space value
 	 * @param {boolean} [log= false] - whether of not to log
 	 */ 
@@ -575,8 +561,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Set foreground color value for the grating stimulus.
 	 * 
-	 * @name module:visual.GratingStim#setColor
-	 * @public
 	 * @param {Color} colorVal - color value, can be String like "red" or "#ff0000" or Number like 0xff0000.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */ 
@@ -591,8 +575,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Determines how visible the stimulus is relative to background.
 	 * 
-	 * @name module:visual.GratingStim#setOpacity
-	 * @public
 	 * @param {number} [opacity=1] opacity - The value should be a single float ranging 1.0 (opaque) to 0.0 (transparent).
 	 * @param {boolean} [log= false] - whether of not to log
 	 */ 
@@ -606,8 +588,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Set spatial frequency value for the function.
 	 * 
-	 * @name module:visual.GratingStim#setSF
-	 * @public
 	 * @param {number} sf - spatial frequency value
 	 * @param {boolean} [log=false] - whether or not to log
 	 */ 
@@ -621,8 +601,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Set blend mode of the grating stimulus.
 	 * 
-	 * @name module:visual.GratingStim#setBlendmode
-	 * @public
 	 * @param {String} blendMode - blend mode, can be one of the following: ["avg", "add", "mul", "screen"].
 	 * @param {boolean} [log=false] - whether or not to log
 	 */ 
@@ -644,8 +622,6 @@ export class GratingStim extends VisualStim
 	/**
 	 * Whether to interpolate (linearly) the texture in the stimulus.
 	 * 
-	 * @name module:visual.GratingStim#setInterpolate
-	 * @public
 	 * @param {boolean} interpolate - interpolate or not.
 	 * @param {boolean} [log=false] - whether or not to log
 	 */ 
@@ -660,8 +636,7 @@ export class GratingStim extends VisualStim
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.GratingStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -695,11 +670,15 @@ export class GratingStim extends VisualStim
 
 			if (this._tex instanceof HTMLImageElement)
 			{
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple GratingStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all GratingStims who happen to share that BaseTexture.
 				shaderName = "imageShader";
-				let shaderTex = PIXI.Texture.from(this._tex, {
+				let shaderTex = new PIXI.Texture(new PIXI.BaseTexture(this._tex, {
 					wrapMode: PIXI.WRAP_MODES.REPEAT,
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
-				});
+				}));
 				shaderUniforms = {
 					uTex: shaderTex,
 					uFreq: this._SF,
@@ -725,7 +704,8 @@ export class GratingStim extends VisualStim
 			{
 				if (this._mask instanceof HTMLImageElement)
 				{
-					this._pixi.mask = PIXI.Sprite.from(this._mask);
+					// Building new PIXI.BaseTexture each time we create a mask. See notes on shader texture creation above.
+					this._pixi.mask = PIXI.Sprite.from(new PIXI.Texture(new PIXI.BaseTexture(this._mask)));
 					this._pixi.mask.width = this._size_px[0];
 					this._pixi.mask.height = this._size_px[1];
 					this._pixi.addChild(this._pixi.mask);

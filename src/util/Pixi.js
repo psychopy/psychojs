@@ -2,8 +2,8 @@
  * PIXI utilities.
  *
  * @authors Alain Pitiot, Sotiri Bakagiannis, Thomas Pronk
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -15,7 +15,6 @@ import { to_px } from "./Util.js";
  *
  * @name module:util.to_pixiPoint
  * @function
- * @public
  * @param {number[]} pos - the input position
  * @param {string} posUnit - the position units
  * @param {Window} win - the associated Window

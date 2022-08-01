@@ -2,7 +2,7 @@
  * Manager handling the detecting of faces in video streams.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
+ * @version 2022.2.3
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -19,31 +19,29 @@ import * as PIXI from "pixi.js-legacy";
 /**
  * <p>This manager handles the detecting of faces in video streams. FaceDetector relies on the
  * [Face-API library]{@link https://github.com/justadudewhohacks/face-api.js} developed by
- * [Vincent Muehler]{@link https://github.com/justadudewhohacks}</p>
+ * [Vincent Muehler]{@link https://github.com/justadudewhohacks}.</p>
  *
- * @name module:visual.FaceDetector
- * @class
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from the detector
- * @param @param {module:core.Window} options.win - the associated Window
- * @param @param {string | HTMLVideoElement | module:visual.Camera} input - the name of a
- * movie resource or of a HTMLVideoElement or of a Camera component
- * @param {string} [options.faceApiUrl= 'face-api.js'] - the Url of the face-api library
- * @param {string} [options.modelDir= 'models'] - the directory where to find the face detection models
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @extends VisualStim
  */
 export class FaceDetector extends VisualStim
 {
 	/**
-	 * @constructor
-	 * @public
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from the detector
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string | HTMLVideoElement | module:visual.Camera} options.input - the name of a
+	 * 	movie resource or of a HTMLVideoElement or of a Camera component
+	 * @param {string} [options.faceApiUrl= 'face-api.js'] - the Url of the face-api library
+	 * @param {string} [options.modelDir= 'models'] - the directory where to find the face detection models
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
 	constructor({name, win, input, modelDir, faceApiUrl, units, ori, opacity, pos, size, autoDraw, autoLog} = {})
 	{
@@ -68,9 +66,6 @@ export class FaceDetector extends VisualStim
 	/**
 	 * Query whether or not the face detector is ready to detect.
 	 *
-	 * @name module:visual.FaceDetector#isReady
-	 * @function
-	 * @public
 	 * @returns {boolean} whether or not the face detector is ready to detect
 	 */
 	isReady()
@@ -78,13 +73,9 @@ export class FaceDetector extends VisualStim
 		return this._modelsLoaded;
 	}
 
-
 	/**
 	 * Setter for the video attribute.
 	 *
-	 * @name module:visual.FaceDetector#setCamera
-	 * @function
-	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} input - the name of a
 	 * movie resource or a HTMLVideoElement or a Camera component
 	 * @param {boolean} [log= false] - whether of not to log
@@ -156,9 +147,6 @@ export class FaceDetector extends VisualStim
 	/**
 	 * Start detecting faces.
 	 *
-	 * @name module:visual.FaceDetector#start
-	 * @function
-	 * @public
 	 * @param {number} period - the detection period, in ms (e.g. 100 ms for 10Hz)
 	 * @param detectionCallback - the callback triggered when detection results are available
 	 * @param {boolean} [log= false] - whether of not to log
@@ -191,13 +179,9 @@ export class FaceDetector extends VisualStim
 			period);
 	}
 
-
 	/**
 	 * Stop detecting faces.
 	 *
-	 * @name module:visual.FaceDetector#stop
-	 * @function
-	 * @public
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	stop(log = false)
@@ -211,12 +195,9 @@ export class FaceDetector extends VisualStim
 		}
 	}
 
-
 	/**
 	 * Init the Face-API library.
 	 *
-	 * @name module:visual.FaceDetector#_initFaceApi
-	 * @function
 	 * @protected
 	 */
 	async _initFaceApi()
@@ -241,12 +222,9 @@ export class FaceDetector extends VisualStim
 		this._modelsLoaded = true;
 	}
 
-
 	/**
 	 * Update the visual representation of the detected faces, if necessary.
 	 *
-	 * @name module:visual.FaceDetector#_updateIfNeeded
-	 * @function
 	 * @protected
 	 */
 	_updateIfNeeded()
@@ -305,12 +283,9 @@ export class FaceDetector extends VisualStim
 		this._pixi.alpha = this._opacity;
 	}
 
-
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.FaceDetector#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
