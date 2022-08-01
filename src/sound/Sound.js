@@ -3,8 +3,8 @@
  * Sound stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -35,23 +35,24 @@ import { TrackPlayer } from "./TrackPlayer.js";
  * track.setVolume(1.0);
  * track.play(2);
  *
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number|string} [options.value= 'C'] - the sound value (see above for a full description)
- * @param {number} [options.octave= 4] - the octave corresponding to the tone (if applicable)
- * @param {number} [options.secs= 0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
- * @param {number} [options.startTime= 0] - start of playback for tracks (in seconds)
- * @param {number} [options.stopTime= -1] - end of playback for tracks (in seconds)
- * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
- * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
- * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played once. If loops == -1, the track or tone will repeat indefinitely until stopped.
- * @param {boolean} [options.autoLog= true] whether or not to log
  */
 export class Sound extends PsychObject
 {
+	/**
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number|string} [options.value= 'C'] - the sound value (see above for a full description)
+	 * @param {number} [options.octave= 4] - the octave corresponding to the tone (if applicable)
+	 * @param {number} [options.secs= 0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
+	 * @param {number} [options.startTime= 0] - start of playback for tracks (in seconds)
+	 * @param {number} [options.stopTime= -1] - end of playback for tracks (in seconds)
+	 * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
+	 * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
+	 * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played once. If loops == -1, the track or tone will repeat indefinitely until stopped.
+	 * @param {boolean} [options.autoLog= true] whether or not to log
+	 */
 	constructor({
 		name,
 		win,
@@ -95,7 +96,6 @@ export class Sound extends PsychObject
 	 * <p> Note: Sounds are played independently from the stimuli of the experiments, i.e. the experiment will not stop until the sound is finished playing.
 	 * Repeat calls to play may results in the sounds being played on top of each other.</p>
 	 *
-	 * @public
 	 * @param {number} loops how many times to repeat the sound after it plays once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 * @param {boolean} [log= true] whether or not to log
 	 */
@@ -108,7 +108,6 @@ export class Sound extends PsychObject
 	/**
 	 * Stop playing the sound immediately.
 	 *
-	 * @public
 	 * @param {Object} options
 	 * @param {boolean} [options.log= true] - whether or not to log
 	 */
@@ -123,7 +122,6 @@ export class Sound extends PsychObject
 	/**
 	 * Get the duration of the sound, in seconds.
 	 *
-	 * @public
 	 * @return {number} the duration of the sound, in seconds
 	 */
 	getDuration()
@@ -134,7 +132,6 @@ export class Sound extends PsychObject
 	/**
 	 * Set the playing volume of the sound.
 	 *
-	 * @public
 	 * @param {number} volume - the volume (values should be between 0 and 1)
 	 * @param {boolean} [mute= false] - whether or not to mute the sound
 	 * @param {boolean} [log= true] - whether of not to log
@@ -152,7 +149,6 @@ export class Sound extends PsychObject
 	/**
 	 * Set the sound value on demand past initialisation.
 	 *
-	 * @public
 	 * @param {object} sound - a sound instance to replace the current one
 	 * @param {boolean} [log= true] - whether or not to log
 	 */
@@ -181,7 +177,6 @@ export class Sound extends PsychObject
 	/**
 	 * Set the number of loops.
 	 *
-	 * @public
 	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 * @param {boolean} [log=true] - whether of not to log
 	 */
@@ -198,7 +193,6 @@ export class Sound extends PsychObject
 	/**
 	 * Set the duration (in seconds)
 	 *
-	 * @public
 	 * @param {number} [secs=0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
 	 * @param {boolean} [log=true] - whether or not to log
 	 */

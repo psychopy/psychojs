@@ -2,8 +2,8 @@
  * Image Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -18,34 +18,35 @@ import {Camera} from "../hardware";
 /**
  * Image Stimulus.
  *
- * @name module:visual.ImageStim
- * @class
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
- * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.anchor = "center"] - sets the origin point of the stim
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= 'white'] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {number} [options.texRes= 128] - the resolution of the text
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
+	 * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {Color} [options.color= 'white'] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {number} [options.texRes= 128] - the resolution of the text
+	 * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
 		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
@@ -106,8 +107,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the image attribute.
 	 *
-	 * @name module:visual.ImageStim#setImage
-	 * @public
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -176,8 +175,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.ImageStim#setMask
-	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -226,8 +223,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Whether to interpolate (linearly) the texture in the stimulus.
 	 *
-	 * @name module:visual.ImageStim#setInterpolate
-	 * @public
 	 * @param {boolean} interpolate - interpolate or not.
 	 * @param {boolean} [log=false] - whether or not to log
 	 */
@@ -242,8 +237,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -266,8 +259,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.ImageStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -375,8 +367,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
-	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()

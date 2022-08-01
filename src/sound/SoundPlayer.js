@@ -2,8 +2,8 @@
  * Sound player interface
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -12,13 +12,15 @@ import { PsychObject } from "../util/PsychObject.js";
 /**
  * <p>SoundPlayer is an interface for the sound players, who are responsible for actually playing the sounds, i.e. the tracks or the tones.</p>
  *
- * @name module:sound.SoundPlayer
  * @interface
  * @extends PsychObject
- * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
  */
 export class SoundPlayer extends PsychObject
 {
+	/**
+	 * @memberOf module:sound
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 */
 	constructor(psychoJS)
 	{
 		super(psychoJS);
@@ -27,10 +29,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
-	 * @name module:sound.SoundPlayer.accept
-	 * @function
-	 * @static
-	 * @public
 	 * @abstract
 	 * @param {module:sound.Sound} - the sound
 	 * @return {Object|undefined} an instance of the SoundPlayer that can play the sound, or undefined if none could be found
@@ -47,9 +45,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Start playing the sound.
 	 *
-	 * @name module:sound.SoundPlayer#play
-	 * @function
-	 * @public
 	 * @abstract
 	 * @param {number} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 */
@@ -65,9 +60,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Stop playing the sound immediately.
 	 *
-	 * @name module:sound.SoundPlayer#stop
-	 * @function
-	 * @public
 	 * @abstract
 	 */
 	stop()
@@ -82,9 +74,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Get the duration of the sound, in seconds.
 	 *
-	 * @name module:sound.SoundPlayer#getDuration
-	 * @function
-	 * @public
 	 * @abstract
 	 */
 	getDuration()
@@ -99,9 +88,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Set the duration of the sound, in seconds.
 	 *
-	 * @name module:sound.SoundPlayer#setDuration
-	 * @function
-	 * @public
 	 * @abstract
 	 */
 	setDuration(duration_s)
@@ -116,9 +102,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Set the number of loops.
 	 *
-	 * @name module:sound.SoundPlayer#setLoops
-	 * @function
-	 * @public
 	 * @abstract
 	 * @param {number} loops - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 */
@@ -134,9 +117,6 @@ export class SoundPlayer extends PsychObject
 	/**
 	 * Set the volume of the tone.
 	 *
-	 * @name module:sound.SoundPlayer#setVolume
-	 * @function
-	 * @public
 	 * @abstract
 	 * @param {Integer} volume - the volume of the tone
 	 * @param {boolean} [mute= false] - whether or not to mute the tone

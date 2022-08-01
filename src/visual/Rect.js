@@ -2,8 +2,8 @@
  * Rectangular Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -13,31 +13,32 @@ import { ShapeStim } from "./ShapeStim.js";
 /**
  * <p>Rectangular visual stimulus.</p>
  *
- * @name module:visual.Rect
- * @class
  * @extends ShapeStim
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number} [options.lineWidth= 1.5] - the line width
- * @param {Color} [options.lineColor= 'white'] the line color
- * @param {Color} [options.fillColor= undefined] - the fill color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.width= 0.5] - the width of the rectangle
- * @param {number} [options.height= 0.5] - the height of the rectangle
- * @param {Array.<number>} [options.pos= [0, 0]] - the position
- * @param {string} [options.anchor = "center"] - sets the origin point of the stim
- * @param {number} [options.size= 1.0] - the size
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {string} [options.units= "height"] - the units of the stimulus vertices, size and position
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth
- * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class Rect extends ShapeStim
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number} [options.lineWidth= 1.5] - the line width
+	 * @param {Color} [options.lineColor= 'white'] the line color
+	 * @param {Color} [options.fillColor= undefined] - the fill color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.width= 0.5] - the width of the rectangle
+	 * @param {number} [options.height= 0.5] - the height of the rectangle
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {number} [options.size= 1.0] - the size
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {string} [options.units= "height"] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth
+	 * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, anchor, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
 		super({
@@ -83,8 +84,6 @@ export class Rect extends ShapeStim
 	/**
 	 * Setter for the width attribute.
 	 *
-	 * @name module:visual.Rect#setWidth
-	 * @public
 	 * @param {number} width - the rectangle width
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -103,8 +102,6 @@ export class Rect extends ShapeStim
 	/**
 	 * Setter for the height attribute.
 	 *
-	 * @name module:visual.Rect#setHeight
-	 * @public
 	 * @param {number} height - the rectangle height
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -123,8 +120,7 @@ export class Rect extends ShapeStim
 	/**
 	 * Update the vertices.
 	 *
-	 * @name module:visual.Rect#_updateVertices
-	 * @private
+	 * @protected
 	 */
 	_updateVertices()
 	{

@@ -1,9 +1,10 @@
+/** @module visual **/
 /**
  * Base class for all visual stimuli.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -15,26 +16,26 @@ import * as util from "../util/Util.js";
 /**
  * Base class for all visual stimuli.
  *
- * @name module:visual.VisualStim
- * @class
  * @extends MinimalStim
  * @mixes WindowMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {string} [options.units= "height"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.anchor = "center"] - sets the origin point of the stim
- * @param {number} [options.size= 1.0] - the size
- * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 {
+	/**
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string} [options.units= "height"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {number} [options.size= 1.0] - the size
+	 * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({ name, win, units, ori, opacity, depth, pos, anchor, size, clipMask, autoDraw, autoLog } = {})
 	{
 		super({ win, name, autoDraw, autoLog });
@@ -99,9 +100,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * Force a refresh of the stimulus.
 	 *
 	 * refresh() is called, in particular, when the Window is resized.
-	 *
-	 * @name module:visual.VisualStim#refresh
-	 * @public
 	 */
 	refresh()
 	{
@@ -111,8 +109,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the size attribute.
 	 *
-	 * @name module:visual.VisualStim#setSize
-	 * @public
 	 * @param {undefined | null | number | number[]} size - the stimulus size
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -139,8 +135,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the orientation attribute.
 	 *
-	 * @name module:visual.VisualStim#setOri
-	 * @public
 	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -167,8 +161,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the position attribute.
 	 *
-	 * @name module:visual.VisualStim#setPos
-	 * @public
 	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -190,8 +182,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the depth attribute.
 	 *
-	 * @name module:visual.VisualStim#setDepth
-	 * @public
 	 * @param {Array.<number>} depth - order in which stimuli is rendered, kind of css's z-index with a negative sign.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -205,8 +195,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Determine whether an object is inside the bounding box of the stimulus.
 	 *
-	 * @name module:visual.VisualStim#contains
-	 * @public
 	 * @param {Object} object - the object
 	 * @param {string} units - the units
 	 * @return {boolean} whether or not the object is inside the bounding box of the stimulus
@@ -232,8 +220,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Setter for the anchor attribute.
 	 *
-	 * @name module:visual.VisualStim#setAnchor
-	 * @public
 	 * @param {string} anchor - anchor of the stim
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -259,8 +245,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Convert the anchor attribute into numerical values.
 	 *
-	 * @name module:visual.VisualStim#_anchorTextToNum
-	 * @function
 	 * @protected
 	 * @param {string} anchorText - text version of anchor value ["top-left", "top-right", "center", ...]
 	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
@@ -292,8 +276,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.VisualStim#_estimateBoundingBox
-	 * @function
 	 * @protected
 	 */
 	_estimateBoundingBox()
@@ -308,8 +290,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	/**
 	 * Get the bounding box in pixel coordinates
 	 *
-	 * @name module:visual.VisualStim#contains
-	 * @function
 	 * @protected
 	 * @returns {PIXI.Rectangle} the bounding box, in pixel coordinates
 	 */
@@ -349,8 +329,6 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * This is typically called in the constructor of a stimulus, when attributes are added
 	 * 	with _addAttribute.
 	 *
-	 * @name module:visual.VisualStim#_onChange
-	 * @function
 	 * @protected
 	 * @param {boolean} [withPixi = false] - whether or not the PIXI representation must
 	 * 	also be updated

@@ -2,8 +2,8 @@
  * Experiment Handler
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -17,22 +17,12 @@ import * as util from "../util/Util.js";
  * for generating a single data file from an experiment with many different loops (e.g. interleaved
  * staircases or loops within loops.</p>
  *
- * @name module:data.ExperimentHandler
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {string} options.name - name of the experiment
- * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
  */
 export class ExperimentHandler extends PsychObject
 {
 	/**
 	 * Getter for experimentEnded.
-	 *
-	 * @name module:data.ExperimentHandler#experimentEnded
-	 * @function
-	 * @public
 	 */
 	get experimentEnded()
 	{
@@ -41,10 +31,6 @@ export class ExperimentHandler extends PsychObject
 
 	/**
 	 * Setter for experimentEnded.
-	 *
-	 * @name module:data.ExperimentHandler#experimentEnded
-	 * @function
-	 * @public
 	 */
 	set experimentEnded(ended)
 	{
@@ -64,6 +50,13 @@ export class ExperimentHandler extends PsychObject
 		return this._trialsData;
 	}
 
+	/**
+	 * @memberof module:data
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {string} options.name - name of the experiment
+	 * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
+	 */
 	constructor({
 		psychoJS,
 		name,
@@ -111,9 +104,6 @@ export class ExperimentHandler extends PsychObject
 	 * Whether or not the current entry (i.e. trial data) is empty.
 	 * <p>Note: this is mostly useful at the end of an experiment, in order to ensure that the last entry is saved.</p>
 	 *
-	 * @name module:data.ExperimentHandler#isEntryEmpty
-	 * @function
-	 * @public
 	 * @returns {boolean} whether or not the current entry is empty
 	 * @todo This really should be renamed: IsCurrentEntryNotEmpty
 	 */
@@ -128,9 +118,6 @@ export class ExperimentHandler extends PsychObject
 	 * <p> The loop might be a {@link TrialHandler}, for instance.</p>
 	 * <p> Data from this loop will be included in the resulting data files.</p>
 	 *
-	 * @name module:data.ExperimentHandler#addLoop
-	 * @function
-	 * @public
 	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
 	 */
 	addLoop(loop)
@@ -143,9 +130,6 @@ export class ExperimentHandler extends PsychObject
 	/**
 	 * Remove the given loop from the list of unfinished loops, e.g. when it has completed.
 	 *
-	 * @name module:data.ExperimentHandler#removeLoop
-	 * @function
-	 * @public
 	 * @param {Object} loop - the loop, e.g. an instance of TrialHandler or StairHandler
 	 */
 	removeLoop(loop)
@@ -163,9 +147,6 @@ export class ExperimentHandler extends PsychObject
 	 * <p> Multiple key/value pairs can be added to any given entry of the data file. There are
 	 * considered part of the same entry until a call to {@link nextEntry} is made. </p>
 	 *
-	 * @name module:data.ExperimentHandler#addData
-	 * @function
-	 * @public
 	 * @param {Object} key - the key
 	 * @param {Object} value - the value
 	 */
@@ -189,9 +170,6 @@ export class ExperimentHandler extends PsychObject
 	 * Inform this ExperimentHandler that the current trial has ended.  Further calls to {@link addData}
 	 * will be associated with the next trial.
 	 *
-	 * @name module:data.ExperimentHandler#nextEntry
-	 * @function
-	 * @public
 	 * @param {Object | Object[] | undefined} snapshots - array of loop snapshots
 	 */
 	nextEntry(snapshots)
@@ -256,9 +234,6 @@ export class ExperimentHandler extends PsychObject
 	 * </ul>
 	 * <p>
 	 *
-	 * @name module:data.ExperimentHandler#save
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {Array.<Object>} [options.attributes] - the attributes to be saved
 	 * @param {boolean} [options.sync=false] - whether or not to communicate with the server in a synchronous manner
@@ -380,9 +355,6 @@ export class ExperimentHandler extends PsychObject
 	 * Get the attribute names and values for the current trial of a given loop.
 	 * <p> Only info relating to the trial execution are returned.</p>
 	 *
-	 * @name module:data.ExperimentHandler#_getLoopAttributes
-	 * @function
-	 * @static
 	 * @protected
 	 * @param {Object} loop - the loop
 	 */
@@ -442,10 +414,8 @@ export class ExperimentHandler extends PsychObject
 /**
  * Experiment result format
  *
- * @name module:core.ServerManager#SaveFormat
  * @enum {Symbol}
  * @readonly
- * @public
  */
 ExperimentHandler.SaveFormat = {
 	/**
@@ -464,7 +434,6 @@ ExperimentHandler.SaveFormat = {
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 ExperimentHandler.Environment = {
 	SERVER: Symbol.for("SERVER"),

@@ -6,7 +6,7 @@
 
 PsychoJS is a JavaScript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy](http://www.psychopy.org/) Python library. 
 
-You can create online experiments from the [PsychoPy Builder](http://www.psychopy.org/builder/builder.html), you can find and adapt existing experiments on [pavlovia.org](https://www.pavlovia.org), or create them from scratch: the PsychoJS API is available [here](https://psychopy.github.io/psychojs/).
+You can create online experiments from the [PsychoPy Builder](http://www.psychopy.org/builder/builder.html), you can find and adapt existing experiments on [pavlovia.org](https://www.pavlovia.org), or create them from scratch.
 
 PsychoJS is an open-source project. You can contribute by submitting pull requests to the [PsychoJS GitHub repository](https://github.com/psychopy/psychojs), and discuss issues and current and future features on the [Online category of the PsychoPy Forum](https://discourse.psychopy.org/c/online).
 
@@ -55,8 +55,8 @@ Alain Pitiot - [@apitiot](https://github.com/apitiot)
 The PsychoJS library was initially written by [Ilixa](http://www.ilixa.com) with support from the [Wellcome Trust](https://wellcome.ac.uk).
 It is now a collaborative effort, supported by the [Chan Zuckerberg Initiative](https://chanzuckerberg.com/) (2020-2021) and [Open Science Tools](https://opensciencetools.org/) (2020-):
 - Alain Pitiot - [@apitiot](https://github.com/apitiot)
-- Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
 - Nikita Agafonov - [@lightest](https://github.com/lightest)
+- Sotiri Bakagiannis - [@thewhodidthis](https://github.com/thewhodidthis)
 - Jonathan Peirce - [@peircej](https://github.com/peircej)
 - Thomas Pronk - [@tpronk](https://github.com/tpronk)
 - Hiroyuki Sogo - [@hsogo](https://github.com/hsogo)
