@@ -2,8 +2,8 @@
  * Tone Player.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -14,18 +14,21 @@ import { SoundPlayer } from "./SoundPlayer.js";
 /**
  * <p>This class handles the playing of tones.</p>
  *
- * @name module:sound.TonePlayer
- * @class
  * @extends SoundPlayer
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {number} [options.duration_s= 0.5] - duration of the tone (in seconds). If duration_s == -1, the sound will play indefinitely.
- * @param {string|number} [options.note= 'C4'] - note (if string) or frequency (if number)
- * @param {number} [options.volume= 1.0] - volume of the tone (must be between 0 and 1.0)
- * @param {number} [options.loops= 0] - how many times to repeat the tone after it has played once. If loops == -1, the tone will repeat indefinitely until stopped.
  */
 export class TonePlayer extends SoundPlayer
 {
+	/**
+	 * <p>This class handles the playing of tones.</p>
+	 *
+	 * @memberOf module:sound
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {number} [options.duration_s= 0.5] - duration of the tone (in seconds). If duration_s == -1, the sound will play indefinitely.
+	 * @param {string|number} [options.note= 'C4'] - note (if string) or frequency (if number)
+	 * @param {number} [options.volume= 1.0] - volume of the tone (must be between 0 and 1.0)
+	 * @param {number} [options.loops= 0] - how many times to repeat the tone after it has played once. If loops == -1, the tone will repeat indefinitely until stopped.
+	 */
 	constructor({
 		psychoJS,
 		note = "C4",
@@ -63,10 +66,6 @@ export class TonePlayer extends SoundPlayer
 	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
 	 * we throw an exception.</p>
 	 *
-	 * @name module:sound.TonePlayer.accept
-	 * @function
-	 * @static
-	 * @public
 	 * @param {module:sound.Sound} sound - the sound
 	 * @return {Object|undefined} an instance of TonePlayer that can play the given sound or undefined otherwise
 	 */
@@ -117,9 +116,6 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Get the duration of the sound.
 	 *
-	 * @name module:sound.TonePlayer#getDuration
-	 * @function
-	 * @public
 	 * @return {number} the duration of the sound, in seconds
 	 */
 	getDuration()
@@ -130,9 +126,6 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Set the duration of the tone.
 	 *
-	 * @name module:sound.TonePlayer#setDuration
-	 * @function
-	 * @public
 	 * @param {number} duration_s - the duration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
 	 */
 	setDuration(duration_s)
@@ -143,9 +136,6 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Set the number of loops.
 	 *
-	 * @name module:sound.TonePlayer#setLoops
-	 * @function
-	 * @public
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
 	 */
 	setLoops(loops)
@@ -156,9 +146,6 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Set the volume of the tone.
 	 *
-	 * @name module:sound.TonePlayer#setVolume
-	 * @function
-	 * @public
 	 * @param {Integer} volume - the volume of the tone
 	 * @param {boolean} [mute= false] - whether or not to mute the tone
 	 */
@@ -188,9 +175,6 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Start playing the sound.
 	 *
-	 * @name module:sound.TonePlayer#play
-	 * @function
-	 * @public
 	 * @param {boolean} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
 	 */
 	play(loops)
@@ -254,10 +238,6 @@ export class TonePlayer extends SoundPlayer
 
 	/**
 	 * Stop playing the sound immediately.
-	 *
-	 * @name module:sound.TonePlayer#stop
-	 * @function
-	 * @public
 	 */
 	stop()
 	{
@@ -285,8 +265,6 @@ export class TonePlayer extends SoundPlayer
 	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
 	 * we throw an exception.</p>
 	 *
-	 * @name module:sound.TonePlayer._initSoundLibrary
-	 * @function
 	 * @protected
 	 */
 	_initSoundLibrary()

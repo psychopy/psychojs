@@ -95,6 +95,11 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
+#root.is-ready::after
+{
+  content: ""
+}
+
 
 .dialog-container,
 .dialog-overlay {
@@ -142,6 +147,14 @@ a:hover {
 
   background-color: #009900;
   border-radius: 2px;
+}
+
+.dialog-warning {
+  background-color: #FF9900 !important;
+}
+
+.dialog-error {
+  background-color: #FF0000 !important;
 }
 
 .dialog-title p {
