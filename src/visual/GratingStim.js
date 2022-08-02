@@ -468,7 +468,7 @@ export class GratingStim extends VisualStim
 	 */
 	_getDisplaySize()
 	{
-		let displaySize = this.size;
+		let displaySize = this._size;
 
 		if (typeof displaySize === "undefined")
 		{
@@ -518,10 +518,10 @@ export class GratingStim extends VisualStim
 		geometry.addAttribute(
 			"aVertexPosition",
 			[
-				0, 0,
-				this._size_px[0], 0,
-				this._size_px[0], this._size_px[1],
-				0, this._size_px[1]
+				-this._size_px[0] * .5, -this._size_px[1] * .5,
+				this._size_px[0] * .5, -this._size_px[1] * .5,
+				this._size_px[0] * .5, this._size_px[1] * .5,
+				-this._size_px[0] * .5, this._size_px[1] * .5
 			],
 			2
 		);
@@ -644,6 +644,25 @@ export class GratingStim extends VisualStim
 	}
 
 	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// Vertices are set directly with origin at [0, 0], centered around it.
+			// Subtracting 0.5 from anchorNum vals to get desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * this._pixi.scale.y * this._pixi.height;
+		}
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @protected
@@ -660,6 +679,7 @@ export class GratingStim extends VisualStim
 		if (this._needPixiUpdate)
 		{
 			this._needPixiUpdate = false;
+			this._size_px = util.to_px(this._size, this.units, this.win);
 			let shaderName;
 			let shaderUniforms;
 			let currentUniforms = {};
@@ -753,8 +773,6 @@ export class GratingStim extends VisualStim
 		this.anchor = this._anchor;
 
 		// set the scale:
-		const displaySize = this._getDisplaySize();
-		this._size_px = util.to_px(displaySize, this.units, this.win);
 		this._pixi.scale.x = 1;
 		this._pixi.scale.y = -1;
 
