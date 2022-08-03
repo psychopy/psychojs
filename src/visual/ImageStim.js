@@ -2,8 +2,8 @@
  * Image Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -32,6 +32,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
 	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
@@ -46,9 +47,9 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
-	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
+	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
 
 		this._addAttribute(
 			"image",
@@ -350,14 +351,13 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		const size_px = util.to_px(displaySize, this.units, this.win);
 		const scaleX = size_px[0] / this._texture.width;
 		const scaleY = size_px[1] / this._texture.height;
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();

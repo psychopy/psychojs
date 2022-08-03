@@ -39,7 +39,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {number} [options.letterHeight= <default value>] - the height of the text
 	 * @param {boolean} [options.bold= false] - whether or not the text is bold
 	 * @param {boolean} [options.italic= false] - whether or not the text is italic
-	 * @param {string} [options.anchor = 'left'] - horizontal alignment
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 *
 	 * @param {boolean} [options.multiline= false] - whether or not a multiline element is used
 	 * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
@@ -89,7 +89,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		} = {},
 	)
 	{
-		super({ name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
+		super({ name, win, pos, anchor, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
 
 		this._addAttribute(
 			"text",
@@ -101,11 +101,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			text,
 			"",
 			this._onChange(true, true),
-		);
-		this._addAttribute(
-			"anchor",
-			anchor,
-			"center"
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -266,22 +261,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		if (this._pixi !== undefined)
 		{
 			this._pixi.setInputStyle("direction", langDir);
-		}
-	}
-
-	/**
-	 * Setter for the anchor attribute.
-	 *
-	 * @param {boolean} anchor - anchor of the textbox
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setAnchor (anchor = "center", log = false)
-	{
-		this._setAttribute("anchor", anchor, log);
-		if (this._pixi !== undefined) {
-			const anchorUnits = this._getAnchor();
-			this._pixi.anchor.x = anchorUnits[0];
-			this._pixi.anchor.y = anchorUnits[1];
 		}
 	}
 
@@ -574,7 +553,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const boxHeight = this._letterHeight + 2 * this._padding + 2 * this._borderWidth;
 
 		// take the alignment into account:
-		const anchor = this._getAnchor();
+		const anchor = this._anchorTextToNum(this._anchor);
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
 			this._pos[1] - anchor[1] * boxHeight,
@@ -664,36 +643,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
-	}
-
-	/**
-	 * Convert the anchor attribute into numerical values.
-	 *
-	 * @protected
-	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
-	 */
-	_getAnchor()
-	{
-		const anchor = [0.5, 0.5];
-
-		if (this._anchor.indexOf("left") > -1)
-		{
-			anchor[0] = 0;
-		}
-		else if (this._anchor.indexOf("right") > -1)
-		{
-			anchor[0] = 1;
-		}
-		if (this._anchor.indexOf("top") > -1)
-		{
-			anchor[1] = 0;
-		}
-		else if (this._anchor.indexOf("bottom") > -1)
-		{
-			anchor[1] = 1;
-		}
-
-		return anchor;
 	}
 }
 
