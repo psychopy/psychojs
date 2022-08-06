@@ -2,8 +2,8 @@
  * Form Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -21,40 +21,40 @@ import { VisualStim } from "./VisualStim.js";
 /**
  * Form stimulus.
  *
- * @name module:visual.Form
- * @class
  * @extends module:visual.VisualStim
  * @mixes module:util.ColorMixin
- *
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
- * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
- * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
- *
- * @param {Color} [options.color= Color('LightGray')] the color of the slider
- * @param {number} [options.contrast= 1.0] - the contrast of the slider
- * @param {number} [options.opacity= 1.0] - the opacity of the slider
- * @param {number} [options.depth= 0] - the depth (i.e. the z order), note that the text, radio buttons and slider elements are at depth + 1
- *
- * @param {number[]} [options.items= []] - the array of labels
- * @param {number} [options.itemPadding= 0.05] - the granularity
- *
- * @param {string} [options.font= 'Arial'] - the text font
- * @param {string} [options.fontFamily= 'Helvetica'] - the text font
- * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
- * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
- * @param {number} [options.fontSize] - the font size of the labels (in form units), the default fontSize
- * depends on the Form units: 14 for 'pix', 0.03 otherwise
- *
- * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
- *   frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class Form extends util.mix(VisualStim).with(ColorMixin)
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
+	 * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
+	 * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
+	 *
+	 * @param {Color} [options.color= Color('LightGray')] the color of the slider
+	 * @param {number} [options.contrast= 1.0] - the contrast of the slider
+	 * @param {number} [options.opacity= 1.0] - the opacity of the slider
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order), note that the text, radio buttons and slider elements are at depth - 1
+	 *
+	 * @param {number[]} [options.items= []] - the array of labels
+	 * @param {number} [options.itemPadding= 0.05] - the granularity
+	 *
+	 * @param {string} [options.font= 'Arial'] - the text font
+	 * @param {string} [options.fontFamily= 'Helvetica'] - the text font
+	 * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
+	 * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
+	 * @param {number} [options.fontSize] - the font size of the labels (in form units), the default fontSize
+	 * depends on the Form units: 14 for 'pix', 0.03 otherwise
+	 *
+	 * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
+	 *   frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor(
 		{
 			name,
@@ -220,10 +220,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 	/**
 	 * Force a refresh of the stimulus.
-	 *
-	 * @name module:visual.Form#refresh
-	 * @function
-	 * @public
 	 */
 	refresh()
 	{
@@ -245,9 +241,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Overridden draw that also calls the draw method of all form elements.
 	 *
-	 * @name module:visual.Form#draw
-	 * @function
-	 * @public
 	 * @override
 	 */
 	draw()
@@ -285,9 +278,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Overridden hide that also calls the hide method of all form elements.
 	 *
-	 * @name module:visual.Form#hide
-	 * @function
-	 * @public
 	 * @override
 	 */
 	hide()
@@ -320,10 +310,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 
 	/**
 	 * Reset the form.
-	 *
-	 * @name module:visual.Form#reset
-	 * @function
-	 * @public
 	 */
 	reset()
 	{
@@ -348,9 +334,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Collate the questions and responses into a single dataset.
 	 *
-	 * @name module:visual.Form#getData
-	 * @function
-	 * @public
 	 * @return {object} - the dataset with all questions and responses.
 	 */
 	getData()
@@ -394,9 +377,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Check if the form is complete.
 	 *
-	 * @name module:visual.Form#formComplete
-	 * @function
-	 * @public
 	 * @return {boolean} - whether there are any remaining incomplete responses.
 	 */
 	formComplete()
@@ -408,9 +388,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Add the form data to the given experiment.
 	 *
-	 * @name module:visual.Form#addDataToExp
-	 * @function
-	 * @public
 	 * @param {module:data.ExperimentHandler} experiment - the experiment into which to insert the form data
 	 * @param {string} [format= 'rows'] - whether to insert the data as rows or as columns
 	 */
@@ -459,9 +436,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Import and process the form items from either a spreadsheet resource files (.csv, .xlsx, etc.) or from an array.
 	 *
-	 * @name module:visual.Form#_processItems
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_processItems()
 	{
@@ -500,9 +475,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Import the form items from either a spreadsheet resource files (.csv, .xlsx, etc.) or from an array.
 	 *
-	 * @name module:visual.Form#_importItems
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_importItems()
 	{
@@ -547,9 +520,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Sanitize the form items: check that the keys are valid, and fill in default values.
 	 *
-	 * @name module:visual.Form#_sanitizeItems
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_sanitizeItems()
 	{
@@ -681,8 +652,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.Form#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -700,9 +669,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setup the stimuli, and the scrollbar.
 	 *
-	 * @name module:visual.Form#_setupStimuli
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupStimuli()
 	{
@@ -748,7 +715,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			color: this.itemColor,
 			ori: 0,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			clipMask: this._stimuliClipMask,
 		};
 		const sliderOption = {
@@ -766,7 +733,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			color: this.responseColor,
 			markerColor: this.markerColor,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			clipMask: this._stimuliClipMask,
 			granularity: 1,
 		};
@@ -777,7 +744,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			anchor: "left-top",
 			flip: false,
 			opacity: 1,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			font: this.font,
 			letterHeight: this._fontSize * this._responseTextHeightRatio,
 			bold: false,
@@ -946,7 +913,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			name: "scrollbar",
 			units: this._units,
 			color: this.itemColor,
-			depth: this._depth + 1,
+			depth: this._depth - 1,
 			pos: [0, 0],
 			size: [this._scrollbarWidth, this._size[1]],
 			style: [Slider.Style.SLIDER],
@@ -968,11 +935,9 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the form visual representation, if necessary.
 	 *
-	 * This estimate which stimuli are visible, and updates the decorations.
+	 * <p>This estimate which stimuli are visible, and updates the decorations.</p>
 	 *
-	 * @name module:visual.Slider#_updateIfNeeded
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -1009,8 +974,8 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._stimuliClipMask.clear();
 		this._stimuliClipMask.beginFill(0xFFFFFF);
 		this._stimuliClipMask.drawRect(
-			this._win._rootContainer.position.x + this._leftEdge_px + 2,
-			this._win._rootContainer.position.y + this._bottomEdge_px + 2,
+			this._win._stimsContainer.position.x + this._leftEdge_px + 2,
+			this._win._stimsContainer.position.y + this._bottomEdge_px + 2,
 			this._size_px[0] - 4,
 			this._size_px[1] - 6,
 		);
@@ -1029,9 +994,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the visible stimuli.
 	 *
-	 * @name module:visual.Form#_updateVisibleStimuli
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateVisibleStimuli()
 	{
@@ -1082,9 +1045,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the form decorations (bounding box, lines between items, etc.)
 	 *
-	 * @name module:visual.Form#_updateDecorations
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateDecorations()
 	{
@@ -1100,7 +1061,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 
 		this._pixi.alpha = this._opacity;
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 
 		// apply the form clip mask (n.b., that is not the stimuli clip mask):
 		this._pixi.mask = this._clipMask;
@@ -1153,7 +1114,6 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Form.Types = {
 	HEADING: Symbol.for("HEADING"),
@@ -1170,7 +1130,6 @@ Form.Types = {
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Form.Layout = {
 	HORIZONTAL: Symbol.for("HORIZONTAL"),
@@ -1181,7 +1140,7 @@ Form.Layout = {
  * Default form item.
  *
  * @readonly
- * @private
+ * @protected
  *
  */
 Form._defaultItems = {

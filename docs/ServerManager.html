@@ -1,0 +1,4671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ServerManager - PsychoJS API</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#~_match">_match</a></li></ul></li><li></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="AudioClip.html#_base64ArrayBuffer">_base64ArrayBuffer</a></li><li data-type='method'><a href="AudioClip.html#_decodeAudio">_decodeAudio</a></li><li data-type='method'><a href="AudioClip.html#_GoogleTranscribe">_GoogleTranscribe</a></li><li data-type='method'><a href="AudioClip.html#download">download</a></li><li data-type='method'><a href="AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="AudioClip.html#stopPlayback">stopPlayback</a></li><li data-type='method'><a href="AudioClip.html#transcribe">transcribe</a></li><li data-type='method'><a href="AudioClip.html#upload">upload</a></li></ul></li><li><a href="AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="ButtonStim.html">ButtonStim</a><ul class='methods'><li data-type='method'><a href="ButtonStim.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="ButtonStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ButtonStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="ButtonStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="ButtonStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ButtonStim.html#clear">clear</a></li><li data-type='method'><a href="ButtonStim.html#getText">getText</a></li><li data-type='method'><a href="ButtonStim.html#reset">reset</a></li><li data-type='method'><a href="ButtonStim.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="ButtonStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="ButtonStim.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="ButtonStim.html#setColor">setColor</a></li><li data-type='method'><a href="ButtonStim.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="ButtonStim.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="ButtonStim.html#setFont">setFont</a></li><li data-type='method'><a href="ButtonStim.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="ButtonStim.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#setSize">setSize</a></li><li data-type='method'><a href="ButtonStim.html#setText">setText</a></li></ul></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="Clock.html#add">add</a></li><li data-type='method'><a href="Clock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="Clock.html#getTime">getTime</a></li><li data-type='method'><a href="Clock.html#reset">reset</a></li></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method'><a href="Color.html#toString">toString</a></li></ul></li><li><a href="CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="CountdownTimer.html#add">add</a></li><li data-type='method'><a href="CountdownTimer.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="EventEmitter.html#off">off</a></li><li data-type='method'><a href="EventEmitter.html#on">on</a></li><li data-type='method'><a href="EventEmitter.html#once">once</a></li></ul></li><li><a href="EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="EventManager.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="EventManager.html#stopMoveClock">stopMoveClock</a></li></ul></li><li><a href="ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#save">save</a></li></ul></li><li><a href="FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="FaceDetector.html#setInput">setInput</a></li><li data-type='method'><a href="FaceDetector.html#start">start</a></li><li data-type='method'><a href="FaceDetector.html#stop">stop</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Form.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Form.html#_importItems">_importItems</a></li><li data-type='method'><a href="Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="Form.html#_processItems">_processItems</a></li><li data-type='method'><a href="Form.html#_sanitizeItems">_sanitizeItems</a></li><li data-type='method'><a href="Form.html#_setupStimuli">_setupStimuli</a></li><li data-type='method'><a href="Form.html#_updateDecorations">_updateDecorations</a></li><li data-type='method'><a href="Form.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Form.html#_updateVisibleStimuli">_updateVisibleStimuli</a></li><li data-type='method'><a href="Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="Form.html#contains">contains</a></li><li data-type='method'><a href="Form.html#draw">draw</a></li><li data-type='method'><a href="Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="Form.html#getData">getData</a></li><li data-type='method'><a href="Form.html#hide">hide</a></li><li data-type='method'><a href="Form.html#refresh">refresh</a></li><li data-type='method'><a href="Form.html#release">release</a></li><li data-type='method'><a href="Form.html#reset">reset</a></li><li data-type='method'><a href="Form.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Form.html#setDepth">setDepth</a></li><li data-type='method'><a href="Form.html#setOri">setOri</a></li><li data-type='method'><a href="Form.html#setPos">setPos</a></li><li data-type='method'><a href="Form.html#setSize">setSize</a></li></ul></li><li><a href="GratingStim.html">GratingStim</a><ul class='methods'><li data-type='method'><a href="GratingStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="GratingStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="GratingStim.html#_getPixiMeshFromPredefinedShaders">_getPixiMeshFromPredefinedShaders</a></li><li data-type='method'><a href="GratingStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="GratingStim.html#setBlendmode">setBlendmode</a></li><li data-type='method'><a href="GratingStim.html#setColor">setColor</a></li><li data-type='method'><a href="GratingStim.html#setColorSpace">setColorSpace</a></li><li data-type='method'><a href="GratingStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="GratingStim.html#setMask">setMask</a></li><li data-type='method'><a href="GratingStim.html#setOpacity">setOpacity</a></li><li data-type='method'><a href="GratingStim.html#setPhase">setPhase</a></li><li data-type='method'><a href="GratingStim.html#setSF">setSF</a></li><li data-type='method'><a href="GratingStim.html#setTex">setTex</a></li></ul></li><li><a href="GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="GUI.html#_onCancelExperiment">_onCancelExperiment</a></li><li data-type='method'><a href="GUI.html#_onResourceEvents">_onResourceEvents</a></li><li data-type='method'><a href="GUI.html#_onStartExperiment">_onStartExperiment</a></li><li data-type='method'><a href="GUI.html#_setProgressMessage">_setProgressMessage</a></li><li data-type='method'><a href="GUI.html#_updateDialog">_updateDialog</a></li><li data-type='method'><a href="GUI.html#_updateProgressBar">_updateProgressBar</a></li><li data-type='method'><a href="GUI.html#_userFriendlyError">_userFriendlyError</a></li><li data-type='method'><a href="GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="GUI.html#dialog">dialog</a></li><li data-type='method'><a href="GUI.html#DlgFromDict">DlgFromDict</a></li><li data-type='method'><a href="GUI.html#finishDialog">finishDialog</a></li></ul></li><li><a href="ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ImageStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="ImageStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ImageStim.html#setImage">setImage</a></li><li data-type='method'><a href="ImageStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="ImageStim.html#setMask">setMask</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="Keyboard.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="Keyboard.html#start">start</a></li><li data-type='method'><a href="Keyboard.html#stop">stop</a></li></ul></li><li><a href="KeyPress.html">KeyPress</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#_customConsoleLayout">_customConsoleLayout</a></li><li data-type='method'><a href="Logger.html#_getValue">_getValue</a></li><li data-type='method'><a href="Logger.html#_throttle">_throttle</a></li><li data-type='method'><a href="Logger.html#data">data</a></li><li data-type='method'><a href="Logger.html#exp">exp</a></li><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#log">log</a></li><li data-type='method'><a href="Logger.html#setLevel">setLevel</a></li></ul></li><li><a href="Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="Microphone.html#download">download</a></li><li data-type='method'><a href="Microphone.html#flush">flush</a></li><li data-type='method'><a href="Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="Microphone.html#pause">pause</a></li><li data-type='method'><a href="Microphone.html#resume">resume</a></li><li data-type='method'><a href="Microphone.html#start">start</a></li><li data-type='method'><a href="Microphone.html#stop">stop</a></li><li data-type='method'><a href="Microphone.html#upload">upload</a></li></ul></li><li><a href="MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="MinimalStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="MinimalStim.html#release">release</a></li><li data-type='method'><a href="MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_makeStatusTopLevel">_makeStatusTopLevel</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#_prepareSequence">_prepareSequence</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-hardware.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-hardware.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-hardware.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#_upload">_upload</a></li><li data-type='method'><a href="module-hardware.Camera.html#authorize">authorize</a></li><li data-type='method'><a href="module-hardware.Camera.html#close">close</a></li><li data-type='method'><a href="module-hardware.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-hardware.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-hardware.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-hardware.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-hardware.Camera.html#open">open</a></li><li data-type='method'><a href="module-hardware.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-hardware.Camera.html#record">record</a></li><li data-type='method'><a href="module-hardware.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-hardware.Camera.html#stop">stop</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#emit">emit</a></li><li data-type='method'><a href="module-util.PsychObject.html#off">off</a></li><li data-type='method'><a href="module-util.PsychObject.html#on">on</a></li><li data-type='method'><a href="module-util.PsychObject.html#once">once</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li><li data-type='method'><a href="module-visual.VisualStim.html#draw">draw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#hide">hide</a></li><li data-type='method'><a href="module-visual.VisualStim.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.VisualStim.html#release">release</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setDepth">setDepth</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setOri">setOri</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setPos">setPos</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setSize">setSize</a></li></ul></li><li><a href="MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="MovieStim.html">MovieStim</a><ul class='methods'><li data-type='method'><a href="MovieStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="MovieStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="MovieStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MovieStim.html#pause">pause</a></li><li data-type='method'><a href="MovieStim.html#play">play</a></li><li data-type='method'><a href="MovieStim.html#reset">reset</a></li><li data-type='method'><a href="MovieStim.html#seek">seek</a></li><li data-type='method'><a href="MovieStim.html#setMovie">setMovie</a></li><li data-type='method'><a href="MovieStim.html#stop">stop</a></li></ul></li><li><a href="MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="Polygon.html">Polygon</a><ul class='methods'><li data-type='method'><a href="Polygon.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Polygon.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Polygon.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Polygon.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Polygon.html#contains">contains</a></li><li data-type='method'><a href="Polygon.html#setEdges">setEdges</a></li><li data-type='method'><a href="Polygon.html#setRadius">setRadius</a></li><li data-type='method'><a href="Polygon.html#setVertices">setVertices</a></li></ul></li><li><a href="QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="Rect.html">Rect</a><ul class='methods'><li data-type='method'><a href="Rect.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Rect.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Rect.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Rect.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Rect.html#_updateVertices">_updateVertices</a></li><li data-type='method'><a href="Rect.html#contains">contains</a></li><li data-type='method'><a href="Rect.html#setHeight">setHeight</a></li><li data-type='method'><a href="Rect.html#setVertices">setVertices</a></li><li data-type='method'><a href="Rect.html#setWidth">setWidth</a></li></ul></li><li><a href="Scheduler.html">Scheduler</a><ul class='methods'><li data-type='method'><a href="Scheduler.html#add">add</a></li><li data-type='method'><a href="Scheduler.html#addConditional">addConditional</a></li><li data-type='method'><a href="Scheduler.html#start">start</a></li><li data-type='method'><a href="Scheduler.html#stop">stop</a></li></ul></li><li><a href="ServerManager.html">ServerManager</a><ul class='methods'><li data-type='method'><a href="ServerManager.html#_downloadResources">_downloadResources</a></li><li data-type='method'><a href="ServerManager.html#_listResources">_listResources</a></li><li data-type='method'><a href="ServerManager.html#_queryServerAPI">_queryServerAPI</a></li><li data-type='method'><a href="ServerManager.html#_setupPreloadQueue">_setupPreloadQueue</a></li><li data-type='method'><a href="ServerManager.html#closeSession">closeSession</a></li><li data-type='method'><a href="ServerManager.html#getConfiguration">getConfiguration</a></li><li data-type='method'><a href="ServerManager.html#getResource">getResource</a></li><li data-type='method'><a href="ServerManager.html#getResourceStatus">getResourceStatus</a></li><li data-type='method'><a href="ServerManager.html#openSession">openSession</a></li><li data-type='method'><a href="ServerManager.html#prepareResources">prepareResources</a></li><li data-type='method'><a href="ServerManager.html#resetStatus">resetStatus</a></li><li data-type='method'><a href="ServerManager.html#setStatus">setStatus</a></li><li data-type='method'><a href="ServerManager.html#uploadAudioVideo">uploadAudioVideo</a></li><li data-type='method'><a href="ServerManager.html#uploadData">uploadData</a></li><li data-type='method'><a href="ServerManager.html#uploadLog">uploadLog</a></li><li data-type='method'><a href="ServerManager.html#waitForResources">waitForResources</a></li></ul></li><li><a href="ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ShapeStim.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="ShapeStim.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="ShapeStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ShapeStim.html#contains">contains</a></li><li data-type='method'><a href="ShapeStim.html#setVertices">setVertices</a></li></ul></li><li><a href="Shelf.html">Shelf</a><ul class='methods'><li data-type='method'><a href="Shelf.html#_checkAvailability">_checkAvailability</a></li><li data-type='method'><a href="Shelf.html#_checkKey">_checkKey</a></li><li data-type='method'><a href="Shelf.html#_getValue">_getValue</a></li><li data-type='method'><a href="Shelf.html#_updateValue">_updateValue</a></li><li data-type='method'><a href="Shelf.html#addIntegerValue">addIntegerValue</a></li><li data-type='method'><a href="Shelf.html#appendListValue">appendListValue</a></li><li data-type='method'><a href="Shelf.html#clearListValue">clearListValue</a></li><li data-type='method'><a href="Shelf.html#counterBalanceSelect">counterBalanceSelect</a></li><li data-type='method'><a href="Shelf.html#flipBooleanValue">flipBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getBooleanValue">getBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldNames">getDictionaryFieldNames</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldValue">getDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryValue">getDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#getIntegerValue">getIntegerValue</a></li><li data-type='method'><a href="Shelf.html#getListValue">getListValue</a></li><li data-type='method'><a href="Shelf.html#getTextValue">getTextValue</a></li><li data-type='method'><a href="Shelf.html#incrementComponent">incrementComponent</a></li><li data-type='method'><a href="Shelf.html#popListValue">popListValue</a></li><li data-type='method'><a href="Shelf.html#setBooleanValue">setBooleanValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryFieldValue">setDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryValue">setDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#setIntegerValue">setIntegerValue</a></li><li data-type='method'><a href="Shelf.html#setListValue">setListValue</a></li><li data-type='method'><a href="Shelf.html#setTextValue">setTextValue</a></li><li data-type='method'><a href="Shelf.html#shuffleListValue">shuffleListValue</a></li></ul></li><li><a href="Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="Slider.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Slider.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Slider.html#_getPosition_px">_getPosition_px</a></li><li data-type='method'><a href="Slider.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="Slider.html#_granularise">_granularise</a></li><li data-type='method'><a href="Slider.html#_handlePointerDown">_handlePointerDown</a></li><li data-type='method'><a href="Slider.html#_handlePointerMove">_handlePointerMove</a></li><li data-type='method'><a href="Slider.html#_handlePointerUp">_handlePointerUp</a></li><li data-type='method'><a href="Slider.html#_isHorizontal">_isHorizontal</a></li><li data-type='method'><a href="Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="Slider.html#_posToRating">_posToRating</a></li><li data-type='method'><a href="Slider.html#_ratingToPos">_ratingToPos</a></li><li data-type='method'><a href="Slider.html#_removeEventListeners">_removeEventListeners</a></li><li data-type='method'><a href="Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="Slider.html#_setupBar">_setupBar</a></li><li data-type='method'><a href="Slider.html#_setupLabels">_setupLabels</a></li><li data-type='method'><a href="Slider.html#_setupMarker">_setupMarker</a></li><li data-type='method'><a href="Slider.html#_setupSlider">_setupSlider</a></li><li data-type='method'><a href="Slider.html#_setupStyle">_setupStyle</a></li><li data-type='method'><a href="Slider.html#_setupTicks">_setupTicks</a></li><li data-type='method'><a href="Slider.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Slider.html#contains">contains</a></li><li data-type='method'><a href="Slider.html#draw">draw</a></li><li data-type='method'><a href="Slider.html#getRating">getRating</a></li><li data-type='method'><a href="Slider.html#getRT">getRT</a></li><li data-type='method'><a href="Slider.html#hide">hide</a></li><li data-type='method'><a href="Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="Slider.html#recordRating">recordRating</a></li><li data-type='method'><a href="Slider.html#refresh">refresh</a></li><li data-type='method'><a href="Slider.html#release">release</a></li><li data-type='method'><a href="Slider.html#reset">reset</a></li><li data-type='method'><a href="Slider.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Slider.html#setDepth">setDepth</a></li><li data-type='method'><a href="Slider.html#setMarkerPos">setMarkerPos</a></li><li data-type='method'><a href="Slider.html#setOri">setOri</a></li><li data-type='method'><a href="Slider.html#setPos">setPos</a></li><li data-type='method'><a href="Slider.html#setRating">setRating</a></li><li data-type='method'><a href="Slider.html#setReadOnly">setReadOnly</a></li><li data-type='method'><a href="Slider.html#setSize">setSize</a></li></ul></li><li><a href="SpeechRecognition.html">SpeechRecognition</a><ul class='methods'><li data-type='method'><a href="SpeechRecognition.html#_onChange">_onChange</a></li><li data-type='method'><a href="SpeechRecognition.html#_prepareRecognition">_prepareRecognition</a></li><li data-type='method'><a href="SpeechRecognition.html#clearTranscripts">clearTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#getTranscripts">getTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#start">start</a></li><li data-type='method'><a href="SpeechRecognition.html#stop">stop</a></li></ul></li><li><a href="TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="TextBox.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextBox.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextBox.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextBox.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="TextBox.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextBox.html#clear">clear</a></li><li data-type='method'><a href="TextBox.html#getText">getText</a></li><li data-type='method'><a href="TextBox.html#reset">reset</a></li><li data-type='method'><a href="TextBox.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="TextBox.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="TextBox.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="TextBox.html#setColor">setColor</a></li><li data-type='method'><a href="TextBox.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="TextBox.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="TextBox.html#setFont">setFont</a></li><li data-type='method'><a href="TextBox.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="TextBox.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="TextBox.html#setSize">setSize</a></li><li data-type='method'><a href="TextBox.html#setText">setText</a></li></ul></li><li><a href="TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextStim.html#_getDefaultWrapWidth">_getDefaultWrapWidth</a></li><li data-type='method'><a href="TextStim.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="TextStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextStim.html#getBoundingBox">getBoundingBox</a></li><li data-type='method'><a href="TextStim.html#getTextMetrics">getTextMetrics</a></li><li data-type='method'><a href="TextStim.html#setColor">setColor</a></li></ul></li><li><a href="TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="TonePlayer.html#_initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TonePlayer.html#play">play</a></li><li data-type='method'><a href="TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TonePlayer.html#stop">stop</a></li></ul></li><li><a href="TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TrackPlayer.html#play">play</a></li><li data-type='method'><a href="TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="Transcript.html">Transcript</a></li><li><a href="Window.html">Window</a><ul class='methods'><li data-type='method'><a href="Window.html#_fullRefresh">_fullRefresh</a></li><li data-type='method'><a href="Window.html#_refresh">_refresh</a></li><li data-type='method'><a href="Window.html#_setupPixi">_setupPixi</a></li><li data-type='method'><a href="Window.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Window.html#_writeLogOnFlip">_writeLogOnFlip</a></li><li data-type='method'><a href="Window.html#addPixiObject">addPixiObject</a></li><li data-type='method'><a href="Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="Window.html#close">close</a></li><li data-type='method'><a href="Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="Window.html#removePixiObject">removePixiObject</a></li><li data-type='method'><a href="Window.html#render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="SoundPlayer.html#play">play</a></li><li data-type='method'><a href="SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="SoundPlayer.html#stop">stop</a></li></ul></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ServerManager</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+            <span class="ancestors"><a href="module-core.html">core</a></span>
+        
+        ServerManager
+        </h2>
+        
+            <div class="class-description usertext"><p>This manager handles all communications between the experiment running in the participant's browser and the <code>pavlovia.org</code> server, <em>in an asynchronous manner</em>.</p>
+<p>It is responsible for reading the configuration file of an experiment, for opening and closing a session, for listing and downloading resources, and for uploading results, logs, and audio recordings.</p></div>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="ServerManager"><span class="type-signature"></span>new ServerManager<span class="signature">(options)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>psychoJS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-core.PsychoJS.html">module:core.PsychoJS</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the PsychoJS instance</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autoLog</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to log</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>PsychObject</li>
+    </ul>
+
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".Event"><span class="type-signature">(static, readonly) </span>Event<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1376">line 1376</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>RESOURCE</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event type: resource event</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DOWNLOADING_RESOURCES</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event: resources have started to download</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DOWNLOADING_RESOURCE</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event: a specific resource download has started</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>RESOURCE_DOWNLOADED</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event: a specific resource has been downloaded</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DOWNLOAD_COMPLETED</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event: resources have all downloaded</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>STATUS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event type: status event</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<div class="description usertext">
+    <p>Server event</p>
+<p>A server event is emitted by the manager to inform its listeners of either a change of status, or of a resource related event (e.g. download started, download is completed).</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".ResourceStatus"><span class="type-signature">(static, readonly) </span>ResourceStatus<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1437">line 1437</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ERROR</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>There was an error during downloading, or the resource is in an unknown state.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>REGISTERED</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The resource has been registered.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DOWNLOADING</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The resource is currently downloading.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>DOWNLOADED</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The resource has been downloaded.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<div class="description usertext">
+    <p>Resource status</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".Status"><span class="type-signature">(static, readonly) </span>Status<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1414">line 1414</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>READY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The manager is ready.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>BUSY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The manager is busy, e.g. it is downloaded resources.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ERROR</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The manager has encountered an error, e.g. it was unable to download a resource.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<div class="description usertext">
+    <p>Server status</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="ALL_RESOURCES"><span class="type-signature">(readonly) </span>ALL_RESOURCES<span class="type-signature"> :Symbol</span></h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Used to indicate to the ServerManager that all resources must be registered (and
+subsequently downloaded)</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Symbol</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="_downloadResources"><span class="type-signature">(async, protected) </span>_downloadResources<span class="signature">(resources)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1010">line 1010</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Download the specified resources.</p>
+<p>Note: we use the <code>preloadjs library</code>.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Set</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>a set of names of previously registered resources</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_listResources"><span class="type-signature">(protected) </span>_listResources<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line950">line 950</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>List the resources available to the experiment.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_queryServerAPI"><span class="type-signature">(protected) </span>_queryServerAPI<span class="signature">(method, path, data, contentType<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1303">line 1303</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Query the pavlovia server API.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>method</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the HTTP method, i.e. GET, PUT, POST, or DELETE</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the resource path, without the server address</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the data to be sent</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>contentType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>"JSON"</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the content type, either JSON or FORM</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="_setupPreloadQueue"><span class="type-signature">(protected) </span>_setupPreloadQueue<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line1209">line 1209</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Setup the preload.js queue, and the associated callbacks.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="closeSession"><span class="type-signature">(async) </span>closeSession<span class="signature">(isCompleted<span class="signature-attributes">opt</span>, sync<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.CloseSessionPromise">ServerManager.CloseSessionPromise</a>>|void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line224">line 224</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Close the session for this experiment on the remote PsychoJS manager.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isCompleted</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not the experiment was completed</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sync</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to communicate with the server in a synchronous manner</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.CloseSessionPromise">ServerManager.CloseSessionPromise</a>></span>
+|
+
+<span class="param-type">void</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getConfiguration"><span class="type-signature"></span>getConfiguration<span class="signature">(configURL)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.GetConfigurationPromise">ServerManager.GetConfigurationPromise</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Read the configuration file for the experiment.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>configURL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the URL of the configuration file</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.GetConfigurationPromise">ServerManager.GetConfigurationPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getResource"><span class="type-signature"></span>getResource<span class="signature">(name, errorIfNotDownloaded<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line292">line 292</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the value of a resource.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>name of the requested resource</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>errorIfNotDownloaded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to throw an exception if the
+resource status is not DOWNLOADED</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc usertext">
+        <p>exception if no resource with that name has previously been registered</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl class="param-type">
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>value of the resource, or undefined if the resource has been registered
+but not downloaded yet.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="getResourceStatus"><span class="type-signature"></span>getResourceStatus<span class="signature">(names)</span><span class="type-signature"> &rarr; {module:core.ServerManager.ResourceStatus}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line338">line 338</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Get the status of a single resource or the reduced status of an array of resources.</p>
+<p>If an array of resources is given, getResourceStatus returns a single, reduced status
+that is the status furthest away from DOWNLOADED, with the status ordered as follow:
+ERROR (furthest from DOWNLOADED), REGISTERED, DOWNLOADING, and DOWNLOADED</p>
+<p>For example, given three resources:
+<ul>
+  <li>if at least one of the resource status is ERROR, the reduced status is ERROR</li>
+  <li>if at least one of the resource status is DOWNLOADING, the reduced status is DOWNLOADING</li>
+  <li>if the status of all three resources is REGISTERED, the reduced status is REGISTERED</li>
+  <li>if the status of all three resources is DOWNLOADED, the reduced status is DOWNLOADED</li>
+</ul>
+</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>names</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>names of the resources whose statuses are requested</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc usertext">
+        <p>if at least one of the names is not that of a previously
+registered resource</p>
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl class="param-type">
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>status of the resource if there is only one, or reduced status otherwise</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">module:core.ServerManager.ResourceStatus</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="openSession"><span class="type-signature"></span>openSession<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.OpenSessionPromise">ServerManager.OpenSessionPromise</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line131">line 131</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Open a session for this experiment on the remote PsychoJS manager.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.OpenSessionPromise">ServerManager.OpenSessionPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="prepareResources"><span class="type-signature">(async) </span>prepareResources<span class="signature">(resources<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line438">line 438</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Prepare resources for the experiment: register them with the server manager and possibly
+start downloading them right away.</p>
+<ul>
+  <li>For an experiment running locally: the root directory for the specified resources is that of index.html
+  unless they are prepended with a protocol, such as http:// or https://.</li>
+  <li>For an experiment running on the server: if no resources are specified, all files in the resources directory
+  of the experiment are downloaded, otherwise we only download the specified resources. All resources are assumed
+  local to index.html unless they are prepended with a protocol.</li>
+  <li>If resources is null, then we do not download any resources</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Array.&lt;({name: string, path: string, download: boolean}|String|Symbol)></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>[]</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the list of resources or a single resource</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="resetStatus"><span class="type-signature"></span>resetStatus<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="ServerManager.html#.Status#.READY">ServerManager.Status.READY</a>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line418">line 418</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Reset the resource manager status to ServerManager.Status.READY.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the new status</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="ServerManager.html#.Status#.READY">ServerManager.Status.READY</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="setStatus"><span class="type-signature"></span>setStatus<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line387">line 387</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Set the resource manager status.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="uploadAudioVideo"><span class="type-signature">(async) </span>uploadAudioVideo<span class="signature">(@param)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line825">line 825</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Synchronously or asynchronously upload audio data to the pavlovia server.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>@param</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>options</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.mediaBlob</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Blob</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the audio or video blob to be uploaded</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.tag</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>additional tag</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.waitForCompletion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to wait for completion
+before returning</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.showDialog</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to open a dialog box to inform the participant to wait for the data to be uploaded to the server</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options.dialogMsg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>"Please wait a few moments while the data is uploading to the server"</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>default message informing the participant to wait for the data to be uploaded to the server</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="uploadData"><span class="type-signature"></span>uploadData<span class="signature">(key, value, sync<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line698">line 698</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Asynchronously upload experiment data to the pavlovia server.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the data key (e.g. the name of .csv file)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the data value (e.g. a string containing the .csv header and records)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sync</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not to communicate with the server in a synchronous manner</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="uploadLog"><span class="type-signature"></span>uploadLog<span class="signature">(logs, compressed<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line760">line 760</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Asynchronously upload experiment logs to the pavlovia server.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>logs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>the base64 encoded, compressed, formatted logs</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>compressed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>whether or not the logs are compressed</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>the response</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;<a href="ServerManager.html#.UploadDataPromise">ServerManager.UploadDataPromise</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="waitForResources"><span class="type-signature"></span>waitForResources<span class="signature">(resources<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line590">line 590</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Block the experiment until the specified resources have been downloaded.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>resources</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;{name: string, path: string}></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>[]</code>
+                
+                </td>
+            
+
+            <td class="description last"><p>the list of resources</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id=".CloseSessionPromise">CloseSessionPromise</h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line211">line 211</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the calling method</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the context</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>an error message if we could not close the session (e.g. if it has not previously been opened)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id=".GetConfigurationPromise">GetConfigurationPromise</h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line62">line 62</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the calling method</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the context</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the configuration</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>an error message if we could not read the configuration file</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id=".OpenSessionPromise">OpenSessionPromise</h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line119">line 119</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the calling method</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the context</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>token</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the session token</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>an error message if we could not open the session</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id=".UploadDataPromise">UploadDataPromise</h4>
+
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_ServerManager.js.html">core/ServerManager.js</a>, <a href="core_ServerManager.js.html#line684">line 684</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the calling method</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>the context</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;string, *></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>an error message if we could not upload the data</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 01 2022 09:56:49 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

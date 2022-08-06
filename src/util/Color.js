@@ -2,8 +2,8 @@
  * Color management.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -22,15 +22,15 @@
  *
  * <p>Note: internally, colors are represented as a [r,g,b] triplet with r,g,b in [0,1].</p>
  *
- * @name module:util.Color
- * @class
- * @param {string|number|Array.<number>|undefined} [obj= 'black'] - an object representing a color
- * @param {module:util.Color#COLOR_SPACE|undefined} [colorspace=Color.COLOR_SPACE.RGB] - the colorspace of that color
- *
  * @todo implement HSV, DKL, and LMS colorspaces
  */
 export class Color
 {
+	/**
+	 * @memberof module:util
+	 * @param {string|number|Array.<number>|undefined} [obj= 'black'] - an object representing a color
+	 * @param {module:util.Color#COLOR_SPACE|undefined} [colorspace=Color.COLOR_SPACE.RGB] - the colorspace of that color
+	 */
 	constructor(obj = "black", colorspace = Color.COLOR_SPACE.RGB)
 	{
 		const response = {
@@ -127,14 +127,13 @@ export class Color
 		{
 			this._rgb = obj._rgb.slice();
 		}
+
+		this._rgbFull = this._rgb.map(c => c * 2 - 1);
 	}
 
 	/**
 	 * Get the [0,1] RGB triplet equivalent of this Color.
 	 *
-	 * @name module:util.Color.rgb
-	 * @function
-	 * @public
 	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
 	 */
 	get rgb()
@@ -143,11 +142,18 @@ export class Color
 	}
 
 	/**
+	 * Get the [-1,1] RGB triplet equivalent of this Color.
+	 *
+	 * @return {Array.<number>} the [-1,1] RGB triplet equivalent
+	 */
+	get rgbFull()
+	{
+		return this._rgbFull;
+	}
+
+	/**
 	 * Get the [0,255] RGB triplet equivalent of this Color.
 	 *
-	 * @name module:util.Color.rgb255
-	 * @function
-	 * @public
 	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
 	 */
 	get rgb255()
@@ -158,9 +164,6 @@ export class Color
 	/**
 	 * Get the hexadecimal color code equivalent of this Color.
 	 *
-	 * @name module:util.Color.hex
-	 * @function
-	 * @public
 	 * @return {string} the hexadecimal color code equivalent
 	 */
 	get hex()
@@ -175,9 +178,6 @@ export class Color
 	/**
 	 * Get the integer code equivalent of this Color.
 	 *
-	 * @name module:util.Color.int
-	 * @function
-	 * @public
 	 * @return {number} the integer code equivalent
 	 */
 	get int()
@@ -210,10 +210,7 @@ export class Color
 	/**
 	 * String representation of the color, i.e. the hexadecimal representation.
 	 *
-	 * @name module:util.Color.toString
-	 * @function
 	 * @return {string} the representation.
-	 *
 	 */
 	toString()
 	{
@@ -223,10 +220,6 @@ export class Color
 	/**
 	 * Get the [0,255] RGB triplet equivalent of the hexadecimal color code.
 	 *
-	 * @name module:util.Color.hexToRgb255
-	 * @function
-	 * @static
-	 * @public
 	 * @param {string} hex - the hexadecimal color code
 	 * @return {Array.<number>} the [0,255] RGB triplet equivalent
 	 */
@@ -248,10 +241,6 @@ export class Color
 	/**
 	 * Get the [0,1] RGB triplet equivalent of the hexadecimal color code.
 	 *
-	 * @name module:util.Color.hexToRgb
-	 * @function
-	 * @static
-	 * @public
 	 * @param {string} hex - the hexadecimal color code
 	 * @return {Array.<number>} the [0,1] RGB triplet equivalent
 	 */
@@ -264,10 +253,6 @@ export class Color
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 255] RGB triplet.
 	 *
-	 * @name module:util.Color.rgb255ToHex
-	 * @function
-	 * @static
-	 * @public
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
@@ -292,10 +277,6 @@ export class Color
 	/**
 	 * Get the hexadecimal color code equivalent of the [0, 1] RGB triplet.
 	 *
-	 * @name module:util.Color.rgbToHex
-	 * @function
-	 * @static
-	 * @public
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
@@ -320,10 +301,6 @@ export class Color
 	/**
 	 * Get the integer equivalent of the [0, 1] RGB triplet.
 	 *
-	 * @name module:util.Color.rgbToInt
-	 * @function
-	 * @static
-	 * @public
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
@@ -348,10 +325,6 @@ export class Color
 	/**
 	 * Get the integer equivalent of the [0, 255] RGB triplet.
 	 *
-	 * @name module:util.Color.rgb255ToInt
-	 * @function
-	 * @static
-	 * @public
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
@@ -377,10 +350,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._rgb255ToHex
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
@@ -394,10 +364,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._rgbToHex
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {string} the hexadecimal color code equivalent
 	 */
@@ -412,10 +379,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._rgbToInt
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {Array.<number>} rgb - the [0, 1] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
@@ -430,10 +394,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._rgb255ToInt
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {Array.<number>} rgb255 - the [0, 255] RGB triplet
 	 * @return {number} the integer equivalent
 	 */
@@ -447,10 +408,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._intToRgb255
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {number} hex - the integer color code
 	 * @return {Array.<number>} the [0, 255] RGB equivalent
 	 */
@@ -468,10 +426,7 @@ export class Color
 	 *
 	 * <p>Note: this is the fast, unsafe version which does not check for argument sanity</p>
 	 *
-	 * @name module:util.Color._intToRgb
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {number} hex - the integer color code
 	 * @return {Array.<number>} the [0, 1] RGB equivalent
 	 */
@@ -485,10 +440,7 @@ export class Color
 	/**
 	 * Check that the argument is an array of numbers of size 3, and, potentially, that its elements fall within the range.
 	 *
-	 * @name module:util.Color._checkTypeAndRange
-	 * @function
-	 * @static
-	 * @private
+	 * @protected
 	 * @param {any} arg - the argument
 	 * @param {Array.<number>} [range] - the lower and higher bounds of the range
 	 * @return {boolean} whether the argument is an array of numbers of size 3, and, potentially, whether its elements fall within the range (if range is not undefined)
@@ -513,10 +465,8 @@ export class Color
 /**
  * Color spaces.
  *
- * @name module:util.Color#COLOR_SPACE
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Color.COLOR_SPACE = {
 	/**
@@ -538,10 +488,8 @@ Color.COLOR_SPACE = {
 /**
  * Named colors.
  *
- * @name module:util.Color#NAMED_COLORS
  * @enum {string}
  * @readonly
- * @public
  */
 Color.NAMED_COLORS = {
 	"aliceblue": "#F0F8FF",

@@ -3,8 +3,8 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -18,21 +18,14 @@ import { GUI } from "./GUI.js";
 import { Logger } from "./Logger.js";
 import { ServerManager } from "./ServerManager.js";
 import { Window } from "./Window.js";
-// import {Shelf} from "../data/Shelf";
+import {Shelf} from "../data/Shelf";
 
 /**
- * <p>PsychoJS manages the lifecycle of an experiment. It initialises the PsychoJS library and its various components (e.g. the {@link ServerManager}, the {@link EventManager}), and is used by the experiment to schedule the various tasks.</p>
- *
- * @class
- * @param {Object} options
- * @param {boolean} [options.debug= true] whether or not to log debug information in the browser console
- * @param {boolean} [options.collectIP= false] whether or not to collect the IP information of the participant
+ * <p>PsychoJS initialises the library and its various components (e.g. the [ServerManager]{@link module:core.ServerManager}, the [EventManager]{@link module:core.EventManager}), and manages
+ * the lifecycle of an experiment.</p>
  */
 export class PsychoJS
 {
-	/**
-	 * Properties
-	 */
 	get status()
 	{
 		return this._status;
@@ -109,14 +102,15 @@ export class PsychoJS
 		return this._browser;
 	}
 
-	// get shelf()
-	// {
-	// 	return this._shelf;
-	// }
+	get shelf()
+	{
+		return this._shelf;
+	}
 
 	/**
-	 * @constructor
-	 * @public
+	 * @param {Object} options
+	 * @param {boolean} [options.debug= true] whether to log debug information in the browser console
+	 * @param {boolean} [options.collectIP= false] whether to collect the IP information of the participant
 	 */
 	constructor({
 		debug = true,
@@ -158,8 +152,8 @@ export class PsychoJS
 		// Window:
 		this._window = undefined;
 
-		// // Shelf:
-		// this._shelf = new Shelf(this);
+		// Shelf:
+		this._shelf = new Shelf({psychoJS: this});
 
 		// redirection URLs:
 		this._cancellationUrl = undefined;
@@ -176,10 +170,11 @@ export class PsychoJS
 		}
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2022.1.1");
+		this.logger.info("[PsychoJS] @version 2022.2.1");
 
 		// hide the initialisation message:
-		jQuery("#root").addClass("is-ready");
+		const root = document.getElementById("root");
+		root.classList.add("is-ready");
 	}
 
 	/**
@@ -211,13 +206,12 @@ export class PsychoJS
 	 * @param {boolean} [options.waitBlanking] whether or not to wait for all rendering operations to be done
 	 * before flipping
 	 * @throws {Object.<string, *>} exception if a window has already been opened
-	 *
-	 * @public
 	 */
 	openWindow({
 		name,
 		fullscr,
 		color,
+		gamma,
 		units,
 		waitBlanking,
 		autoLog,
@@ -239,6 +233,7 @@ export class PsychoJS
 			name,
 			fullscr,
 			color,
+			gamma,
 			units,
 			waitBlanking,
 			autoLog,
@@ -260,9 +255,8 @@ export class PsychoJS
 	/**
 	 * Schedule a task.
 	 *
-	 * @param task - the task to be scheduled
-	 * @param args - arguments for that task
-	 * @public
+	 * @param {module:util.Scheduler~Task} task - the task to be scheduled
+	 * @param {*} args - arguments for that task
 	 */
 	schedule(task, args)
 	{
@@ -279,9 +273,8 @@ export class PsychoJS
 	 * Schedule a series of task based on a condition.
 	 *
 	 * @param {PsychoJS.condition} condition
-	 * @param {Scheduler} thenScheduler scheduler to run if the condition is true
-	 * @param {Scheduler} elseScheduler scheduler to run if the condition is false
-	 * @public
+	 * @param {Scheduler} thenScheduler - scheduler to run if the condition is true
+	 * @param {Scheduler} elseScheduler - scheduler to run if the condition is false
 	 */
 	scheduleCondition(condition, thenScheduler, elseScheduler)
 	{
@@ -309,8 +302,6 @@ export class PsychoJS
 	 * @param {string} [options.expName=UNKNOWN] - the name of the experiment
 	 * @param {Object.<string, *>} [options.expInfo] - additional information about the experiment
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
-	 * @async
-	 * @public
 	 */
 	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [], dataFileName } = {})
 	{
@@ -421,7 +412,6 @@ export class PsychoJS
 	 *   local to index.html unless they are prepended with a protocol.</li>
 	 *
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
-	 * @public
 	 */
 	waitForResources(resources = [])
 	{
@@ -442,11 +432,9 @@ export class PsychoJS
 	}
 
 	/**
-	 * Make the attributes of the given object those of PsychoJS and those of
-	 * the top level variable (e.g. window) as well.
+	 * Make the attributes of the given object those of window, such that they become global.
 	 *
-	 * @param {Object.<string, *>} obj the object whose attributes we will mirror
-	 * @public
+	 * @param {Object.<string, *>} obj the object whose attributes are to become global
 	 */
 	importAttributes(obj)
 	{
@@ -459,7 +447,6 @@ export class PsychoJS
 
 		for (const attribute in obj)
 		{
-			// this[attribute] = obj[attribute];
 			window[attribute] = obj[attribute];
 		}
 	}
@@ -473,9 +460,7 @@ export class PsychoJS
 	 *
 	 * @param {Object} options
 	 * @param {string} [options.message] - optional message to be displayed in a dialog box before quitting
-	 * @param {boolean} [options.isCompleted = false] - whether or not the participant has completed the experiment
-	 * @async
-	 * @public
+	 * @param {boolean} [options.isCompleted = false] - whether the participant has completed the experiment
 	 */
 	async quit({ message, isCompleted = false } = {})
 	{
@@ -483,6 +468,7 @@ export class PsychoJS
 
 		this._experiment.experimentEnded = true;
 		this._status = PsychoJS.Status.FINISHED;
+		const isServerEnv = this.getEnvironment() === ExperimentHandler.Environment.SERVER;
 
 		try
 		{
@@ -490,28 +476,32 @@ export class PsychoJS
 			this._scheduler.stop();
 
 			// remove the beforeunload listener:
-			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			if (isServerEnv)
 			{
 				window.removeEventListener("beforeunload", this.beforeunloadCallback);
 			}
 
 			// save the results and the logs of the experiment:
-			this.gui.dialog({
-				warning: "Closing the session. Please wait a few moments.",
-				showOK: false,
+			this.gui.finishDialog({
+				text: "Terminating the experiment. Please wait a few moments...",
+				nbSteps: 2 + ((isServerEnv) ? 1 : 0)
 			});
+
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
 				if (!this._serverMsg.has("__noOutput"))
 				{
+					this.gui.finishDialogNextStep("saving results");
 					await this._experiment.save();
+					this.gui.finishDialogNextStep("saving logs");
 					await this._logger.flush();
 				}
 			}
 
 			// close the session:
-			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
+			if (isServerEnv)
 			{
+				this.gui.finishDialogNextStep("closing the session");
 				await this._serverManager.closeSession(isCompleted);
 			}
 
@@ -546,6 +536,7 @@ export class PsychoJS
 					}
 				},
 			});
+
 		}
 		catch (error)
 		{
@@ -557,7 +548,6 @@ export class PsychoJS
 	/**
 	 * Configure PsychoJS for the running experiment.
 	 *
-	 * @async
 	 * @protected
 	 * @param {string} configURL - the URL of the configuration file
 	 * @param {string} name - the name of the experiment
@@ -676,8 +666,21 @@ export class PsychoJS
 		this._IP = {};
 		try
 		{
-			const geoResponse = await jQuery.get("http://www.geoplugin.net/json.gp");
-			const geoData = JSON.parse(geoResponse);
+			const url = "http://www.geoplugin.net/json.gp";
+			const response = await fetch(url, {
+				method: "GET",
+				mode: "cors",
+				cache: "no-cache",
+				credentials: "same-origin",
+				redirect: "follow",
+				referrerPolicy: "no-referrer"
+			});
+			if (response.status !== 200)
+			{
+				throw `unable to obtain the IP of the participant: ${response.statusText}`;
+			}
+			const geoData = await response.json();
+
 			this._IP = {
 				IP: geoData.geoplugin_request,
 				country: geoData.geoplugin_countryName,
@@ -695,7 +698,6 @@ export class PsychoJS
 
 	/**
 	 * Capture all errors and display them in a pop-up error box.
-	 *
 	 * @protected
 	 */
 	_captureErrors()
@@ -742,7 +744,7 @@ export class PsychoJS
 
 	/**
 	 * Make the various Status top level, in order to accommodate PsychoPy's Code Components.
-	 * @private
+	 * @protected
 	 */
 	_makeStatusTopLevel()
 	{
@@ -758,7 +760,6 @@ export class PsychoJS
  *
  * @enum {Symbol}
  * @readonly
- * @public
  *
  * @note PsychoPy is currently moving away from STOPPED and replacing STOPPED by FINISHED.
  * For backward compatibility reasons, we are keeping

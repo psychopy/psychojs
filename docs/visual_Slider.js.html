@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: visual/Slider.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>visual/Slider.js - PsychoJS API</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: visual/Slider.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#~_match">_match</a></li></ul></li><li></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="AudioClip.html#_base64ArrayBuffer">_base64ArrayBuffer</a></li><li data-type='method'><a href="AudioClip.html#_decodeAudio">_decodeAudio</a></li><li data-type='method'><a href="AudioClip.html#_GoogleTranscribe">_GoogleTranscribe</a></li><li data-type='method'><a href="AudioClip.html#download">download</a></li><li data-type='method'><a href="AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="AudioClip.html#stopPlayback">stopPlayback</a></li><li data-type='method'><a href="AudioClip.html#transcribe">transcribe</a></li><li data-type='method'><a href="AudioClip.html#upload">upload</a></li></ul></li><li><a href="AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="ButtonStim.html">ButtonStim</a><ul class='methods'><li data-type='method'><a href="ButtonStim.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="ButtonStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ButtonStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="ButtonStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="ButtonStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ButtonStim.html#clear">clear</a></li><li data-type='method'><a href="ButtonStim.html#getText">getText</a></li><li data-type='method'><a href="ButtonStim.html#reset">reset</a></li><li data-type='method'><a href="ButtonStim.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="ButtonStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="ButtonStim.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="ButtonStim.html#setColor">setColor</a></li><li data-type='method'><a href="ButtonStim.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="ButtonStim.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="ButtonStim.html#setFont">setFont</a></li><li data-type='method'><a href="ButtonStim.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="ButtonStim.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#setSize">setSize</a></li><li data-type='method'><a href="ButtonStim.html#setText">setText</a></li></ul></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="Clock.html#add">add</a></li><li data-type='method'><a href="Clock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="Clock.html#getTime">getTime</a></li><li data-type='method'><a href="Clock.html#reset">reset</a></li></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method'><a href="Color.html#toString">toString</a></li></ul></li><li><a href="CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="CountdownTimer.html#add">add</a></li><li data-type='method'><a href="CountdownTimer.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="EventEmitter.html#off">off</a></li><li data-type='method'><a href="EventEmitter.html#on">on</a></li><li data-type='method'><a href="EventEmitter.html#once">once</a></li></ul></li><li><a href="EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="EventManager.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="EventManager.html#stopMoveClock">stopMoveClock</a></li></ul></li><li><a href="ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#save">save</a></li></ul></li><li><a href="FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="FaceDetector.html#setInput">setInput</a></li><li data-type='method'><a href="FaceDetector.html#start">start</a></li><li data-type='method'><a href="FaceDetector.html#stop">stop</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Form.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Form.html#_importItems">_importItems</a></li><li data-type='method'><a href="Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="Form.html#_processItems">_processItems</a></li><li data-type='method'><a href="Form.html#_sanitizeItems">_sanitizeItems</a></li><li data-type='method'><a href="Form.html#_setupStimuli">_setupStimuli</a></li><li data-type='method'><a href="Form.html#_updateDecorations">_updateDecorations</a></li><li data-type='method'><a href="Form.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Form.html#_updateVisibleStimuli">_updateVisibleStimuli</a></li><li data-type='method'><a href="Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="Form.html#contains">contains</a></li><li data-type='method'><a href="Form.html#draw">draw</a></li><li data-type='method'><a href="Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="Form.html#getData">getData</a></li><li data-type='method'><a href="Form.html#hide">hide</a></li><li data-type='method'><a href="Form.html#refresh">refresh</a></li><li data-type='method'><a href="Form.html#release">release</a></li><li data-type='method'><a href="Form.html#reset">reset</a></li><li data-type='method'><a href="Form.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Form.html#setDepth">setDepth</a></li><li data-type='method'><a href="Form.html#setOri">setOri</a></li><li data-type='method'><a href="Form.html#setPos">setPos</a></li><li data-type='method'><a href="Form.html#setSize">setSize</a></li></ul></li><li><a href="GratingStim.html">GratingStim</a><ul class='methods'><li data-type='method'><a href="GratingStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="GratingStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="GratingStim.html#_getPixiMeshFromPredefinedShaders">_getPixiMeshFromPredefinedShaders</a></li><li data-type='method'><a href="GratingStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="GratingStim.html#setBlendmode">setBlendmode</a></li><li data-type='method'><a href="GratingStim.html#setColor">setColor</a></li><li data-type='method'><a href="GratingStim.html#setColorSpace">setColorSpace</a></li><li data-type='method'><a href="GratingStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="GratingStim.html#setMask">setMask</a></li><li data-type='method'><a href="GratingStim.html#setOpacity">setOpacity</a></li><li data-type='method'><a href="GratingStim.html#setPhase">setPhase</a></li><li data-type='method'><a href="GratingStim.html#setSF">setSF</a></li><li data-type='method'><a href="GratingStim.html#setTex">setTex</a></li></ul></li><li><a href="GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="GUI.html#_onCancelExperiment">_onCancelExperiment</a></li><li data-type='method'><a href="GUI.html#_onResourceEvents">_onResourceEvents</a></li><li data-type='method'><a href="GUI.html#_onStartExperiment">_onStartExperiment</a></li><li data-type='method'><a href="GUI.html#_setProgressMessage">_setProgressMessage</a></li><li data-type='method'><a href="GUI.html#_updateDialog">_updateDialog</a></li><li data-type='method'><a href="GUI.html#_updateProgressBar">_updateProgressBar</a></li><li data-type='method'><a href="GUI.html#_userFriendlyError">_userFriendlyError</a></li><li data-type='method'><a href="GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="GUI.html#dialog">dialog</a></li><li data-type='method'><a href="GUI.html#DlgFromDict">DlgFromDict</a></li><li data-type='method'><a href="GUI.html#finishDialog">finishDialog</a></li></ul></li><li><a href="ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ImageStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="ImageStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ImageStim.html#setImage">setImage</a></li><li data-type='method'><a href="ImageStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="ImageStim.html#setMask">setMask</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="Keyboard.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="Keyboard.html#start">start</a></li><li data-type='method'><a href="Keyboard.html#stop">stop</a></li></ul></li><li><a href="KeyPress.html">KeyPress</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#_customConsoleLayout">_customConsoleLayout</a></li><li data-type='method'><a href="Logger.html#_getValue">_getValue</a></li><li data-type='method'><a href="Logger.html#_throttle">_throttle</a></li><li data-type='method'><a href="Logger.html#data">data</a></li><li data-type='method'><a href="Logger.html#exp">exp</a></li><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#log">log</a></li><li data-type='method'><a href="Logger.html#setLevel">setLevel</a></li></ul></li><li><a href="Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="Microphone.html#download">download</a></li><li data-type='method'><a href="Microphone.html#flush">flush</a></li><li data-type='method'><a href="Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="Microphone.html#pause">pause</a></li><li data-type='method'><a href="Microphone.html#resume">resume</a></li><li data-type='method'><a href="Microphone.html#start">start</a></li><li data-type='method'><a href="Microphone.html#stop">stop</a></li><li data-type='method'><a href="Microphone.html#upload">upload</a></li></ul></li><li><a href="MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="MinimalStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="MinimalStim.html#release">release</a></li><li data-type='method'><a href="MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_makeStatusTopLevel">_makeStatusTopLevel</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#_prepareSequence">_prepareSequence</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-hardware.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-hardware.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-hardware.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#_upload">_upload</a></li><li data-type='method'><a href="module-hardware.Camera.html#authorize">authorize</a></li><li data-type='method'><a href="module-hardware.Camera.html#close">close</a></li><li data-type='method'><a href="module-hardware.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-hardware.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-hardware.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-hardware.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-hardware.Camera.html#open">open</a></li><li data-type='method'><a href="module-hardware.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-hardware.Camera.html#record">record</a></li><li data-type='method'><a href="module-hardware.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-hardware.Camera.html#stop">stop</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#emit">emit</a></li><li data-type='method'><a href="module-util.PsychObject.html#off">off</a></li><li data-type='method'><a href="module-util.PsychObject.html#on">on</a></li><li data-type='method'><a href="module-util.PsychObject.html#once">once</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li><li data-type='method'><a href="module-visual.VisualStim.html#draw">draw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#hide">hide</a></li><li data-type='method'><a href="module-visual.VisualStim.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.VisualStim.html#release">release</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setDepth">setDepth</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setOri">setOri</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setPos">setPos</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setSize">setSize</a></li></ul></li><li><a href="MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="MovieStim.html">MovieStim</a><ul class='methods'><li data-type='method'><a href="MovieStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="MovieStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="MovieStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MovieStim.html#pause">pause</a></li><li data-type='method'><a href="MovieStim.html#play">play</a></li><li data-type='method'><a href="MovieStim.html#reset">reset</a></li><li data-type='method'><a href="MovieStim.html#seek">seek</a></li><li data-type='method'><a href="MovieStim.html#setMovie">setMovie</a></li><li data-type='method'><a href="MovieStim.html#stop">stop</a></li></ul></li><li><a href="MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="Polygon.html">Polygon</a><ul class='methods'><li data-type='method'><a href="Polygon.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Polygon.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Polygon.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Polygon.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Polygon.html#contains">contains</a></li><li data-type='method'><a href="Polygon.html#setEdges">setEdges</a></li><li data-type='method'><a href="Polygon.html#setRadius">setRadius</a></li><li data-type='method'><a href="Polygon.html#setVertices">setVertices</a></li></ul></li><li><a href="QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="Rect.html">Rect</a><ul class='methods'><li data-type='method'><a href="Rect.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Rect.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Rect.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Rect.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Rect.html#_updateVertices">_updateVertices</a></li><li data-type='method'><a href="Rect.html#contains">contains</a></li><li data-type='method'><a href="Rect.html#setHeight">setHeight</a></li><li data-type='method'><a href="Rect.html#setVertices">setVertices</a></li><li data-type='method'><a href="Rect.html#setWidth">setWidth</a></li></ul></li><li><a href="Scheduler.html">Scheduler</a><ul class='methods'><li data-type='method'><a href="Scheduler.html#add">add</a></li><li data-type='method'><a href="Scheduler.html#addConditional">addConditional</a></li><li data-type='method'><a href="Scheduler.html#start">start</a></li><li data-type='method'><a href="Scheduler.html#stop">stop</a></li></ul></li><li><a href="ServerManager.html">ServerManager</a><ul class='methods'><li data-type='method'><a href="ServerManager.html#_downloadResources">_downloadResources</a></li><li data-type='method'><a href="ServerManager.html#_listResources">_listResources</a></li><li data-type='method'><a href="ServerManager.html#_queryServerAPI">_queryServerAPI</a></li><li data-type='method'><a href="ServerManager.html#_setupPreloadQueue">_setupPreloadQueue</a></li><li data-type='method'><a href="ServerManager.html#closeSession">closeSession</a></li><li data-type='method'><a href="ServerManager.html#getConfiguration">getConfiguration</a></li><li data-type='method'><a href="ServerManager.html#getResource">getResource</a></li><li data-type='method'><a href="ServerManager.html#getResourceStatus">getResourceStatus</a></li><li data-type='method'><a href="ServerManager.html#openSession">openSession</a></li><li data-type='method'><a href="ServerManager.html#prepareResources">prepareResources</a></li><li data-type='method'><a href="ServerManager.html#resetStatus">resetStatus</a></li><li data-type='method'><a href="ServerManager.html#setStatus">setStatus</a></li><li data-type='method'><a href="ServerManager.html#uploadAudioVideo">uploadAudioVideo</a></li><li data-type='method'><a href="ServerManager.html#uploadData">uploadData</a></li><li data-type='method'><a href="ServerManager.html#uploadLog">uploadLog</a></li><li data-type='method'><a href="ServerManager.html#waitForResources">waitForResources</a></li></ul></li><li><a href="ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ShapeStim.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="ShapeStim.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="ShapeStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ShapeStim.html#contains">contains</a></li><li data-type='method'><a href="ShapeStim.html#setVertices">setVertices</a></li></ul></li><li><a href="Shelf.html">Shelf</a><ul class='methods'><li data-type='method'><a href="Shelf.html#_checkAvailability">_checkAvailability</a></li><li data-type='method'><a href="Shelf.html#_checkKey">_checkKey</a></li><li data-type='method'><a href="Shelf.html#_getValue">_getValue</a></li><li data-type='method'><a href="Shelf.html#_updateValue">_updateValue</a></li><li data-type='method'><a href="Shelf.html#addIntegerValue">addIntegerValue</a></li><li data-type='method'><a href="Shelf.html#appendListValue">appendListValue</a></li><li data-type='method'><a href="Shelf.html#clearListValue">clearListValue</a></li><li data-type='method'><a href="Shelf.html#counterBalanceSelect">counterBalanceSelect</a></li><li data-type='method'><a href="Shelf.html#flipBooleanValue">flipBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getBooleanValue">getBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldNames">getDictionaryFieldNames</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldValue">getDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryValue">getDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#getIntegerValue">getIntegerValue</a></li><li data-type='method'><a href="Shelf.html#getListValue">getListValue</a></li><li data-type='method'><a href="Shelf.html#getTextValue">getTextValue</a></li><li data-type='method'><a href="Shelf.html#incrementComponent">incrementComponent</a></li><li data-type='method'><a href="Shelf.html#popListValue">popListValue</a></li><li data-type='method'><a href="Shelf.html#setBooleanValue">setBooleanValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryFieldValue">setDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryValue">setDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#setIntegerValue">setIntegerValue</a></li><li data-type='method'><a href="Shelf.html#setListValue">setListValue</a></li><li data-type='method'><a href="Shelf.html#setTextValue">setTextValue</a></li><li data-type='method'><a href="Shelf.html#shuffleListValue">shuffleListValue</a></li></ul></li><li><a href="Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="Slider.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Slider.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Slider.html#_getPosition_px">_getPosition_px</a></li><li data-type='method'><a href="Slider.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="Slider.html#_granularise">_granularise</a></li><li data-type='method'><a href="Slider.html#_handlePointerDown">_handlePointerDown</a></li><li data-type='method'><a href="Slider.html#_handlePointerMove">_handlePointerMove</a></li><li data-type='method'><a href="Slider.html#_handlePointerUp">_handlePointerUp</a></li><li data-type='method'><a href="Slider.html#_isHorizontal">_isHorizontal</a></li><li data-type='method'><a href="Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="Slider.html#_posToRating">_posToRating</a></li><li data-type='method'><a href="Slider.html#_ratingToPos">_ratingToPos</a></li><li data-type='method'><a href="Slider.html#_removeEventListeners">_removeEventListeners</a></li><li data-type='method'><a href="Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="Slider.html#_setupBar">_setupBar</a></li><li data-type='method'><a href="Slider.html#_setupLabels">_setupLabels</a></li><li data-type='method'><a href="Slider.html#_setupMarker">_setupMarker</a></li><li data-type='method'><a href="Slider.html#_setupSlider">_setupSlider</a></li><li data-type='method'><a href="Slider.html#_setupStyle">_setupStyle</a></li><li data-type='method'><a href="Slider.html#_setupTicks">_setupTicks</a></li><li data-type='method'><a href="Slider.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Slider.html#contains">contains</a></li><li data-type='method'><a href="Slider.html#draw">draw</a></li><li data-type='method'><a href="Slider.html#getRating">getRating</a></li><li data-type='method'><a href="Slider.html#getRT">getRT</a></li><li data-type='method'><a href="Slider.html#hide">hide</a></li><li data-type='method'><a href="Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="Slider.html#recordRating">recordRating</a></li><li data-type='method'><a href="Slider.html#refresh">refresh</a></li><li data-type='method'><a href="Slider.html#release">release</a></li><li data-type='method'><a href="Slider.html#reset">reset</a></li><li data-type='method'><a href="Slider.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Slider.html#setDepth">setDepth</a></li><li data-type='method'><a href="Slider.html#setMarkerPos">setMarkerPos</a></li><li data-type='method'><a href="Slider.html#setOri">setOri</a></li><li data-type='method'><a href="Slider.html#setPos">setPos</a></li><li data-type='method'><a href="Slider.html#setRating">setRating</a></li><li data-type='method'><a href="Slider.html#setReadOnly">setReadOnly</a></li><li data-type='method'><a href="Slider.html#setSize">setSize</a></li></ul></li><li><a href="SpeechRecognition.html">SpeechRecognition</a><ul class='methods'><li data-type='method'><a href="SpeechRecognition.html#_onChange">_onChange</a></li><li data-type='method'><a href="SpeechRecognition.html#_prepareRecognition">_prepareRecognition</a></li><li data-type='method'><a href="SpeechRecognition.html#clearTranscripts">clearTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#getTranscripts">getTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#start">start</a></li><li data-type='method'><a href="SpeechRecognition.html#stop">stop</a></li></ul></li><li><a href="TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="TextBox.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextBox.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextBox.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextBox.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="TextBox.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextBox.html#clear">clear</a></li><li data-type='method'><a href="TextBox.html#getText">getText</a></li><li data-type='method'><a href="TextBox.html#reset">reset</a></li><li data-type='method'><a href="TextBox.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="TextBox.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="TextBox.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="TextBox.html#setColor">setColor</a></li><li data-type='method'><a href="TextBox.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="TextBox.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="TextBox.html#setFont">setFont</a></li><li data-type='method'><a href="TextBox.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="TextBox.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="TextBox.html#setSize">setSize</a></li><li data-type='method'><a href="TextBox.html#setText">setText</a></li></ul></li><li><a href="TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextStim.html#_getDefaultWrapWidth">_getDefaultWrapWidth</a></li><li data-type='method'><a href="TextStim.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="TextStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextStim.html#getBoundingBox">getBoundingBox</a></li><li data-type='method'><a href="TextStim.html#getTextMetrics">getTextMetrics</a></li><li data-type='method'><a href="TextStim.html#setColor">setColor</a></li></ul></li><li><a href="TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="TonePlayer.html#_initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TonePlayer.html#play">play</a></li><li data-type='method'><a href="TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TonePlayer.html#stop">stop</a></li></ul></li><li><a href="TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TrackPlayer.html#play">play</a></li><li data-type='method'><a href="TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="Transcript.html">Transcript</a></li><li><a href="Window.html">Window</a><ul class='methods'><li data-type='method'><a href="Window.html#_fullRefresh">_fullRefresh</a></li><li data-type='method'><a href="Window.html#_refresh">_refresh</a></li><li data-type='method'><a href="Window.html#_setupPixi">_setupPixi</a></li><li data-type='method'><a href="Window.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Window.html#_writeLogOnFlip">_writeLogOnFlip</a></li><li data-type='method'><a href="Window.html#addPixiObject">addPixiObject</a></li><li data-type='method'><a href="Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="Window.html#close">close</a></li><li data-type='method'><a href="Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="Window.html#removePixiObject">removePixiObject</a></li><li data-type='method'><a href="Window.html#render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="SoundPlayer.html#play">play</a></li><li data-type='method'><a href="SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="SoundPlayer.html#stop">stop</a></li></ul></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">visual/Slider.js</h1>
+    
 
     
 
@@ -30,65 +54,26 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-
-import * as PIXI from 'pixi.js-legacy';
-import {VisualStim} from './VisualStim';
-import {Color} from '../util/Color';
-import {ColorMixin} from '../util/ColorMixin';
-import {WindowMixin} from '../core/WindowMixin';
-import {Clock} from '../util/Clock';
-import * as util from '../util/Util';
-import {PsychoJS} from "../core/PsychoJS";
-
+import * as PIXI from "pixi.js-legacy";
+import { PsychoJS } from "../core/PsychoJS.js";
+import { WindowMixin } from "../core/WindowMixin.js";
+import { Clock } from "../util/Clock.js";
+import { Color } from "../util/Color.js";
+import { ColorMixin } from "../util/ColorMixin.js";
+import { to_pixiPoint } from "../util/Pixi.js";
+import * as util from "../util/Util.js";
+import { VisualStim } from "./VisualStim.js";
 
 /**
  * Slider stimulus.
  *
- * @name module:visual.Slider
- * @class
  * @extends module:visual.VisualStim
  * @mixes module:util.ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
- * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
- * @param {number} [options.ori = 0.0] - the orientation (in degrees)
- * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
- *
- * @param {Color} [options.color= Color('LightGray')] the color of the slider
- * @param {number} [options.contrast= 1.0] - the contrast of the slider
- * @param {number} [options.opacity= 1.0] - the opacity of the slider
- *
- * @param {string} [options.style= [Slider.Style.RATING]] - the slider style
- * @param {number[]} [options.ticks= [1,2,3,4,5]] - the array of ticks
- * @param {number[]} [options.labels= []] - the array of labels
- * @param {number} [options.granularity= 0] - the granularity
- * @param {boolean} [options.flip= false] - whether or not to flip the position of the marker, ticks,
- * and labels with respect to the central bar
- * @param {boolean} [options.readOnly= false] - whether or not the slider is read only
- *
- * @param {string} [options.font= 'Arial'] - the text font
- * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
- * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
- * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
- * Slider's units: 14 for 'pix', 0.03 otherwise
- *
- * @param {boolean} [options.compact= false] - whether or not the slider is compact, i.e. whether all graphical
- * elements (e.g. labels) fit within its size
- *
- * @param {PIXI.Graphics} options.clipMask - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
- *   frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- *
- * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
- * 	which must be updated when this Slider is updated, e.g. a Form.
  *
  * @todo check that parameters are valid, e.g. ticks are an array of numbers, etc.
  * @todo readOnly
@@ -97,9 +82,79 @@ import {PsychoJS} from "../core/PsychoJS";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({name, win, pos, size, ori, units, color, markerColor, lineColor, contrast, opacity, style, ticks, labels, granularity, flip, readOnly, font, bold, italic, fontSize, compact, clipMask, autoDraw, autoLog, dependentStims} = {})
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
+	 * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
+	 * @param {number} [options.ori = 0.0] - the orientation (in degrees)
+	 * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
+	 *
+	 * @param {Color} [options.color= Color('LightGray')] the color of the slider
+	 * @param {number} [options.contrast= 1.0] - the contrast of the slider
+	 * @param {number} [options.opacity= 1.0] - the opacity of the slider
+	 *
+	 * @param {string} [options.style= [Slider.Style.RATING]] - the slider style
+	 * @param {number[]} [options.ticks= [1,2,3,4,5]] - the array of ticks
+	 * @param {number[]} [options.labels= []] - the array of labels
+	 * @param {number} [options.granularity= 0] - the granularity
+	 * @param {boolean} [options.flip= false] - whether or not to flip the position of the marker, ticks,
+	 * and labels with respect to the central bar
+	 * @param {boolean} [options.readOnly= false] - whether or not the slider is read only
+	 *
+	 * @param {string} [options.font= 'Arial'] - the text font
+	 * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
+	 * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
+	 * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
+	 * Slider's units: 14 for 'pix', 0.03 otherwise
+	 *
+	 * @param {boolean} [options.compact= false] - whether or not the slider is compact, i.e. whether all graphical
+	 * elements (e.g. labels) fit within its size
+	 *
+	 * @param {PIXI.Graphics} options.clipMask - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
+	 *   frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 *
+	 * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
+	 * 	which must be updated when this Slider is updated, e.g. a Form.
+	 */
+	constructor(
+		{
+			name,
+			win,
+			pos,
+			size,
+			ori,
+			units,
+			color,
+			markerColor,
+			lineColor,
+			contrast,
+			opacity,
+			depth,
+			style,
+			ticks,
+			labels,
+			startValue,
+			granularity,
+			flip,
+			readOnly,
+			font,
+			bold,
+			italic,
+			fontSize,
+			compact,
+			clipMask,
+			autoDraw,
+			autoLog,
+			dependentStims,
+		} = {},
+	)
 	{
-		super({name, win, units, ori, opacity, pos, size, clipMask, autoDraw, autoLog});
+		super({ name, win, units, ori, opacity, depth, pos, size, clipMask, autoDraw, autoLog });
 
 		this._needMarkerUpdate = false;
 
@@ -123,119 +178,122 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		};
 
 		this._addAttribute(
-			'style',
+			"style",
 			style,
 			[Slider.Style.RATING],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'ticks',
+			"ticks",
 			ticks,
 			[1, 2, 3, 4, 5],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'labels',
+			"labels",
 			labels,
 			[],
-			onChange(true, true, true)
+			onChange(true, true, true),
 		);
 		this._addAttribute(
-			'granularity',
+			"startValue",
+			startValue,
+			undefined
+		);
+		this._addAttribute(
+			"granularity",
 			granularity,
 			0,
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 		this._addAttribute(
-			'readOnly',
+			"readOnly",
 			readOnly,
-			false
+			false,
 		);
 		this._addAttribute(
-			'compact',
+			"compact",
 			compact,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
 		// font:
 		this._addAttribute(
-			'font',
+			"font",
 			font,
-			'Arial',
-			this._onChange(true, true)
+			"Arial",
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'fontSize',
+			"fontSize",
 			fontSize,
-			(this._units === 'pix') ? 14 : 0.03,
-			this._onChange(true, true)
+			(this._units === "pix") ? 14 : 0.03,
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'bold',
+			"bold",
 			bold,
 			true,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'italic',
+			"italic",
 			italic,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 		this._addAttribute(
-			'flip',
+			"flip",
 			flip,
 			false,
-			this._onChange(true, true)
+			this._onChange(true, true),
 		);
 
 		// color:
 		this._addAttribute(
-			'color',
+			"color",
 			color,
-			'lightgray',
-			this._onChange(true, false)
+			"lightgray",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'lineColor',
+			"lineColor",
 			lineColor,
-			'lightgray',
-			this._onChange(true, false)
+			"lightgray",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'markerColor',
+			"markerColor",
 			markerColor,
-			'red',
-			this._onChange(true, false)
+			"red",
+			this._onChange(true, false),
 		);
 		this._addAttribute(
-			'contrast',
+			"contrast",
 			contrast,
 			1.0,
-			this._onChange(true, false)
+			this._onChange(true, false),
 		);
 
 		this._addAttribute(
-			'dependentStims',
+			"dependentStims",
 			dependentStims,
 			[],
-			this._onChange(false, false)
+			this._onChange(false, false),
 		);
 
-
-
 		// slider rating (which might be different from the visible marker rating):
-		this._addAttribute('rating', undefined);
+		this._addAttribute("rating", undefined);
 
 		// visible marker rating (which might be different from the actual rating):
-		this._addAttribute('markerPos', undefined);
+		this._addAttribute("markerPos", undefined);
 
 		// full history of ratings and response times:
-		this._addAttribute('history', []);
+		this._addAttribute("history", []);
 
 		// various graphical components:
-		this._addAttribute('lineAspectRatio', 0.01);
+		this._addAttribute("lineAspectRatio", 0.01);
 
 		// check for attribute conflicts, missing values, etc.:
 		this._sanitizeAttributes();
@@ -245,20 +303,20 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// the internal response clock, used to time the marker change events:
 		this._responseClock = new Clock();
+		this._pixiLabels = [];
 
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
+
+		this._handlePointerDownBinded = this._handlePointerDown.bind(this);
+		this._handlePointerUpBinded = this._handlePointerUp.bind(this);
+		this._handlePointerMoveBinded = this._handlePointerMove.bind(this);
 	}
-
-
 
 	/**
 	 * Force a refresh of the stimulus.
-	 *
-	 * @name module:visual.Slider#refresh
-	 * @public
 	 */
 	refresh()
 	{
@@ -267,17 +325,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._needMarkerUpdate = true;
 	}
 
-
-
 	/**
 	 * Reset the slider.
-	 *
-	 * @name module:visual.Slider#reset
-	 * @public
 	 */
 	reset()
 	{
-		this.psychoJS.logger.debug('reset Slider: ', this._name);
+		this.psychoJS.logger.debug("reset Slider: ", this._name);
 
 		this._markerPos = undefined;
 		this._history = [];
@@ -289,19 +342,25 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._needUpdate = true;
 
 		// the marker should be invisible when markerPos is undefined:
-		if (typeof this._marker !== 'undefined')
+		if (typeof this._marker !== "undefined")
 		{
 			this._marker.alpha = 0;
 		}
 	}
 
-
+	/**
+	 * Query whether or not the marker is currently being dragged.
+	 *
+	 * @returns {boolean} whether or not the marker is being dragged
+	 */
+	isMarkerDragging()
+	{
+		return this._markerDragging;
+	}
 
 	/**
 	 * Get the current value of the rating.
 	 *
-	 * @name module:visual.Slider#getRating
-	 * @public
 	 * @returns {number | undefined} the rating or undefined if there is none
 	 */
 	getRating()
@@ -317,13 +376,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Get the response time of the most recent change to the rating.
 	 *
-	 * @name module:visual.Slider#getRT
-	 * @public
 	 * @returns {number | undefined} the response time (in second) or undefined if there is none
 	 */
 	getRT()
@@ -339,22 +394,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Setter for the readOnly attribute.
 	 *
 	 * &lt;p>Read-only sliders are half-opaque and do not provide responses.&lt;/p>
 	 *
-	 *
-	 * @name module:visual.Slider#setReadOnly
-	 * @public
 	 * @param {boolean} [readOnly= true] - whether or not the slider is read-only
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
 	setReadOnly(readOnly = true, log = false)
 	{
-		const hasChanged = this._setAttribute('readOnly', readOnly, log);
+		const hasChanged = this._setAttribute("readOnly", readOnly, log);
 
 		if (hasChanged)
 		{
@@ -372,17 +422,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Setter for the markerPos attribute.
 	 *
 	 * &lt;p>Setting markerPos changes the visible position of the marker to the specified rating
 	 * but does not change the actual rating returned by the slider.&lt;/p>
 	 *
-	 *
-	 * @name module:visual.Slider#setMarkerPos
-	 * @public
 	 * @param {number} displayedRating - the displayed rating
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -399,15 +444,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Setter for the rating attribute.
 	 *
 	 * &lt;p>Setting the rating does not change the visible position of the marker.&lt;/p>
 	 *
-	 * @name module:visual.Slider#setRating
-	 * @public
 	 * @param {number} rating - the rating
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -420,59 +461,70 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			rating = this._labels[Math.round(rating)];
 		}
 
-		this._setAttribute('rating', rating, log);
+		this._setAttribute("rating", rating, log);
 	}
 
-
+	/**
+	 * Setter for the orientation attribute.
+	 *
+	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setOri (ori = 0, log = false)
+	{
+		const oriChanged = this._setAttribute("ori", ori, log);
+		if (oriChanged)
+		{
+			this._pixi.rotation = -this._ori * Math.PI / 180;
+			let i;
+			for (i = 0; i &lt; this._pixiLabels.length; ++i)
+			{
+				this._pixiLabels[i].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			}
+		}
+	}
 
 	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
-	set borderColor(color) {
+	set borderColor(color)
+	{
 		this.lineColor = color;
 	}
 
-
-
-	setBorderColor(color) {
+	setBorderColor(color)
+	{
 		this.setLineColor(color);
 	}
 
-
-
-	get borderColor() {
+	get borderColor()
+	{
 		return this.lineColor;
 	}
 
-
-
-	getBorderColor() {
+	getBorderColor()
+	{
 		return this.getLineColor();
 	}
 
-
 	/** Let `fillColor` alias `markerColor` to parallel PsychoPy */
-	set fillColor(color) {
+	set fillColor(color)
+	{
 		this.markerColor = color;
 	}
 
-
-
-	setFillColor(color) {
+	setFillColor(color)
+	{
 		this.setMarkerColor(color);
 	}
 
-
-
-	get fillColor() {
+	get fillColor()
+	{
 		return this.markerColor;
 	}
 
-
-
-	getFillColor() {
+	getFillColor()
+	{
 		return this.getMarkerColor();
 	}
-
-
 
 	/**
 	 * Estimate the bounding box.
@@ -480,8 +532,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @note this method calculates the position of the labels, since that is necessary to the estimation of
 	 * the bounding box.
 	 *
-	 * @name module:visual.Slider#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -489,18 +539,18 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	{
 		// setup the slider's style (taking into account the Window dimension, etc.):
 		this._setupStyle();
-		
+
 		// calculate various values in pixel units:
 		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map((v) => Math.max(1, v));
 		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
 		const pos_px = util.to_px(this._pos, this._units, this._win);
 		const size_px = util.to_px(this._size, this._units, this._win);
 
 		// calculate the position of the ticks:
 		const tickPositions = this._ratingToPos(this._ticks);
-		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		this._tickPositions_px = tickPositions.map((p) => util.to_px(p, this._units, this._win));
 
 		// left, top, right, bottom limits:
 		const limits_px = [0, 0, size_px[0], size_px[1]];
@@ -517,7 +567,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		for (let l = 0; l &lt; this._labels.length; ++l)
 		{
-			const tickPositionIndex = Math.round( l / (this._labels.length - 1) * (this._ticks.length - 1) );
+			const tickPositionIndex = Math.round(l / (this._labels.length - 1) * (this._ticks.length - 1));
 			this._labelPositions_px[l] = this._tickPositions_px[tickPositionIndex];
 			const labelBounds = PIXI.TextMetrics.measureText(this._labels[l].toString(), labelTextStyle);
 
@@ -533,7 +583,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 					this._labelPositions_px[l][1] += this._tickSize_px[1];
 				}
 
-				if (this._style.indexOf(Slider.Style.LABELS45) === -1)
+				if (this._style.indexOf(Slider.Style.LABELS_45) === -1)
 				{
 					this._labelPositions_px[l][0] -= labelBounds.width / 2;
 					if (this._compact)
@@ -542,8 +592,10 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 					}
 
 					// ensure that that labels are not overlapping:
-					if (prevLabelBounds &amp;&amp;
-						(this._labelPositions_px[l - 1][0] + prevLabelBounds.width + tolerance >= this._labelPositions_px[l][0]))
+					if (
+						prevLabelBounds
+						&amp;&amp; (this._labelPositions_px[l - 1][0] + prevLabelBounds.width + tolerance >= this._labelPositions_px[l][0])
+					)
 					{
 						if (prevNonOverlapOffset === 0)
 						{
@@ -603,52 +655,89 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._getLengthUnits(position_px.x + limits_px[0]),
 			this._getLengthUnits(position_px.y + limits_px[1]),
 			this._getLengthUnits(limits_px[2] - limits_px[0]),
-			this._getLengthUnits(limits_px[3] - limits_px[1])
+			this._getLengthUnits(limits_px[3] - limits_px[1]),
 		);
 	}
-
-
 
 	/**
 	 * Sanitize the slider attributes: check for attribute conflicts, missing values, etc.
 	 *
-	 * @name module:visual.Slider#_sanitizeAttributes
-	 * @function
 	 * @protected
 	 */
 	_sanitizeAttributes()
 	{
+		this._isSliderStyle = false;
+		this._frozenMarker = false;
+
 		// convert potential string styles into Symbols:
-		this._style.forEach( (style, index) =>
+		this._style.forEach((style, index) =>
 		{
-			if (typeof style === 'string')
+			if (typeof style === "string")
 			{
 				this._style[index] = Symbol.for(style.toUpperCase());
 			}
 		});
 
-		// TODO: only two ticks for SLIDER type, non-empty ticks, that RADIO is also categorical, etc.
+		// TODO: non-empty ticks, RADIO is also categorical, etc.
+
+		// SLIDER style: two ticks, first one is zero, second one is > 1
+		if (this._style.indexOf(Slider.Style.SLIDER) > -1)
+		{
+			this._isSliderStyle = true;
+
+			// more than 2 ticks: cut to two
+			if (this._ticks.length > 2)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER and more than two ticks. We cut the ticks to 2.`);
+				this._ticks = this._ticks.slice(0, 2);
+			}
+
+			// less than 2 ticks: error
+			if (this._ticks.length &lt; 2)
+			{
+				throw {
+					origin: "Slider._sanitizeAttributes",
+					context: "when sanitizing the attributes of Slider: " + this._name,
+					error: "less than 2 ticks were given for a slider of type: SLIDER"
+				}
+			}
+
+			// first tick different from zero: change it to zero
+			if (this._ticks[0] !== 0)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER but the first tick is not 0. We changed it to 0.`);
+				this._ticks[0] = 0;
+			}
+
+			// second tick smaller than 1: change it to 1
+			if (this._ticks[1] &lt; 1)
+			{
+				this.psychoJS.logger.warn(`Slider "${this._name}" has style: SLIDER but the second tick is less than 1. We changed it to 1.`);
+				this._ticks[1] = 1;
+			}
+
+			// second tick is 1: the marker is frozen
+			if (this._ticks[1] === 1)
+			{
+				this._frozenMarker = true;
+			}
+
+		}
 
 		// deal with categorical sliders:
 		this._isCategorical = (this._ticks.length === 0);
 		if (this._isCategorical)
 		{
-			this._ticks = [...Array(this._labels.length)].map( (_, i) => i );
+			this._ticks = [...Array(this._labels.length)].map((_, i) => i);
 			this._granularity = 1.0;
 		}
-
 	}
-
-
 
 	/**
 	 * Set the current rating.
 	 *
 	 * &lt;p>Setting the rating does also change the visible position of the marker.&lt;/p>
 	 *
-	 * @name module:visual.Slider#recordRating
-	 * @function
-	 * @public
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
 	 * @param {boolean} [log= false] - whether of not to log
@@ -656,7 +745,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	recordRating(rating, responseTime = undefined, log = false)
 	{
 		// get response time:
-		if (typeof responseTime === 'undefined')
+		if (typeof responseTime === "undefined")
 		{
 			responseTime = this._responseClock.getTime();
 		}
@@ -667,20 +756,29 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this.setRating(rating, log);
 
 		// add rating and response time to history:
-		this._history.push({rating: this._rating, responseTime});
-		this.psychoJS.logger.debug('record a new rating: ', this._rating, 'with response time: ', responseTime, 'for Slider: ', this._name);
+		this._history.push({ rating: this._rating, responseTime });
+		this.psychoJS.logger.debug("record a new rating: ", this._rating, "with response time: ", responseTime, "for Slider: ", this._name);
 
 		// update slider:
 		this._needMarkerUpdate = true;
 		this._needUpdate = true;
 	}
 
+	/**
+	 * Release the PIXI representation, if there is one.
+	 *
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	release (log = false)
+	{
+		this._removeEventListeners();
+		super.release(log);
+	}
 
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.Slider#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -697,10 +795,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._pixi.scale.x = 1;
 		this._pixi.scale.y = -1;
 
-		this._pixi.rotation = this._ori * Math.PI / 180;
+		this._pixi.rotation = -this._ori * Math.PI / 180;
 		this._pixi.position = this._getPosition_px();
 
 		this._pixi.alpha = this._opacity;
+		this._pixi.zIndex = -this._depth;
 
 		// make sure that the dependent Stimuli are also updated:
 		for (const dependentStim of this._dependentStims)
@@ -709,19 +808,19 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
 	/**
 	 * Estimate the position of the slider, taking the compactness into account.
 	 *
-	 * @name module:visual.Slider#_getPosition_px
 	 * @return {number[]} - the position of the slider, in pixels
-	 * @private
+	 * @protected
 	 */
 	_getPosition_px()
 	{
-		const position = util.to_pixiPoint(this.pos, this.units, this.win, true);
-		if (this._compact &amp;&amp;
-			(this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1))
+		const position = to_pixiPoint(this.pos, this.units, this.win, true);
+		if (
+			this._compact
+			&amp;&amp; (this._style.indexOf(Slider.Style.RADIO) > -1 || this._style.indexOf(Slider.Style.RATING) > -1)
+		)
 		{
 			if (this._isHorizontal())
 			{
@@ -736,13 +835,11 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		return position;
 	}
 
-
-
 	/**
 	 * Update the position of the marker if necessary.
 	 *
 	 * @name module:visual.Slider#_updateMarker
-	 * @private
+	 * @protected
 	 */
 	_updateMarker()
 	{
@@ -752,12 +849,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 		this._needMarkerUpdate = false;
 
-		if (typeof this._marker !== 'undefined')
+		if (typeof this._marker !== "undefined")
 		{
-			if (typeof this._markerPos !== 'undefined')
+			if (typeof this._markerPos !== "undefined")
 			{
 				const visibleMarkerPos = this._ratingToPos([this._markerPos]);
-				this._marker.position = util.to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+				this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
 				this._marker.alpha = 1;
 			}
 			else
@@ -767,14 +864,99 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
+	/**
+	 * Handle pointerdown event.
+	 *
+	 * @protected
+	 */
+	_handlePointerDown (e) {
+		if (e.data.button === 0)
+		{
+			this._markerDragging = true;
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.setMarkerPos(rating);
+			}
+		}
 
+		e.stopPropagation();
+	}
+
+	/**
+	 * Handle pointermove event.
+	 *
+	 * @protected
+	 */
+	_handlePointerMove (e)
+	{
+		if (this._markerDragging)
+		{
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.setMarkerPos(rating);
+			}
+
+			e.stopPropagation();
+		}
+	}
+
+	/**
+	 * Handle pointerup event.
+	 *
+	 * @protected
+	 */
+	_handlePointerUp (e)
+	{
+		if (this._markerDragging)
+		{
+			this._markerDragging = false;
+
+			if (!this._frozenMarker)
+			{
+				const mouseLocalPos_px = e.data.getLocalPosition(this._pixi);
+				const rating = this._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
+				this.recordRating(rating);
+			}
+
+			e.stopPropagation();
+		}
+	}
+
+	/**
+	 * Add event listeners.
+	 *
+	 * @protected
+	 */
+	_addEventListeners ()
+	{
+		this._pixi.on("pointerdown", this._handlePointerDownBinded);
+		this._win._rootContainer.on("pointermove", this._handlePointerMoveBinded);
+		this._win._rootContainer.on("pointerup", this._handlePointerUpBinded);
+	}
+
+	/**
+	 * Remove event listeners.
+	 *
+	 * @protected
+	 */
+	_removeEventListeners ()
+	{
+		if (this._pixi)
+		{
+			this._pixi.off("pointerdown", this._handlePointerDownBinded);
+		}
+		this._win._rootContainer.off("pointermove", this._handlePointerMoveBinded);
+		this._win._rootContainer.off("pointerup", this._handlePointerUpBinded);
+	}
 
 	/**
 	 * Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
 	 *
-	 * @name module:visual.Slider#_setupSlider
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupSlider()
 	{
@@ -786,18 +968,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._setupStyle();
 
-
 		// calculate various values in pixel units:
 		this._tickSize_px = util.to_px(this._tickSize, this._units, this._win);
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map(v => Math.max(1, v));
+		this._barSize_px = util.to_px(this._barSize, this._units, this._win, true).map((v) => Math.max(1, v));
 		this._markerSize_px = util.to_px(this._markerSize, this._units, this._win, true);
 		const tickPositions = this._ratingToPos(this._ticks);
-		this._tickPositions_px = tickPositions.map(p => util.to_px(p, this._units, this._win));
+		this._tickPositions_px = tickPositions.map((p) => util.to_px(p, this._units, this._win));
 
-
-		if (typeof this._pixi !== 'undefined')
+		if (typeof this._pixi !== "undefined")
 		{
+			this._removeEventListeners();
 			this._pixi.destroy(true);
 		}
 		this._pixi = new PIXI.Container();
@@ -809,17 +990,17 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._body.interactive = true;
 		this._pixi.addChild(this._body);
 
-
 		// ensure that pointer events will be captured along the slider body, even outside of
 		// marker and labels:
 		if (this._tickType === Slider.Shape.DISC)
 		{
 			const maxTickSize_px = Math.max(this._tickSize_px[0], this._tickSize_px[1]);
 			this._body.hitArea = new PIXI.Rectangle(
-				-this._barSize_px[0] / 2 - maxTickSize_px,
-				-this._barSize_px[1] / 2 - maxTickSize_px,
-				this._barSize_px[0] + maxTickSize_px * 2,
-				this._barSize_px[1] + maxTickSize_px * 2);
+				-(this._barSize_px[0] + maxTickSize_px) * 0.5,
+				-(this._barSize_px[1] + maxTickSize_px) * 0.5,
+				this._barSize_px[0] + maxTickSize_px,
+				this._barSize_px[1] + maxTickSize_px,
+			);
 		}
 		else
 		{
@@ -827,7 +1008,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				-this._barSize_px[0] / 2 - this._tickSize_px[0] / 2,
 				-this._barSize_px[1] / 2 - this._tickSize_px[1] / 2,
 				this._barSize_px[0] + this._tickSize_px[0],
-				this._barSize_px[1] + this._tickSize_px[1]);
+				this._barSize_px[1] + this._tickSize_px[1],
+			);
 		}
 
 		// central bar:
@@ -841,23 +1023,20 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		// markers:
 		this._setupMarker();
+		this._addEventListeners();
 	}
-
-
 
 	/**
 	 * Setup the central bar.
 	 *
-	 * @name module:visual.Slider#_setupBar
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupBar()
 	{
 		if (this._barLineWidth_px > 0)
 		{
 			this._body.lineStyle(this._barLineWidth_px, this._barLineColor.int, 1, 0.5);
-			if (typeof this._barFillColor !== 'undefined')
+			if (typeof this._barFillColor !== "undefined")
 			{
 				this._body.beginFill(this._barFillColor.int, 1);
 			}
@@ -865,27 +1044,23 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 				Math.round(-this._barSize_px[0] / 2),
 				Math.round(-this._barSize_px[1] / 2),
 				Math.round(this._barSize_px[0]),
-				Math.round(this._barSize_px[1])
+				Math.round(this._barSize_px[1]),
 			);
-			if (typeof this._barFillColor !== 'undefined')
+			if (typeof this._barFillColor !== "undefined")
 			{
 				this._body.endFill();
 			}
 		}
 	}
 
-
-
 	/**
 	 * Setup the marker, and the associated mouse events.
 	 *
-	 * @name module:visual.Slider#_setupMarker
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupMarker()
 	{
-/*	this is now deprecated and replaced by _body.hitArea
+		/*	this is now deprecated and replaced by _body.hitArea
 		// transparent rectangle necessary to capture pointer events outside of marker and labels:
 		const eventCaptureRectangle = new PIXI.Graphics();
 		eventCaptureRectangle.beginFill(0, 0);
@@ -897,11 +1072,31 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		);
 		eventCaptureRectangle.endFill();
 		this._pixi.addChild(eventCaptureRectangle);
-*/
+		*/
 
 		// marker:
 		this._marker = new PIXI.Graphics();
-		this._marker.alpha = 0; // invisible until markerPos is defined
+		let markerVal = undefined;
+
+		if (Number.isFinite(this._rating))
+		{
+			markerVal = this._rating;
+		}
+		else if (Number.isFinite(this._startValue))
+		{
+			markerVal = this._startValue;
+		}
+
+		if (Number.isFinite(markerVal))
+		{
+			this._markerPos = this._granularise(markerVal);
+			const visibleMarkerPos = this._ratingToPos([this._markerPos]);
+			this._marker.position = to_pixiPoint(visibleMarkerPos[0], this.units, this.win, true);
+		}
+		else
+		{
+			this._marker.alpha = 0; // invisible until markerPos is defined
+		}
 		this._marker.interactive = true;
 		this._pixi.addChild(this._marker);
 
@@ -948,13 +1143,13 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 		else if (this._markerType === Slider.Shape.BOX)
 		{
-			this._marker.lineStyle(1, this.getContrastedColor(this._markerColor, 0.5).int, 1, 0.5);
+			this._marker.lineStyle(1, this.getContrastedColor(this._markerColor, 0.5).int, 1, 0);
 			this._marker.beginFill(this._markerColor.int, 1);
 			this._marker.drawRect(
 				Math.round(-this._markerSize_px[0] / 2),
 				Math.round(-this._markerSize_px[1] / 2),
 				this._markerSize_px[0],
-				this._markerSize_px[1]
+				this._markerSize_px[1],
 			);
 			this._marker.endFill();
 
@@ -962,114 +1157,37 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// this._marker.drawCircle(0, 0, this._markerSize_px[0] / 3);
 		}
 
-
 		// marker mouse events:
 		const self = this;
 		self._markerDragging = false;
 
-		this._marker.pointerdown = this._marker.mousedown = this._marker.touchstart = (event) =>
+		// mouse wheel over slider:
+		if (this._isSliderStyle)
 		{
-			if (event.data.button === 0)
+			self._pointerIsOver = false;
+
+			this._pixi.pointerover = this._pixi.mouseover = (event) =>
 			{
-				self._markerDragging = true;
-				/* not quite right, just yet (as of May 2020)
-								// set markerPos, but not rating:
-								const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-								const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-								self._markerPos = self._granularise(rating);
-
-								self._needMarkerUpdate = true;
-				 */
-			}
-
-			event.stopPropagation();
-		};
-
-		// pointer was released inside the marker: if we were dragging, we record the rating
-		this._marker.pointerup = this._marker.mouseup = this._marker.touchend = (event) =>
-		{
-			if (self._markerDragging)
-			{
-				self._markerDragging = false;
-
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
-
+				self._pointerIsOver = true;
 				event.stopPropagation();
 			}
-		};
-
-		// pointer was released outside of the marker: cancel the dragging
-		this._marker.pointerupoutside = this._marker.mouseupoutside = this._marker.touchendoutside = (event) =>
-		{
-			if (self._markerDragging)
+			this._pixi.pointerout = this._pixi.mouseout = (event) =>
 			{
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.recordRating(rating);
-
-				self._markerDragging = false;
-
+				self._pointerIsOver = false;
 				event.stopPropagation();
 			}
-		};
 
-		// pointer is moving: if we are dragging, we move the marker position
-		this._marker.pointermove = (event) =>
-		{
-			if (self._markerDragging)
+			/*renderer.view.addEventListener("wheel", (event) =>
 			{
-				const mouseLocalPos_px = event.data.getLocalPosition(self._pixi);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self.setMarkerPos(rating);
 
-				event.stopPropagation();
-			}
-		};
-
-
-		// (*) slider mouse events outside of marker
-		// note: this only works thanks to eventCaptureRectangle
-		/* not quite right just yet (as of May 2020)
-		this._pixi.pointerdown = this._pixi.mousedown = this._pixi.touchstart = (event) =>
-		{
-			if (event.data.button === 0)
-			{
-				self._markerDragging = true;
-
-				// set markerPos, but not rating:
-				const mouseLocalPos_px = event.data.getLocalPosition(self._body);
-				const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-				self._markerPos = self._granularise(rating);
-
-				// update the marker:
-				self._needMarkerUpdate = true;
-				self._updateMarker();
-			}
-
-			event.stopPropagation();
-		};
-		*/
-
-		this._pixi.pointerup = this._pixi.mouseup = this._pixi.touchend = (event) =>
-		{
-			const mouseLocalPos_px = event.data.getLocalPosition(self._body);
-			const rating = self._posToRating([mouseLocalPos_px.x, mouseLocalPos_px.y]);
-			self.recordRating(rating);
-
-			event.stopPropagation();
-		};
+			}*/
+		}
 	}
-
-
 
 	/**
 	 * Setup the ticks.
 	 *
-	 * @name module:visual.Slider#_setupTicks
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupTicks()
 	{
@@ -1093,71 +1211,60 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			else if (this._tickType === Slider.Shape.DISC)
 			{
 				this._body.beginFill(this._tickColor.int, 1);
-				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize);
+				this._body.drawCircle(tickPosition_px[0], tickPosition_px[1], maxTickSize * 0.5);
 				this._body.endFill();
 			}
 		}
 	}
 
-
-
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text labels.
 	 *
-	 * @name module:visual.Slider#_getTextStyle
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_getTextStyle()
 	{
 		this._fontSize_px = this._getLengthPix(this._fontSize);
-		
+
 		return new PIXI.TextStyle({
 			fontFamily: this._font,
 			fontSize: Math.round(this._fontSize_px),
-			fontWeight: (this._bold) ? 'bold' : 'normal',
-			fontStyle: (this._italic) ? 'italic' : 'normal',
+			fontWeight: (this._bold) ? "bold" : "normal",
+			fontStyle: (this._italic) ? "italic" : "normal",
 			fill: this.getContrastedColor(this._labelColor, this._contrast).hex,
-			align: 'center',
+			align: "center",
 		});
 	}
-
-
 
 	/**
 	 * Setup the labels.
 	 *
-	 * @name module:visual.Slider#_setupTicks
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupLabels()
 	{
 		const labelTextStyle = this._getTextStyle();
+		this._pixiLabels = new Array(this._labels.length);
 
 		for (let l = 0; l &lt; this._labels.length; ++l)
 		{
-			const labelText = new PIXI.Text(this._labels[l], labelTextStyle);
-			labelText.position.x = this._labelPositions_px[l][0];
-			labelText.position.y = this._labelPositions_px[l][1];
-			labelText.rotation = (this._ori + this._labelOri) * Math.PI / 180;
-			labelText.anchor = this._labelAnchor;
-			labelText.alpha = 1;
+			this._pixiLabels[l] = new PIXI.Text(this._labels[l], labelTextStyle);
+			this._pixiLabels[l].position.x = this._labelPositions_px[l][0];
+			this._pixiLabels[l].position.y = this._labelPositions_px[l][1];
+			this._pixiLabels[l].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
+			this._pixiLabels[l].anchor = this._labelAnchor;
+			this._pixiLabels[l].alpha = 1;
 
-			this._pixi.addChild(labelText);
+			this._pixi.addChild(this._pixiLabels[l]);
 		}
 	}
-
-
 
 	/**
 	 * Apply a particular style to the slider.
 	 *
 	 * @note: We are mirroring PsychoPy here, rather than using a skin approach.
 	 *
-	 * @name module:visual.Slider#_setupStyle
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupStyle()
 	{
@@ -1185,7 +1292,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._tickType = Slider.Shape.LINE;
 		this._tickColor = (!skin.TICK_COLOR) ? new Color(this._lineColor) : skin.TICK_COLOR;
 
-		if (this.markerColor === undefined) {
+		if (this.markerColor === undefined)
+		{
 			this.markerColor = skin.MARKER_COLOR;
 		}
 
@@ -1197,7 +1305,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		this._labelColor = (!skin.LABEL_COLOR) ? new Color(this._color) : skin.LABEL_COLOR;
 
 		this._labelOri = 0;
-
 
 		// rating:
 		if (this._style.indexOf(Slider.Style.RATING) > -1)
@@ -1211,8 +1318,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._markerType = Slider.Shape.TRIANGLE;
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = this._markerSize.map(s => s * 2);
-		}
+				this._markerSize = this._markerSize.map((s) => s * 2);
+			}
 		}
 
 		// slider:
@@ -1221,9 +1328,9 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			this._markerType = Slider.Shape.BOX;
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = (this._isHorizontal()) ?
-					[this._size[0] / (this._ticks[this._ticks.length - 1] - this._ticks[0]), this._size[1]] :
-					[this._size[0], this._size[1] / (this._ticks[this._ticks.length - 1] - this._ticks[0])];
+				this._markerSize = (this._isHorizontal())
+					? [this._size[0] / (this._ticks[this._ticks.length - 1] - this._ticks[0]), this._size[1]]
+					: [this._size[0], this._size[1] / (this._ticks[this._ticks.length - 1] - this._ticks[0])];
 			}
 			this._barSize = [this._size[0], this._size[1]];
 			this._barFillColor = this.getContrastedColor(new Color(this.color), 0.5);
@@ -1241,7 +1348,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		*/
 
 		// labels45:
-		if (this._style.indexOf(Slider.Style.LABELS45) > -1)
+		if (this._style.indexOf(Slider.Style.LABELS_45) > -1)
 		{
 			this._labelOri = -45;
 			if (this._flip)
@@ -1262,19 +1369,15 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 			if (!this._skin.MARKER_SIZE)
 			{
-			this._markerSize = this._markerSize.map(s => s * 0.7);
+				this._markerSize = this._markerSize.map((s) => s * 0.7);
+			}
 		}
 	}
-	}
-
-
 
 	/**
 	 * Convert an array of ratings into an array of [x,y] positions (in Slider units, with 0 at the center of the Slider)
 	 *
-	 * @name module:visual.Slider#_ratingToPos
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number[]} ratings - the array of ratings
 	 * @returns {Array.&lt;Array.&lt;number>>} the positions corresponding to the ratings (in Slider units,
 	 * with 0 at the center of the Slider)
@@ -1287,20 +1390,22 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// in compact mode the circular markers of RADIO sliders must fit within the width:
 			if (this._compact &amp;&amp; this._style.indexOf(Slider.Style.RADIO) > -1)
 			{
-				return ratings.map(v => [
-					((v - this._ticks[0]) / range) * (this._size[0] - this._tickSize[1]*2) -
-					(this._size[0] / 2) + this._tickSize[1],
-						0]);
+				return ratings.map((v) => [
+					((v - this._ticks[0]) / range) * (this._size[0] - this._tickSize[1] * 2)
+					- (this._size[0] / 2) + this._tickSize[1],
+					0,
+				]);
 			}
 			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return ratings.map(v => [
+				return ratings.map((v) => [
 					((v - this._ticks[0]) / range - 0.5) * (this._size[0] - this._markerSize[0]),
-					0]);
+					0,
+				]);
 			}
 			else
 			{
-				return ratings.map(v => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
+				return ratings.map((v) => [((v - this._ticks[0]) / range - 0.5) * this._size[0], 0]);
 			}
 		}
 		else
@@ -1308,31 +1413,30 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			// in compact mode the circular markers of RADIO sliders must fit within the height:
 			if (this._compact &amp;&amp; this._style.indexOf(Slider.Style.RADIO) > -1)
 			{
-				return ratings.map(v => [0,
-					((v - this._ticks[0]) / range) * (this._size[1] - this._tickSize[0]*2) -
-					(this._size[1] / 2) + this._tickSize[0]]);
+				return ratings.map((v) => [
+					0,
+					((v - this._ticks[0]) / range) * (this._size[1] - this._tickSize[0] * 2)
+					- (this._size[1] / 2) + this._tickSize[0],
+				]);
 			}
 			else if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return ratings.map(v => [
+				return ratings.map((v) => [
 					0,
-					((v - this._ticks[0]) / range - 0.5) * (this._size[1] - this._markerSize[1])]);
+					((v - this._ticks[0]) / range - 0.5) * (this._size[1] - this._markerSize[1]),
+				]);
 			}
 			else
 			{
-				return ratings.map(v => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
+				return ratings.map((v) => [0, (1.0 - (v - this._ticks[0]) / range - 0.5) * this._size[1]]);
 			}
 		}
 	}
 
-
-
 	/**
 	 * Convert a [x,y] position, in pixel units, relative to the slider, into a rating.
 	 *
-	 * @name module:visual.Slider#_posToRating
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number[]} pos_px - the [x,y] position, in pixel units, relative to the slider.
 	 * @returns {number} the corresponding rating.
 	 */
@@ -1357,7 +1461,14 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		{
 			if (this._style.indexOf(Slider.Style.SLIDER) > -1)
 			{
-				return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range + this._ticks[0];
+				if (size_px[1] === markerSize_px[1])
+				{
+
+				}
+				else
+				{
+					return (pos_px[1] / (size_px[1] - markerSize_px[1]) + 0.5) * range + this._ticks[0];
+				}
 			}
 			else
 			{
@@ -1366,16 +1477,12 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
-
-
 	/**
 	 * Determine whether the slider is horizontal.
 	 *
 	 * &lt;p>The slider is horizontal is its x-axis size is larger than its y-axis size.&lt;/p>
 	 *
-	 * @name module:visual.Slider#_isHorizontal
-	 * @function
-	 * @private
+	 * @protected
 	 * @returns {boolean} whether or not the slider is horizontal
 	 */
 	_isHorizontal()
@@ -1383,20 +1490,16 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		return (this._size[0] > this._size[1]);
 	}
 
-
-
 	/**
 	 * Calculate the rating once granularity has been taken into account.
 	 *
-	 * @name module:visual.Slider#_granularise
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number} rating - the input rating
 	 * @returns {number} the new rating with granularity applied
 	 */
 	_granularise(rating)
 	{
-		if (typeof rating === 'undefined')
+		if (typeof rating === "undefined")
 		{
 			return undefined;
 		}
@@ -1409,68 +1512,58 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		return rating;
 	}
-
 }
-
 
 /**
  * Shape of the marker and of the ticks.
  *
- * @name module:visual.Slider#Shape
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Slider.Shape = {
-	DISC: Symbol.for('DISC'),
-	TRIANGLE: Symbol.for('TRIANGLE'),
-	LINE: Symbol.for('LINE'),
-	BOX: Symbol.for('BOX')
+	DISC: Symbol.for("DISC"),
+	TRIANGLE: Symbol.for("TRIANGLE"),
+	LINE: Symbol.for("LINE"),
+	BOX: Symbol.for("BOX"),
 };
-
 
 /**
  * Styles.
  *
- * @name module:visual.Slider#Style
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Slider.Style = {
-	RATING: Symbol.for('RATING'),
-	TRIANGLE_MARKER: Symbol.for('TRIANGLEMARKER'),
-	SLIDER: Symbol.for('SLIDER'),
-	WHITE_ON_BLACK: Symbol.for('WHITEONBLACK'),
-	LABELS45: Symbol.for('LABELS45'),
-	RADIO: Symbol.for('RADIO')
+	RATING: Symbol.for("RATING"),
+	TRIANGLE_MARKER: Symbol.for("TRIANGLE_MARKER"),
+	SLIDER: Symbol.for("SLIDER"),
+	WHITE_ON_BLACK: Symbol.for("WHITE_ON_BLACK"),
+	LABELS_45: Symbol.for("LABELS_45"),
+	RADIO: Symbol.for("RADIO"),
 };
-
 
 /**
  * Skin.
  *
- * @name module:visual.Slider#Skin
  * @enum {any}
  * @readonly
- * @public
  *
  * @note a null value indicates that the value is calculated when the style is setup, rather than simply assigned.
  */
 Slider.Skin = {
 	MARKER_SIZE: null,
 	STANDARD: {
-		MARKER_COLOR: new Color('red'),
+		MARKER_COLOR: new Color("red"),
 		BAR_LINE_COLOR: null,
 		TICK_COLOR: null,
-		LABEL_COLOR: null
+		LABEL_COLOR: null,
 	},
 	WHITE_ON_BLACK: {
-		MARKER_COLOR: new Color('white'),
-		BAR_LINE_COLOR: new Color('black'),
-		TICK_COLOR: new Color('black'),
-		LABEL_COLOR: new Color('black')
-	}
+		MARKER_COLOR: new Color("white"),
+		BAR_LINE_COLOR: new Color("black"),
+		TICK_COLOR: new Color("black"),
+		LABEL_COLOR: new Color("black"),
+	},
 };
 </code></pre>
         </article>
@@ -1479,19 +1572,23 @@ Slider.Skin = {
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 01 2022 09:56:49 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>
