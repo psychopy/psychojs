@@ -175,6 +175,28 @@ export class Sound extends PsychObject
 	}
 
 	/**
+	 * Set value for a particular player
+	 *
+	 * @param {number|string} [value = "C"] the sound value (see above for a full description)
+     */
+	setValue(value = "C", log = false)
+	{
+		this._setAttribute("value", value, log);
+		if (this._player instanceof TonePlayer)
+		{
+			this._player.setNote(value);
+		}
+		else if (this._player instanceof TrackPlayer)
+		{
+			this._player.setTrack(value);
+		}
+		else if (this._player instanceof AudioClipPlayer)
+		{
+			this._player.setAudioClip(value);
+		}
+	}
+
+	/**
 	 * Set the number of loops.
 	 *
 	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.

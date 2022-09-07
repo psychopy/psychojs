@@ -173,6 +173,20 @@ export class TonePlayer extends SoundPlayer
 	}
 
 	/**
+	 * Set the note for tone.
+	 *
+	 * @param {string|number} - note (if string) or frequency (if number)
+	 */
+	setNote (note = "C4")
+	{
+		this._note = note;
+		if (this._synth !== undefined)
+		{
+			this._synth.setNote(note);
+		}
+	}
+
+	/**
 	 * Start playing the sound.
 	 *
 	 * @param {boolean} [loops] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.

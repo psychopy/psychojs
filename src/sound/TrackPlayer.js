@@ -8,6 +8,7 @@
  */
 
 import { SoundPlayer } from "./SoundPlayer.js";
+import { Howl } from "howler";
 
 /**
  * <p>This class handles the playback of sound tracks.</p>
@@ -139,6 +140,36 @@ export class TrackPlayer extends SoundPlayer
 		else
 		{
 			this._howl.loop(true);
+		}
+	}
+
+	/**
+	 * Set new track to play.
+	 *
+	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
+	 */
+	setTrack (track)
+	{
+		let newHowl = undefined;
+
+		if (typeof track === "string")
+		{
+			newHowl = sound.psychoJS.serverManager.getResource(sound.value);
+		}
+		else if (track instanceof Howl)
+		{
+			newHowl = track;
+		}
+
+		if (newHowl !== undefined)
+		{
+			this._howl.once("fade", (id) =>
+			{
+				this._howl.stop(id);
+				this._howl.off("end");
+				this._howl = newHowl;
+			});
+			this._howl.fade(this._howl.volume(), 0, 17, this._id);
 		}
 	}
 

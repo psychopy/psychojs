@@ -130,6 +130,20 @@ export class AudioClipPlayer extends SoundPlayer
 	}
 
 	/**
+	 * Set the audio clip.
+	 *
+	 * @param {Object} options.audioClip - the module:sound.AudioClip.
+	 */
+	setAudioClip (audioClip)
+	{
+		if (audioClip instanceof AudioClip)
+		{
+			this.stop();
+			this._audioClip = audioClip;
+		}
+	}
+
+	/**
 	 * Start playing the sound.
 	 *
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
