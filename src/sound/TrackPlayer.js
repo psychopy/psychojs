@@ -146,7 +146,7 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Set new track to play.
 	 *
-	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
+	 * @param {Object|string} track - a track resource name or Howl object (see {@link https://howlerjs.com/})
 	 */
 	setTrack (track)
 	{
