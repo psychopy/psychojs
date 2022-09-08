@@ -8,6 +8,7 @@
  */
 
 import { SoundPlayer } from "./SoundPlayer.js";
+import { Howl } from "howler";
 
 /**
  * <p>This class handles the playback of sound tracks.</p>
@@ -54,20 +55,38 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
+	 * @param {string} value - the sound, which should be the name of an audio resource file
+	 * @return {boolean} whether or not value is supported
+	 */
+	static checkValueSupport (value)
+	{
+		if (typeof value === "string")
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
 	 * @param {module:sound.Sound} sound - the sound, which should be the name of an audio resource
 	 * 	file
 	 * @return {Object|undefined} an instance of TrackPlayer that can play the given track or undefined otherwise
 	 */
 	static accept(sound)
 	{
+		let howl = undefined;
+
 		// if the sound's value is a string, we check whether it is the name of a resource:
-		if (typeof sound.value === "string")
+		if (TrackPlayer.checkValueSupport(sound.value))
 		{
-			const howl = sound.psychoJS.serverManager.getResource(sound.value);
-			if (typeof howl !== "undefined")
+			howl = sound.psychoJS.serverManager.getResource(sound.value);
+			if (howl !== undefined)
 			{
 				// build the player:
-				const player = new TrackPlayer({
+				return new TrackPlayer({
 					psychoJS: sound.psychoJS,
 					howl: howl,
 					startTime: sound.startTime,
@@ -76,7 +95,6 @@ export class TrackPlayer extends SoundPlayer
 					loops: sound.loops,
 					volume: sound.volume,
 				});
-				return player;
 			}
 		}
 
@@ -139,6 +157,36 @@ export class TrackPlayer extends SoundPlayer
 		else
 		{
 			this._howl.loop(true);
+		}
+	}
+
+	/**
+	 * Set new track to play.
+	 *
+	 * @param {Object|string} track - a track resource name or Howl object (see {@link https://howlerjs.com/})
+	 */
+	setTrack (track)
+	{
+		let newHowl = undefined;
+
+		if (typeof track === "string")
+		{
+			newHowl = this.psychoJS.serverManager.getResource(track);
+		}
+		else if (track instanceof Howl)
+		{
+			newHowl = track;
+		}
+
+		if (newHowl !== undefined)
+		{
+			this._howl.once("fade", (id) =>
+			{
+				this._howl.stop(id);
+				this._howl.off("end");
+				this._howl = newHowl;
+			});
+			this._howl.fade(this._howl.volume(), 0, 17, this._id);
 		}
 	}
 
