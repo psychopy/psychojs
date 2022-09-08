@@ -63,28 +63,19 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
-	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
-	 * we throw an exception.</p>
-	 *
-	 * @param {module:sound.Sound} sound - the sound
-	 * @return {Object|undefined} an instance of TonePlayer that can play the given sound or undefined otherwise
+	 * @param {string|number} value - potential note of the tone.
+	 * @return {boolean} whether or not this value can be used by TonePlayer.
 	 */
-	static accept(sound)
+	static checkValueSupport (value)
 	{
 		// if the sound's value is an integer, we interpret it as a frequency:
-		if (isNumeric(sound.value))
+		if (isNumeric(value))
 		{
-			return new TonePlayer({
-				psychoJS: sound.psychoJS,
-				note: sound.value,
-				duration_s: sound.secs,
-				volume: sound.volume,
-				loops: sound.loops,
-			});
+			return true;
 		}
 
 		// if the sound's value is a string, we check whether it is a note:
-		if (typeof sound.value === "string")
+		if (typeof value === "string")
 		{
 			// mapping between the PsychoPY notes and the standard ones:
 			let psychopyToToneMap = new Map();
@@ -96,17 +87,36 @@ export class TonePlayer extends SoundPlayer
 			}
 
 			// check whether the sound's value is a recognised note:
-			const note = psychopyToToneMap.get(sound.value);
+			const note = psychopyToToneMap.get(value);
 			if (typeof note !== "undefined")
 			{
-				return new TonePlayer({
-					psychoJS: sound.psychoJS,
-					note: note + sound.octave,
-					duration_s: sound.secs,
-					volume: sound.volume,
-					loops: sound.loops,
-				});
+				return true;
 			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound and if so return an instance of the player.
+	 *
+	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
+	 * we throw an exception.</p>
+	 *
+	 * @param {module:sound.Sound} sound - the sound
+	 * @return {Object|undefined} an instance of TonePlayer that can play the given sound or undefined otherwise
+	 */
+	static accept(sound)
+	{
+		if (TonePlayer.checkValueSupport(sound.value))
+		{
+			return new TonePlayer({
+				psychoJS: sound.psychoJS,
+				note: sound.value,
+				duration_s: sound.secs,
+				volume: sound.volume,
+				loops: sound.loops,
+			});
 		}
 
 		// TonePlayer is not an appropriate player for the given sound:

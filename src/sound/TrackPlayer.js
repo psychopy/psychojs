@@ -55,20 +55,38 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
+	 * @param {string} value - the sound, which should be the name of an audio resource file
+	 * @return {boolean} whether or not value is supported
+	 */
+	static checkValueSupport (value)
+	{
+		if (typeof value === "string")
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
 	 * @param {module:sound.Sound} sound - the sound, which should be the name of an audio resource
 	 * 	file
 	 * @return {Object|undefined} an instance of TrackPlayer that can play the given track or undefined otherwise
 	 */
 	static accept(sound)
 	{
+		let howl = undefined;
+
 		// if the sound's value is a string, we check whether it is the name of a resource:
-		if (typeof sound.value === "string")
+		if (TrackPlayer.checkValueSupport(sound.value))
 		{
-			const howl = sound.psychoJS.serverManager.getResource(sound.value);
-			if (typeof howl !== "undefined")
+			howl = sound.psychoJS.serverManager.getResource(sound.value);
+			if (howl !== undefined)
 			{
 				// build the player:
-				const player = new TrackPlayer({
+				return new TrackPlayer({
 					psychoJS: sound.psychoJS,
 					howl: howl,
 					startTime: sound.startTime,
@@ -77,7 +95,6 @@ export class TrackPlayer extends SoundPlayer
 					loops: sound.loops,
 					volume: sound.volume,
 				});
-				return player;
 			}
 		}
 
@@ -154,7 +171,7 @@ export class TrackPlayer extends SoundPlayer
 
 		if (typeof track === "string")
 		{
-			newHowl = sound.psychoJS.serverManager.getResource(sound.value);
+			newHowl = this.psychoJS.serverManager.getResource(track);
 		}
 		else if (track instanceof Howl)
 		{

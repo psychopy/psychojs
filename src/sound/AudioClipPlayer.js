@@ -53,15 +53,31 @@ export class AudioClipPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
+	 * @param {string} value - the sound object, which should be an AudioClip
+	 * @return {boolean} whether or not the value is supported
+	 */
+	static checkValueSupport (value)
+	{
+		if (value instanceof AudioClip)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
 	 * @param {module:sound.Sound} sound - the sound object, which should be an AudioClip
 	 * @return {Object|undefined} an instance of AudioClipPlayer if sound is an AudioClip or undefined otherwise
 	 */
 	static accept(sound)
 	{
-		if (sound.value instanceof AudioClip)
+		if (AudioClipPlayer.checkValueSupport(sound.value))
 		{
 			// build the player:
-			const player = new AudioClipPlayer({
+			return new AudioClipPlayer({
 				psychoJS: sound.psychoJS,
 				audioClip: sound.value,
 				startTime: sound.startTime,
@@ -70,7 +86,6 @@ export class AudioClipPlayer extends SoundPlayer
 				loops: sound.loops,
 				volume: sound.volume,
 			});
-			return player;
 		}
 
 		// AudioClipPlayer is not an appropriate player for the given sound:
@@ -138,7 +153,10 @@ export class AudioClipPlayer extends SoundPlayer
 	{
 		if (audioClip instanceof AudioClip)
 		{
-			this.stop();
+			if (this._audioClip !== undefined)
+			{
+				this.stop();
+			}
 			this._audioClip = audioClip;
 		}
 	}

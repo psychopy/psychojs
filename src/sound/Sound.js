@@ -182,17 +182,32 @@ export class Sound extends PsychObject
 	setValue(value = "C", log = false)
 	{
 		this._setAttribute("value", value, log);
-		if (this._player instanceof TonePlayer)
+
+		if (this._player === undefined)
 		{
-			this._player.setNote(value);
+			return;
 		}
-		else if (this._player instanceof TrackPlayer)
+
+		// Analyse the value and change the type of player if needed.
+		const valSupported = this._player.constructor.checkValueSupport(value);
+		if (valSupported)
 		{
-			this._player.setTrack(value);
+			if (this._player instanceof TonePlayer)
+			{
+				this._player.setNote(value);
+			}
+			else if (this._player instanceof TrackPlayer)
+			{
+				this._player.setTrack(value);
+			}
+			else if (this._player instanceof AudioClipPlayer)
+			{
+				this._player.setAudioClip(value);
+			}
 		}
-		else if (this._player instanceof AudioClipPlayer)
+		else
 		{
-			this._player.setAudioClip(value);
+			this._getPlayer();
 		}
 	}
 
