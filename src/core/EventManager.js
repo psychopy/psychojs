@@ -302,10 +302,10 @@ export class EventManager
 		{
 			const timestamp = MonotonicClock.getReferenceTime();
 
-			// Using event.which since we're interested in the input character rather than physical key position on the keyboard.
+			// Using event.key since we're interested in the input character rather than physical key position on the keyboard.
 			// Dets on why event.code is not suitable:
 			// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code
-			let code = EventManager.keycode2w3c(event.which);
+			let code = EventManager._pygletMap[event.key];
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === "undefined")
