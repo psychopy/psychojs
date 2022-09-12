@@ -64,24 +64,24 @@ h1 {
 }
 
 h1.page-title {
-  font-size: 30px;
+  font-size: 48px;
   margin: 1em 30px;
   line-height: 100%;
   word-wrap: break-word;
 }
 
 h2 {
-  font-size: 20px;
+  font-size: 24px;
   margin: 1.5em 0 .3em;
 }
 
 h3 {
-  font-size: 20px;
+  font-size: 24px;
   margin: 1.2em 0 .3em;
 }
 
 h4 {
-  font-size: 16px;
+  font-size: 18px;
   margin: 1em 0 .2em;
   color: #4d4e53;
 }
@@ -169,8 +169,8 @@ tt, code, kbd, samp {
 }
 
 .class-description {
-  /*font-size: 130%;
-  line-height: 140%;*/
+  font-size: 130%;
+  line-height: 140%;
   margin-bottom: 1em;
   margin-top: 1em;
 }
@@ -257,7 +257,7 @@ nav ul a:active {
   line-height: 18px;
   padding: 0;
   display: block;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 nav a:hover,

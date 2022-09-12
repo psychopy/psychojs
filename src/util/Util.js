@@ -8,6 +8,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import seedrandom from "seedrandom";
+
 /**
  * Syntactic sugar for Mixins
  *
@@ -55,18 +57,30 @@ export function promiseToTupple(promise)
 }
 
 /**
- * Get a Universally Unique Identifier (RFC4122 version 4)
+ * Get a Universally Unique Identifier (RFC4122 version 4) or a pseudo-uuid based on a root
  * <p> See details here: https://www.ietf.org/rfc/rfc4122.txt</p>
  *
+ * @param {string} [root] - the root, for string dependent pseudo uuid's
  * @return {string} the uuid
  */
-export function makeUuid()
+export function makeUuid(root)
 {
-	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c)
+	// bonafide uuid v4 generator:
+	if (typeof root === "undefined")
 	{
-		const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
-		return v.toString(16);
-	});
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+			const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+	else
+	{
+		// our in-house pseudo uuid generator:
+		const generator = seedrandom(root);
+		let digits = generator().toString().substring(2);
+		digits += generator().toString().substring(2);
+		return `${digits.substring(0, 8)}-${digits.substring(8, 12)}-4${digits.substring(12, 15)}-8${digits.substring(15, 18)}-${digits.substring(18, 30)}`;
+	}
 }
 
 /**
