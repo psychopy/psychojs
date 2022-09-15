@@ -8,6 +8,7 @@
  */
 
 import { SoundPlayer } from "./SoundPlayer.js";
+import { Howl } from "howler";
 
 /**
  * <p>This class handles the playback of sound tracks.</p>
@@ -54,34 +55,43 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
-	 * @param {module:sound.Sound} sound - the sound, which should be the name of an audio resource
-	 * 	file
-	 * @return {Object|undefined} an instance of TrackPlayer that can play the given track or undefined otherwise
+	 * @param {string} value - the sound, which should be the name of an audio resource file
+	 * @return {boolean} whether or not value is supported
 	 */
-	static accept(sound)
+	static checkValueSupport (value)
 	{
-		// if the sound's value is a string, we check whether it is the name of a resource:
-		if (typeof sound.value === "string")
+		if (typeof value === "string")
 		{
-			const howl = sound.psychoJS.serverManager.getResource(sound.value);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 * @param {string} value - the sound value, which should be the name of an audio resource
+	 * 	file
+	 * @return {Object|boolean} argument needed to instantiate a TrackPlayer that can play the given sound
+	 * 	or false otherwise
+	 */
+	static accept(psychoJS, value)
+	{
+		// value should be a string:
+		if (typeof value === "string")
+		{
+			// check whether the value is the name of a resource:
+			const howl = psychoJS.serverManager.getResource(value);
 			if (typeof howl !== "undefined")
 			{
-				// build the player:
-				const player = new TrackPlayer({
-					psychoJS: sound.psychoJS,
-					howl: howl,
-					startTime: sound.startTime,
-					stopTime: sound.stopTime,
-					stereo: sound.stereo,
-					loops: sound.loops,
-					volume: sound.volume,
-				});
-				return player;
+				return { howl };
 			}
 		}
 
 		// TonePlayer is not an appropriate player for the given sound:
-		return undefined;
+		return false;
 	}
 
 	/**
@@ -139,6 +149,36 @@ export class TrackPlayer extends SoundPlayer
 		else
 		{
 			this._howl.loop(true);
+		}
+	}
+
+	/**
+	 * Set new track to play.
+	 *
+	 * @param {Object|string} track - a track resource name or Howl object (see {@link https://howlerjs.com/})
+	 */
+	setTrack(track)
+	{
+		let newHowl = undefined;
+
+		if (typeof track === "string")
+		{
+			newHowl = this.psychoJS.serverManager.getResource(track);
+		}
+		else if (track instanceof Howl)
+		{
+			newHowl = track;
+		}
+
+		if (newHowl !== undefined)
+		{
+			this._howl.once("fade", (id) =>
+			{
+				this._howl.stop(id);
+				this._howl.off("end");
+				this._howl = newHowl;
+			});
+			this._howl.fade(this._howl.volume(), 0, 17, this._id);
 		}
 	}
 

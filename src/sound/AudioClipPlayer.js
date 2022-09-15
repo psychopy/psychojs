@@ -53,28 +53,21 @@ export class AudioClipPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
-	 * @param {module:sound.Sound} sound - the sound object, which should be an AudioClip
-	 * @return {Object|undefined} an instance of AudioClipPlayer if sound is an AudioClip or undefined otherwise
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 * @param {string} value - the sound value, which should be the name of an audio resource
+	 * 	file
+	 * @return {Object|boolean} argument needed to instantiate a AudioClipPlayer that can play the given sound
+	 * 	or false otherwise
 	 */
-	static accept(sound)
+	static accept(psychoJS, value)
 	{
-		if (sound.value instanceof AudioClip)
+		if (value instanceof AudioClip)
 		{
-			// build the player:
-			const player = new AudioClipPlayer({
-				psychoJS: sound.psychoJS,
-				audioClip: sound.value,
-				startTime: sound.startTime,
-				stopTime: sound.stopTime,
-				stereo: sound.stereo,
-				loops: sound.loops,
-				volume: sound.volume,
-			});
-			return player;
+			return { audioClip: value };
 		}
 
 		// AudioClipPlayer is not an appropriate player for the given sound:
-		return undefined;
+		return false;
 	}
 
 	/**
@@ -127,6 +120,23 @@ export class AudioClipPlayer extends SoundPlayer
 		this._currentLoopIndex = -1;
 
 		// TODO
+	}
+
+	/**
+	 * Set the audio clip.
+	 *
+	 * @param {Object} options.audioClip - the module:sound.AudioClip.
+	 */
+	setAudioClip(audioClip)
+	{
+		if (audioClip instanceof AudioClip)
+		{
+			if (this._audioClip !== undefined)
+			{
+				this.stop();
+			}
+			this._audioClip = audioClip;
+		}
 	}
 
 	/**

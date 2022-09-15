@@ -170,7 +170,7 @@ export class PsychoJS
 		}
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2022.2.1");
+		this.logger.info("[PsychoJS] @version 2022.2.3");
 
 		// hide the initialisation message:
 		const root = document.getElementById("root");
