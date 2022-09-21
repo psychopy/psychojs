@@ -743,13 +743,15 @@ export class GratingStim extends VisualStim
 				}
 				else
 				{
-					// For some reason setting PIXI.Mesh as .mask doesn't do anything,
-					// rendering mask to texture for further use.
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
 
-					// Since mesh is centered around [0, 0] (has vertices going around it),
-					// offsetting maskMesh position to properly cover render target texture.
+					// Since maskMesh is centered around (0, 0) (has vertices going around it),
+					// offsetting maskMesh position to properly cover render target texture,
+					// which created with top-left corner at (0, 0).
 					maskMesh.position.set(this._size_px[0] * 0.5, this._size_px[1] * 0.5);
+
+					// For some reason setting PIXI.Mesh as .mask doesn't do anything,
+					// rendering mask to texture for further use.
 					const rt = PIXI.RenderTexture.create({
 						width: this._size_px[0],
 						height: this._size_px[1],
@@ -762,7 +764,7 @@ export class GratingStim extends VisualStim
 					this._pixi.mask = maskSprite;
 					this._pixi.addChild(maskSprite);
 				}
-				// Since mesh is centered around [0, 0], setting mask's anchor to center to properly cover target image.
+				// Since grating mesh is centered around (0, 0), setting mask's anchor to center to properly cover target image.
 				this._pixi.mask.anchor.set(0.5);
 			}
 
