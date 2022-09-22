@@ -279,6 +279,7 @@ export class GratingStim extends VisualStim
 	 * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
 	 * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
 	 * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
 	 * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
@@ -296,6 +297,7 @@ export class GratingStim extends VisualStim
 		win,
 		mask,
 		pos,
+		anchor,
 		units,
 		sf = 1.0,
 		ori,
@@ -313,7 +315,7 @@ export class GratingStim extends VisualStim
 		maskParams
 	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
 
 		this._adjustmentFilter = new AdjustmentFilter({
 			contrast
@@ -741,9 +743,15 @@ export class GratingStim extends VisualStim
 				}
 				else
 				{
-					// for some reason setting PIXI.Mesh as .mask doesn't do anything,
-					// rendering mask to texture for further use.
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
+
+					// Since maskMesh is centered around (0, 0) (has vertices going around it),
+					// offsetting maskMesh position to properly cover render target texture,
+					// which created with top-left corner at (0, 0).
+					maskMesh.position.set(this._size_px[0] * 0.5, this._size_px[1] * 0.5);
+
+					// For some reason setting PIXI.Mesh as .mask doesn't do anything,
+					// rendering mask to texture for further use.
 					const rt = PIXI.RenderTexture.create({
 						width: this._size_px[0],
 						height: this._size_px[1],
@@ -756,6 +764,8 @@ export class GratingStim extends VisualStim
 					this._pixi.mask = maskSprite;
 					this._pixi.addChild(maskSprite);
 				}
+				// Since grating mesh is centered around (0, 0), setting mask's anchor to center to properly cover target image.
+				this._pixi.mask.anchor.set(0.5);
 			}
 
 			// since _pixi.width may not be immediately available but the rest of the code needs its value
