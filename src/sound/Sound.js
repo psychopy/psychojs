@@ -195,7 +195,7 @@ export class Sound extends PsychObject
 		}
 
 		let playerArgs = TonePlayer.accept(value, octave);
-		if (typeof playerArgs !== "undefined")
+		if (playerArgs)
 		{
 			if (this._player instanceof TonePlayer)
 			{
@@ -209,7 +209,7 @@ export class Sound extends PsychObject
 		}
 
 		playerArgs = TrackPlayer.accept(this._psychoJS, value);
-		if (playerArgs !== false)
+		if (playerArgs)
 		{
 			if (this._player instanceof TrackPlayer)
 			{
@@ -223,7 +223,7 @@ export class Sound extends PsychObject
 		}
 
 		playerArgs = AudioClipPlayer.accept(this._psychoJS, value);
-		if (typeof playerArgs !== "undefined")
+		if (playerArgs)
 		{
 			if (this._player instanceof AudioClipPlayer)
 			{
