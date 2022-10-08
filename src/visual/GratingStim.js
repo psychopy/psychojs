@@ -2,7 +2,7 @@
  * Grating Stimulus.
  *
  * @author Nikita Agafonov
- * @version 2021.2.3
+ * @version 2022.3.0
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -380,6 +380,8 @@ export class GratingStim extends VisualStim
 			shader: radialStimWGL1,
 			uniforms: {
 				uFreq: 20.0,
+				uStep: .0017,
+				uDX: 1.,
 				uPhase: 0.0,
 				uColor: [1., 1., 1.],
 				uAlpha: 1.0
