@@ -650,7 +650,7 @@ export class ServerManager extends PsychObject
 						&& (path.indexOf("pavlovia.org") === -1)
 					)
 					{
-						path = "https://devlovia.org/api/v2/proxy/" + path;
+						path = "https://pavlovia.org/api/v2/proxy/" + path;
 					}
 
 					const pathStatusData = this._resources.get(name);
