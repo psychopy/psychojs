@@ -258,7 +258,7 @@ export class ExperimentHandler extends PsychObject
 				const loop = this._loops[l];
 
 				const loopAttributes = ExperimentHandler._getLoopAttributes(loop);
-				for (let a in loopAttributes)
+				for (const a in loopAttributes)
 				{
 					if (loopAttributes.hasOwnProperty(a))
 					{

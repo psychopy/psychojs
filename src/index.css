@@ -10,81 +10,6 @@ body {
   margin: 0;
 }
 
-/* Project and resource dialogs */
-label,
-input,
-select {
-  box-sizing: border-box;
-  display: block;
-  padding-bottom: 0.5em;
-}
-
-input.text,
-select.text {
-  margin-bottom: 1em;
-  padding: 0.5em;
-  width: 100%;
-}
-
-fieldset {
-  border: 0;
-  margin-top: 1em;
-  padding: 0;
-}
-
-a,
-a:active,
-a:focus,
-a:visited {
-  color: #007eb7;
-  outline: 0;
-}
-
-a:hover {
-  color: #000;
-}
-
-.progress {
-  box-sizing: border-box;
-  padding: 0.5em 0;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 1em;
-  max-height: 20vh;
-  max-width: 100%;
-}
-
-.ui-dialog {
-  left: auto !important;
-  margin: auto;
-  max-width: 88vw;
-  position: relative;
-  top: auto !important;
-}
-
-/* Don't display close button in the top right corner of the box */
-.ui-dialog.no-close .ui-dialog-titlebar-close {
-  display: none;
-}
-
-.ui-dialog .ui-dialog-content {
-  margin-top: 1em;
-  max-height: calc(100vh - 12em) !important;
-  overflow-y: auto;
-}
-
-.ui-dialog .ui-dialog-buttonpane {
-  /* Avoid padding related overflow */
-  box-sizing: border-box;
-}
-
-@media only screen and (max-width: 1080px) {
-  .ui-dialog .ui-dialog-buttonpane {
-    padding-top: 1em;
-  }
-}
 
 /* Initialisation message (which will disappear behind the canvas) */
 #root::after {
@@ -95,11 +20,33 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
-#root.is-ready::after
-{
+#root.is-ready::after {
   content: ""
 }
 
+
+/* Project and resource dialogs */
+
+.dialog-container label,
+.dialog-container input,
+.dialog-container select {
+    box-sizing: border-box;
+    display: block;
+    padding-bottom: 0.5em;
+}
+
+.dialog-container input.text,
+.dialog-container select.text {
+    margin-bottom: 1em;
+    padding: 0.5em;
+    width: 100%;
+}
+
+.dialog-container fieldset {
+    border: 0;
+    margin-top: 1em;
+    padding: 0;
+}
 
 .dialog-container,
 .dialog-overlay {
@@ -229,7 +176,6 @@ a:hover {
   border: 1px solid #000000;
 }
 
-
 .disabled {
   border: 1px solid #AAAAAA;
   color: #AAAAAA;
@@ -238,3 +184,23 @@ a:hover {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.logo {
+  display: block;
+  margin: 0 auto 1em;
+  max-height: 20vh;
+  max-width: 100%;
+}
+
+a,
+a:active,
+a:focus,
+a:visited {
+  color: #007eb7;
+  outline: 0;
+}
+
+a:hover {
+  color: #000;
+}
+

@@ -1371,7 +1371,7 @@ export function extensionFromMimeType(mimeType)
  * 	the download speed
  * @return {number} the download speed, in megabits per second
  */
-export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
+export function getDownloadSpeed(psychoJS, nbDownloads = 1)
 {
 	// url of the image to download and size of the image in bits:
 	// TODO use a variety of files, with different sizes
@@ -1388,11 +1388,11 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 		{
 			const toc = performance.now();
 			downloadTimeAccumulator += (toc-tic);
-			++ downloadCounter;
+			++downloadCounter;
 
 			if (downloadCounter === nbDownloads)
 			{
-				const speed_bps = (imageSize_b  * nbDownloads) / (downloadTimeAccumulator / 1000);
+				const speed_bps = (imageSize_b * nbDownloads) / (downloadTimeAccumulator / 1000);
 				resolve(speed_bps / 1024 / 1024);
 			}
 			else
@@ -1400,18 +1400,45 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 				tic = performance.now();
 				download.src = `${imageUrl}?salt=${tic}`;
 			}
-		}
+		};
 
 		download.onerror = (event) =>
 		{
 			const errorMsg = `unable to estimate the download speed: ${JSON.stringify(event)}`;
 			psychoJS.logger.error(errorMsg);
 			reject(errorMsg);
-		}
+		};
 
 		let tic = performance.now();
 		download.src = `${imageUrl}?salt=${tic}`;
 	});
+}
+
+/**
+ * Dynamically load a css stylesheet.
+ *
+ * @param {string} cssId - the unique id
+ * @param {string} cssPath - the path to the stylesheet
+ * @return {void}
+ */
+export function loadCss(cssId, cssPath)
+{
+	if (!document.getElementById(cssId))
+	{
+		const head = document.getElementsByTagName("head")[0];
+		const link = document.createElement("link");
+		link.id = cssId;
+		link.rel = "stylesheet";
+		link.type = "text/css";
+		link.href = cssPath;
+		link.media = "all";
+		head.appendChild(link);
+	}
+
+	/* document.getElementsByTagName("head")[0].insertAdjacentHTML(
+		"beforeend",
+		`<link rel="stylesheet" href="${cssPath}" />`
+	); */
 }
 
 /**

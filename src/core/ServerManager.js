@@ -58,7 +58,6 @@ export class ServerManager extends PsychObject
 		this._nbLoadedResources = 0;
 		this._setupPreloadQueue();
 
-
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("status", ServerManager.Status.READY);
 	}
@@ -130,9 +129,11 @@ export class ServerManager extends PsychObject
 	/**
 	 * Open a session for this experiment on the remote PsychoJS manager.
 	 *
+	 * @param {Object} params - the open session parameters
+	 *
 	 * @returns {Promise<ServerManager.OpenSessionPromise>} the response
 	 */
-	openSession()
+	openSession(params = {})
 	{
 		const response = {
 			origin: "ServerManager.openSession",
@@ -141,13 +142,6 @@ export class ServerManager extends PsychObject
 		this._psychoJS.logger.debug("opening a session for experiment: " + this._psychoJS.config.experiment.fullpath);
 
 		this.setStatus(ServerManager.Status.BUSY);
-
-		// prepare a POST query:
-		let data = {};
-		if (this._psychoJS._serverMsg.has("__pilotToken"))
-		{
-			data.pilotToken = this._psychoJS._serverMsg.get("__pilotToken");
-		}
 
 		// query the server:
 		const self = this;
@@ -158,7 +152,7 @@ export class ServerManager extends PsychObject
 				const postResponse = await this._queryServerAPI(
 					"POST",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions`,
-					data,
+					params,
 					"FORM"
 				);
 
@@ -527,6 +521,12 @@ export class ServerManager extends PsychObject
 						// deal with survey models:
 						if ("surveyId" in resource)
 						{
+							// survey models can only be downloaded if the experiment is hosted on the pavlovia.org server:
+							if (this._psychoJS.config.environment !== ExperimentHandler.Environment.SERVER)
+							{
+								throw "survey models cannot be downloaded when the experiment is running locally";
+							}
+
 							// we add a .sid extension so _downloadResources knows what to download the associated
 							// survey model from the server
 							resources[r] = {
@@ -1028,6 +1028,73 @@ export class ServerManager extends PsychObject
 	}
 
 	/**
+	 * Asynchronously get a survey's experiment parameters from the pavlovia server, and update experimentInfo
+	 *
+	 * @note only those fields not previously defined in experimentInfo are updated
+	 *
+	 * @param surveyId
+	 * @param experimentInfo
+	 * @returns {Promise} a promise resolved when the survey experiment parameters have been downloaded
+	 */
+	async getSurveyExperimentParameters(surveyId, experimentInfo)
+	{
+		const response = {
+			origin: "ServerManager.getSurveyExperimentParameters",
+			context: `when downloading the experiment parameters for survey: ${surveyId}`
+		};
+
+		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER)
+		{
+			throw "survey experiment parameters cannot be downloaded when the experiment is running locally";
+		}
+
+		this._psychoJS.logger.debug(`downloading the experiment parameters of survey: ${surveyId}`);
+		this.setStatus(ServerManager.Status.BUSY);
+
+		const self = this;
+		return new Promise(async (resolve, reject) =>
+		{
+			try
+			{
+				const getResponse = await this._queryServerAPI(
+					"GET",
+					`surveys/${surveyId}/experiment`
+				);
+				const getExperimentParametersResponse = await getResponse.json();
+
+				if (getResponse.status !== 200)
+				{
+					throw ('error' in getExperimentParametersResponse) ? getExperimentParametersResponse.error : getExperimentParametersResponse;
+				}
+
+				if (getExperimentParametersResponse["experimentParameters"] === null)
+				{
+					throw "either there is no survey with the given id, or it is not currently active";
+				}
+
+				// update the info with the survey experiment parameters:
+				const experimentParameters = getExperimentParametersResponse['experimentParameters'];
+				for (const parameter in experimentParameters)
+				{
+					if (typeof experimentInfo[parameter] === "undefined")
+					{
+						experimentInfo[parameter] = experimentParameters[parameter];
+					}
+				}
+
+				self.setStatus(ServerManager.Status.READY);
+				resolve({ ...response, ...getExperimentParametersResponse });
+			}
+			catch (error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				reject({...response, error});
+			}
+		});
+	}
+
+	/**
 	 * List the resources available to the experiment.
 	 *
 	 * @protected
@@ -1249,7 +1316,6 @@ export class ServerManager extends PsychObject
 		}
 
 		// start loading the survey models:
-		// TODO load them sequentially, not all at once!
 		const self = this;
 		for (const name of surveyModelResources)
 		{
@@ -1260,39 +1326,49 @@ export class ServerManager extends PsychObject
 				resource: name,
 			});
 
-			this._queryServerAPI("GET", `surveys/${pathStatusData.path}/model`, "JSON")
-				.then(async getResponse =>
+			try
+			{
+				const getResponse = await this._queryServerAPI("GET", `surveys/${pathStatusData.path}/model`);
+
+				const getModelResponse = await getResponse.json();
+
+				if (getResponse.status !== 200)
 				{
-					const getModelResponse = await getResponse.json();
+					const error = ("error" in getModelResponse) ? getModelResponse.error : getModelResponse;
+					throw util.toString(error);
+				}
 
-					if (getResponse.status !== 200)
-					{
-						const error = ("error" in getModelResponse) ? getModelResponse.error : getModelResponse;
-						throw { ...response, error: `unable to download resource: ${name}: ${util.toString(error)}` };
-					}
+				if (getModelResponse["model"] === null)
+				{
+					throw "either there is no survey with the given id, or it is not currently active";
+				}
 
-					++self._nbLoadedResources;
+				++self._nbLoadedResources;
 
-					// note: we encode the json model as a string since it will be decoded in Survey.setModel,
-					// just like the model loaded directly from a resource by preloadJS
-					pathStatusData.data = new TextEncoder().encode(JSON.stringify(getModelResponse['model']));
+				// note: we encode the json model as a string since it will be decoded in Survey.setModel,
+				// just like the model loaded directly from a resource by preloadJS
+				pathStatusData.data = new TextEncoder().encode(JSON.stringify(getModelResponse['model']));
 
-					pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
-					self.emit(ServerManager.Event.RESOURCE, {
-						message: ServerManager.Event.RESOURCE_DOWNLOADED,
-						resource: name,
-					});
-
-					if (self._nbLoadedResources === resources.size)
-					{
-						self.setStatus(ServerManager.Status.READY);
-						self.emit(ServerManager.Event.RESOURCE, {
-							message: ServerManager.Event.DOWNLOAD_COMPLETED,
-						});
-					}
-
+				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.RESOURCE_DOWNLOADED,
+					resource: name,
 				});
 
+				if (self._nbLoadedResources === resources.size)
+				{
+					self.setStatus(ServerManager.Status.READY);
+					self.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
+				}
+			}
+			catch(error)
+			{
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				throw { ...response, error: `unable to download resource: ${name}: ${util.toString(error)}` };
+			}
 		}
 
 		// start loading resources marked for howler.js:

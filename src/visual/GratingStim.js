@@ -3,7 +3,7 @@
  *
  * @author Nikita Agafonov
  * @version 2021.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -279,6 +279,7 @@ export class GratingStim extends VisualStim
 	 * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
 	 * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
 	 * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
 	 * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
@@ -296,6 +297,7 @@ export class GratingStim extends VisualStim
 		win,
 		mask,
 		pos,
+		anchor,
 		units,
 		sf = 1.0,
 		ori,
@@ -313,7 +315,7 @@ export class GratingStim extends VisualStim
 		maskParams
 	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
 
 		this._adjustmentFilter = new AdjustmentFilter({
 			contrast
@@ -468,7 +470,7 @@ export class GratingStim extends VisualStim
 	 */
 	_getDisplaySize()
 	{
-		let displaySize = this.size;
+		let displaySize = this._size;
 
 		if (typeof displaySize === "undefined")
 		{
@@ -518,10 +520,10 @@ export class GratingStim extends VisualStim
 		geometry.addAttribute(
 			"aVertexPosition",
 			[
-				0, 0,
-				this._size_px[0], 0,
-				this._size_px[0], this._size_px[1],
-				0, this._size_px[1]
+				-this._size_px[0] * .5, -this._size_px[1] * .5,
+				this._size_px[0] * .5, -this._size_px[1] * .5,
+				this._size_px[0] * .5, this._size_px[1] * .5,
+				-this._size_px[0] * .5, this._size_px[1] * .5
 			],
 			2
 		);
@@ -644,6 +646,25 @@ export class GratingStim extends VisualStim
 	}
 
 	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// Vertices are set directly with origin at [0, 0], centered around it.
+			// Subtracting 0.5 from anchorNum vals to get desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * this._pixi.scale.y * this._pixi.height;
+		}
+	}
+
+	/**
 	 * Update the stimulus, if necessary.
 	 *
 	 * @protected
@@ -660,6 +681,7 @@ export class GratingStim extends VisualStim
 		if (this._needPixiUpdate)
 		{
 			this._needPixiUpdate = false;
+			this._size_px = util.to_px(this._size, this.units, this.win);
 			let shaderName;
 			let shaderUniforms;
 			let currentUniforms = {};
@@ -706,7 +728,6 @@ export class GratingStim extends VisualStim
 				};
 			}
 			this._pixi = this._getPixiMeshFromPredefinedShaders(shaderName, Object.assign(shaderUniforms, currentUniforms));
-			this._pixi.pivot.set(this._pixi.width * 0.5, this._pixi.width * 0.5);
 			this._pixi.filters = [this._adjustmentFilter];
 
 			// add a mask if need be:
@@ -722,9 +743,15 @@ export class GratingStim extends VisualStim
 				}
 				else
 				{
-					// for some reason setting PIXI.Mesh as .mask doesn't do anything,
-					// rendering mask to texture for further use.
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
+
+					// Since maskMesh is centered around (0, 0) (has vertices going around it),
+					// offsetting maskMesh position to properly cover render target texture,
+					// which created with top-left corner at (0, 0).
+					maskMesh.position.set(this._size_px[0] * 0.5, this._size_px[1] * 0.5);
+
+					// For some reason setting PIXI.Mesh as .mask doesn't do anything,
+					// rendering mask to texture for further use.
 					const rt = PIXI.RenderTexture.create({
 						width: this._size_px[0],
 						height: this._size_px[1],
@@ -737,6 +764,8 @@ export class GratingStim extends VisualStim
 					this._pixi.mask = maskSprite;
 					this._pixi.addChild(maskSprite);
 				}
+				// Since grating mesh is centered around (0, 0), setting mask's anchor to center to properly cover target image.
+				this._pixi.mask.anchor.set(0.5);
 			}
 
 			// since _pixi.width may not be immediately available but the rest of the code needs its value
@@ -751,16 +780,12 @@ export class GratingStim extends VisualStim
 
 		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
+		this.anchor = this._anchor;
 
 		// set the scale:
-		const displaySize = this._getDisplaySize();
-		this._size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = this._size_px[0] / this._pixi.width;
-		const scaleY = this._size_px[1] / this._pixi.height;
-		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+		this._pixi.scale.x = 1;
+		this._pixi.scale.y = -1;
 
-		// set the position, rotation, and anchor (image centered on pos):
 		let pos = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.position.set(pos.x, pos.y);
 		this._pixi.rotation = -this.ori * Math.PI / 180;

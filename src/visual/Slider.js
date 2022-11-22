@@ -432,6 +432,24 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 		}
 	}
 
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// container has origin at [0, 0], subtracting 0.5 from anchorNum vals to get a desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * this._pixi.scale.y * this._pixi.height;
+		}
+	}
+
 	/** Let `borderColor` alias `lineColor` to parallel PsychoPy */
 	set borderColor(color)
 	{
@@ -748,6 +766,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = -this._depth;
+		this.anchor = this._anchor;
 
 		// make sure that the dependent Stimuli are also updated:
 		for (const dependentStim of this._dependentStims)

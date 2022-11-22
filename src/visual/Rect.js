@@ -29,6 +29,7 @@ export class Rect extends ShapeStim
 	 * @param {number} [options.width= 0.5] - the width of the rectangle
 	 * @param {number} [options.height= 0.5] - the height of the rectangle
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 * @param {number} [options.size= 1.0] - the size
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
 	 * @param {string} [options.units= "height"] - the units of the stimulus vertices, size and position
@@ -38,7 +39,7 @@ export class Rect extends ShapeStim
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
-	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, width, height, pos, anchor, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
 		super({
 			name,
@@ -48,6 +49,7 @@ export class Rect extends ShapeStim
 			fillColor,
 			opacity,
 			pos,
+			anchor,
 			ori,
 			size,
 			units,
