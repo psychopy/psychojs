@@ -8,6 +8,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import seedrandom from "seedrandom";
+
 /**
  * Syntactic sugar for Mixins
  *
@@ -55,18 +57,30 @@ export function promiseToTupple(promise)
 }
 
 /**
- * Get a Universally Unique Identifier (RFC4122 version 4)
+ * Get a Universally Unique Identifier (RFC4122 version 4) or a pseudo-uuid based on a root
  * <p> See details here: https://www.ietf.org/rfc/rfc4122.txt</p>
  *
+ * @param {string} [root] - the root, for string dependent pseudo uuid's
  * @return {string} the uuid
  */
-export function makeUuid()
+export function makeUuid(root)
 {
-	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c)
+	// bonafide uuid v4 generator:
+	if (typeof root === "undefined")
 	{
-		const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
-		return v.toString(16);
-	});
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+			const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+	else
+	{
+		// our in-house pseudo uuid generator:
+		const generator = seedrandom(root);
+		let digits = generator().toString().substring(2);
+		digits += generator().toString().substring(2);
+		return `${digits.substring(0, 8)}-${digits.substring(8, 12)}-4${digits.substring(12, 15)}-8${digits.substring(15, 18)}-${digits.substring(18, 30)}`;
+	}
 }
 
 /**
@@ -1357,7 +1371,7 @@ export function extensionFromMimeType(mimeType)
  * 	the download speed
  * @return {number} the download speed, in megabits per second
  */
-export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
+export function getDownloadSpeed(psychoJS, nbDownloads = 1)
 {
 	// url of the image to download and size of the image in bits:
 	// TODO use a variety of files, with different sizes
@@ -1374,11 +1388,11 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 		{
 			const toc = performance.now();
 			downloadTimeAccumulator += (toc-tic);
-			++ downloadCounter;
+			++downloadCounter;
 
 			if (downloadCounter === nbDownloads)
 			{
-				const speed_bps = (imageSize_b  * nbDownloads) / (downloadTimeAccumulator / 1000);
+				const speed_bps = (imageSize_b * nbDownloads) / (downloadTimeAccumulator / 1000);
 				resolve(speed_bps / 1024 / 1024);
 			}
 			else
@@ -1386,18 +1400,45 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 				tic = performance.now();
 				download.src = `${imageUrl}?salt=${tic}`;
 			}
-		}
+		};
 
 		download.onerror = (event) =>
 		{
 			const errorMsg = `unable to estimate the download speed: ${JSON.stringify(event)}`;
 			psychoJS.logger.error(errorMsg);
 			reject(errorMsg);
-		}
+		};
 
 		let tic = performance.now();
 		download.src = `${imageUrl}?salt=${tic}`;
 	});
+}
+
+/**
+ * Dynamically load a css stylesheet.
+ *
+ * @param {string} cssId - the unique id
+ * @param {string} cssPath - the path to the stylesheet
+ * @return {void}
+ */
+export function loadCss(cssId, cssPath)
+{
+	if (!document.getElementById(cssId))
+	{
+		const head = document.getElementsByTagName("head")[0];
+		const link = document.createElement("link");
+		link.id = cssId;
+		link.rel = "stylesheet";
+		link.type = "text/css";
+		link.href = cssPath;
+		link.media = "all";
+		head.appendChild(link);
+	}
+
+	/* document.getElementsByTagName("head")[0].insertAdjacentHTML(
+		"beforeend",
+		`<link rel="stylesheet" href="${cssPath}" />`
+	); */
 }
 
 /**

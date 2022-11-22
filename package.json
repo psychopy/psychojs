@@ -1,6 +1,6 @@
 {
   "name": "psychojs",
-  "version": "2022.2.4",
+  "version": "2022.3.0",
   "private": true,
   "description": "Helps run in-browser neuroscience, psychology, and psychophysics experiments",
   "license": "MIT",

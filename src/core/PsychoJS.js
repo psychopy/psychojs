@@ -117,11 +117,17 @@ export class PsychoJS
 		collectIP = false,
 		hosts = [],
 		topLevelStatus = true,
+		autoStartScheduler = true,
+		saveResults = true,
+		captureErrors = true
 	} = {})
 	{
 		// logging:
 		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
-		this._captureErrors();
+		if (captureErrors)
+		{
+			this._captureErrors();
+		}
 
 		// detect the browser:
 		this._browser = util.detectBrowser();
@@ -160,7 +166,7 @@ export class PsychoJS
 		this._completionUrl = undefined;
 
 		// status:
-		this._status = PsychoJS.Status.NOT_CONFIGURED;
+		this.status = PsychoJS.Status.NOT_CONFIGURED;
 
 		// make the PsychoJS.Status accessible from the top level of the generated experiment script
 		// in order to accommodate PsychoPy's Code Components
@@ -169,9 +175,14 @@ export class PsychoJS
 			this._makeStatusTopLevel();
 		}
 
+		// whether to start the scheduler when the experiment starts:
+		this._autoStartScheduler = autoStartScheduler;
+
+		// whether to save results at the end of the experiment:
+		this._saveResults = saveResults;
+
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2022.2.4");
-		this.logger.info("[PsychoJS] @version 2022.2.4");
+		this.logger.info("[PsychoJS] @version 2022.3.0");
 
 		// hide the initialisation message:
 		const root = document.getElementById("root");
@@ -257,7 +268,7 @@ export class PsychoJS
 	 * Schedule a task.
 	 *
 	 * @param {module:util.Scheduler~Task} task - the task to be scheduled
-	 * @param {*} args - arguments for that task
+	 * @param {*} [args] - arguments for that task
 	 */
 	schedule(task, args)
 	{
@@ -304,7 +315,14 @@ export class PsychoJS
 	 * @param {Object.<string, *>} [options.expInfo] - additional information about the experiment
 	 * @param {Array.<{name: string, path: string}>} [resources=[]] - the list of resources
 	 */
-	async start({ configURL = "config.json", expName = "UNKNOWN", expInfo = {}, resources = [], dataFileName } = {})
+	async start({
+		configURL = "config.json",
+		expName = "UNKNOWN",
+		expInfo = {},
+		resources = [],
+		dataFileName,
+		surveyId} = {}
+	)
 	{
 		this.logger.debug();
 
@@ -347,7 +365,16 @@ export class PsychoJS
 			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
 			{
 				// open a session:
-				await this._serverManager.openSession();
+				const params = {};
+				if (this._serverMsg.has("__pilotToken"))
+				{
+					params.pilotToken = this._serverMsg.get("__pilotToken");
+				}
+				if (typeof surveyId !== "undefined")
+				{
+					params.surveyId = surveyId;
+				}
+				await this._serverManager.openSession(params);
 
 				// warn the user when they attempt to close the tab or browser:
 				this.beforeunloadCallback = (event) =>
@@ -369,7 +396,7 @@ export class PsychoJS
 					if (self._config.session.status === "OPEN")
 					{
 						// save the incomplete results if need be:
-						if (self._config.experiment.saveIncompleteResults)
+						if (self._config.experiment.saveIncompleteResults && self._saveResults)
 						{
 							self._experiment.save({ sync: true });
 						}
@@ -389,13 +416,18 @@ export class PsychoJS
 			this._serverManager.prepareResources(resources);
 
 			// start the experiment:
+			this.status = PsychoJS.Status.STARTED;
 			this.logger.info("[PsychoJS] Start Experiment.");
-			await this._scheduler.start();
+			if (this._autoStartScheduler)
+			{
+				await this._scheduler.start();
+			}
 		}
 		catch (error)
 		{
+			this.status = PsychoJS.Status.ERROR;
+			throw { ...response, error };
 			// this._gui.dialog({ error: { ...response, error } });
-			this._gui.dialog({ error: Object.assign(response, { error }) });
 		}
 	}
 
@@ -463,13 +495,15 @@ export class PsychoJS
 	 * @param {string} [options.message] - optional message to be displayed in a dialog box before quitting
 	 * @param {boolean} [options.isCompleted = false] - whether the participant has completed the experiment
 	 */
-	async quit({ message, isCompleted = false } = {})
+	async quit({ message, isCompleted = false, closeWindow = true, showOK = true } = {})
 	{
 		this.logger.info("[PsychoJS] Quit.");
 
+		const response = { origin: "PsychoJS.quit", context: "when terminating the experiment" };
+
 		this._experiment.experimentEnded = true;
-		this._status = PsychoJS.Status.FINISHED;
-		const isServerEnv = this.getEnvironment() === ExperimentHandler.Environment.SERVER;
+		this.status = PsychoJS.Status.STOPPED;
+		const isServerEnv = (this.getEnvironment() === ExperimentHandler.Environment.SERVER);
 
 		try
 		{
@@ -485,12 +519,12 @@ export class PsychoJS
 			// save the results and the logs of the experiment:
 			this.gui.finishDialog({
 				text: "Terminating the experiment. Please wait a few moments...",
-				nbSteps: 2 + ((isServerEnv) ? 1 : 0)
+				nbSteps: ((this._saveResults) ? 2 : 0) + ((isServerEnv) ? 1 : 0)
 			});
 
 			if (isCompleted || this._config.experiment.saveIncompleteResults)
 			{
-				if (!this._serverMsg.has("__noOutput"))
+				if (this._saveResults)
 				{
 					this.gui.finishDialogNextStep("saving results");
 					await this._experiment.save();
@@ -506,43 +540,57 @@ export class PsychoJS
 				await this._serverManager.closeSession(isCompleted);
 			}
 
-			// thank participant for waiting and either quit or redirect:
-			let text = "Thank you for your patience.<br/><br/>";
-			text += (typeof message !== "undefined") ? message : "Goodbye!";
-			const self = this;
-			this._gui.dialog({
-				message: text,
-				onOK: () =>
+			// thank participant for waiting, and either quit or redirect:
+			const onTerminate = () =>
+			{
+				if (closeWindow)
 				{
 					// close the window:
-					self._window.close();
+					this._window.close();
 
 					// remove everything from the browser window:
 					while (document.body.hasChildNodes())
 					{
 						document.body.removeChild(document.body.lastChild);
 					}
+				}
 
-					// return from fullscreen if we were there:
-					this._window.closeFullScreen();
+				// return from fullscreen if we were there:
+				this._window.closeFullScreen();
 
-					// redirect if redirection URLs have been provided:
-					if (isCompleted && typeof self._completionUrl !== "undefined")
-					{
-						window.location = self._completionUrl;
-					}
-					else if (!isCompleted && typeof self._cancellationUrl !== "undefined")
-					{
-						window.location = self._cancellationUrl;
-					}
-				},
-			});
+				this.status = PsychoJS.Status.FINISHED;
 
+				// redirect if redirection URLs have been provided:
+				if (isCompleted && typeof this._completionUrl !== "undefined")
+				{
+					window.location = this._completionUrl;
+				}
+				else if (!isCompleted && typeof this._cancellationUrl !== "undefined")
+				{
+					window.location = this._cancellationUrl;
+				}
+			};
+
+			if (showOK)
+			{
+				let text = "Thank you for your patience.<br/><br/>";
+				text += (typeof message !== "undefined") ? message : "Goodbye!";
+				this._gui.dialog({
+					message: text,
+					onOK: onTerminate
+				});
+			}
+			else
+			{
+				this._gui.closeDialog();
+				onTerminate();
+			}
 		}
 		catch (error)
 		{
-			console.error(error);
-			this._gui.dialog({ error });
+			this.status = PsychoJS.Status.ERROR;
+			throw { ...response, error };
+			// this._gui.dialog({ error: { ...response, error } });
 		}
 	}
 
@@ -564,7 +612,7 @@ export class PsychoJS
 		{
 			this.status = PsychoJS.Status.CONFIGURING;
 
-			// if the experiment is running from an approved hosts, e.e pavlovia.org,
+			// if the experiment is running from an approved host, e.g pavlovia.org,
 			// we read the configuration file:
 			const experimentUrl = window.location.href;
 			const isHost = this._hosts.some(url => experimentUrl.indexOf(url) === 0);
@@ -615,7 +663,7 @@ export class PsychoJS
 
 				this._config.environment = ExperimentHandler.Environment.SERVER;
 			}
-			// otherwise we create an ad-hoc configuration:
+			// otherwise, we create an ad-hoc configuration:
 			else
 			{
 				this._config = {
@@ -638,6 +686,12 @@ export class PsychoJS
 					this._serverMsg.set(key, value);
 				}
 			});
+
+			// note: __noOutput is typically used for automated testing
+			if (this._serverMsg.has("__noOutput"))
+			{
+				this._saveResults = false;
+			}
 
 			this.status = PsychoJS.Status.CONFIGURED;
 			this.logger.debug("configuration:", util.toString(this._config));
@@ -668,7 +722,7 @@ export class PsychoJS
 		try
 		{
 			const url = "http://www.geoplugin.net/json.gp";
-			const response = await fetch(url, {
+			const getResponse = await fetch(url, {
 				method: "GET",
 				mode: "cors",
 				cache: "no-cache",
@@ -676,11 +730,11 @@ export class PsychoJS
 				redirect: "follow",
 				referrerPolicy: "no-referrer"
 			});
-			if (response.status !== 200)
+			if (getResponse.status !== 200)
 			{
 				throw `unable to obtain the IP of the participant: ${response.statusText}`;
 			}
-			const geoData = await response.json();
+			const geoData = await getResponse.json();
 
 			this._IP = {
 				IP: geoData.geoplugin_request,
@@ -688,7 +742,7 @@ export class PsychoJS
 				latitude: geoData.geoplugin_latitude,
 				longitude: geoData.geoplugin_longitude,
 			};
-			this.logger.debug("IP information of the participant: " + util.toString(this._IP));
+			this.logger.debug("IP information of the participant:", util.toString(this._IP));
 		}
 		catch (error)
 		{
@@ -708,6 +762,14 @@ export class PsychoJS
 		const self = this;
 		window.onerror = function(message, source, lineno, colno, error)
 		{
+			// check for ResizeObserver loop limit exceeded error:
+			// ref: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+			if (message === "ResizeObserver loop limit exceeded")
+			{
+				console.warn(message);
+				return true;
+			}
+
 			console.error(error);
 
 			document.body.setAttribute(
@@ -721,7 +783,14 @@ export class PsychoJS
 				}),
 			);
 
-			self._gui.dialog({ "error": error });
+			if (error !== null)
+			{
+				self._gui.dialog({"error": error});
+			}
+			else
+			{
+				self._gui.dialog({"error": message});
+			}
 
 			return true;
 		};
@@ -730,12 +799,12 @@ export class PsychoJS
 			console.error(error?.reason);
 			if (error?.reason?.stack === undefined)
 			{
-				// No stack? Error thrown by PsychoJS; stringify whole error
+				// No stack? Error thrown by PsychoJS: stringify whole error
 				document.body.setAttribute("data-error", JSON.stringify(error?.reason));
 			}
 			else
 			{
-				// Yes stack? Error thrown by JS; stringify stack
+				// Yes stack? Error thrown by JS: stringify stack
 				document.body.setAttribute("data-error", JSON.stringify(error?.reason?.stack));
 			}
 			self._gui.dialog({ error: error?.reason });

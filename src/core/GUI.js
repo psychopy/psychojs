@@ -269,7 +269,7 @@ export class GUI
 	/**
 	 * Show a message to the participant in a dialog box.
 	 *
-	 * <p>This function can be used to display both warning and error messages.</p>
+	 * <p>This function can be used to display ordinary, warning, and error messages.</p>
 	 *
 	 * @param {Object} options
 	 * @param {string} options.message - the message to be displayed
@@ -611,19 +611,16 @@ export class GUI
 				// locally the OK button is always enabled, otherwise only if all requirements have been fulfilled:
 				if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || allRequirementsFulfilled)
 				{
+					this._okButton.classList.add("dialog-button");
+					this._okButton.classList.remove("disabled");
 					if (changeOKButtonFocus)
 					{
-						this._okButton.classList = ["dialog-button"];
 						this._okButton.focus();
-					}
-					else
-					{
-						this._okButton.classList = ["dialog-button"];
 					}
 				}
 				else
 				{
-					this._okButton.classList = ["dialog-button", "disabled"];
+					this._okButton.classList.add("dialog-button", "disabled");
 				}
 			}
 

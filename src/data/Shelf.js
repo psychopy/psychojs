@@ -648,8 +648,8 @@ export class Shelf extends PsychObject
 	 *
 	 * <p>This is a generic method, typically called from the Shelf helper methods, e.g. getBinaryValue.</p>
 	 *
-	 * @param {string[]} key					 	key as an array of key components
-	 * @param {Shelf.Type} type 				the type of the record associated with the given key
+	 * @param {string[]} key					key as an array of key components
+	 * @param {Shelf.Type} type 			the type of the record associated with the given key
 	 * @param {Object} [options] 			the options, e.g. the default value returned if no record with the
 	 * given key exists on the shelf
 	 * @return {Promise<any>}					the value

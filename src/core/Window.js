@@ -1,7 +1,7 @@
 /**
  * Window responsible for displaying the experiment stimuli
  *
- * @author Alain Pitiot
+ * @author Alain Pitiot & Nikita Agafonov
  * @version 2022.2.3
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
@@ -23,11 +23,28 @@ import { Logger } from "./Logger.js";
 export class Window extends PsychObject
 {
 	/**
+	 * Check whether PsychoJS/Pixi.js is actually using WebGL in the participant's browser, i.e.
+	 * hardware acceleration, rather than software emulation or Pixi.js' canvas fallback.
+	 *
+	 * @return true if WebGL is supported and false if it is not or if it is supported
+	 * 	only through software emulation
+	 */
+	static checkWebGLSupport()
+	{
+		// Note: in order to detect whether the participant's browser has hardware acceleration turned off
+		// we set FAIL_IF_MAJOR_PERFORMANCE_CAVEAT to true. This ensures that the WebGL context creation that
+		// takes place in PIXI.utils.isWebGLSupported fails if the performance is low, which is typically the case
+		// with software emulation.
+		// See details here: https://registry.khronos.org/webgl/specs/latest/1.0/#5.2
+		PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
+		return PIXI.utils.isWebGLSupported();
+	}
+
+	/**
 	 * Getter for monitorFramePeriod.
 	 *
 	 * @name module:core.Window#monitorFramePeriod
-	 * @function
-	 * @public
+	 * @return the estimated monitor frame period
 	 */
 	get monitorFramePeriod()
 	{
