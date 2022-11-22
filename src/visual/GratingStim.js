@@ -28,6 +28,21 @@ import radRampShader from "./shaders/radRampShader.frag";
 import raisedCosShader from "./shaders/raisedCosShader.frag";
 import radialStim from "./shaders/radialShader.frag";
 
+import defaultQuadVertWGL1 from "./shaders/wgl1/defaultQuad.vert";
+import imageShaderWGL1 from "./shaders/wgl1/imageShader.frag";
+import sinShaderWGL1 from "./shaders/wgl1/sinShader.frag";
+import sqrShaderWGL1 from "./shaders/wgl1/sqrShader.frag";
+import sawShaderWGL1 from "./shaders/wgl1/sawShader.frag";
+import triShaderWGL1 from "./shaders/wgl1/triShader.frag";
+import sinXsinShaderWGL1 from "./shaders/wgl1/sinXsinShader.frag";
+import sqrXsqrShaderWGL1 from "./shaders/wgl1/sqrXsqrShader.frag";
+import circleShaderWGL1 from "./shaders/wgl1/circleShader.frag";
+import gaussShaderWGL1 from "./shaders/wgl1/gaussShader.frag";
+import crossShaderWGL1 from "./shaders/wgl1/crossShader.frag";
+import radRampShaderWGL1 from "./shaders/wgl1/radRampShader.frag";
+import raisedCosShaderWGL1 from "./shaders/wgl1/raisedCosShader.frag";
+import radialStimWGL1 from "./shaders/wgl1/radialShader.frag";
+
 /**
  * Grating Stimulus.
  *
@@ -246,6 +261,127 @@ export class GratingStim extends VisualStim
 			shader: radialStim,
 			uniforms: {
 				uFreq: 20.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		}
+	};
+
+	static #SHADERSWGL1 = {
+		imageShader: {
+			shader: imageShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sin: {
+			shader: sinShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sqr: {
+			shader: sqrShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		saw: {
+			shader: sawShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		tri: {
+			shader: triShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uPeriod: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sinXsin: {
+			shader: sinXsinShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sqrXsqr: {
+			shader: sqrXsqrShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		circle: {
+			shader: circleShaderWGL1,
+			uniforms: {
+				uRadius: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		gauss: {
+			shader: gaussShaderWGL1,
+			uniforms: {
+				uA: 1.0,
+				uB: 0.0,
+				uC: 0.16,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		cross: {
+			shader: crossShaderWGL1,
+			uniforms: {
+				uThickness: 0.2,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		radRamp: {
+			shader: radRampShaderWGL1,
+			uniforms: {
+				uSqueeze: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		raisedCos: {
+			shader: raisedCosShaderWGL1,
+			uniforms: {
+				uBeta: 0.25,
+				uPeriod: 0.625,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		radialStim: {
+			shader: radialStimWGL1,
+			uniforms: {
+				uFreq: 20.0,
+				uStep: .0017,
+				uDX: 1.,
 				uPhase: 0.0,
 				uColor: [1., 1., 1.],
 				uAlpha: 1.0
@@ -533,9 +669,21 @@ export class GratingStim extends VisualStim
 			2
 		);
 		geometry.addIndex([0, 1, 2, 0, 2, 3]);
-		const vertexSrc = defaultQuadVert;
-		const fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
-		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
+		let vertexSrc;
+		let fragmentSrc;
+		let uniformsFinal;
+		if (this._win._renderer.context.webGLVersion >= 2)
+		{
+			vertexSrc = defaultQuadVert;
+			fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
+			uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
+		}
+		else
+		{
+			vertexSrc = defaultQuadVertWGL1;
+			fragmentSrc = GratingStim.#SHADERSWGL1[shaderName].shader;
+			uniformsFinal = Object.assign({}, GratingStim.#SHADERSWGL1[shaderName].uniforms, uniforms);
+		}
 		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
 		return new PIXI.Mesh(geometry, shader);
 	}
