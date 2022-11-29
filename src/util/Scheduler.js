@@ -118,7 +118,7 @@ export class Scheduler
 	 *
 	 * <p>Note: tasks are run after each animation frame.</p>
 	 */
-	async start()
+	start()
 	{
 		const self = this;
 		const update = async (timestamp) =>

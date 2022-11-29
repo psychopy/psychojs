@@ -267,6 +267,9 @@ export class GUI
 	 * @callback GUI.onOK
 	 */
 	/**
+	 * @callback GUI.onCancel
+	 */
+	/**
 	 * Show a message to the participant in a dialog box.
 	 *
 	 * <p>This function can be used to display ordinary, warning, and error messages.</p>
@@ -275,15 +278,19 @@ export class GUI
 	 * @param {string} options.message - the message to be displayed
 	 * @param {Object.<string, *>} options.error - an exception
 	 * @param {string} options.warning - a warning message
-	 * @param {boolean} [options.showOK=true] - specifies whether to show the OK button
+	 * @param {boolean} [options.showOK=true] - whether to show the OK button
 	 * @param {GUI.onOK} [options.onOK] - function called when the participant presses the OK button
+	 * @param {boolean} [options.showCancel=false] - whether to show the Cancel button
+	 * @param {GUI.onCancel} [options.onCancel] - function called when the participant presses the Cancel button
 	 */
 	dialog({
 		message,
 		warning,
 		error,
 		showOK = true,
-		onOK
+		onOK,
+		showCancel = false,
+		onCancel
 	} = {})
 	{
 		// close the previously opened dialog box, if there is one:
@@ -364,9 +371,17 @@ export class GUI
 			markup += `<p>${message}</p>`;
 		}
 
+		if (showOK || showCancel)
+		{
+			markup += "<hr>";
+		}
+		if (showCancel)
+		{
+			markup += "<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>Cancel</button>";
+		}
 		if (showOK)
 		{
-			markup += "<hr><button id='dialogOK' class='dialog-button' aria-label='Close dialog'>Ok</button>";
+			markup += "<button id='dialogOK' class='dialog-button' aria-label='Close dialog'>Ok</button>";
 		}
 		markup += "</div></div>";
 
@@ -391,6 +406,20 @@ export class GUI
 				if (typeof onOK !== "undefined")
 				{
 					onOK();
+				}
+			};
+		}
+		if (showCancel)
+		{
+			this._cancelButton = document.getElementById("dialogCancel");
+			this._cancelButton.onclick = () =>
+			{
+				this.closeDialog();
+
+				// execute callback function:
+				if (typeof onCancel !== "undefined")
+				{
+					onCancel();
 				}
 			};
 		}
