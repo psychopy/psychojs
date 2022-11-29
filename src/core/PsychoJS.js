@@ -119,7 +119,8 @@ export class PsychoJS
 		topLevelStatus = true,
 		autoStartScheduler = true,
 		saveResults = true,
-		captureErrors = true
+		captureErrors = true,
+		checkWebGLSupport = false
 	} = {})
 	{
 		// logging:
@@ -177,6 +178,9 @@ export class PsychoJS
 
 		// whether to start the scheduler when the experiment starts:
 		this._autoStartScheduler = autoStartScheduler;
+
+		// whether to check for actual hardware accelerated WebGL support:
+		this._checkWebGLSupport = checkWebGLSupport;
 
 		// whether to save results at the end of the experiment:
 		this._saveResults = saveResults;
@@ -415,19 +419,43 @@ export class PsychoJS
 			// start the asynchronous download of resources:
 			this._serverManager.prepareResources(resources);
 
-			// start the experiment:
-			this.status = PsychoJS.Status.STARTED;
-			this.logger.info("[PsychoJS] Start Experiment.");
-			if (this._autoStartScheduler)
+			// if WebGL is not actually available, warn the participant and ask them whether they want to go ahead
+			if (this._checkWebGLSupport && !Window.checkWebGLSupport())
 			{
-				await this._scheduler.start();
+				// add an entry to experiment results to warn the designer about a potential WebGL issue:
+				this._experiment.addData('hardware_acceleration', 'NOT SUPPORTED');
+				this._experiment.nextEntry();
+
+				this._gui.dialog({
+					warning: "It appears that hardware acceleration is either not supported by your browser or currently switched off.<br>As a consequence, this experiment will be rendered using software emulation and advanced features, such as gratings and gamma correction, will not be available.<br><br>You may want to press Cancel, change your browser settings, and reload the experiment. Otherwise press OK to proceed as is.",
+					showCancel: true,
+					onCancel: () =>
+					{
+						this.quit();
+					},
+					onOK: () =>
+					{
+						this.status = PsychoJS.Status.STARTED;
+						this.logger.info("[PsychoJS] Start Experiment (software emulation mode).");
+						this._scheduler.start();
+					}
+				});
 			}
+			else
+			{
+				if (this._autoStartScheduler)
+				{
+					this.status = PsychoJS.Status.STARTED;
+					this.logger.info("[PsychoJS] Start Experiment.");
+					this._scheduler.start();
+				}
+			}
+
 		}
 		catch (error)
 		{
 			this.status = PsychoJS.Status.ERROR;
 			throw { ...response, error };
-			// this._gui.dialog({ error: { ...response, error } });
 		}
 	}
 
