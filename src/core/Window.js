@@ -108,6 +108,12 @@ export class Window extends PsychObject
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("size", []);
 
+		if (this._psychoJS._checkWebGLSupport)
+		{
+			// see checkWebGLSupport() method for details.
+			PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
+		}
+
 		// setup PIXI:
 		this._setupPixi();
 
