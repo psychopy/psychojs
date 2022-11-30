@@ -108,12 +108,6 @@ export class Window extends PsychObject
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("size", []);
 
-		if (this._psychoJS._checkWebGLSupport)
-		{
-			// see checkWebGLSupport() method for details.
-			PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
-		}
-
 		// setup PIXI:
 		this._setupPixi();
 
@@ -441,6 +435,12 @@ export class Window extends PsychObject
 		// the size of the PsychoJS Window is always that of the browser
 		this._size[0] = window.innerWidth;
 		this._size[1] = window.innerHeight;
+
+		if (this._psychoJS._checkWebGLSupport)
+		{
+			// see checkWebGLSupport() method for details.
+			PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
+		}
 
 		// create a PIXI renderer and add it to the document:
 		this._renderer = PIXI.autoDetectRenderer({
