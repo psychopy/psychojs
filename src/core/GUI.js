@@ -611,19 +611,16 @@ export class GUI
 				// locally the OK button is always enabled, otherwise only if all requirements have been fulfilled:
 				if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || allRequirementsFulfilled)
 				{
+					this._okButton.classList.add("dialog-button");
+					this._okButton.classList.remove("disabled");
 					if (changeOKButtonFocus)
 					{
-						this._okButton.classList = ["dialog-button"];
 						this._okButton.focus();
-					}
-					else
-					{
-						this._okButton.classList = ["dialog-button"];
 					}
 				}
 				else
 				{
-					this._okButton.classList = ["dialog-button", "disabled"];
+					this._okButton.classList.add("dialog-button", "disabled");
 				}
 			}
 
