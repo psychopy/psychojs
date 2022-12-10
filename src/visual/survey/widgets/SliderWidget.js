@@ -44,6 +44,7 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("slider", [
 				{
 					name: "choices",
+					isArray: true,
 					default: []
 				},
 				{
