@@ -24,6 +24,1844 @@ import MatrixBipolar from "./survey/components/MatrixBipolar.js";
 import DropdownExtensions from "./survey/components/DropdownExtensions.js";
 import customExpressionFunctionsArray from "./survey/extensions/customExpressionFunctions.js";
 
+const SD = {
+    "surveys": [
+        {
+            "pages": [
+                {
+                    "elements": [
+                        {
+                            "type": "radiogroup",
+                            "name": "QID1",
+                            "title": "What is the capital of Bulgaria?",
+                            "choices": [
+                                {
+                                    "value": "1",
+                                    "text": "Sofia"
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "Maria"
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "Fiona"
+                                }
+                            ],
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "QID2",
+                            "title": "Who were the founding fathers of America? Select all that apply.",
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "George Washington"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Thomas Jefferson"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "John Adams"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Benjamin Franklin"
+                                },
+                                {
+                                    "value": 5,
+                                    "text": "Alexander Hamilton"
+                                },
+                                {
+                                    "value": 6,
+                                    "text": "John Legend"
+                                },
+                                {
+                                    "value": 7,
+                                    "text": "James Madison"
+                                }
+                            ],
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "QID3",
+                            "colCount": 0,
+                            "title": "Who were the founding fathers of America? Select all that apply.",
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "George Washington"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Thomas Jefferson"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "John Adams"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Benjamin Franklin"
+                                },
+                                {
+                                    "value": 5,
+                                    "text": "Alexander Hamilton"
+                                },
+                                {
+                                    "value": 6,
+                                    "text": "John Legend"
+                                },
+                                {
+                                    "value": 7,
+                                    "text": "James Madison"
+                                }
+                            ],
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "checkbox",
+                            "name": "QID4",
+                            "colCount": 2,
+                            "title": "Who were the founding fathers of America? Select all that apply.",
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "George Washington"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Thomas Jefferson"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "John Adams"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Benjamin Franklin"
+                                },
+                                {
+                                    "value": 5,
+                                    "text": "Alexander Hamilton"
+                                },
+                                {
+                                    "value": 6,
+                                    "text": "John Legend"
+                                },
+                                {
+                                    "value": 7,
+                                    "text": "James Madison"
+                                }
+                            ],
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "selectbox",
+                            "name": "QID5",
+                            "title": "Who was NOT one of the founding fathers of America?",
+                            "multipleAnswer": true,
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "George Washington"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Thomas Jefferson"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "John Adams"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Benjamin Franklin"
+                                },
+                                {
+                                    "value": 5,
+                                    "text": "Alexander Hamilton"
+                                },
+                                {
+                                    "value": 6,
+                                    "text": "John Legend"
+                                },
+                                {
+                                    "value": 7,
+                                    "text": "James Madison"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "text",
+                            "name": "QID6",
+                            "inputType": "text",
+                            "title": "What is your email?<br>",
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "text",
+                            "name": "QID7",
+                            "inputType": "password",
+                            "title": "What is your password?<br>",
+                            "isRequired": false,
+                            "validators": []
+                        },
+                        {
+                            "type": "matrix",
+                            "name": "QID9",
+                            "title": "Random question about random things",
+                            "rows": [
+                                {
+                                    "value": "1",
+                                    "text": "Random statement 1:Right"
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "Random statement 2:Right"
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "Random statement 3:Right"
+                                }
+                            ],
+                            "columns": [
+                                {
+                                    "value": 1,
+                                    "text": "Definitely yes"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Probably yes"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "Probably not"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Definitely not"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "matrix",
+                            "subType": "bipolar",
+                            "name": "QID10",
+                            "title": "Random question about random things",
+                            "rows": [
+                                {
+                                    "value": "1",
+                                    "text": "Random statement 1:Opposite of random statement 1"
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "Random statement 2:Opposite of random statement 2"
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "Random statement 3:Opposite of random statement 3"
+                                }
+                            ],
+                            "columns": [
+                                {
+                                    "value": "1",
+                                    "text": "1"
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "2"
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "3"
+                                },
+                                {
+                                    "value": "4",
+                                    "text": "4"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "matrixdropdown",
+                            "name": "QID11",
+                            "title": "Out of all the electronic device you own, please rank their importance",
+                            "rows": [
+                                {
+                                    "value": "1",
+                                    "text": "Phone"
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "Laptop"
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "Tablet"
+                                }
+                            ],
+                            "columns": [
+                                {
+                                    "name": "1",
+                                    "title": "1",
+                                    "cellType": "text"
+                                },
+                                {
+                                    "name": "2",
+                                    "title": "2",
+                                    "cellType": "text"
+                                },
+                                {
+                                    "name": "3",
+                                    "title": "3",
+                                    "cellType": "text"
+                                },
+                                {
+                                    "name": "4",
+                                    "title": "4",
+                                    "cellType": "text"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "maxdiffmatrix",
+                            "name": "QID12",
+                            "title": "Do you have any of these devices?",
+                            "rows": [
+                                {
+                                    "value": "1",
+                                    "text": "Phone",
+                                    "exclusiveAnswer": true
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "Laptop",
+                                    "exclusiveAnswer": true
+                                },
+                                {
+                                    "value": "3",
+                                    "text": "Tablet",
+                                    "exclusiveAnswer": true
+                                }
+                            ],
+                            "columns": [
+                                {
+                                    "value": "1",
+                                    "text": "Yes",
+                                    "exclusiveAnswer": true
+                                },
+                                {
+                                    "value": "2",
+                                    "text": "No",
+                                    "exclusiveAnswer": true
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "slider",
+                            "name": "QID13",
+                            "title": "On a hot day, you would choose to eat...",
+                            "choices": [
+                                "ice cream",
+                                "snow cone"
+                            ],
+                            "minVal": 0,
+                            "maxVal": 100,
+                            "showValue": true,
+                            "snapToGrid": false
+                        },
+                        {
+                            "type": "slider",
+                            "name": "QID14",
+                            "title": "On a hot day, you would choose to eat...",
+                            "sliderType": "bar",
+                            "choices": [
+                                "ice cream",
+                                "snow cone"
+                            ],
+                            "minVal": 0,
+                            "maxVal": 100,
+                            "showValue": true
+                        },
+                        {
+                            "type": "sliderstar",
+                            "name": "QID15",
+                            "title": "You would rate the new Dr Strange movie with how many stars?",
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "Please provide your rating here"
+                                }
+                            ],
+                            "starCount": 5,
+                            "showValue": true,
+                            "starType": "discrete",
+                            "isRequired": false
+                        },
+                        {
+                            "type": "multipletext",
+                            "name": "QID16",
+                            "title": "This is a proper form form",
+                            "items": [
+                                {
+                                    "name": "1",
+                                    "title": "Name:"
+                                },
+                                {
+                                    "name": "2",
+                                    "title": "Age:"
+                                },
+                                {
+                                    "name": "3",
+                                    "title": "Gender:"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "ranking",
+                            "name": "QID17",
+                            "title": "Please rank your favourite colours of the rainbow. You can drag your responses around",
+                            "choices": [
+                                {
+                                    "value": 1,
+                                    "text": "Red"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Orange"
+                                },
+                                {
+                                    "value": 3,
+                                    "text": "Yellow"
+                                },
+                                {
+                                    "value": 4,
+                                    "text": "Green"
+                                },
+                                {
+                                    "value": 5,
+                                    "text": "Blue"
+                                },
+                                {
+                                    "value": 6,
+                                    "text": "Indigo"
+                                },
+                                {
+                                    "value": 7,
+                                    "text": "Violet"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "sidebysidematrix",
+                            "name": "QID18",
+                            "title": "Click to write the question text",
+                            "rows": [
+                                {
+                                    "value": 1,
+                                    "text": "Click to write Statement 1"
+                                },
+                                {
+                                    "value": 2,
+                                    "text": "Click to write Statement 2"
+                                }
+                            ],
+                            "columns": [
+                                {
+                                    "name": "QID18#1",
+                                    "value": "1",
+                                    "title": "Click to write Column 1",
+                                    "cellType": "text",
+                                    "subColumns": [
+                                        {
+                                            "value": "1",
+                                            "text": "Answer 1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "text": "Answer 2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "QID18#2",
+                                    "value": "2",
+                                    "title": "Click to write Column 2",
+                                    "cellType": "radio",
+                                    "subColumns": [
+                                        {
+                                            "value": "1",
+                                            "text": "Answer 1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "text": "Answer 2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "QID18#3",
+                                    "value": "3",
+                                    "title": "Click to write Column 3",
+                                    "cellType": "dropdown",
+                                    "subColumns": [
+                                        {
+                                            "value": "1",
+                                            "text": "Answer 1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "text": "Answer 2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "QID18#4",
+                                    "value": "4",
+                                    "title": "Click to write Column 4",
+                                    "cellType": "checkbox",
+                                    "subColumns": [
+                                        {
+                                            "value": "1",
+                                            "text": "Answer 1"
+                                        },
+                                        {
+                                            "value": "2",
+                                            "text": "Answer 2"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "rating",
+                            "name": "QID19",
+                            "title": "How likely are you to recommend PSYCHOPY to a friend or colleague?",
+                            "rateMin": "0",
+                            "rateMax": "10",
+                            "minRateDescription": "Not at all likely",
+                            "maxRateDescription": "Extremely likely",
+                            "displayMode": "buttons"
+                        },
+                        {
+                            "type": "panel",
+                            "name": "constantSumPanel",
+                            "title": "Please fill in your expenses",
+                            "showQuestionNumbers": "off",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "inputType": "number",
+                                    "name": "QID21.Gas",
+                                    "title": "Gas"
+                                },
+                                {
+                                    "type": "text",
+                                    "inputType": "number",
+                                    "name": "QID21.Food",
+                                    "title": "Food"
+                                },
+                                {
+                                    "type": "text",
+                                    "inputType": "number",
+                                    "name": "QID21.Hotel",
+                                    "title": "Hotel"
+                                },
+                                {
+                                    "type": "expression",
+                                    "name": "QID21.sum",
+                                    "title": "Total",
+                                    "expression": "sum({QID21.Gas},{QID21.Food},{QID21.Hotel})"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "dropdown",
+                            "name": "QID23",
+                            "title": "What year did the Backstreet Boys release this song?",
+                            "choices": [
+                                {
+                                    "value": "1",
+                                    "text": "1997"
+                                },
+                                {
+                                    "value": "15",
+                                    "text": "1998"
+                                },
+                                {
+                                    "value": "29",
+                                    "text": "1999"
+                                }
+                            ],
+                            "isRequired": false
+                        },
+                        {
+                            "type": "signaturepad",
+                            "name": "QID24",
+                            "title": "There's also a signature option ooh",
+                            "penColor": "black",
+                            "signatureWidth": 500,
+                            "signatureHeight": 200
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "surveysMap": {
+        "BL_8CeJt6GJzp2HpAy": {
+            "survey": {
+                "pages": [
+                    {
+                        "elements": [
+                            {
+                                "type": "radiogroup",
+                                "name": "QID1",
+                                "title": "What is the capital of Bulgaria?",
+                                "choices": [
+                                    {
+                                        "value": "1",
+                                        "text": "Sofia"
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "Maria"
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "Fiona"
+                                    }
+                                ],
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "checkbox",
+                                "name": "QID2",
+                                "title": "Who were the founding fathers of America? Select all that apply.",
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "George Washington"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Thomas Jefferson"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "John Adams"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Benjamin Franklin"
+                                    },
+                                    {
+                                        "value": 5,
+                                        "text": "Alexander Hamilton"
+                                    },
+                                    {
+                                        "value": 6,
+                                        "text": "John Legend"
+                                    },
+                                    {
+                                        "value": 7,
+                                        "text": "James Madison"
+                                    }
+                                ],
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "checkbox",
+                                "name": "QID3",
+                                "colCount": 0,
+                                "title": "Who were the founding fathers of America? Select all that apply.",
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "George Washington"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Thomas Jefferson"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "John Adams"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Benjamin Franklin"
+                                    },
+                                    {
+                                        "value": 5,
+                                        "text": "Alexander Hamilton"
+                                    },
+                                    {
+                                        "value": 6,
+                                        "text": "John Legend"
+                                    },
+                                    {
+                                        "value": 7,
+                                        "text": "James Madison"
+                                    }
+                                ],
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "checkbox",
+                                "name": "QID4",
+                                "colCount": 2,
+                                "title": "Who were the founding fathers of America? Select all that apply.",
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "George Washington"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Thomas Jefferson"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "John Adams"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Benjamin Franklin"
+                                    },
+                                    {
+                                        "value": 5,
+                                        "text": "Alexander Hamilton"
+                                    },
+                                    {
+                                        "value": 6,
+                                        "text": "John Legend"
+                                    },
+                                    {
+                                        "value": 7,
+                                        "text": "James Madison"
+                                    }
+                                ],
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "selectbox",
+                                "name": "QID5",
+                                "title": "Who was NOT one of the founding fathers of America?",
+                                "multipleAnswer": true,
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "George Washington"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Thomas Jefferson"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "John Adams"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Benjamin Franklin"
+                                    },
+                                    {
+                                        "value": 5,
+                                        "text": "Alexander Hamilton"
+                                    },
+                                    {
+                                        "value": 6,
+                                        "text": "John Legend"
+                                    },
+                                    {
+                                        "value": 7,
+                                        "text": "James Madison"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "text",
+                                "name": "QID6",
+                                "inputType": "text",
+                                "title": "What is your email?<br>",
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "text",
+                                "name": "QID7",
+                                "inputType": "password",
+                                "title": "What is your password?<br>",
+                                "isRequired": false,
+                                "validators": []
+                            },
+                            {
+                                "type": "matrix",
+                                "name": "QID9",
+                                "title": "Random question about random things",
+                                "rows": [
+                                    {
+                                        "value": "1",
+                                        "text": "Random statement 1:Right"
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "Random statement 2:Right"
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "Random statement 3:Right"
+                                    }
+                                ],
+                                "columns": [
+                                    {
+                                        "value": 1,
+                                        "text": "Definitely yes"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Probably yes"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "Probably not"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Definitely not"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "matrix",
+                                "subType": "bipolar",
+                                "name": "QID10",
+                                "title": "Random question about random things",
+                                "rows": [
+                                    {
+                                        "value": "1",
+                                        "text": "Random statement 1:Opposite of random statement 1"
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "Random statement 2:Opposite of random statement 2"
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "Random statement 3:Opposite of random statement 3"
+                                    }
+                                ],
+                                "columns": [
+                                    {
+                                        "value": "1",
+                                        "text": "1"
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "2"
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "3"
+                                    },
+                                    {
+                                        "value": "4",
+                                        "text": "4"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "matrixdropdown",
+                                "name": "QID11",
+                                "title": "Out of all the electronic device you own, please rank their importance",
+                                "rows": [
+                                    {
+                                        "value": "1",
+                                        "text": "Phone"
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "Laptop"
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "Tablet"
+                                    }
+                                ],
+                                "columns": [
+                                    {
+                                        "name": "1",
+                                        "title": "1",
+                                        "cellType": "text"
+                                    },
+                                    {
+                                        "name": "2",
+                                        "title": "2",
+                                        "cellType": "text"
+                                    },
+                                    {
+                                        "name": "3",
+                                        "title": "3",
+                                        "cellType": "text"
+                                    },
+                                    {
+                                        "name": "4",
+                                        "title": "4",
+                                        "cellType": "text"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "maxdiffmatrix",
+                                "name": "QID12",
+                                "title": "Do you have any of these devices?",
+                                "rows": [
+                                    {
+                                        "value": "1",
+                                        "text": "Phone",
+                                        "exclusiveAnswer": true
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "Laptop",
+                                        "exclusiveAnswer": true
+                                    },
+                                    {
+                                        "value": "3",
+                                        "text": "Tablet",
+                                        "exclusiveAnswer": true
+                                    }
+                                ],
+                                "columns": [
+                                    {
+                                        "value": "1",
+                                        "text": "Yes",
+                                        "exclusiveAnswer": true
+                                    },
+                                    {
+                                        "value": "2",
+                                        "text": "No",
+                                        "exclusiveAnswer": true
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "slider",
+                                "name": "QID13",
+                                "title": "On a hot day, you would choose to eat...",
+                                "choices": [
+                                    "ice cream",
+                                    "snow cone"
+                                ],
+                                "minVal": 0,
+                                "maxVal": 100,
+                                "showValue": true,
+                                "snapToGrid": false
+                            },
+                            {
+                                "type": "slider",
+                                "name": "QID14",
+                                "title": "On a hot day, you would choose to eat...",
+                                "sliderType": "bar",
+                                "choices": [
+                                    "ice cream",
+                                    "snow cone"
+                                ],
+                                "minVal": 0,
+                                "maxVal": 100,
+                                "showValue": true
+                            },
+                            {
+                                "type": "sliderstar",
+                                "name": "QID15",
+                                "title": "You would rate the new Dr Strange movie with how many stars?",
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "Please provide your rating here"
+                                    }
+                                ],
+                                "starCount": 5,
+                                "showValue": true,
+                                "starType": "discrete",
+                                "isRequired": false
+                            },
+                            {
+                                "type": "multipletext",
+                                "name": "QID16",
+                                "title": "This is a proper form form",
+                                "items": [
+                                    {
+                                        "name": "1",
+                                        "title": "Name:"
+                                    },
+                                    {
+                                        "name": "2",
+                                        "title": "Age:"
+                                    },
+                                    {
+                                        "name": "3",
+                                        "title": "Gender:"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "ranking",
+                                "name": "QID17",
+                                "title": "Please rank your favourite colours of the rainbow. You can drag your responses around",
+                                "choices": [
+                                    {
+                                        "value": 1,
+                                        "text": "Red"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Orange"
+                                    },
+                                    {
+                                        "value": 3,
+                                        "text": "Yellow"
+                                    },
+                                    {
+                                        "value": 4,
+                                        "text": "Green"
+                                    },
+                                    {
+                                        "value": 5,
+                                        "text": "Blue"
+                                    },
+                                    {
+                                        "value": 6,
+                                        "text": "Indigo"
+                                    },
+                                    {
+                                        "value": 7,
+                                        "text": "Violet"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "sidebysidematrix",
+                                "name": "QID18",
+                                "title": "Click to write the question text",
+                                "rows": [
+                                    {
+                                        "value": 1,
+                                        "text": "Click to write Statement 1"
+                                    },
+                                    {
+                                        "value": 2,
+                                        "text": "Click to write Statement 2"
+                                    }
+                                ],
+                                "columns": [
+                                    {
+                                        "name": "QID18#1",
+                                        "value": "1",
+                                        "title": "Click to write Column 1",
+                                        "cellType": "text",
+                                        "subColumns": [
+                                            {
+                                                "value": "1",
+                                                "text": "Answer 1"
+                                            },
+                                            {
+                                                "value": "2",
+                                                "text": "Answer 2"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "QID18#2",
+                                        "value": "2",
+                                        "title": "Click to write Column 2",
+                                        "cellType": "radio",
+                                        "subColumns": [
+                                            {
+                                                "value": "1",
+                                                "text": "Answer 1"
+                                            },
+                                            {
+                                                "value": "2",
+                                                "text": "Answer 2"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "QID18#3",
+                                        "value": "3",
+                                        "title": "Click to write Column 3",
+                                        "cellType": "dropdown",
+                                        "subColumns": [
+                                            {
+                                                "value": "1",
+                                                "text": "Answer 1"
+                                            },
+                                            {
+                                                "value": "2",
+                                                "text": "Answer 2"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "name": "QID18#4",
+                                        "value": "4",
+                                        "title": "Click to write Column 4",
+                                        "cellType": "checkbox",
+                                        "subColumns": [
+                                            {
+                                                "value": "1",
+                                                "text": "Answer 1"
+                                            },
+                                            {
+                                                "value": "2",
+                                                "text": "Answer 2"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "rating",
+                                "name": "QID19",
+                                "title": "How likely are you to recommend PSYCHOPY to a friend or colleague?",
+                                "rateMin": "0",
+                                "rateMax": "10",
+                                "minRateDescription": "Not at all likely",
+                                "maxRateDescription": "Extremely likely",
+                                "displayMode": "buttons"
+                            },
+                            {
+                                "type": "panel",
+                                "name": "constantSumPanel",
+                                "title": "Please fill in your expenses",
+                                "showQuestionNumbers": "off",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "inputType": "number",
+                                        "name": "QID21.Gas",
+                                        "title": "Gas"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "inputType": "number",
+                                        "name": "QID21.Food",
+                                        "title": "Food"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "inputType": "number",
+                                        "name": "QID21.Hotel",
+                                        "title": "Hotel"
+                                    },
+                                    {
+                                        "type": "expression",
+                                        "name": "QID21.sum",
+                                        "title": "Total",
+                                        "expression": "sum({QID21.Gas},{QID21.Food},{QID21.Hotel})"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "dropdown",
+                                "name": "QID23",
+                                "title": "What year did the Backstreet Boys release this song?",
+                                "choices": [
+                                    {
+                                        "value": "1",
+                                        "text": "1997"
+                                    },
+                                    {
+                                        "value": "15",
+                                        "text": "1998"
+                                    },
+                                    {
+                                        "value": "29",
+                                        "text": "1999"
+                                    }
+                                ],
+                                "isRequired": false
+                            },
+                            {
+                                "type": "signaturepad",
+                                "name": "QID24",
+                                "title": "There's also a signature option ooh",
+                                "penColor": "black",
+                                "signatureWidth": 500,
+                                "signatureHeight": 200
+                            }
+                        ]
+                    }
+                ]
+            },
+            "surveyIdx": 0
+        }
+    },
+    "questionMapsBySurvey": [
+        {
+            "QID1": {
+                "type": "radiogroup",
+                "name": "QID1",
+                "title": "What is the capital of Bulgaria?",
+                "choices": [
+                    {
+                        "value": "1",
+                        "text": "Sofia"
+                    },
+                    {
+                        "value": "2",
+                        "text": "Maria"
+                    },
+                    {
+                        "value": "3",
+                        "text": "Fiona"
+                    }
+                ],
+                "isRequired": false,
+                "validators": []
+            },
+            "QID2": {
+                "type": "checkbox",
+                "name": "QID2",
+                "title": "Who were the founding fathers of America? Select all that apply.",
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "George Washington"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Thomas Jefferson"
+                    },
+                    {
+                        "value": 3,
+                        "text": "John Adams"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Benjamin Franklin"
+                    },
+                    {
+                        "value": 5,
+                        "text": "Alexander Hamilton"
+                    },
+                    {
+                        "value": 6,
+                        "text": "John Legend"
+                    },
+                    {
+                        "value": 7,
+                        "text": "James Madison"
+                    }
+                ],
+                "isRequired": false,
+                "validators": []
+            },
+            "QID3": {
+                "type": "checkbox",
+                "name": "QID3",
+                "colCount": 0,
+                "title": "Who were the founding fathers of America? Select all that apply.",
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "George Washington"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Thomas Jefferson"
+                    },
+                    {
+                        "value": 3,
+                        "text": "John Adams"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Benjamin Franklin"
+                    },
+                    {
+                        "value": 5,
+                        "text": "Alexander Hamilton"
+                    },
+                    {
+                        "value": 6,
+                        "text": "John Legend"
+                    },
+                    {
+                        "value": 7,
+                        "text": "James Madison"
+                    }
+                ],
+                "isRequired": false,
+                "validators": []
+            },
+            "QID4": {
+                "type": "checkbox",
+                "name": "QID4",
+                "colCount": 2,
+                "title": "Who were the founding fathers of America? Select all that apply.",
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "George Washington"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Thomas Jefferson"
+                    },
+                    {
+                        "value": 3,
+                        "text": "John Adams"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Benjamin Franklin"
+                    },
+                    {
+                        "value": 5,
+                        "text": "Alexander Hamilton"
+                    },
+                    {
+                        "value": 6,
+                        "text": "John Legend"
+                    },
+                    {
+                        "value": 7,
+                        "text": "James Madison"
+                    }
+                ],
+                "isRequired": false,
+                "validators": []
+            },
+            "QID5": {
+                "type": "selectbox",
+                "name": "QID5",
+                "title": "Who was NOT one of the founding fathers of America?",
+                "multipleAnswer": true,
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "George Washington"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Thomas Jefferson"
+                    },
+                    {
+                        "value": 3,
+                        "text": "John Adams"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Benjamin Franklin"
+                    },
+                    {
+                        "value": 5,
+                        "text": "Alexander Hamilton"
+                    },
+                    {
+                        "value": 6,
+                        "text": "John Legend"
+                    },
+                    {
+                        "value": 7,
+                        "text": "James Madison"
+                    }
+                ]
+            },
+            "QID6": {
+                "type": "text",
+                "name": "QID6",
+                "inputType": "text",
+                "title": "What is your email?<br>",
+                "isRequired": false,
+                "validators": []
+            },
+            "QID7": {
+                "type": "text",
+                "name": "QID7",
+                "inputType": "password",
+                "title": "What is your password?<br>",
+                "isRequired": false,
+                "validators": []
+            },
+            "QID9": {
+                "type": "matrix",
+                "name": "QID9",
+                "title": "Random question about random things",
+                "rows": [
+                    {
+                        "value": "1",
+                        "text": "Random statement 1:Right"
+                    },
+                    {
+                        "value": "2",
+                        "text": "Random statement 2:Right"
+                    },
+                    {
+                        "value": "3",
+                        "text": "Random statement 3:Right"
+                    }
+                ],
+                "columns": [
+                    {
+                        "value": 1,
+                        "text": "Definitely yes"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Probably yes"
+                    },
+                    {
+                        "value": 3,
+                        "text": "Probably not"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Definitely not"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID10": {
+                "type": "matrix",
+                "subType": "bipolar",
+                "name": "QID10",
+                "title": "Random question about random things",
+                "rows": [
+                    {
+                        "value": "1",
+                        "text": "Random statement 1:Opposite of random statement 1"
+                    },
+                    {
+                        "value": "2",
+                        "text": "Random statement 2:Opposite of random statement 2"
+                    },
+                    {
+                        "value": "3",
+                        "text": "Random statement 3:Opposite of random statement 3"
+                    }
+                ],
+                "columns": [
+                    {
+                        "value": "1",
+                        "text": "1"
+                    },
+                    {
+                        "value": "2",
+                        "text": "2"
+                    },
+                    {
+                        "value": "3",
+                        "text": "3"
+                    },
+                    {
+                        "value": "4",
+                        "text": "4"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID11": {
+                "type": "matrixdropdown",
+                "name": "QID11",
+                "title": "Out of all the electronic device you own, please rank their importance",
+                "rows": [
+                    {
+                        "value": "1",
+                        "text": "Phone"
+                    },
+                    {
+                        "value": "2",
+                        "text": "Laptop"
+                    },
+                    {
+                        "value": "3",
+                        "text": "Tablet"
+                    }
+                ],
+                "columns": [
+                    {
+                        "name": "1",
+                        "title": "1",
+                        "cellType": "text"
+                    },
+                    {
+                        "name": "2",
+                        "title": "2",
+                        "cellType": "text"
+                    },
+                    {
+                        "name": "3",
+                        "title": "3",
+                        "cellType": "text"
+                    },
+                    {
+                        "name": "4",
+                        "title": "4",
+                        "cellType": "text"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID12": {
+                "type": "maxdiffmatrix",
+                "name": "QID12",
+                "title": "Do you have any of these devices?",
+                "rows": [
+                    {
+                        "value": "1",
+                        "text": "Phone",
+                        "exclusiveAnswer": true
+                    },
+                    {
+                        "value": "2",
+                        "text": "Laptop",
+                        "exclusiveAnswer": true
+                    },
+                    {
+                        "value": "3",
+                        "text": "Tablet",
+                        "exclusiveAnswer": true
+                    }
+                ],
+                "columns": [
+                    {
+                        "value": "1",
+                        "text": "Yes",
+                        "exclusiveAnswer": true
+                    },
+                    {
+                        "value": "2",
+                        "text": "No",
+                        "exclusiveAnswer": true
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID13": {
+                "type": "slider",
+                "name": "QID13",
+                "title": "On a hot day, you would choose to eat...",
+                "choices": [
+                    "ice cream",
+                    "snow cone"
+                ],
+                "minVal": 0,
+                "maxVal": 100,
+                "showValue": true,
+                "snapToGrid": false
+            },
+            "QID14": {
+                "type": "slider",
+                "name": "QID14",
+                "title": "On a hot day, you would choose to eat...",
+                "sliderType": "bar",
+                "choices": [
+                    "ice cream",
+                    "snow cone"
+                ],
+                "minVal": 0,
+                "maxVal": 100,
+                "showValue": true
+            },
+            "QID15": {
+                "type": "sliderstar",
+                "name": "QID15",
+                "title": "You would rate the new Dr Strange movie with how many stars?",
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "Please provide your rating here"
+                    }
+                ],
+                "starCount": 5,
+                "showValue": true,
+                "starType": "discrete",
+                "isRequired": false
+            },
+            "QID16": {
+                "type": "multipletext",
+                "name": "QID16",
+                "title": "This is a proper form form",
+                "items": [
+                    {
+                        "name": "1",
+                        "title": "Name:"
+                    },
+                    {
+                        "name": "2",
+                        "title": "Age:"
+                    },
+                    {
+                        "name": "3",
+                        "title": "Gender:"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID17": {
+                "type": "ranking",
+                "name": "QID17",
+                "title": "Please rank your favourite colours of the rainbow. You can drag your responses around",
+                "choices": [
+                    {
+                        "value": 1,
+                        "text": "Red"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Orange"
+                    },
+                    {
+                        "value": 3,
+                        "text": "Yellow"
+                    },
+                    {
+                        "value": 4,
+                        "text": "Green"
+                    },
+                    {
+                        "value": 5,
+                        "text": "Blue"
+                    },
+                    {
+                        "value": 6,
+                        "text": "Indigo"
+                    },
+                    {
+                        "value": 7,
+                        "text": "Violet"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID18": {
+                "type": "sidebysidematrix",
+                "name": "QID18",
+                "title": "Click to write the question text",
+                "rows": [
+                    {
+                        "value": 1,
+                        "text": "Click to write Statement 1"
+                    },
+                    {
+                        "value": 2,
+                        "text": "Click to write Statement 2"
+                    }
+                ],
+                "columns": [
+                    {
+                        "name": "QID18#1",
+                        "value": "1",
+                        "title": "Click to write Column 1",
+                        "cellType": "text",
+                        "subColumns": [
+                            {
+                                "value": "1",
+                                "text": "Answer 1"
+                            },
+                            {
+                                "value": "2",
+                                "text": "Answer 2"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "QID18#2",
+                        "value": "2",
+                        "title": "Click to write Column 2",
+                        "cellType": "radio",
+                        "subColumns": [
+                            {
+                                "value": "1",
+                                "text": "Answer 1"
+                            },
+                            {
+                                "value": "2",
+                                "text": "Answer 2"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "QID18#3",
+                        "value": "3",
+                        "title": "Click to write Column 3",
+                        "cellType": "dropdown",
+                        "subColumns": [
+                            {
+                                "value": "1",
+                                "text": "Answer 1"
+                            },
+                            {
+                                "value": "2",
+                                "text": "Answer 2"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "QID18#4",
+                        "value": "4",
+                        "title": "Click to write Column 4",
+                        "cellType": "checkbox",
+                        "subColumns": [
+                            {
+                                "value": "1",
+                                "text": "Answer 1"
+                            },
+                            {
+                                "value": "2",
+                                "text": "Answer 2"
+                            }
+                        ]
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID19": {
+                "type": "rating",
+                "name": "QID19",
+                "title": "How likely are you to recommend PSYCHOPY to a friend or colleague?",
+                "rateMin": "0",
+                "rateMax": "10",
+                "minRateDescription": "Not at all likely",
+                "maxRateDescription": "Extremely likely",
+                "displayMode": "buttons"
+            },
+            "QID21": {
+                "type": "panel",
+                "name": "constantSumPanel",
+                "title": "Please fill in your expenses",
+                "showQuestionNumbers": "off",
+                "elements": [
+                    {
+                        "type": "text",
+                        "inputType": "number",
+                        "name": "QID21.Gas",
+                        "title": "Gas"
+                    },
+                    {
+                        "type": "text",
+                        "inputType": "number",
+                        "name": "QID21.Food",
+                        "title": "Food"
+                    },
+                    {
+                        "type": "text",
+                        "inputType": "number",
+                        "name": "QID21.Hotel",
+                        "title": "Hotel"
+                    },
+                    {
+                        "type": "expression",
+                        "name": "QID21.sum",
+                        "title": "Total",
+                        "expression": "sum({QID21.Gas},{QID21.Food},{QID21.Hotel})"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID23": {
+                "type": "dropdown",
+                "name": "QID23",
+                "title": "What year did the Backstreet Boys release this song?",
+                "choices": [
+                    {
+                        "value": "1",
+                        "text": "1997"
+                    },
+                    {
+                        "value": "15",
+                        "text": "1998"
+                    },
+                    {
+                        "value": "29",
+                        "text": "1999"
+                    }
+                ],
+                "isRequired": false
+            },
+            "QID24": {
+                "type": "signaturepad",
+                "name": "QID24",
+                "title": "There's also a signature option ooh",
+                "penColor": "black",
+                "signatureWidth": 500,
+                "signatureHeight": 200
+            }
+        }
+    ],
+    "surveyFlow": [
+        {
+            "type": 1,
+            "surveyIdx": 0
+        }
+    ],
+    "surveySettings": {
+        "showPrevButton": false
+    },
+    "surveyRunLogic": {},
+    "inQuestionRandomization": {},
+    "questionsOrderRandomization": [],
+    "questionSkipLogic": {},
+    "questionsConverted": 21,
+    "questionsTotal": 27,
+    "variables": {},
+    "logs": [
+        {
+            "origin": "[qsf preprocessing]",
+            "msg": "plain text preprocessing took 0.30000001192092896",
+            "level": "info"
+        },
+        {
+            "origin": "question: QID25",
+            "msg": "no converter is currently available for question type HeatMap | Image",
+            "level": "warn"
+        },
+        {
+            "origin": "[qsf converter]",
+            "msg": "flow parse took: 0.30000001192092896 ms",
+            "level": "info"
+        },
+        {
+            "origin": "[qsf converter]",
+            "msg": "import took: 2.70 ms",
+            "level": "info"
+        }
+    ]
+};
+
 const CAPTIONS = {
 	NEXT: "Next"
 };
@@ -87,8 +1925,12 @@ export class Survey extends VisualStim
 
 		// whether the user is done with the survey, independently of whether the survey is completed:
 		this.isFinished = false;
-		// whether the user completed the survey, i.e. answered all the questions:
-		this.isCompleted = false;
+
+		// Accumulated completion flag that is being set after completion of one survey node.
+		// This flag allows to track completion progress while moving through the survey flow.
+		// Initially set to true and will be flipped if at least one of the survey nodes were not fully completed.
+		this._isCompletedAll = true;
+
 		// timestamps associated to each question:
 		this._questionAnswerTimestamps = {};
 		// timestamps clock:
@@ -130,6 +1972,11 @@ export class Survey extends VisualStim
 		}
 	}
 
+	get isCompleted ()
+	{
+		return this.isFinished && this._isCompletedAll;
+	}
+
 	/**
 	 * Setter for the model attribute.
 	 *
@@ -168,8 +2015,8 @@ export class Survey extends VisualStim
 					throw "model is neither the name of a resource nor an object";
 				}
 
-				this._surveyData = Object.assign({}, model);
-				// this._surveyData = SD;
+				// this._surveyData = Object.assign({}, model);
+				this._surveyData = SD;
 				// this._surveyModel = new window.Survey.Model(this._surveyModelJson);
 				// this._surveyModel.isInitialized = false;
 
@@ -426,7 +2273,7 @@ export class Survey extends VisualStim
 		{
 			this._needPixiUpdate = false;
 
-			// if a survey div already does not exist already, create it:
+			// if a survey div does not exist, create it:
 			if (document.getElementById("_survey") === null)
 			{
 				document.body.insertAdjacentHTML("beforeend", "<div id='_survey' class='survey'></div>")
@@ -909,12 +2756,7 @@ export class Survey extends VisualStim
 		// }
 
 		surveyModel.stopTimer();
-		this._surveyRunningPromiseResolve(completionCode);
-	}
 
-	_onFlowComplete ()
-	{
-		this.isFinished = true;
 		// check whether the survey was completed:
 		const surveyVisibleQuestions = this._surveyModel.getAllQuestions(true);
 		const nbAnsweredQuestions = surveyVisibleQuestions.reduce(
@@ -938,7 +2780,14 @@ export class Survey extends VisualStim
 			},
 			0
 		);
-		this.isCompleted = (nbAnsweredQuestions === surveyVisibleQuestions.length);
+		this._isCompletedAll = this._isCompletedAll && (nbAnsweredQuestions === surveyVisibleQuestions.length);
+
+		this._surveyRunningPromiseResolve(completionCode);
+	}
+
+	_onFlowComplete ()
+	{
+		this.isFinished = true;
 		this._onFinishedCallback();
 	}
 
@@ -1087,6 +2936,13 @@ export class Survey extends VisualStim
 					break;
 				}
 			}
+		}
+
+		// If that's top level flow, we're done.
+		// Alternatively can check if this is a root node if we decide to have one.
+		if (surveyFlow === surveyData.surveyFlow)
+		{
+			this._onFlowComplete();
 		}
 	}
 
