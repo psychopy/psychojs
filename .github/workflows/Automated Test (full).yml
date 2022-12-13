@@ -106,7 +106,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '15'
       - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
@@ -173,7 +173,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '15'
       - name: Cache modules psychojs_testing
         uses: actions/cache@v2
         env:
