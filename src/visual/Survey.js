@@ -39,6 +39,12 @@ const SURVEY_COMPLETION_CODES =
 	SKIP_TO_END_OF_SURVEY: 2
 };
 
+const NODE_EXIT_CODES =
+{
+	NORMAL: 0,
+	BREAK_FLOW: 1
+};
+
 /**
  * Survey Stimulus.
  *
@@ -869,7 +875,7 @@ export class Survey extends VisualStim
 	 */
 	_onSurveyComplete(surveyModel, options)
 	{
-		console.log(this._questionAsnwerTimestamps);
+		console.log(this._questionAnswerTimestamps);
 		Object.assign(this._totalSurveyResults, surveyModel.data);
 		console.log("survey complete", this._totalSurveyResults);
 		this._detachResizeObservers();
@@ -1007,25 +1013,25 @@ export class Survey extends VisualStim
 		// let surveyBlock;
 		let surveyIdx;
 		let surveyCompletionCode;
+		let nodeExitCode = NODE_EXIT_CODES.NORMAL;
 		let i, j;
 
 		if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
 		{
 			const dataset = Object.assign({}, this._totalSurveyResults, this._variables);
 			this._expressionsRunner.expressionExecutor.setExpression(surveyBlock.condition);
-			if (this._expressionsRunner.run(dataset))
+			if (this._expressionsRunner.run(dataset) && surveyBlock.nodes[0] !== undefined)
 			{
-				await this._runSurveyFlow(surveyBlock.nodes[0], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[0], surveyData, prevBlockResults);
 			}
 			else if (surveyBlock.nodes[1] !== undefined)
 			{
-				await this._runSurveyFlow(surveyBlock.nodes[1], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[1], surveyData, prevBlockResults);
 			}
 		}
 		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.RANDOMIZER)
 		{
 			this._InPlaceFisherYatesShuffle(surveyBlock.nodes, 0, surveyBlock.nodes.length - 1);
-			// await this._runSurveyFlow(surveyBlock, surveyData, prevBlockResults);
 		}
 		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.EMBEDDED_DATA)
 		{
@@ -1060,7 +1066,7 @@ export class Survey extends VisualStim
 				this._surveyModel.setCompleted();
 			}
 			console.log("EndSurvey block encountered, exiting.");
-			return;
+			nodeExitCode = NODE_EXIT_CODES.BREAK_FLOW;
 		}
 		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
 		{
@@ -1070,17 +1076,25 @@ export class Survey extends VisualStim
 			// SkipLogic had destination set to ENDOFSURVEY.
 			if (surveyCompletionCode === SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
 			{
-				return;
+				nodeExitCode = NODE_EXIT_CODES.BREAK_FLOW;
 			}
 		}
 
-		if (surveyBlock.nodes instanceof Array && surveyBlock.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
+		if (nodeExitCode === NODE_EXIT_CODES.NORMAL &&
+			surveyBlock.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL &&
+			surveyBlock.nodes instanceof Array)
 		{
 			for (i = 0; i < surveyBlock.nodes.length; i++)
 			{
-				await this._runSurveyFlow(surveyBlock.nodes[i], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[i], surveyData, prevBlockResults);
+				if (nodeExitCode === NODE_EXIT_CODES.BREAK_FLOW)
+				{
+					break;
+				}
 			}
 		}
+
+		return nodeExitCode;
 	}
 
 	_resetState ()
