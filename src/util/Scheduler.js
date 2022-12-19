@@ -143,6 +143,9 @@ export class Scheduler
 
 			// self._psychoJS.window._writeLogOnFlip();
 
+			// update stimuli and render the scene in the window:
+			self._psychoJS.window.render();
+
 			// run the next scheduled tasks until a scene render is requested:
 			const state = await self._runNextTasks();
 			if (state === Scheduler.Event.QUIT)
@@ -156,9 +159,6 @@ export class Scheduler
 
 			self._lastDelta = timestamp - lastTimestamp;
 			self._lastTimestamp = timestamp;
-
-			// render the scene in the window:
-			self._psychoJS.window.render();
 
 			// request a new frame:
 			requestAnimationFrame(update);
