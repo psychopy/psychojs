@@ -535,6 +535,37 @@ export class ServerManager extends PsychObject
 								download: true
 							};
 						}
+
+						// deal with survey libraries:
+						if ("surveyLibrary" in resource)
+						{
+							// add the SurveyJS and PsychoJS Survey .js and .css resources:
+							resources[r] = {
+								name: "jquery-3.6.0.min.js",
+								path: "./lib/vendors/jquery-3.6.0.min.js",
+								download: true
+							};
+							resources.push({
+								name: "survey.jquery-1.9.50.min.js",
+								path: "./lib/vendors/survey.jquery-1.9.50.min.js",
+								download: true
+							});
+							resources.push({
+								name: "survey.defaultV2-1.9.50.min.css",
+								path: "./lib/vendors/survey.defaultV2-1.9.50.min.css",
+								download: true
+							});
+							resources.push({
+								name: "survey.widgets.css",
+								path: "./lib/vendors/survey.widgets.css",
+								download: true
+							});
+							resources.push({
+								name: "survey.grey_style.css",
+								path: "./lib/vendors/survey.grey_style.css",
+								download: true
+							});
+						}
 					}
 
 					for (let { name, path, download } of resources)

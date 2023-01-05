@@ -52,6 +52,12 @@ export class Survey extends VisualStim
 	{
 		super({ name, win, units, ori, depth, pos, size, autoDraw, autoLog });
 
+		// default size:
+		if (typeof size === "undefined")
+		{
+			this.size = (this.unit === "norm") ? [2.0, 2.0] : [1.0, 1.0];
+		}
+
 		// init SurveyJS
 		this._initSurveyJS();
 
@@ -392,7 +398,6 @@ export class Survey extends VisualStim
 			if (typeof this._surveyModel !== "undefined")
 			{
 				this._startSurvey(surveyId, this._surveyModel);
-				// jQuery(`#${surveyId}`).Survey({model: this._surveyModel});
 			}
 		}
 

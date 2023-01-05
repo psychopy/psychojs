@@ -1434,11 +1434,6 @@ export function loadCss(cssId, cssPath)
 		link.media = "all";
 		head.appendChild(link);
 	}
-
-	/* document.getElementsByTagName("head")[0].insertAdjacentHTML(
-		"beforeend",
-		`<link rel="stylesheet" href="${cssPath}" />`
-	); */
 }
 
 /**

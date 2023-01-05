@@ -58,13 +58,12 @@ export class MonotonicClock
 	 * <p>Note: This is just a convenience wrapper around `Intl.DateTimeFormat()`.</p>
 	 *
 	 * @param {string|array.string} locales - A string with a BCP 47 language tag, or an array of such strings.
-	 * @param {object} options - An object with detailed date and time styling information.
+	 * @param {object} [options] - An object with detailed date and time styling information.
 	 * @return {string} The current timestamp in the chosen format.
 	 */
-	static getDate(locales = "en-CA", optionsMaybe)
+	static getDate(locales = "en-CA", options)
 	{
-		const date = new Date();
-		const options = Object.assign({
+		const dataTimeOptions = Object.assign({
 			hour12: false,
 			year: "numeric",
 			month: "2-digit",
@@ -73,10 +72,10 @@ export class MonotonicClock
 			minute: "numeric",
 			second: "numeric",
 			fractionalSecondDigits: 3,
-		}, optionsMaybe);
+		}, options);
+		const dateTimeFormat = new Intl.DateTimeFormat(locales, dataTimeOptions);
 
-		const dateTimeFormat = new Intl.DateTimeFormat(locales, options);
-
+		const date = new Date();
 		return dateTimeFormat.format(date);
 	}
 
