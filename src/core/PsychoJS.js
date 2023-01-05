@@ -789,10 +789,11 @@ export class PsychoJS
 
 		const self = this;
 		window.onerror = function(message, source, lineno, colno, error)
-		{
+		{console.log('@@@', message)
 			// check for ResizeObserver loop limit exceeded error:
 			// ref: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
-			if (message === "ResizeObserver loop limit exceeded")
+			if (message === "ResizeObserver loop limit exceeded" ||
+				message === "ResizeObserver loop completed with undelivered notifications.")
 			{
 				console.warn(message);
 				return true;
