@@ -204,3 +204,9 @@ a:hover {
   color: #000;
 }
 
+.yt-iframe {
+  display: block;
+  position: absolute;
+  border: none;
+}
+

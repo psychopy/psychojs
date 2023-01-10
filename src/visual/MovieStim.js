@@ -32,6 +32,8 @@ export class MovieStim extends VisualStim
 	 * @param {module:core.Window} options.win - the associated Window
 	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
 	 * movie resource or of a HTMLVideoElement or of a Camera component
+	 * @param {string} [options.youtubeUrl] - link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [options.showYoutubeControls] - whether or not to show youtube player controls.
 	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
 	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
@@ -51,11 +53,37 @@ export class MovieStim extends VisualStim
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
-	constructor({ name, win, movie, pos, anchor, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
+	constructor({
+		name,
+		win,
+		movie,
+		youtubeUrl,
+		showYoutubeControls,
+		pos,
+		anchor,
+		units,
+		ori,
+		size,
+		color,
+		opacity,
+		contrast,
+		interpolate,
+		flipHoriz,
+		flipVert,
+		loop,
+		volume,
+		noAudio,
+		autoPlay,
+		autoDraw,
+		autoLog
+	} = {})
 	{
 		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog });
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
+
+		// Used in case when youtubeUrl parameter is set to a proper youtube url.
+		this._youtubeIframeDOM = undefined;
 
 		// movie and movie control:
 		this._addAttribute(
@@ -118,6 +146,16 @@ export class MovieStim extends VisualStim
 			loop,
 			false,
 			this._onChange(false, false),
+		);
+		this._addAttribute(
+			"youtubeUrl",
+			youtubeUrl,
+			""
+		);
+		this._addAttribute(
+			"showYoutubeControls",
+			showYoutubeControls,
+			true
 		);
 
 		// estimate the bounding box:
@@ -208,6 +246,128 @@ export class MovieStim extends VisualStim
 		catch (error)
 		{
 			throw Object.assign(response, { error });
+		}
+	}
+
+	/**
+	 * Setter for the size attribute.
+	 *
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setSize(size, log = false)
+	{
+		// size is either undefined, null, or a tuple of numbers:
+		if (typeof size !== "undefined" && size !== null)
+		{
+			size = util.toNumerical(size);
+			if (!Array.isArray(size))
+			{
+				size = [size, size];
+			}
+		}
+
+		const hasChanged = this._setAttribute("size", size, log);
+
+		if (hasChanged)
+		{
+			this._onChange(true, true)();
+		}
+
+		// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi.
+		if (this._youtubeIframeDOM !== undefined)
+		{
+			let vidSizePx;
+			if (this._size === undefined || this._size === null)
+			{
+				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			}
+			else
+			{
+				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+			}
+			this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
+			this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+		}
+	}
+
+	/**
+	 * Setter for the youtubeUrl attribute.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	setYoutubeUrl (urlString = "", log = false)
+	{
+		if (urlString.length === 0)
+		{
+			if (this._youtubeIframeDOM !== undefined)
+			{
+				this._youtubeIframeDOM.src = "";
+			}
+			return;
+		}
+
+		const urlObj = new URL(urlString);
+		const embedYtUrl = `https://youtube.com/embed/${urlObj.searchParams.get("v")}`;
+		const embedUrlObj = new URL(embedYtUrl);
+		embedUrlObj.searchParams.set("autoplay", Number(this._autoPlay) || 0);
+		embedUrlObj.searchParams.set("controls", Number(this._showYoutubeControls) || 0);
+		embedUrlObj.searchParams.set("modestbranding", 1);
+		embedUrlObj.searchParams.set("loop", Number(this._loop) || 0);
+
+		if (this._youtubeIframeDOM === undefined)
+		{
+			const ytIframe = `<iframe class="yt-iframe" src="${embedUrlObj.href}">`;
+			document.body.insertAdjacentHTML("beforeend", ytIframe);
+			this._youtubeIframeDOM = document.querySelector(".yt-iframe");
+
+			window.addEventListener("resize", () => {
+				// If size wasn't set, matching window size.
+				if (this._size === undefined || this._size === null)
+				{
+					const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+					this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
+					this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+				}
+			});
+		}
+		else
+		{
+			this._youtubeIframeDOM.src = embedYtUrl;
+		}
+
+		let vidSizePx = new Array(2);
+
+		// If size wasn't set, matching window size.
+		if (this._size === undefined || this._size === null)
+		{
+			vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+		}
+		else
+		{
+			vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+		}
+
+		this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
+		this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+
+		// Handling the case when there's already regular movie is set. Stop the current movie, destroy the pixi instance.
+		if (this._movie !== undefined)
+		{
+			this.stop();
+		}
+
+		if (this._pixi !== undefined)
+		{
+			// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
+			this._pixi.destroy({
+				children: true,
+				texture: true,
+				baseTexture: false,
+			});
+			this._pixi = undefined;
+			this._texture = undefined;
 		}
 	}
 
@@ -369,8 +529,18 @@ export class MovieStim extends VisualStim
 				return;
 			}
 
+			// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+			// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
+			// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+			// will affect all MovieStims which happen to share that BaseTexture.
+			this._texture = new PIXI.Texture(new PIXI.BaseTexture(
+				this._movie,
+				{
+					resourceOptions: { autoPlay: this.autoPlay }
+				}
+			));
+
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.from(this._movie, { resourceOptions: { autoPlay: this.autoPlay } });
 			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
