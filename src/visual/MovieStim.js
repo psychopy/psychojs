@@ -15,6 +15,7 @@ import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware/Camera.js";
+import YoutubeIframeAPIHandler  from "./YoutubeIframeAPI.js";
 
 
 /**
@@ -34,6 +35,7 @@ export class MovieStim extends VisualStim
 	 * movie resource or of a HTMLVideoElement or of a Camera component
 	 * @param {string} [options.youtubeUrl] - link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
 	 * @param {boolean} [options.showYoutubeControls] - whether or not to show youtube player controls.
+	 * @oaram {boolean} [options.disableYoutubePlayerKeyboardControls=false] - Setting the parameter's value to true causes the youtube player to not respond to keyboard controls.
 	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
 	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
@@ -59,6 +61,7 @@ export class MovieStim extends VisualStim
 		movie,
 		youtubeUrl,
 		showYoutubeControls,
+		disableYoutubePlayerKeyboardControls,
 		pos,
 		anchor,
 		units,
@@ -84,6 +87,7 @@ export class MovieStim extends VisualStim
 
 		// Used in case when youtubeUrl parameter is set to a proper youtube url.
 		this._youtubeIframeDOM = undefined;
+		this._youtubePlayer = undefined;
 
 		// movie and movie control:
 		this._addAttribute(
@@ -156,6 +160,11 @@ export class MovieStim extends VisualStim
 			"showYoutubeControls",
 			showYoutubeControls,
 			true
+		);
+		this._addAttribute(
+			"disableYoutubePlayerKeyboardControls",
+			disableYoutubePlayerKeyboardControls,
+			false
 		);
 
 		// estimate the bounding box:
@@ -292,12 +301,45 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
+	 * Handling youtube player being ready to work.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerReady ()
+	{
+		console.log("yt player rdy", arguments);
+	}
+
+	/**
+	 * Handling youtube player state change.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerStateChange ()
+	{
+		console.log("yt player state change", arguments);
+	}
+
+	/**
+	 * Handling youtube player errors.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerError ()
+	{
+		console.log("handling yt errors", arguments);
+	}
+
+	/**
 	 * Setter for the youtubeUrl attribute.
 	 *
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
 	 * @param {boolean} [log= false] - whether or not to log.
 	 */
-	setYoutubeUrl (urlString = "", log = false)
+	async setYoutubeUrl (urlString = "", log = false)
 	{
 		if (urlString.length === 0)
 		{
@@ -309,48 +351,86 @@ export class MovieStim extends VisualStim
 		}
 
 		const urlObj = new URL(urlString);
-		const embedYtUrl = `https://youtube.com/embed/${urlObj.searchParams.get("v")}`;
-		const embedUrlObj = new URL(embedYtUrl);
-		embedUrlObj.searchParams.set("autoplay", Number(this._autoPlay) || 0);
-		embedUrlObj.searchParams.set("controls", Number(this._showYoutubeControls) || 0);
-		embedUrlObj.searchParams.set("modestbranding", 1);
-		embedUrlObj.searchParams.set("loop", Number(this._loop) || 0);
+		// const embedYtUrl = `https://youtube.com/embed/${urlObj.searchParams.get("v")}`;
+		// const embedUrlObj = new URL(embedYtUrl);
+		// embedUrlObj.searchParams.set("autoplay", Number(this._autoPlay) || 0);
+		// embedUrlObj.searchParams.set("controls", Number(this._showYoutubeControls) || 0);
+		// embedUrlObj.searchParams.set("modestbranding", 1);
+		// embedUrlObj.searchParams.set("loop", Number(this._loop) || 0);
 
-		if (this._youtubeIframeDOM === undefined)
+		if (this._youtubePlayer === undefined)
 		{
-			const ytIframe = `<iframe class="yt-iframe" src="${embedUrlObj.href}">`;
-			document.body.insertAdjacentHTML("beforeend", ytIframe);
-			this._youtubeIframeDOM = document.querySelector(".yt-iframe");
+			// const ytIframe = `<iframe class="yt-iframe" src="${embedUrlObj.href}">`;
+			// document.body.insertAdjacentHTML("beforeend", ytIframe);
+			// this._youtubeIframeDOM = document.querySelector(".yt-iframe");
 
-			window.addEventListener("resize", () => {
-				// If size wasn't set, matching window size.
-				if (this._size === undefined || this._size === null)
-				{
-					const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-					this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
-					this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+			// window.addEventListener("resize", () => {
+			// 	// If size wasn't set, matching window size.
+			// 	if (this._size === undefined || this._size === null)
+			// 	{
+			// 		const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			// 		this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
+			// 		this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+			// 	}
+			// });
+
+			let vidSizePx;
+
+			// If size wasn't set, matching window size.
+			if (this._size === undefined || this._size === null)
+			{
+				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			}
+			else
+			{
+				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+			}
+
+			await YoutubeIframeAPIHandler.init();
+			this._youtubePlayer = YoutubeIframeAPIHandler.createPlayer({
+				videoId: urlObj.searchParams.get("v"),
+				width: vidSizePx[0],
+				height: vidSizePx[1],
+				playerVars: {
+					"playsinline": 1,
+					"modestbranding": 1,
+					"disablekb": Number(this._disableYoutubePlayerKeyboardControls) || 0,
+					"autoplay": Number(this._autoPlay) || 0,
+					"controls": Number(this._showYoutubeControls) || 0,
+					"loop": Number(this._loop) || 0,
+				},
+				events: {
+					"onReady": this._onYoutubePlayerReady.bind(this),
+					"onStateChange": this._onYoutubePlayerStateChange.bind(this),
+					"onError": this._onYoutubePlayerError.bind(this),
+					// "onPlaybackQualityChange":
+					// "onPlaybackRateChange":
+					// "onApiChange":
 				}
 			});
+
 		}
 		else
 		{
-			this._youtubeIframeDOM.src = embedYtUrl;
+			// this._youtubeIframeDOM.src = embedYtUrl;
+
+			this._youtubePlayer.loadVideoByUrl(urlString);
 		}
 
-		let vidSizePx = new Array(2);
+		// let vidSizePx = new Array(2);
 
-		// If size wasn't set, matching window size.
-		if (this._size === undefined || this._size === null)
-		{
-			vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-		}
-		else
-		{
-			vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
-		}
+		// // If size wasn't set, matching window size.
+		// if (this._size === undefined || this._size === null)
+		// {
+		// 	vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+		// }
+		// else
+		// {
+		// 	vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+		// }
 
-		this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
-		this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+		// this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
+		// this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
 
 		// Handling the case when there's already regular movie is set. Stop the current movie, destroy the pixi instance.
 		if (this._movie !== undefined)
