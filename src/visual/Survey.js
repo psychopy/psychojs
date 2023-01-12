@@ -1094,6 +1094,12 @@ export class Survey extends VisualStim
 			}
 		}
 
+		if (surveyBlock.name === "root")
+		{
+			// At this point we went through the entire survey flow tree.
+			this._onFlowComplete();
+		}
+
 		return nodeExitCode;
 	}
 
