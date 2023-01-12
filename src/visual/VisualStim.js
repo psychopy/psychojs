@@ -162,7 +162,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * Setter for the position attribute.
 	 *
 	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setPos(pos, log = false)
 	{

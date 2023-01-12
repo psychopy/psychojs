@@ -86,7 +86,6 @@ export class MovieStim extends VisualStim
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
 		// Used in case when youtubeUrl parameter is set to a proper youtube url.
-		this._youtubeIframeDOM = undefined;
 		this._youtubePlayer = undefined;
 
 		// movie and movie control:
@@ -284,7 +283,7 @@ export class MovieStim extends VisualStim
 		}
 
 		// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi.
-		if (this._youtubeIframeDOM !== undefined)
+		if (this._youtubePlayer !== undefined)
 		{
 			let vidSizePx;
 			if (this._size === undefined || this._size === null)
@@ -295,8 +294,25 @@ export class MovieStim extends VisualStim
 			{
 				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
 			}
-			this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
-			this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
+
+			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
+		}
+	}
+
+	/**
+	 * Setter for the position attribute.
+	 *
+	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setPos(pos, log = false)
+	{
+		super.setPos(pos);
+		if (this._youtubePlayer !== undefined)
+		{
+			const pos_px = util.to_px(pos, this._units, this._win, false);
+			pos_px[1] *= this._win._rootContainer.scale.y;
+			this._youtubePlayer.getIframe().style.transform = `translate3d(${pos_px[0]}px, ${pos_px[1]}px, 0)`;
 		}
 	}
 
@@ -317,9 +333,24 @@ export class MovieStim extends VisualStim
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
 	 * @param {boolean} [log= false] - whether or not to log.
 	 */
-	_onYoutubePlayerStateChange ()
+	_onYoutubePlayerStateChange (e)
 	{
-		console.log("yt player state change", arguments);
+		if (e.data === YT.PlayerState.PLAYING)
+		{
+			console.log("playing");
+		}
+		else if (e.data === YT.PlayerState.PAUSED)
+		{
+			console.log("paused");
+		}
+		else if (e.data === YT.PlayerState.ENDED)
+		{
+			console.log("done");
+		}
+		else if (e.data === YT.PlayerState.ENDED)
+		{
+			// Just in case for potential future requirements.
+		}
 	}
 
 	/**

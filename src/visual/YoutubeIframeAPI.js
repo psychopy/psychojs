@@ -23,6 +23,37 @@ class YoutubeIframeAPI
 		this._initResolver();
 	}
 
+	_handlePostMessage (event)
+	{
+	  // Check that the event was sent from the YouTube IFrame.
+		// console.log(event)
+		// if (event.source === iframeWindow) {
+		var data = JSON.parse(event.data);
+
+		  // The "infoDelivery" event is used by YT to transmit any
+		  // kind of information change in the player,
+		  // such as the current time or a playback quality change.
+		if (
+			data.event === "infoDelivery" &&
+			data.info &&
+			data.info.currentTime
+			) {
+			// currentTime is emitted very frequently (milliseconds),
+			// but we only care about whole second changes.
+			var time = Math.floor(data.info.currentTime);
+			console.log(time);
+
+			// if (time !== lastTimeUpdate)
+			// {
+			//   lastTimeUpdate = time;
+
+			//   // It's now up to you to format the time.
+			//   document.getElementById("time").innerHTML = time;
+			// }
+		}
+		// }
+	}
+
 	async init ()
 	{
 		if (this.isReady)
@@ -40,6 +71,9 @@ class YoutubeIframeAPI
 
 		document.body.insertAdjacentHTML("beforeend", "<div id='yt-iframe-placeholder' class='yt-iframe'></div>");
 
+		// var iframeWindow = player.getIframe().contentWindow;
+		window.addEventListener("message", this._handlePostMessage.bind(this));
+
 		return new Promise((res, rej) => {
 			this._initResolver = res;
 		});
@@ -48,18 +82,6 @@ class YoutubeIframeAPI
 	createPlayer (params = {})
 	{
 		return new YT.Player("yt-iframe-placeholder",
-		// {
-		// 	height: '390',
-		// 	width: '640',
-		// 	videoId: 'M7lc1UVf-VE',
-		// 	playerVars: {
-		// 		'playsinline': 1
-		// 	},
-		// 	events: {
-		// 		'onReady': params.onPlayerReady || () => {},
-		// 		'onStateChange': params.onPlayerStateChange || () => {}
-		// 	}
-		// }
 			params
 		);
 	}
