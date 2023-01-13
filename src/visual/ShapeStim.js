@@ -395,3 +395,5 @@ ShapeStim.KnownShapes = {
 			[0.5, 0.0],
 	],
 };
+// Alias some names for convenience
+ShapeStim.KnownShapes['star'] = ShapeStim.KnownShapes['star7']
