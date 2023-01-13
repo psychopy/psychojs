@@ -210,3 +210,7 @@ a:hover {
   border: none;
 }
 
+.yt-iframe.hidden {
+  display: none;
+}
+

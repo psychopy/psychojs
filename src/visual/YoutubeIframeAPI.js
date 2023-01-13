@@ -8,6 +8,8 @@
  *
  */
 
+import * as util from "../util/Util.js";
+
 class YoutubeIframeAPI
 {
 	constructor ()
@@ -41,7 +43,7 @@ class YoutubeIframeAPI
 			// currentTime is emitted very frequently (milliseconds),
 			// but we only care about whole second changes.
 			var time = Math.floor(data.info.currentTime);
-			console.log(time);
+			// console.log(time);
 
 			// if (time !== lastTimeUpdate)
 			// {
@@ -69,10 +71,8 @@ class YoutubeIframeAPI
 		let firstScriptTag = document.getElementsByTagName("script")[0];
 		firstScriptTag.parentNode.insertBefore(el, firstScriptTag);
 
-		document.body.insertAdjacentHTML("beforeend", "<div id='yt-iframe-placeholder' class='yt-iframe'></div>");
-
 		// var iframeWindow = player.getIframe().contentWindow;
-		window.addEventListener("message", this._handlePostMessage.bind(this));
+		// window.addEventListener("message", this._handlePostMessage.bind(this));
 
 		return new Promise((res, rej) => {
 			this._initResolver = res;
@@ -81,9 +81,20 @@ class YoutubeIframeAPI
 
 	createPlayer (params = {})
 	{
-		return new YT.Player("yt-iframe-placeholder",
+		const uuid = util.makeUuid();
+		document.body.insertAdjacentHTML("beforeend", `<div id="yt-iframe-placeholder-${uuid}" class="yt-iframe"></div>`);
+		return new YT.Player(`yt-iframe-placeholder-${uuid}`,
 			params
 		);
+	}
+
+	destroyPlayer (ytPlayer)
+	{
+		const elementId = ytPlayer.getIframe().id;
+		ytPlayer.destroy();
+
+		// At this point youtubeAPI destroyed the player and returned the placeholder div back in place instead of it. Cleaning up.
+		document.getElementById(elementId).remove();
 	}
 }
 

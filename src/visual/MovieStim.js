@@ -88,10 +88,29 @@ export class MovieStim extends VisualStim
 		// Used in case when youtubeUrl parameter is set to a proper youtube url.
 		this._youtubePlayer = undefined;
 
+		this._bindedHandlers = {
+			_handleResize: this._handleResize.bind(this)
+		};
+
 		// movie and movie control:
 		this._addAttribute(
 			"movie",
 			movie,
+		);
+		this._addAttribute(
+			"youtubeUrl",
+			youtubeUrl,
+			""
+		);
+		this._addAttribute(
+			"showYoutubeControls",
+			showYoutubeControls,
+			true
+		);
+		this._addAttribute(
+			"disableYoutubePlayerKeyboardControls",
+			disableYoutubePlayerKeyboardControls,
+			false
 		);
 		this._addAttribute(
 			"volume",
@@ -149,21 +168,6 @@ export class MovieStim extends VisualStim
 			loop,
 			false,
 			this._onChange(false, false),
-		);
-		this._addAttribute(
-			"youtubeUrl",
-			youtubeUrl,
-			""
-		);
-		this._addAttribute(
-			"showYoutubeControls",
-			showYoutubeControls,
-			true
-		);
-		this._addAttribute(
-			"disableYoutubePlayerKeyboardControls",
-			disableYoutubePlayerKeyboardControls,
-			false
 		);
 
 		// estimate the bounding box:
@@ -245,6 +249,8 @@ export class MovieStim extends VisualStim
 						this.status = PsychoJS.Status.FINISHED;
 					};
 				}
+
+				this.hideYoutubePlayer();
 			}
 
 			this._setAttribute("movie", movie, log);
@@ -317,6 +323,26 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
+	 * Setter for the volume attribute.
+	 *
+	 * @param {number} volume - desired volume of the movie in [0, 1].
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setVolume(vol, log = false)
+	{
+		this._setAttribute("volume", vol, log);
+		if (this._movie !== undefined)
+		{
+			this._movie.volume = vol;
+		}
+		else if (this._youtubePlayer !== undefined)
+		{
+			// Original movie takes volume in [0, 1], whereas youtube's player [0, 100].
+			this._youtubePlayer.setVolume(vol * 100);
+		}
+	}
+
+	/**
 	 * Handling youtube player being ready to work.
 	 *
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
@@ -364,6 +390,33 @@ export class MovieStim extends VisualStim
 		console.log("handling yt errors", arguments);
 	}
 
+	_handleResize (e)
+	{
+		// If size wasn't set, matching window size.
+		if (this._size === undefined || this._size === null)
+		{
+			const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
+		}
+	}
+
+	hideYoutubePlayer ()
+	{
+		if (this._youtubePlayer !== undefined)
+		{
+			this._youtubePlayer.stopVideo();
+			this._youtubePlayer.getIframe().classList.add("hidden");
+		}
+	}
+
+	showYoutubePlayer ()
+	{
+		if (this._youtubePlayer !== undefined)
+		{
+			this._youtubePlayer.getIframe().classList.remove("hidden");
+		}
+	}
+
 	/**
 	 * Setter for the youtubeUrl attribute.
 	 *
@@ -374,36 +427,44 @@ export class MovieStim extends VisualStim
 	{
 		if (urlString.length === 0)
 		{
-			if (this._youtubeIframeDOM !== undefined)
-			{
-				this._youtubeIframeDOM.src = "";
-			}
+			// if (this._youtubePlayer !== undefined)
+			// {
+			// 	this._youtubePlayer.destroy();
+			// 	this._youtubePlayer = undefined;
+			// 	window.removeEventListener("resize", this._bindedHandlers._handleResize);
+			// }
+			this.hideYoutubePlayer();
 			return;
 		}
 
+		// Handling the case when there's already regular movie is set.
+		if (this._movie !== undefined)
+		{
+			this.stop();
+			this.setMovie(undefined);
+
+			// Removing stimuli from the drawing list.
+			this.hide();
+
+			// if (this._pixi !== undefined)
+			// {
+			// 	// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
+			// 	this._pixi.destroy({
+			// 		children: true,
+			// 		texture: true,
+			// 		baseTexture: false,
+			// 	});
+			// 	this._pixi = undefined;
+			// 	this._texture = undefined;
+			// }
+		}
+
 		const urlObj = new URL(urlString);
-		// const embedYtUrl = `https://youtube.com/embed/${urlObj.searchParams.get("v")}`;
-		// const embedUrlObj = new URL(embedYtUrl);
-		// embedUrlObj.searchParams.set("autoplay", Number(this._autoPlay) || 0);
-		// embedUrlObj.searchParams.set("controls", Number(this._showYoutubeControls) || 0);
-		// embedUrlObj.searchParams.set("modestbranding", 1);
-		// embedUrlObj.searchParams.set("loop", Number(this._loop) || 0);
 
 		if (this._youtubePlayer === undefined)
 		{
-			// const ytIframe = `<iframe class="yt-iframe" src="${embedUrlObj.href}">`;
-			// document.body.insertAdjacentHTML("beforeend", ytIframe);
-			// this._youtubeIframeDOM = document.querySelector(".yt-iframe");
-
-			// window.addEventListener("resize", () => {
-			// 	// If size wasn't set, matching window size.
-			// 	if (this._size === undefined || this._size === null)
-			// 	{
-			// 		const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-			// 		this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
-			// 		this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
-			// 	}
-			// });
+			// This should be handled systematically, using PsychoJS's window object. Which in turn should be extended to emit "resize" events.
+			window.addEventListener("resize", this._bindedHandlers._handleResize);
 
 			let vidSizePx;
 
@@ -423,6 +484,7 @@ export class MovieStim extends VisualStim
 				width: vidSizePx[0],
 				height: vidSizePx[1],
 				playerVars: {
+					"rel": 0,
 					"playsinline": 1,
 					"modestbranding": 1,
 					"disablekb": Number(this._disableYoutubePlayerKeyboardControls) || 0,
@@ -439,46 +501,11 @@ export class MovieStim extends VisualStim
 					// "onApiChange":
 				}
 			});
-
 		}
 		else
 		{
-			// this._youtubeIframeDOM.src = embedYtUrl;
-
-			this._youtubePlayer.loadVideoByUrl(urlString);
-		}
-
-		// let vidSizePx = new Array(2);
-
-		// // If size wasn't set, matching window size.
-		// if (this._size === undefined || this._size === null)
-		// {
-		// 	vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-		// }
-		// else
-		// {
-		// 	vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
-		// }
-
-		// this._youtubeIframeDOM.width = `${vidSizePx[0]}px`;
-		// this._youtubeIframeDOM.height = `${vidSizePx[1]}px`;
-
-		// Handling the case when there's already regular movie is set. Stop the current movie, destroy the pixi instance.
-		if (this._movie !== undefined)
-		{
-			this.stop();
-		}
-
-		if (this._pixi !== undefined)
-		{
-			// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
-			this._pixi.destroy({
-				children: true,
-				texture: true,
-				baseTexture: false,
-			});
-			this._pixi = undefined;
-			this._texture = undefined;
+			this._youtubePlayer.loadVideoById(urlObj.searchParams.get("v"));
+			this.showYoutubePlayer();
 		}
 	}
 
@@ -579,6 +606,23 @@ export class MovieStim extends VisualStim
 					error,
 				};
 			}
+		}
+	}
+
+	/**
+	 * Get the elapsed time in seconds since the video started playing.
+	 *
+	 * @return {number} playback time.
+	 */
+	getPlaybackTime ()
+	{
+		if (this._movie !== undefined)
+		{
+			return this._movie.currentTime;
+		}
+		else if (this._youtubePlayer !== undefined)
+		{
+			return this._youtubePlayer.getCurrentTime();
 		}
 	}
 
