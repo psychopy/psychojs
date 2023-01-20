@@ -343,6 +343,30 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
+	 * Draw this stimulus on the next frame draw.
+	 */
+	draw()
+	{
+		super.draw();
+		if (this._youtubePlayer !== undefined)
+		{
+			this.showYoutubePlayer();
+		}
+	}
+
+	/**
+	 * Hide this stimulus on the next frame draw.
+	 */
+	hide()
+	{
+		super.hide();
+		if (this._youtubePlayer !== undefined)
+		{
+			this.hideYoutubePlayer();
+		}
+	}
+
+	/**
 	 * Handling youtube player being ready to work.
 	 *
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
@@ -392,6 +416,11 @@ export class MovieStim extends VisualStim
 
 	_handleResize (e)
 	{
+		if (this._youtubePlayer === undefined)
+		{
+			return;
+		}
+
 		// If size wasn't set, matching window size.
 		if (this._size === undefined || this._size === null)
 		{
@@ -530,19 +559,26 @@ export class MovieStim extends VisualStim
 	{
 		this.status = PsychoJS.Status.STARTED;
 
-		// As found on https://goo.gl/LdLk22
-		const playPromise = this._movie.play();
-
-		if (playPromise !== undefined)
+		if (this._movie !== undefined)
 		{
-			playPromise.catch((error) =>
+			// As found on https://goo.gl/LdLk22
+			const playPromise = this._movie.play();
+
+			if (playPromise !== undefined)
 			{
-				throw {
-					origin: "MovieStim.play",
-					context: `when attempting to play MovieStim: ${this._name}`,
-					error,
-				};
-			});
+				playPromise.catch((error) =>
+				{
+					throw {
+						origin: "MovieStim.play",
+						context: `when attempting to play MovieStim: ${this._name}`,
+						error,
+					};
+				});
+			}
+		}
+		else if (this._youtubePlayer !== undefined)
+		{
+			this._youtubePlayer.playVideo();
 		}
 	}
 
@@ -554,7 +590,14 @@ export class MovieStim extends VisualStim
 	pause(log = false)
 	{
 		this.status = PsychoJS.Status.STOPPED;
-		this._movie.pause();
+		if (this._movie !== undefined)
+		{
+			this._movie.pause();
+		}
+		else if (this._youtubePlayer !== undefined)
+		{
+			this._youtubePlayer.pauseVideo();
+		}
 	}
 
 	/**
@@ -565,8 +608,15 @@ export class MovieStim extends VisualStim
 	stop(log = false)
 	{
 		this.status = PsychoJS.Status.STOPPED;
-		this._movie.pause();
-		this.seek(0, log);
+		if (this._movie !== undefined)
+		{
+			this._movie.pause();
+			this.seek(0, log);
+		}
+		else if (this._youtubePlayer !== undefined)
+		{
+			this._youtubePlayer.stopVideo();
+		}
 	}
 
 	/**

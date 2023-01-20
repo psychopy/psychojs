@@ -71,6 +71,21 @@ class YoutubeIframeAPI
 		let firstScriptTag = document.getElementsByTagName("script")[0];
 		firstScriptTag.parentNode.insertBefore(el, firstScriptTag);
 
+		// TODO: temporary solution for ease of customer support. Eventually these styles should be included in .css file.
+		const styleEl = document.createElement("style");
+		styleEl.textContent = `
+		.yt-iframe {
+		  display: block;
+		  position: absolute;
+		  border: none;
+		}
+
+		.yt-iframe.hidden {
+		  display: none;
+		}
+		`;
+		document.head.appendChild(styleEl);
+
 		// var iframeWindow = player.getIframe().contentWindow;
 		// window.addEventListener("message", this._handlePostMessage.bind(this));
 
