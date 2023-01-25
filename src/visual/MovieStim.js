@@ -87,6 +87,7 @@ export class MovieStim extends VisualStim
 
 		// Used in case when youtubeUrl parameter is set to a proper youtube url.
 		this._youtubePlayer = undefined;
+		this._ytPlayerIsReady = false;
 
 		this._bindedHandlers = {
 			_handleResize: this._handleResize.bind(this)
@@ -289,7 +290,7 @@ export class MovieStim extends VisualStim
 		}
 
 		// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi.
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			let vidSizePx;
 			if (this._size === undefined || this._size === null)
@@ -314,7 +315,7 @@ export class MovieStim extends VisualStim
 	setPos(pos, log = false)
 	{
 		super.setPos(pos);
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			const pos_px = util.to_px(pos, this._units, this._win, false);
 			pos_px[1] *= this._win._rootContainer.scale.y;
@@ -335,7 +336,7 @@ export class MovieStim extends VisualStim
 		{
 			this._movie.volume = vol;
 		}
-		else if (this._youtubePlayer !== undefined)
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			// Original movie takes volume in [0, 1], whereas youtube's player [0, 100].
 			this._youtubePlayer.setVolume(vol * 100);
@@ -348,7 +349,7 @@ export class MovieStim extends VisualStim
 	draw()
 	{
 		super.draw();
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this.showYoutubePlayer();
 		}
@@ -360,7 +361,7 @@ export class MovieStim extends VisualStim
 	hide()
 	{
 		super.hide();
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this.hideYoutubePlayer();
 		}
@@ -374,6 +375,7 @@ export class MovieStim extends VisualStim
 	 */
 	_onYoutubePlayerReady ()
 	{
+		this._ytPlayerIsReady = true;
 		console.log("yt player rdy", arguments);
 	}
 
@@ -431,7 +433,7 @@ export class MovieStim extends VisualStim
 
 	hideYoutubePlayer ()
 	{
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.stopVideo();
 			this._youtubePlayer.getIframe().classList.add("hidden");
@@ -440,7 +442,7 @@ export class MovieStim extends VisualStim
 
 	showYoutubePlayer ()
 	{
-		if (this._youtubePlayer !== undefined)
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.getIframe().classList.remove("hidden");
 		}
@@ -456,7 +458,7 @@ export class MovieStim extends VisualStim
 	{
 		if (urlString.length === 0)
 		{
-			// if (this._youtubePlayer !== undefined)
+			// if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 			// {
 			// 	this._youtubePlayer.destroy();
 			// 	this._youtubePlayer = undefined;
@@ -576,7 +578,7 @@ export class MovieStim extends VisualStim
 				});
 			}
 		}
-		else if (this._youtubePlayer !== undefined)
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.playVideo();
 		}
@@ -594,7 +596,7 @@ export class MovieStim extends VisualStim
 		{
 			this._movie.pause();
 		}
-		else if (this._youtubePlayer !== undefined)
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.pauseVideo();
 		}
@@ -613,7 +615,7 @@ export class MovieStim extends VisualStim
 			this._movie.pause();
 			this.seek(0, log);
 		}
-		else if (this._youtubePlayer !== undefined)
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.stopVideo();
 		}
@@ -670,10 +672,12 @@ export class MovieStim extends VisualStim
 		{
 			return this._movie.currentTime;
 		}
-		else if (this._youtubePlayer !== undefined)
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			return this._youtubePlayer.getCurrentTime();
 		}
+
+		return 0;
 	}
 
 	/**

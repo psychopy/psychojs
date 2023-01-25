@@ -20,7 +20,7 @@ class YoutubeIframeAPI
 
 	_onYoutubeIframeAPIReady ()
 	{
-		console.log("ytplayer rdy");
+		console.log("yt iframe api rdy");
 		this.isReady = true;
 		this._initResolver();
 	}
