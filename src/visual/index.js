@@ -13,4 +13,4 @@ export * from "./TextStim.js";
 export * from "./VisualStim.js";
 export * from "./FaceDetector.js";
 export * from "./Survey.js";
-export * from "./ParticleSystem.js";
+export * from "./ParticleEmitter.js";

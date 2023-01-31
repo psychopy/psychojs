@@ -12,10 +12,10 @@ import * as PIXI from "pixi.js-legacy";
 const DEFAULT_POOL_SIZE = 1024;
 const DEFAULT_PARTICLE_WIDTH = 10;
 const DEFAULT_PARTICLE_HEIGHT = 10;
-const DEFAULT_PARTICLE_LIFETIME = 3; // ms
+const DEFAULT_PARTICLE_LIFETIME = 3; // Seconds.
 const DEFAULT_PARTICLE_COLOR = 0xffffff;
 const DEFAULT_PARTICLES_PER_SEC = 60;
-const DEFAULT_PARTICLE_ACCELERATION = 2500;
+const DEFAULT_PARTICLE_V = 100;
 
 class Particle
 {
@@ -47,8 +47,8 @@ class Particle
 		// Consider: accurate spawn position of the particle confined by spawnArea.
 		this.sprite.anchor.set(0.5);
 
-		this.width = cfg.width || DEFAULT_PARTICLE_WIDTH;
-		this.height = cfg.height || DEFAULT_PARTICLE_HEIGHT;
+		this.width = cfg.particleWidth || DEFAULT_PARTICLE_WIDTH;
+		this.height = cfg.particleHeight || DEFAULT_PARTICLE_HEIGHT;
 	}
 
 	set width (w)
@@ -75,15 +75,17 @@ class Particle
 
 	update (dt)
 	{
-		const dt2 = dt ** 2;
+		const dt2 = dt * dt;
 
-		// Update position with current velocity.
+		// Update velocity with current acceleration.
+		this.vx += this.ax * dt;
+		this.vy += this.ay * dt;
+
+		// Update position with current velocity and acceleration.
 		this.x = this.x + this.vx * dt + this.ax * dt2 * .5;
 		this.y = this.y + this.vy * dt + this.ay * dt2 * .5;
 
-		// Update velocity with current acceleration.
-		this.vx = this.ax * dt;
-		this.vy = this.ay * dt;
+		this.sprite.rotation = Math.atan2(this.vy, this.vx);
 
 		this.sprite.x = this.x;
 		this.sprite.y = this.y;
@@ -111,7 +113,7 @@ class Particle
 	}
 }
 
-export class ParticleSystem
+export class ParticleEmitter
 {
 	constructor (cfg = {})
 	{
@@ -122,12 +124,7 @@ export class ParticleSystem
 		this._spawnCoolDown = 0;
 		this._parentObj = undefined;
 		this._particlePool = new Array(DEFAULT_POOL_SIZE);
-
-		if (cfg.parentObject !== undefined)
-		{
-			this._parentObj = cfg.parentObject;
-		}
-
+		this.setParentObject(cfg.parentObject);
 		this._fillParticlePool(cfg);
 	}
 
@@ -159,15 +156,50 @@ export class ParticleSystem
 		p.x = x;
 		p.y = y;
 
-		p.ax = this._cfg.initialAx || Math.random() * DEFAULT_PARTICLE_ACCELERATION * 2.0 - DEFAULT_PARTICLE_ACCELERATION;
-		p.ay = this._cfg.initialAy || Math.random() * DEFAULT_PARTICLE_ACCELERATION * 2.0 - DEFAULT_PARTICLE_ACCELERATION;
-		p.vx = this._cfg.initialVx || 0;
-		p.vy = this._cfg.initialVy || 0;
+		p.ax = 0;
+		p.ay = 0;
+
+		if (Number.isFinite(this._cfg.initialVx))
+		{
+			p.vx = this._cfg.initialVx;
+		}
+		else if (this._cfg.initialVx instanceof Array && this._cfg.initialVx.length >= 2)
+		{
+			p.vx = Math.random() * (this._cfg.initialVx[1] - this._cfg.initialVx[0]) + this._cfg.initialVx[0];
+		}
+		else
+		{
+			p.vx = Math.random() * DEFAULT_PARTICLE_V - DEFAULT_PARTICLE_V * .5;
+		}
+
+		if (Number.isFinite(this._cfg.initialVy))
+		{
+			p.vy = this._cfg.initialVy;
+		}
+		else if (this._cfg.initialVy instanceof Array && this._cfg.initialVy.length >= 2)
+		{
+			p.vy = Math.random() * (this._cfg.initialVy[1] - this._cfg.initialVy[0]) + this._cfg.initialVy[0];
+		}
+		else
+		{
+			p.vy = Math.random() * DEFAULT_PARTICLE_V - DEFAULT_PARTICLE_V * .5;
+		}
+
 		p.lifeTime = this._cfg.lifeTime || DEFAULT_PARTICLE_LIFETIME;
-		p.width = this._cfg.width || DEFAULT_PARTICLE_WIDTH;
-		p.height = this._cfg.height || DEFAULT_PARTICLE_HEIGHT;
-		p.widthChange = this._cfg.widthChange || 0;
-		p.heightChange = this._cfg.heightChange || 0;
+		p.width = this._cfg.particleWidth || DEFAULT_PARTICLE_WIDTH;
+		p.height = this._cfg.particleHeight || DEFAULT_PARTICLE_HEIGHT;
+		p.widthChange = this._cfg.particleWidthChange || 0;
+		p.heightChange = this._cfg.particleHeightChange || 0;
+
+		// TODO: run proper checks here.
+		if (this._cfg.particleImage)
+		{
+			p.sprite.texture = PIXI.Texture.from(this._cfg.particleImage);
+		}
+		else
+		{
+			p.sprite.texture = PIXI.Texture.WHITE;
+		}
 
 		if (this._cfg.particleColor !== undefined)
 		{
@@ -195,13 +227,73 @@ export class ParticleSystem
 		}
 	}
 
+	_getResultingExternalForce ()
+	{
+		let externalForce = [0, 0];
+		if (this._cfg.externalForces instanceof Array)
+		{
+			let i;
+			for (i = 0; i < this._cfg.externalForces.length; i++)
+			{
+				externalForce[0] += this._cfg.externalForces[i][0];
+				externalForce[1] += this._cfg.externalForces[i][1];
+			}
+		}
+
+		return externalForce;
+	}
+
+	setParentObject (po)
+	{
+		this._parentObj = po;
+	}
+
+	/**
+	 * @desc: Adds external force which acts on a particle
+	 * @param: f - Array with two elements, first is x component, second is y component.
+	 * It's a vector of length L which sets the direction and the margnitude of the force.
+	 * */
+	addExternalForce (f)
+	{
+		this._cfg.externalForces.push(f);
+	}
+
+	removeExternalForce (f)
+	{
+		const i = this._cfg.externalForces.indexOf(f);
+		if (i !== -1)
+		{
+			this._cfg.externalForces.splice(i, 1);
+		}
+	}
+
+	removeExternalForceByIdx (idx)
+	{
+		if (this._cfg.externalForces[idx] !== undefined)
+		{
+			this._cfg.externalForces.splice(idx, 1);
+		}
+	}
+
 	update (dt)
 	{
+		let externalForce;
+
 		// Sync with parent object if it exists.
 		if (this._parentObj !== undefined)
 		{
 			this.x = this._parentObj.x;
 			this.y = this._parentObj.y;
+		}
+
+		if (Number.isFinite(this._cfg.positionOffsetX))
+		{
+			this.x += this._cfg.positionOffsetX;
+		}
+
+		if (Number.isFinite(this._cfg.positionOffsetY))
+		{
+			this.y += this._cfg.positionOffsetY;
 		}
 
 		if (this._spawnCoolDown <= 0)
@@ -211,8 +303,6 @@ export class ParticleSystem
 			// Assuming that we have at least 60FPS.
 			const frameTime = Math.min(dt, 1 / 60);
 			const particlesPerFrame = Math.ceil(frameTime / this._spawnCoolDown);
-
-			// TODO: figure out how to calc amount of particles when it's more than 1 per frame.
 			this._spawnParticles(particlesPerFrame);
 		}
 		else
@@ -225,6 +315,9 @@ export class ParticleSystem
 		{
 			if (this._particlePool[i].inUse)
 			{
+				externalForce = this._getResultingExternalForce();
+				this._particlePool[i].ax = externalForce[0];
+				this._particlePool[i].ay = externalForce[1];
 				this._particlePool[i].update(dt);
 			}
 
