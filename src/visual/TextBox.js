@@ -65,6 +65,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			opacity,
 			depth,
 			text,
+			placeholder,
 			font,
 			letterHeight,
 			bold,
@@ -98,7 +99,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		);
 		this._addAttribute(
 			"placeholder",
-			text,
+			placeholder,
 			"",
 			this._onChange(true, true),
 		);
