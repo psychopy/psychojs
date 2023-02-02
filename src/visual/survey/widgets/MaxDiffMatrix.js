@@ -16,6 +16,10 @@ class MaxDiffMatrix
 			TABLE_HEADER_CELL: surveyCSS.matrix.headerCell,
 			TABLE_CELL: surveyCSS.matrix.cell,
 			INPUT_TEXT: surveyCSS.text.root,
+			LABEL: surveyCSS.matrix.label,
+			ITEM_CHECKED: surveyCSS.matrix.itemChecked,
+			ITEM_VALUE: surveyCSS.matrix.itemValue,
+			ITEM_DECORATOR: surveyCSS.matrix.materialDecorator,
 			RADIO: surveyCSS.radiogroup.item,
 			SELECT: surveyCSS.dropdown.control,
 			CHECKBOX: surveyCSS.checkbox.item
@@ -84,6 +88,13 @@ class MaxDiffMatrix
 	{
 		let t = performance.now();
 		const CSS_CLASSES = this._CSS_CLASSES;
+		if (question.css.matrix.mainRoot)
+		{
+			// Replacing default mainRoot class with those used in matrix type questions, to achieve proper styling and overflow behavior
+			const rootClass = `${question.css.matrix.mainRoot} ${question.cssClasses.withFrame || ""}`;
+			question.setCssRoot(rootClass);
+			question.cssClasses.mainRoot = rootClass;
+		}
 		let html;
 		let headerCells = "";
 		let subHeaderCells = "";
@@ -106,11 +117,21 @@ class MaxDiffMatrix
 		for (i = 0; i < question.rows.length; i++)
 		{
 			bodyCells =
-			`<td class="${CSS_CLASSES.TABLE_CELL}"><input type="radio" class="${CSS_CLASSES.RADIO}" name="${question.rows[i].value}" data-column=${question.columns[0].value}></td>
+			`<td class="${CSS_CLASSES.TABLE_CELL}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input type="radio" class="${CSS_CLASSES.ITEM_VALUE}" name="${question.rows[i].value}" data-column=${question.columns[0].value}>
+				<span class="${CSS_CLASSES.ITEM_DECORATOR}"></span>
+			</label>
+			</td>
 			<td></td>
 			<td class="${CSS_CLASSES.TABLE_CELL}">${question.rows[i].text}</td>
 			<td></td>
-			<td class="${CSS_CLASSES.TABLE_CELL}"><input type="radio" class="${CSS_CLASSES.RADIO}" name="${question.rows[i].value}" data-column=${question.columns[1].value}></td>`;
+			<td class="${CSS_CLASSES.TABLE_CELL}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input type="radio" class="${CSS_CLASSES.ITEM_VALUE}" name="${question.rows[i].value}" data-column=${question.columns[1].value}>
+				<span class="${CSS_CLASSES.ITEM_DECORATOR}"></span>
+			</label>
+			</td>`;
 			bodyHTML += `<tr class="${CSS_CLASSES.TABLE_ROW}">${bodyCells}</tr>`;
 		}
 
@@ -175,10 +196,12 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("maxdiffmatrix", [
 				{
 					name: "rows",
+					isArray: true,
 					default: []
 				},
 				{
 					name: "columns",
+					isArray: true,
 					default: []
 				}
 			]);
