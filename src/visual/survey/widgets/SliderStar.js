@@ -6,6 +6,11 @@ class SliderStar
 {
 	constructor (cfg = {})
 	{
+		const surveyCSS = cfg.question.css;
+		this._CSS_CLASSES = {
+			// INPUT_TEXT: `${surveyCSS.text.root} slider-star-text-input`
+			INPUT_TEXT: `slider-star-text-input`
+		};
 		this._question = cfg.question;
 		this._DOM = cfg.el;
 		this._engagedInputIdx = undefined;
@@ -102,7 +107,7 @@ class SliderStar
 			<div class="star-slider-inputs">
 			<div class="stars-container" data-idx="${question.choices[i].value}">${starsHTML}</div>
 			${question.showValue ?
-				`<input type="number" class="slider-star-text-input" max="${question.starCount}" min="0" name="${question.choices[i].value}">` :
+				`<input type="number" class="${this._CSS_CLASSES.INPUT_TEXT}" max="${question.starCount}" min="0" name="${question.choices[i].value}">` :
 				 ""}
 			</div>
 			</div>`;
@@ -166,6 +171,7 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("sliderstar", [
 				{
 					name: "choices",
+					isArray: true,
 					default: []
 				},
 				{
