@@ -16,8 +16,10 @@ body {
   content: "initialising the experiment...";
   position: fixed;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  left: 0;
+  width: 100%;
+  text-align: center;
+  transform: translate(0, -50%);
 }
 
 #root.is-ready::after {
@@ -26,6 +28,11 @@ body {
 
 
 /* Project and resource dialogs */
+
+.dialog-container {
+  z-index: 2;
+  display: flex;
+}
 
 .dialog-container label,
 .dialog-container input,
@@ -57,11 +64,6 @@ body {
   left: 0;
 }
 
-.dialog-container {
-  z-index: 2;
-  display: flex;
-}
-
 .dialog-container[aria-hidden='true'] {
   display: none;
 }
@@ -71,12 +73,16 @@ body {
 }
 
 .dialog-content {
+  display: flex;
+  flex-direction: column;
+
   margin: auto;
   z-index: 2;
   position: relative;
 
   width: 500px;
   max-width: 88vw;
+  max-height: 90vh;
   padding: 0.5em;
   border-radius: 2px;
 
@@ -86,6 +92,16 @@ body {
   background-color: #EEEEEE;
   border-color: #CCCCCC;
   box-shadow: 1px 1px 3px #555555;
+}
+
+.dialog-content .dialog-fields {
+  overflow-y: auto;
+  height: 100%;
+  padding: 0 0.5em;
+}
+
+.dialog-container .dialog-hr-tag {
+  width: 100%;
 }
 
 .dialog-title {

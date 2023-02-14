@@ -113,6 +113,11 @@ export class GUI
 				self._dialogComponent.tStart = t;
 				self._dialogComponent.status = PsychoJS.Status.STARTED;
 
+				// Defining variables for bits of markup that included in template on condition.
+				let requiredFieldsMsgMarkup = "";
+				let logoMarkup = "";
+				let dialogOkMarkup = "";
+
 				// if the experiment is licensed, and running on the license rather than on credit,
 				// we use the license logo:
 				if (self._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
@@ -123,95 +128,54 @@ export class GUI
 					logoUrl = self._psychoJS.config.experiment.license.institutionLogo;
 				}
 
-				// prepare the markup for the a11y-dialog:
-				let markup = "<div class='dialog-container' id='experiment-dialog' aria-hidden='true' role='alertdialog'>";
-				markup += "<div class='dialog-overlay'></div>";
-				// markup += "<div class='dialog-overlay' data-a11y-dialog-hide></div>";
-				markup += "<div class='dialog-content'>";
-
-				// alert title and close button:
-				markup += `<div id='experiment-dialog-title' class='dialog-title'><p>${title}</p><button id='dialogClose' class='dialog-close' data-a11y-dialog-hide aria-label='Cancel Experiment'>&times;</button></div>`;
+				if (self._requiredKeys.length > 0)
+				{
+					requiredFieldsMsgMarkup = "<p class='validateTips'>Fields marked with an asterisk (*) are required.</p>";
+				}
 
 				// logo, if need be:
 				if (typeof logoUrl === "string")
 				{
-					markup += '<img id="dialog-logo" class="logo" alt="logo" src="' + logoUrl + '">';
+					logoMarkup = `<img id="dialog-logo" class="logo" alt="logo" src="${logoUrl}">`;
 				}
 
-				// add a combobox or text areas for each entry in the dictionary:
-				Object.keys(dictionary).forEach((key, keyIdx) =>
-				{
-					const value = dictionary[key];
-					const keyId = "form-input-" + keyIdx;
-
-					// only create an input if the key is not in the URL:
-					let inUrl = false;
-					const cleanedDictKey = key.trim().toLowerCase();
-					infoFromUrl.forEach((urlValue, urlKey) =>
-					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
-						{
-							inUrl = true;
-							// break;
-						}
-					});
-
-					if (!inUrl)
-					{
-						markup += `<label for='${keyId}'> ${key} </label>`;
-
-						// if the field is required:
-						if (key.slice(-1) === "*")
-						{
-							self._requiredKeys.push(keyId);
-						}
-
-						// if value is an array, we create a select drop-down menu:
-						if (Array.isArray(value))
-						{
-							markup += `<select name='${key}' id='${keyId}' class='text'>`;
-
-							// if the field is required, we add an empty option and select it:
-							if (key.slice(-1) === "*")
-							{
-								markup += "<option disabled selected>...</option>";
-							}
-
-							for (const option of value)
-							{
-								markup += `<option> ${option} </option>`;
-							}
-
-							markup += "</select>";
-						}
-							// otherwise we use a single string input:
-						//if (typeof value === 'string')
-						else
-						{
-							markup += `<input type='text' name='${key}' id='${keyId}' value='${value}' class='text'>`;
-						}
-					}
-				});
-
-				if (self._requiredKeys.length > 0)
-				{
-					markup += "<p class='validateTips'>Fields marked with an asterisk (*) are required.</p>";
-				}
-
-				// progress bar:
-				markup += `<hr><div id='progressMsg' class='progress-msg'>${self._progressMessage}</div>`;
-				markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
-
-				// buttons:
-				markup += "<hr>";
-				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Cancel Experiment'>Cancel</button>";
 				if (self._requireParticipantClick)
 				{
-					markup += "<button id='dialogOK' class='dialog-button disabled' aria-label='Start Experiment'>Ok</button>";
+					dialogOkMarkup = "<button id='dialogOK' class='dialog-button disabled' aria-label='Start Experiment'>Ok</button>";
 				}
 
-				markup += "</div></div>";
+				// prepare the markup for the a11y-dialog:
+				let markup =
+				`<div class="dialog-container" id="experiment-dialog" aria-hidden="true" role="alertdialog">
+					<div class='dialog-overlay'></div>;
+					<!-- "<div class='dialog-overlay' data-a11y-dialog-hide></div>" -->
+					<div class='dialog-content'>
+						<!-- alert title and close button: -->
+						<div id='experiment-dialog-title' class='dialog-title'>
+							<p>${title}</p>
+							<button id='dialogClose' class='dialog-close' data-a11y-dialog-hide aria-label='Cancel Experiment'>&times;</button>
+						</div>
+						${logoMarkup}
+						<div class="dialog-fields">
+							${this._constructDialogFields(dictionary, infoFromUrl)}
+							${requiredFieldsMsgMarkup}
+						</div>
+						<!-- progress bar: -->
+						<div class="dialog-progress-container">
+							<hr class="dialog-hr-tag">
+							<div id='progressMsg' class='progress-msg'>${self._progressMessage}</div>
+							<div class='progress-container'>
+								<div id='progressBar' class='progress-bar'></div>
+							</div>
+							<hr class="dialog-hr-tag">
+						</div>
+						<!-- buttons: -->
+						<div class="dialog-buttons-container">
+							<button id='dialogCancel' class='dialog-button' aria-label='Cancel Experiment'>Cancel</button>
+							${dialogOkMarkup}
+						</div>
+					</div>
+				</div>`;
 
 				// replace root by the markup code:
 				const dialogElement = document.getElementById("root");
@@ -484,6 +448,69 @@ export class GUI
 		{
 			this._dialog.hide();
 		}
+	}
+
+	_constructDialogFields (dictionary = {}, infoFromUrl)
+	{
+		let markup = "";
+
+		// add a combobox or text areas for each entry in the dictionary:
+		Object.keys(dictionary).forEach((key, keyIdx) =>
+		{
+			const value = dictionary[key];
+			const keyId = "form-input-" + keyIdx;
+
+			// only create an input if the key is not in the URL:
+			let inUrl = false;
+			const cleanedDictKey = key.trim().toLowerCase();
+			infoFromUrl.forEach((urlValue, urlKey) =>
+			{
+				const cleanedUrlKey = urlKey.trim().toLowerCase();
+				if (cleanedUrlKey === cleanedDictKey)
+				{
+					inUrl = true;
+					// break;
+				}
+			});
+
+			if (!inUrl)
+			{
+				markup += `<label for='${keyId}'> ${key} </label>`;
+
+				// if the field is required:
+				if (key.slice(-1) === "*")
+				{
+					this._requiredKeys.push(keyId);
+				}
+
+				// if value is an array, we create a select drop-down menu:
+				if (Array.isArray(value))
+				{
+					markup += `<select name='${key}' id='${keyId}' class='text'>`;
+
+					// if the field is required, we add an empty option and select it:
+					if (key.slice(-1) === "*")
+					{
+						markup += "<option disabled selected>...</option>";
+					}
+
+					for (const option of value)
+					{
+						markup += `<option> ${option} </option>`;
+					}
+
+					markup += "</select>";
+				}
+				// otherwise we use a single string input:
+				//if (typeof value === 'string')
+				else
+				{
+					markup += `<input type='text' name='${key}' id='${keyId}' value='${value}' class='text'>`;
+				}
+			}
+		});
+
+		return markup;
 	}
 
 	/**
