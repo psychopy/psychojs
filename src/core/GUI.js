@@ -147,7 +147,7 @@ export class GUI
 				// prepare the markup for the a11y-dialog:
 				let markup =
 				`<div class="dialog-container" id="experiment-dialog" aria-hidden="true" role="alertdialog">
-					<div class='dialog-overlay'></div>;
+					<div class='dialog-overlay'></div>
 					<!-- "<div class='dialog-overlay' data-a11y-dialog-hide></div>" -->
 					<div class='dialog-content'>
 						<!-- alert title and close button: -->
