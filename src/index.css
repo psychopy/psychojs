@@ -47,6 +47,12 @@ body {
     margin-bottom: 1em;
     padding: 0.5em;
     width: 100%;
+    height: 34px;
+    border: 1px solid #767676;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #333;
+    font-size: 14px;
 }
 
 .dialog-container fieldset {
@@ -82,7 +88,7 @@ body {
 
   width: 500px;
   max-width: 88vw;
-  max-height: 90vh;
+  max-height: 93%;
   padding: 0.5em;
   border-radius: 2px;
 
@@ -108,7 +114,7 @@ body {
   padding: 0.5em;
   margin-bottom: 1em;
 
-  background-color: #009900;
+  background-color: #00dd00;
   border-radius: 2px;
 }
 
@@ -127,6 +133,10 @@ body {
 }
 
 .dialog-close {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   position: absolute;
   top: 0.7em;
   right: 0.7em;
@@ -136,6 +146,7 @@ body {
 
   width: 1.1em;
   height: 1.1em;
+  line-height: 1.1em;
 
   color: #333333;
   background-color: #FFFFFF;
