@@ -16,6 +16,7 @@ import { PsychObject } from "../util/PsychObject.js";
 import * as util from "../util/Util.js";
 import { Scheduler } from "../util/Scheduler.js";
 import { PsychoJS } from "./PsychoJS.js";
+import * as PIXI from "pixi.js-legacy";
 
 /**
  * <p>This manager handles all communications between the experiment running in the participant's browser and the
@@ -1183,6 +1184,27 @@ export class ServerManager extends PsychObject
 	}
 
 	/**
+	 * Check if all the resources were loaded and if so set the READY status and emit the DOWNLOAD_COMPLETED event.
+	 *
+	 * @protected
+	 * @returns boolean - if downloading is done or not.
+	 */
+	_checkIfDownloadingIsDone (resourcesTotal)
+	{
+		if (this._nbLoadedResources === resourcesTotal)
+		{
+			this.setStatus(ServerManager.Status.READY);
+			this.emit(ServerManager.Event.RESOURCE, {
+				message: ServerManager.Event.DOWNLOAD_COMPLETED,
+			});
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Download the specified resources.
 	 *
 	 * <p>Note: we use the [preloadjs library]{@link https://www.createjs.com/preloadjs}.</p>
@@ -1214,8 +1236,9 @@ export class ServerManager extends PsychObject
 		const surveyModelResources = [];
 		for (const name of resources)
 		{
-			const nameParts = name.toLowerCase().split(".");
-			const extension = (nameParts.length > 1) ? nameParts.pop() : undefined;
+			const pathStatusData = this._resources.get(name);
+			const pathParts = pathStatusData.path.toLowerCase().split(".");
+			const extension = (pathParts.length > 1) ? pathParts.pop() : undefined;
 
 			// warn the user if the resource does not have any extension:
 			if (typeof extension === "undefined")
@@ -1223,7 +1246,6 @@ export class ServerManager extends PsychObject
 				this.psychoJS.logger.warn(`"${name}" does not appear to have an extension, which may negatively impact its loading. We highly recommend you add an extension.`);
 			}
 
-			const pathStatusData = this._resources.get(name);
 			if (typeof pathStatusData === "undefined")
 			{
 				throw Object.assign(response, { error: name + " has not been previously registered" });
@@ -1232,9 +1254,6 @@ export class ServerManager extends PsychObject
 			{
 				throw Object.assign(response, { error: name + " is already downloaded or is currently already downloading" });
 			}
-
-			const pathParts = pathStatusData.path.toLowerCase().split(".");
-			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
 
 			// preload.js with forced binary:
 			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
@@ -1265,7 +1284,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// font files:
-			else if (["ttf", "otf", "woff", "woff2"].indexOf(pathExtension) > -1)
+			else if (["ttf", "otf", "woff", "woff2"].indexOf(extension) > -1)
 			{
 				fontResources.push(name);
 			}
@@ -1274,6 +1293,37 @@ export class ServerManager extends PsychObject
 			else if (["sid"].indexOf(extension) > -1)
 			{
 				surveyModelResources.push(name);
+			}
+
+			// Videos (compatible with PIXI):
+			else if (["mp4", "m4v", "webm", "ogv", "h264", "avi", "mov"].indexOf(extension) > -1)
+			{
+				pathStatusData.data = PIXI.Texture.from(
+					pathStatusData.path,
+					{
+						resourceOptions: { autoPlay: false }
+					}
+				);
+
+				pathStatusData.data.baseTexture.resource.source.addEventListener(
+				"loadeddata",
+				() =>
+				{
+					pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+					this.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.RESOURCE_DOWNLOADED,
+						resource: name,
+					});
+
+					this._nbLoadedResources++;
+					this._checkIfDownloadingIsDone(resources.size);
+				});
+
+				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+				this.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOADING_RESOURCE,
+					resource: name,
+				});
 			}
 
 			// all other extensions handled by preload.js (download type decided by preload.js):
