@@ -57,6 +57,8 @@ export class MovieStim extends VisualStim
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
+		this._pixiTextureResource = undefined;
+
 		// movie and movie control:
 		this._addAttribute(
 			"movie",
@@ -149,6 +151,9 @@ export class MovieStim extends VisualStim
 
 		try
 		{
+			let htmlVideo = undefined;
+			this._pixiTextureResource = undefined;
+
 			// movie is undefined: that's fine but we raise a warning in case this is
 			// a symptom of an actual problem
 			if (typeof movie === "undefined")
@@ -160,19 +165,24 @@ export class MovieStim extends VisualStim
 
 			else
 			{
-				// if movie is a string, then it should be the name of a resource, which we get:
+				let videoResource;
+
+				// If movie is a string, then it should be the name of a resource, which we get:
 				if (typeof movie === "string")
 				{
-					movie = this.psychoJS.serverManager.getResource(movie);
+					videoResource = this.psychoJS.serverManager.getResource(movie);
 				}
-
-				// if movie is an instance of camera, get a video element from it:
+				// If movie is a HTMLVideoElement, pass it as is:
+				else if (movie instanceof HTMLVideoElement)
+				{
+					videoResource = movie;
+				}
+				// If movie is an instance of camera, get a video element from it:
 				else if (movie instanceof Camera)
 				{
 					// old behaviour: feeding a Camera to MovieStim plays the live stream:
-					const video = movie.getVideo();
-					// TODO remove previous one if there is one
-					movie = video;
+					videoResource = movie.getVideo();
+					// TODO remove previous movie one if there is one
 
 					/*
 					// new behaviour: feeding a Camera to MovieStim replays the video previously recorded by the Camera:
@@ -181,27 +191,38 @@ export class MovieStim extends VisualStim
 				 */
 				}
 
-				// check that movie is now an HTMLVideoElement
-				if (!(movie instanceof HTMLVideoElement))
+				if (videoResource instanceof HTMLVideoElement)
 				{
-					throw `${movie.toString()} is not a video`;
+					htmlVideo = videoResource;
+					htmlVideo.playsInline = true;
+					this._pixiTextureResource = PIXI.Texture.from(htmlVideo, { resourceOptions: { autoPlay: false } });
+				}
+				else if (videoResource instanceof PIXI.Texture)
+				{
+					htmlVideo = videoResource.baseTexture.resource.source;
+					this._pixiTextureResource = videoResource;
+				}
+				else
+				{
+					throw `${videoResource.toString()} is not a HTMLVideoElement nor PIXI.Texture!`;
 				}
 
-				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
+				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${htmlVideo.src}, size= ${htmlVideo.videoWidth}x${htmlVideo.videoHeight}, duration= ${htmlVideo.duration}s`);
 
 				// ensure we have only one onended listener per HTMLVideoElement, since we can have several
 				// MovieStim with the same underlying HTMLVideoElement
 				// https://stackoverflow.com/questions/11455515
-				if (!movie.onended)
+				// TODO: make it actually work!
+				if (!htmlVideo.onended)
 				{
-					movie.onended = () =>
+					htmlVideo.onended = () =>
 					{
 						this.status = PsychoJS.Status.FINISHED;
 					};
 				}
 			}
 
-			this._setAttribute("movie", movie, log);
+			this._setAttribute("movie", htmlVideo, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
@@ -369,13 +390,24 @@ export class MovieStim extends VisualStim
 				return;
 			}
 
-			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.from(this._movie, { resourceOptions: { autoPlay: this.autoPlay } });
-			this._pixi = new PIXI.Sprite(this._texture);
+			// No PIXI.Texture, also return immediately.
+			if (this._pixiTextureResource === undefined)
+			{
+				return;
+			}
 
-			// since _texture.width may not be immedialy available but the rest of the code needs its value
+			// create a PixiJS video sprite:
+			this._pixiTextureResource.baseTexture.resource.autoPlay = this._autoPlay;
+			this._pixi = new PIXI.Sprite(this._pixiTextureResource);
+
+			if (this._autoPlay)
+			{
+				this._pixiTextureResource.baseTexture.resource.source.play();
+			}
+
+			// since _pixiTextureResource.width may not be immedialy available but the rest of the code needs its value
 			// we arrange for repeated calls to _updateIfNeeded until we have a width:
-			if (this._texture.width === 0)
+			if (this._pixiTextureResource.width === 0)
 			{
 				this._needUpdate = true;
 				this._needPixiUpdate = true;
@@ -396,10 +428,13 @@ export class MovieStim extends VisualStim
 		// set the scale:
 		const displaySize = this._getDisplaySize();
 		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._texture.width;
-		const scaleY = size_px[1] / this._texture.height;
+		const scaleX = size_px[0] / this._pixiTextureResource.width;
+		const scaleY = size_px[1] / this._pixiTextureResource.height;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+
+		this._pixi.width = size_px[0];
+		this._pixi.height = size_px[1];
 
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
@@ -424,9 +459,9 @@ export class MovieStim extends VisualStim
 		if (typeof displaySize === "undefined")
 		{
 			// use the size of the texture, if we have access to it:
-			if (typeof this._texture !== "undefined" && this._texture.width > 0)
+			if (typeof this._pixiTextureResource !== "undefined" && this._pixiTextureResource.width > 0)
 			{
-				const textureSize = [this._texture.width, this._texture.height];
+				const textureSize = [this._pixiTextureResource.width, this._pixiTextureResource.height];
 				displaySize = util.to_unit(textureSize, "pix", this.win, this.units);
 			}
 		}
