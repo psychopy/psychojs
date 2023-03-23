@@ -13,7 +13,7 @@ body {
 
 /* Initialisation message (which will disappear behind the canvas) */
 #root::after {
-  content: "initialising the experiment...";
+  content: "initialising...";
   position: fixed;
   top: 50%;
   left: 50%;

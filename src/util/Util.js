@@ -322,24 +322,43 @@ export function IsPointInsidePolygon(point, vertices)
 }
 
 /**
- * Shuffle an array in place using the Fisher-Yastes's modern algorithm
+ * Shuffle an array, or a portion of that array, in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
  * @param {Object[]} array - the input 1-D array
- * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {Function} [randomNumberGenerator= undefined] - A function used to generated random numbers in the interval [0, 1). Defaults to Math.random
+ * @param [startIndex= undefined]	- start index in the array
+ * @param [endIndex= undefined] - end index in the array
  * @return {Object[]} the shuffled array
  */
-export function shuffle(array, randomNumberGenerator = undefined)
+export function shuffle(array, randomNumberGenerator = undefined, startIndex = undefined, endIndex = undefined)
 {
-	if (randomNumberGenerator === undefined)
+	// if array is not an array, we return it untouched rather than throwing an exception:
+	if (!array || !Array.isArray(array))
+	{
+		return array;
+	}
+
+	if (typeof startIndex === "undefined")
+	{
+		startIndex = 0;
+	}
+	if (typeof endIndex === "undefined")
+	{
+		endIndex = array.length - 1;
+	}
+
+	if (typeof randomNumberGenerator === "undefined")
 	{
 		randomNumberGenerator = Math.random;
 	}
-	for (let i = array.length - 1; i > 0; i--)
+
+	for (let i = endIndex; i > startIndex; i--)
 	{
 		const j = Math.floor(randomNumberGenerator() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
+
 	return array;
 }
 

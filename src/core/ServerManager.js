@@ -315,6 +315,34 @@ export class ServerManager extends PsychObject
 	}
 
 	/**
+	 * Release a resource.
+	 *
+	 * @param {string} name - the name of the resource to release
+	 * @return {boolean} true if a resource with the given name was previously registered with the manager,
+	 * 	false otherwise.
+	 */
+	releaseResource(name)
+	{
+		const response = {
+			origin: "ServerManager.releaseResource",
+			context: "when releasing resource: " + name,
+		};
+
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			return false;
+		}
+
+		// TODO check the current status: prevent the release of a resources currently downloading
+
+		this._psychoJS.logger.debug(`releasing resource: ${name}`);
+		this._resources.delete(name);
+		return true;
+	}
+
+	/**
 	 * Get the status of a single resource or the reduced status of an array of resources.
 	 *
 	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
@@ -506,17 +534,17 @@ export class ServerManager extends PsychObject
 					// pre-process the resources:
 					for (let r = 0; r < resources.length; ++r)
 					{
-						const resource = resources[r];
-
 						// convert those resources that are only a string to an object with name and path:
-						if (typeof resource === "string")
+						if (typeof resources[r] === "string")
 						{
 							resources[r] = {
-								name: resource,
-								path: resource,
+								name: resources[r],
+								path: resources[r],
 								download: true
 							};
 						}
+
+						const resource = resources[r];
 
 						// deal with survey models:
 						if ("surveyId" in resource)
