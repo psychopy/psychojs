@@ -1019,10 +1019,6 @@ export class Survey extends VisualStim
 			this._surveyModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
 			this._surveyModel.isInitialized = true;
 			this._surveyModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
-			this._surveyModel.onQuestionRemoved.add(() =>
-			{
-				console.log("question removed")
-			})
 		}
 
 		const completeText = surveyIdx < this._surveyData.surveys.length - 1 ? (this._surveyModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
@@ -1141,18 +1137,6 @@ export class Survey extends VisualStim
 	_resetState ()
 	{
 		this._lastPageSwitchHandledIdx = -1;
-	}
-
-	_getQuestionByNameIncludingInDesign(questionName = "")
-	{
-		const allQuestions = this._surveyModel.getAllQuestions(false, true);
-		for (const question of allQuestions)
-		{
-			if (question.name === questionName)
-			{
-				return question;
-			}
-		}
 	}
 
 	_handleWindowResize(e)
