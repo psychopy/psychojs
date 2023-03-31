@@ -50,10 +50,11 @@ export class MovieStim extends VisualStim
 	 * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
-	constructor({ name, win, movie, pos, anchor, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
+	constructor({ name, win, movie, pos, anchor, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog, draggable } = {})
 	{
-		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog, draggable });
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 

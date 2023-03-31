@@ -46,10 +46,11 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
-	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
+	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog, draggable } = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog, draggable });
 
 		this._addAttribute(
 			"image",

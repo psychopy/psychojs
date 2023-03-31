@@ -165,7 +165,6 @@ export class Window extends PsychObject
 		}
 
 		this._renderer.destroy();
-
 		window.removeEventListener("resize", this._resizeCallback);
 		window.removeEventListener("orientationchange", this._resizeCallback);
 
@@ -489,17 +488,7 @@ export class Window extends PsychObject
 
 		// touch/mouse events are treated by PsychoJS' event manager:
 		this.psychoJS.eventManager.addMouseListeners(this._renderer);
-
-		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
-		this._resizeCallback = (e) =>
-		{
-			Window._resizePixiRenderer(this, e);
-			this._backgroundSprite.width = this._size[0];
-			this._backgroundSprite.height = this._size[1];
-			this._fullRefresh();
-		};
-		window.addEventListener("resize", this._resizeCallback);
-		window.addEventListener("orientationchange", this._resizeCallback);
+		this._addEventListeners();
 	}
 
 	/**
@@ -530,6 +519,69 @@ export class Window extends PsychObject
 		pjsWindow._rootContainer.position.x = pjsWindow._size[0] / 2.0;
 		pjsWindow._rootContainer.position.y = pjsWindow._size[1] / 2.0;
 		pjsWindow._rootContainer.scale.y = -1;
+	}
+
+	_handlePointerDown (e)
+	{
+		let i;
+		let pickedPixi;
+		let tmpPoint = new PIXI.Point();
+		const cursorPos = new PIXI.Point(e.pageX, e.pageY);
+		for (i = this._stimsContainer.children.length - 1; i >= 0; i--)
+		{
+			if (typeof this._stimsContainer.children[i].containsPoint === "function" &&
+				this._stimsContainer.children[i].containsPoint(cursorPos))
+			{
+				pickedPixi = this._stimsContainer.children[i];
+				break;
+			}
+			else if (this._stimsContainer.children[i].containsPoint === undefined &&
+				this._stimsContainer.children[i] instanceof PIXI.DisplayObject)
+			{
+				this._stimsContainer.children[i].worldTransform.applyInverse(cursorPos, tmpPoint);
+				if (this._stimsContainer.children[i].getLocalBounds().contains(tmpPoint.x, tmpPoint.y))
+				{
+					pickedPixi = this._stimsContainer.children[i];
+					break;
+				}
+			}
+		}
+		this.emit("pointerdown", {
+			pixi: pickedPixi,
+			originalEvent: e
+		});
+	}
+
+	_handlePointerUp (e)
+	{
+		this.emit("pointerup", {
+			originalEvent: e
+		});
+	}
+
+	_handlePointerMove (e)
+	{
+		this.emit("pointermove", {
+			originalEvent: e
+		});
+	}
+
+	_addEventListeners ()
+	{
+		this._renderer.view.addEventListener("pointerdown", this._handlePointerDown.bind(this));
+		this._renderer.view.addEventListener("pointerup", this._handlePointerUp.bind(this));
+		this._renderer.view.addEventListener("pointermove", this._handlePointerMove.bind(this));
+
+		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
+		this._resizeCallback = (e) =>
+		{
+			Window._resizePixiRenderer(this, e);
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
+			this._fullRefresh();
+		};
+		window.addEventListener("resize", this._resizeCallback);
+		window.addEventListener("orientationchange", this._resizeCallback);
 	}
 
 	/**

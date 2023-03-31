@@ -37,6 +37,7 @@ export class ButtonStim extends TextBox
 	 * @param {boolean} [options.italic= false] - whether or not the text is italic
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
 	constructor(
 		{
@@ -59,6 +60,7 @@ export class ButtonStim extends TextBox
 			italic,
 			autoDraw,
 			autoLog,
+			draggable
 		} = {},
 	)
 	{
@@ -83,6 +85,7 @@ export class ButtonStim extends TextBox
 			alignment: "center",
 			autoDraw,
 			autoLog,
+			draggable
 		});
 
 		this.psychoJS.logger.debug("create a new Button with name: ", name);
