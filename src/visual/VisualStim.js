@@ -104,6 +104,14 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	}
 
 	/**
+	 * Whether or not stimuli is being dragged by pointer. Works in conjunction with draggable attribute.
+	 */
+	get isDragging()
+	{
+		return this._associatedPointerId !== undefined;
+	}
+
+	/**
 	 * Force a refresh of the stimulus.
 	 *
 	 * refresh() is called, in particular, when the Window is resized.
