@@ -2,8 +2,8 @@
  * Manager handling the recording of audio signal.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2021.2.0
- * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -17,18 +17,20 @@ import { AudioClip } from "./AudioClip.js";
 /**
  * <p>This manager handles the recording of audio signal.</p>
  *
- * @name module:sound.Microphone
- * @class
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param @param {module:core.Window} options.win - the associated Window
- * @param {string} [options.format='audio/webm;codecs=opus'] the format for the audio file
- * @param {number} [options.sampleRateHz= 48000] - the audio sampling rate, in Hz
- * @param {Clock} [options.clock= undefined] - an optional clock
- * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @extends PsychObject
  */
 export class Microphone extends PsychObject
 {
+	/**
+	 * @memberOf module:sound
+	 * @param {Object} options
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {string} [options.format='audio/webm;codecs=opus'] the format for the audio file
+	 * @param {number} [options.sampleRateHz= 48000] - the audio sampling rate, in Hz
+	 * @param {Clock} [options.clock= undefined] - an optional clock
+	 * @param {boolean} [options.autoLog= false] - whether to log
+	 */
 	constructor({ win, name, format, sampleRateHz, clock, autoLog } = {})
 	{
 		super(win._psychoJS);
@@ -56,8 +58,6 @@ export class Microphone extends PsychObject
 	 * <p>Note that it typically takes 50ms-200ms for the recording to actually starts once
 	 * a request to start has been submitted.</p>
 	 *
-	 * @name module:sound.Microphone#start
-	 * @public
 	 * @return {Promise} promise fulfilled when the recording actually started
 	 */
 	start()
@@ -108,8 +108,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Submit a request to stop the recording.
 	 *
-	 * @name module:sound.Microphone#stop
-	 * @public
 	 * @param {Object} options
 	 * @param {string} [options.filename] the name of the file to which the audio recording will be
 	 * 	saved
@@ -145,8 +143,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Submit a request to pause the recording.
 	 *
-	 * @name module:sound.Microphone#pause
-	 * @public
 	 * @return {Promise} promise fulfilled when the recording actually paused
 	 */
 	pause()
@@ -192,7 +188,6 @@ export class Microphone extends PsychObject
 	 *
 	 * <p>resume has no effect if the recording was not previously paused.</p>
 	 *
-	 * @name module:sound.Microphone#resume
 	 * @param {Object} options
 	 * @param {boolean} [options.clear= false] whether or not to empty the audio buffer before
 	 * 	resuming the recording
@@ -245,8 +240,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Submit a request to flush the recording.
 	 *
-	 * @name module:sound.Microphone#flush
-	 * @public
 	 * @return {Promise} promise fulfilled when the data has actually been made available
 	 */
 	flush()
@@ -273,9 +266,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Offer the audio recording to the participant as a sound file to download.
 	 *
-	 * @name module:sound.Microphone#download
-	 * @function
-	 * @public
 	 * @param {string} filename the filename
 	 */
 	download(filename = "audio.webm")
@@ -293,9 +283,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Upload the audio recording to the pavlovia server.
 	 *
-	 * @name module:sound.Microphone#upload
-	 * @function
-	 * @public
 	 * @param {string} tag an optional tag for the audio file
 	 */
 	async upload({ tag } = {})
@@ -331,9 +318,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Get the current audio recording as an AudioClip in the given format.
 	 *
-	 * @name module:sound.Microphone#getRecording
-	 * @function
-	 * @public
  	 * @param {string} tag an optional tag for the audio clip
 	 * @param {boolean} [flush=false] whether or not to first flush the recording
 	 */
@@ -361,8 +345,6 @@ export class Microphone extends PsychObject
 	 *
 	 * <p>Changes to the settings require the recording to stop and be re-started.</p>
 	 *
-	 * @name module:sound.Microphone#_onChange
-	 * @function
 	 * @protected
 	 */
 	_onChange()
@@ -380,8 +362,6 @@ export class Microphone extends PsychObject
 	/**
 	 * Prepare the recording.
 	 *
-	 * @name module:sound.Microphone#_prepareRecording
-	 * @function
 	 * @protected
 	 */
 	async _prepareRecording()

@@ -3,8 +3,8 @@
  *
  * @author Alain Pitiot
  * @author Sotiri Bakagiannis  - isPressedIn
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -16,18 +16,17 @@ import { PsychoJS } from "./PsychoJS.js";
  * <p>This manager handles the interactions between the experiment's stimuli and the mouse.</p>
  * <p>Note: the unit of Mouse is that of its associated Window.</p>
  *
- * @name module:core.Mouse
- * @class
- * @extends PsychObject
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {boolean} [options.autoLog= true] - whether or not to log
- *
  * @todo visible is not handled at the moment (mouse is always visible)
  */
 export class Mouse extends PsychObject
 {
+	/**
+	 * @memberof module:core
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {boolean} [options.autoLog= true] - whether or not to log
+	 */
 	constructor({
 		name,
 		win,
@@ -54,9 +53,6 @@ export class Mouse extends PsychObject
 	/**
 	 * Get the current position of the mouse in mouse/Window units.
 	 *
-	 * @name module:core.Mouse#getPos
-	 * @function
-	 * @public
 	 * @return {Array.number} the position of the mouse in mouse/Window units
 	 */
 	getPos()
@@ -79,9 +75,6 @@ export class Mouse extends PsychObject
 	 * Get the position of the mouse relative to that at the last call to getRel
 	 * or getPos, in mouse/Window units.
 	 *
-	 * @name module:core.Mouse#getRel
-	 * @function
-	 * @public
 	 * @return {Array.number} the relation position of the mouse in mouse/Window units.
 	 */
 	getRel()
@@ -105,9 +98,6 @@ export class Mouse extends PsychObject
 	 * <p>Note: Even though this method returns a [x, y] array, for most wheels/systems y is the only
 	 * value that varies.</p>
 	 *
-	 * @name module:core.Mouse#getWheelRel
-	 * @function
-	 * @public
 	 * @return {Array.number} the mouse scroll wheel travel
 	 */
 	getWheelRel()
@@ -127,9 +117,6 @@ export class Mouse extends PsychObject
 	 *
 	 * <p>Note: clickReset is typically called at stimulus onset. When the participant presses a button, the time elapsed since the clickReset is stored internally and can be accessed any time afterwards with getPressed.</p>
 	 *
-	 * @name module:core.Mouse#getPressed
-	 * @function
-	 * @public
 	 * @param {boolean} [getTime= false] whether or not to also return timestamps
 	 * @return {Array.number | Array.<Array.number>} either an array of size 3 with the status (1 for pressed, 0 for released) of each mouse button [left, center, right], or a tuple with that array and another array of size 3 with the timestamps.
 	 */
@@ -150,9 +137,6 @@ export class Mouse extends PsychObject
 	/**
 	 * Helper method for checking whether a stimulus has had any button presses within bounds.
 	 *
-	 * @name module:core.Mouse#isPressedIn
-	 * @function
-	 * @public
 	 * @param {object|module:visual.VisualStim} shape A type of visual stimulus or object having a `contains()` method.
 	 * @param {object|number} [buttons] The target button index potentially tucked inside an object.
 	 * @param {object} [options]
@@ -222,9 +206,6 @@ export class Mouse extends PsychObject
 	 * <li>mouseMoved(distance, [x: number, y: number]: artifically set the previous mouse position to the given coordinates and determine whether the mouse moved further than the given distance</li>
 	 * </ul></p>
 	 *
-	 * @name module:core.Mouse#mouseMoved
-	 * @function
-	 * @public
 	 * @param {undefined|number|Array.number} [distance] - the distance to which the mouse movement is compared (see above for a full description)
 	 * @param {boolean|String|Array.number} [reset= false] - see above for a full description
 	 * @return {boolean} see above for a full description
@@ -319,9 +300,6 @@ export class Mouse extends PsychObject
 	/**
 	 * Get the amount of time elapsed since the last mouse movement.
 	 *
-	 * @name module:core.Mouse#mouseMoveTime
-	 * @function
-	 * @public
 	 * @return {number} the time elapsed since the last mouse movement
 	 */
 	mouseMoveTime()
@@ -332,9 +310,6 @@ export class Mouse extends PsychObject
 	/**
 	 * Reset the clocks associated to the given mouse buttons.
 	 *
-	 * @name module:core.Mouse#clickReset
-	 * @function
-	 * @public
 	 * @param {Array.number} [buttons= [0,1,2]] the buttons to reset (0: left, 1: center, 2: right)
 	 */
 	clickReset(buttons = [0, 1, 2])

@@ -2,7 +2,7 @@
  * AudioClip encapsulates an audio recording.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2021.2.0
+ * @version 2022.2.3
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -15,18 +15,20 @@ import * as util from "../util/Util.js";
 /**
  * <p>AudioClip encapsulates an audio recording.</p>
  *
- * @name module:sound.AudioClip
- * @class
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {String} [options.name= 'audioclip'] - the name used when logging messages
- * @param {string} options.format the format for the audio file
- * @param {number} options.sampleRateHz - the sampling rate
- * @param {Blob} options.data - the audio data, in the given format, at the given sampling rate
- * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @extends PsychObject
  */
 export class AudioClip extends PsychObject
 {
+	/**
+	 * @memberOf module:sound
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {String} [options.name= 'audioclip'] - the name used when logging messages
+	 * @param {string} options.format the format for the audio file
+	 * @param {number} options.sampleRateHz - the sampling rate
+	 * @param {Blob} options.data - the audio data, in the given format, at the given sampling rate
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({ psychoJS, name, sampleRateHz, format, data, autoLog } = {})
 	{
 		super(psychoJS);
@@ -53,9 +55,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Set the volume of the playback.
 	 *
-	 * @name module:sound.AudioClip#setVolume
-	 * @function
-	 * @public
 	 * @param {number} volume - the volume of the playback (must be between 0.0 and 1.0)
 	 */
 	setVolume(volume)
@@ -66,8 +65,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Start playing the audio clip.
 	 *
-	 * @name module:sound.AudioClip#startPlayback
-	 * @function
 	 * @public
 	 */
 	async startPlayback()
@@ -102,9 +99,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Stop playing the audio clip.
 	 *
-	 * @name module:sound.AudioClip#startPlayback
-	 * @function
-	 * @public
 	 * @param {number} [fadeDuration = 17] - how long the fading out should last, in ms
 	 */
 	async stopPlayback(fadeDuration = 17)
@@ -118,9 +112,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Get the duration of the audio clip, in seconds.
 	 *
-	 * @name module:sound.AudioClip#getDuration
-	 * @function
-	 * @public
 	 * @returns {Promise<number>} the duration of the audio clip
 	 */
 	async getDuration()
@@ -134,8 +125,6 @@ export class AudioClip extends PsychObject
 	/**
 	 * Upload the audio clip to the pavlovia server.
 	 *
-	 * @name module:sound.AudioClip#upload
-	 * @function
 	 * @public
 	 */
 	upload()
@@ -165,10 +154,6 @@ export class AudioClip extends PsychObject
 
 	/**
 	 * Offer the audio clip to the participant as a sound file to download.
-	 *
-	 * @name module:sound.AudioClip#download
-	 * @function
-	 * @public
 	 */
 	download(filename = "audio.webm")
 	{
@@ -187,7 +172,7 @@ export class AudioClip extends PsychObject
 	 * @param {Symbol} options.engine - the speech-to-text engine
 	 * @param {String} options.languageCode - the BCP-47 language code for the recognition,
 	 * 	e.g. 'en-GB'
-	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * @return {Promise} a promise resolving to the transcript and associated
 	 * 	transcription confidence
 	 */
 	async transcribe({ engine, languageCode } = {})
@@ -239,9 +224,10 @@ export class AudioClip extends PsychObject
 	 *
 	 * ref: https://cloud.google.com/speech-to-text/docs/reference/rest/v1/speech/recognize
 	 *
+	 * @protected
 	 * @param {String} transcriptionKey - the secret key to the Google service
 	 * @param {String} languageCode - the BCP-47 language code for the recognition, e.g. 'en-GB'
-	 * @return {Promise<>} a promise resolving to the transcript and associated
+	 * @return {Promise} a promise resolving to the transcript and associated
 	 * 	transcription confidence
 	 */
 	_GoogleTranscribe(transcriptionKey, languageCode)
@@ -306,6 +292,7 @@ export class AudioClip extends PsychObject
 	/**
 	 * Decode the formatted audio data (e.g. webm) into a 32bit float PCM audio buffer.
 	 *
+	 * @protected
 	 */
 	_decodeAudio()
 	{
@@ -386,6 +373,7 @@ export class AudioClip extends PsychObject
 	 * const dataAsString = String.fromCharCode.apply(null, new Uint8Array(buffer));
 	 * base64Data = window.btoa(dataAsString);
 	 *
+	 * @protected
 	 * @param arrayBuffer - the input buffer
 	 * @return {string} the base64 encoded input buffer
 	 */
@@ -453,10 +441,8 @@ export class AudioClip extends PsychObject
 /**
  * Recognition engines.
  *
- * @name module:sound.AudioClip#Engine
  * @enum {Symbol}
  * @readonly
- * @public
  */
 AudioClip.Engine = {
 	/**
@@ -470,7 +456,6 @@ AudioClip.Engine = {
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 AudioClip.Status = {
 	CREATED: Symbol.for("CREATED"),

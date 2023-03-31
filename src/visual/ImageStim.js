@@ -2,8 +2,8 @@
  * Image Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -13,62 +13,44 @@ import { ColorMixin } from "../util/ColorMixin.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
+import {Camera} from "../hardware";
 
 /**
  * Image Stimulus.
  *
- * @name module:visual.ImageStim
- * @class
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
- * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= 'white'] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {number} [options.texRes= 128] - the resolution of the text
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
  */
 export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor(
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
+	 * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {Color} [options.color= 'white'] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {number} [options.texRes= 128] - the resolution of the text
+	 * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
+	 */
+	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
 	{
-		name,
-		win,
-		image,
-		mask,
-		pos,
-		units,
-		ori,
-		size,
-		color,
-		opacity,
-		contrast,
-		texRes,
-		depth,
-		interpolate,
-		flipHoriz,
-		flipVert,
-		autoDraw,
-		autoLog,
-		draggable
-	} = {})
-	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog, draggable });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog, draggable });
 
 		this._addAttribute(
 			"image",
@@ -99,8 +81,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"interpolate",
 			interpolate,
-			false,
-			this._onChange(true, false),
+			false
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -127,8 +108,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the image attribute.
 	 *
-	 * @name module:visual.ImageStim#setImage
-	 * @public
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -155,13 +134,27 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 					image = this.psychoJS.serverManager.getResource(image);
 				}
 
-				// image should now be an actual HTMLImageElement: we raise an error if it is not
-				if (!(image instanceof HTMLImageElement))
+				if (image instanceof Camera)
 				{
-					throw "the argument: " + image.toString() + ' is not an image" }';
+					const video = image.getVideo();
+					// TODO remove previous one if there is one
+					// document.body.appendChild(video);
+					image = video;
 				}
 
-				this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: src= " + image.src + ", size= " + image.width + "x" + image.height);
+				// image should now be either an HTMLImageElement or an HTMLVideoElement:
+				if (image instanceof HTMLImageElement)
+				{
+					this.psychoJS.logger.debug("set the image of ImageStim: " + this._name + " as: src= " + image.src + ", size= " + image.width + "x" + image.height);
+				}
+				else if (image instanceof HTMLVideoElement)
+				{
+					this.psychoJS.logger.debug(`set the image of ImageStim: ${this._name} as: src= ${image.src}, size= ${image.videoWidth}x${image.videoHeight}, duration= ${image.duration}s`);
+				}
+				else
+				{
+					throw "the argument: " + image.toString() + ' is neither an image nor a video" }';
+				}
 			}
 
 			const existingImage = this.getImage();
@@ -183,8 +176,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.ImageStim#setMask
-	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -231,10 +222,22 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Whether to interpolate (linearly) the texture in the stimulus.
+	 *
+	 * @param {boolean} interpolate - interpolate or not.
+	 * @param {boolean} [log=false] - whether or not to log
+	 */
+	setInterpolate (interpolate = false, log = false) {
+		this._setAttribute("interpolate", interpolate, log);
+		if (this._pixi instanceof PIXI.Sprite) {
+			this._pixi.texture.baseTexture.scaleMode = interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST;
+			this._pixi.texture.baseTexture.update();
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -257,8 +260,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.ImageStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -285,15 +287,36 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				return;
 			}
 
-			const baseTexture = new PIXI.BaseTexture(this._image);
+			// deal with both static images and videos:
+			if (this._image instanceof HTMLImageElement)
+			{
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple ImageStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all ImageStims who happen to share that BaseTexture.
+				const texOpts =
+				{
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
+				};
+				this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image, texOpts));
+			}
+			else if (this._image instanceof HTMLVideoElement)
+			{
+				const texOpts =
+				{
+					resourceOptions: { autoPlay: true },
+					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
+				};
+				this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image, texOpts));
+			}
 
-			this._texture = new PIXI.Texture(baseTexture);
 			this._pixi = PIXI.Sprite.from(this._texture);
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
 			{
-				this._pixi.mask = PIXI.Sprite.from(this._mask);
+				// Building new PIXI.BaseTexture each time we create a mask. See notes on this._texture creation above.
+				this._pixi.mask = PIXI.Sprite.from(new PIXI.Texture(new PIXI.BaseTexture(this._mask)));
 
 				// a 0.5, 0.5 anchor is required for the mask to be aligned with the image
 				this._pixi.mask.anchor.x = 0.5;
@@ -321,7 +344,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			// this._pixi.filters = [colorFilter];
 		}
 
-		this._pixi.zIndex = this._depth;
+		this._pixi.zIndex = -this._depth;
 		this._pixi.alpha = this.opacity;
 
 		// set the scale:
@@ -329,14 +352,13 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		const size_px = util.to_px(displaySize, this.units, this.win);
 		const scaleX = size_px[0] / this._texture.width;
 		const scaleY = size_px[1] / this._texture.height;
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
@@ -346,8 +368,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
-	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()

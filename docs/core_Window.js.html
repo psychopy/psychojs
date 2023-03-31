@@ -1,23 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: core/Window.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>core/Window.js - PsychoJS API</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: core/Window.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#~_match">_match</a></li></ul></li><li></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="AudioClip.html#_base64ArrayBuffer">_base64ArrayBuffer</a></li><li data-type='method'><a href="AudioClip.html#_decodeAudio">_decodeAudio</a></li><li data-type='method'><a href="AudioClip.html#_GoogleTranscribe">_GoogleTranscribe</a></li><li data-type='method'><a href="AudioClip.html#download">download</a></li><li data-type='method'><a href="AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="AudioClip.html#stopPlayback">stopPlayback</a></li><li data-type='method'><a href="AudioClip.html#transcribe">transcribe</a></li><li data-type='method'><a href="AudioClip.html#upload">upload</a></li></ul></li><li><a href="AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="ButtonStim.html">ButtonStim</a><ul class='methods'><li data-type='method'><a href="ButtonStim.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="ButtonStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ButtonStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="ButtonStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="ButtonStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ButtonStim.html#clear">clear</a></li><li data-type='method'><a href="ButtonStim.html#getText">getText</a></li><li data-type='method'><a href="ButtonStim.html#reset">reset</a></li><li data-type='method'><a href="ButtonStim.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="ButtonStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="ButtonStim.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="ButtonStim.html#setColor">setColor</a></li><li data-type='method'><a href="ButtonStim.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="ButtonStim.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="ButtonStim.html#setFont">setFont</a></li><li data-type='method'><a href="ButtonStim.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="ButtonStim.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#setSize">setSize</a></li><li data-type='method'><a href="ButtonStim.html#setText">setText</a></li></ul></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="Clock.html#add">add</a></li><li data-type='method'><a href="Clock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="Clock.html#getTime">getTime</a></li><li data-type='method'><a href="Clock.html#reset">reset</a></li></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method'><a href="Color.html#toString">toString</a></li></ul></li><li><a href="CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="CountdownTimer.html#add">add</a></li><li data-type='method'><a href="CountdownTimer.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="EventEmitter.html#off">off</a></li><li data-type='method'><a href="EventEmitter.html#on">on</a></li><li data-type='method'><a href="EventEmitter.html#once">once</a></li></ul></li><li><a href="EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="EventManager.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="EventManager.html#stopMoveClock">stopMoveClock</a></li></ul></li><li><a href="ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#save">save</a></li></ul></li><li><a href="FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="FaceDetector.html#setInput">setInput</a></li><li data-type='method'><a href="FaceDetector.html#start">start</a></li><li data-type='method'><a href="FaceDetector.html#stop">stop</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Form.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Form.html#_importItems">_importItems</a></li><li data-type='method'><a href="Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="Form.html#_processItems">_processItems</a></li><li data-type='method'><a href="Form.html#_sanitizeItems">_sanitizeItems</a></li><li data-type='method'><a href="Form.html#_setupStimuli">_setupStimuli</a></li><li data-type='method'><a href="Form.html#_updateDecorations">_updateDecorations</a></li><li data-type='method'><a href="Form.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Form.html#_updateVisibleStimuli">_updateVisibleStimuli</a></li><li data-type='method'><a href="Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="Form.html#contains">contains</a></li><li data-type='method'><a href="Form.html#draw">draw</a></li><li data-type='method'><a href="Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="Form.html#getData">getData</a></li><li data-type='method'><a href="Form.html#hide">hide</a></li><li data-type='method'><a href="Form.html#refresh">refresh</a></li><li data-type='method'><a href="Form.html#release">release</a></li><li data-type='method'><a href="Form.html#reset">reset</a></li><li data-type='method'><a href="Form.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Form.html#setDepth">setDepth</a></li><li data-type='method'><a href="Form.html#setOri">setOri</a></li><li data-type='method'><a href="Form.html#setPos">setPos</a></li><li data-type='method'><a href="Form.html#setSize">setSize</a></li></ul></li><li><a href="GratingStim.html">GratingStim</a><ul class='methods'><li data-type='method'><a href="GratingStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="GratingStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="GratingStim.html#_getPixiMeshFromPredefinedShaders">_getPixiMeshFromPredefinedShaders</a></li><li data-type='method'><a href="GratingStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="GratingStim.html#setBlendmode">setBlendmode</a></li><li data-type='method'><a href="GratingStim.html#setColor">setColor</a></li><li data-type='method'><a href="GratingStim.html#setColorSpace">setColorSpace</a></li><li data-type='method'><a href="GratingStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="GratingStim.html#setMask">setMask</a></li><li data-type='method'><a href="GratingStim.html#setOpacity">setOpacity</a></li><li data-type='method'><a href="GratingStim.html#setPhase">setPhase</a></li><li data-type='method'><a href="GratingStim.html#setSF">setSF</a></li><li data-type='method'><a href="GratingStim.html#setTex">setTex</a></li></ul></li><li><a href="GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="GUI.html#_onCancelExperiment">_onCancelExperiment</a></li><li data-type='method'><a href="GUI.html#_onResourceEvents">_onResourceEvents</a></li><li data-type='method'><a href="GUI.html#_onStartExperiment">_onStartExperiment</a></li><li data-type='method'><a href="GUI.html#_setProgressMessage">_setProgressMessage</a></li><li data-type='method'><a href="GUI.html#_updateDialog">_updateDialog</a></li><li data-type='method'><a href="GUI.html#_updateProgressBar">_updateProgressBar</a></li><li data-type='method'><a href="GUI.html#_userFriendlyError">_userFriendlyError</a></li><li data-type='method'><a href="GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="GUI.html#dialog">dialog</a></li><li data-type='method'><a href="GUI.html#DlgFromDict">DlgFromDict</a></li><li data-type='method'><a href="GUI.html#finishDialog">finishDialog</a></li></ul></li><li><a href="ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ImageStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="ImageStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ImageStim.html#setImage">setImage</a></li><li data-type='method'><a href="ImageStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="ImageStim.html#setMask">setMask</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="Keyboard.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="Keyboard.html#start">start</a></li><li data-type='method'><a href="Keyboard.html#stop">stop</a></li></ul></li><li><a href="KeyPress.html">KeyPress</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#_customConsoleLayout">_customConsoleLayout</a></li><li data-type='method'><a href="Logger.html#_getValue">_getValue</a></li><li data-type='method'><a href="Logger.html#_throttle">_throttle</a></li><li data-type='method'><a href="Logger.html#data">data</a></li><li data-type='method'><a href="Logger.html#exp">exp</a></li><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#log">log</a></li><li data-type='method'><a href="Logger.html#setLevel">setLevel</a></li></ul></li><li><a href="Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="Microphone.html#download">download</a></li><li data-type='method'><a href="Microphone.html#flush">flush</a></li><li data-type='method'><a href="Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="Microphone.html#pause">pause</a></li><li data-type='method'><a href="Microphone.html#resume">resume</a></li><li data-type='method'><a href="Microphone.html#start">start</a></li><li data-type='method'><a href="Microphone.html#stop">stop</a></li><li data-type='method'><a href="Microphone.html#upload">upload</a></li></ul></li><li><a href="MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="MinimalStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="MinimalStim.html#release">release</a></li><li data-type='method'><a href="MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_makeStatusTopLevel">_makeStatusTopLevel</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#_prepareSequence">_prepareSequence</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-hardware.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-hardware.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-hardware.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#_upload">_upload</a></li><li data-type='method'><a href="module-hardware.Camera.html#authorize">authorize</a></li><li data-type='method'><a href="module-hardware.Camera.html#close">close</a></li><li data-type='method'><a href="module-hardware.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-hardware.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-hardware.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-hardware.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-hardware.Camera.html#open">open</a></li><li data-type='method'><a href="module-hardware.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-hardware.Camera.html#record">record</a></li><li data-type='method'><a href="module-hardware.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-hardware.Camera.html#stop">stop</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#emit">emit</a></li><li data-type='method'><a href="module-util.PsychObject.html#off">off</a></li><li data-type='method'><a href="module-util.PsychObject.html#on">on</a></li><li data-type='method'><a href="module-util.PsychObject.html#once">once</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li><li data-type='method'><a href="module-visual.VisualStim.html#draw">draw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#hide">hide</a></li><li data-type='method'><a href="module-visual.VisualStim.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.VisualStim.html#release">release</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setDepth">setDepth</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setOri">setOri</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setPos">setPos</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setSize">setSize</a></li></ul></li><li><a href="MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="MovieStim.html">MovieStim</a><ul class='methods'><li data-type='method'><a href="MovieStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="MovieStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="MovieStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MovieStim.html#pause">pause</a></li><li data-type='method'><a href="MovieStim.html#play">play</a></li><li data-type='method'><a href="MovieStim.html#reset">reset</a></li><li data-type='method'><a href="MovieStim.html#seek">seek</a></li><li data-type='method'><a href="MovieStim.html#setMovie">setMovie</a></li><li data-type='method'><a href="MovieStim.html#stop">stop</a></li></ul></li><li><a href="MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="Polygon.html">Polygon</a><ul class='methods'><li data-type='method'><a href="Polygon.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Polygon.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Polygon.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Polygon.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Polygon.html#contains">contains</a></li><li data-type='method'><a href="Polygon.html#setEdges">setEdges</a></li><li data-type='method'><a href="Polygon.html#setRadius">setRadius</a></li><li data-type='method'><a href="Polygon.html#setVertices">setVertices</a></li></ul></li><li><a href="QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="Rect.html">Rect</a><ul class='methods'><li data-type='method'><a href="Rect.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Rect.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Rect.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Rect.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Rect.html#_updateVertices">_updateVertices</a></li><li data-type='method'><a href="Rect.html#contains">contains</a></li><li data-type='method'><a href="Rect.html#setHeight">setHeight</a></li><li data-type='method'><a href="Rect.html#setVertices">setVertices</a></li><li data-type='method'><a href="Rect.html#setWidth">setWidth</a></li></ul></li><li><a href="Scheduler.html">Scheduler</a><ul class='methods'><li data-type='method'><a href="Scheduler.html#add">add</a></li><li data-type='method'><a href="Scheduler.html#addConditional">addConditional</a></li><li data-type='method'><a href="Scheduler.html#start">start</a></li><li data-type='method'><a href="Scheduler.html#stop">stop</a></li></ul></li><li><a href="ServerManager.html">ServerManager</a><ul class='methods'><li data-type='method'><a href="ServerManager.html#_downloadResources">_downloadResources</a></li><li data-type='method'><a href="ServerManager.html#_listResources">_listResources</a></li><li data-type='method'><a href="ServerManager.html#_queryServerAPI">_queryServerAPI</a></li><li data-type='method'><a href="ServerManager.html#_setupPreloadQueue">_setupPreloadQueue</a></li><li data-type='method'><a href="ServerManager.html#closeSession">closeSession</a></li><li data-type='method'><a href="ServerManager.html#getConfiguration">getConfiguration</a></li><li data-type='method'><a href="ServerManager.html#getResource">getResource</a></li><li data-type='method'><a href="ServerManager.html#getResourceStatus">getResourceStatus</a></li><li data-type='method'><a href="ServerManager.html#openSession">openSession</a></li><li data-type='method'><a href="ServerManager.html#prepareResources">prepareResources</a></li><li data-type='method'><a href="ServerManager.html#resetStatus">resetStatus</a></li><li data-type='method'><a href="ServerManager.html#setStatus">setStatus</a></li><li data-type='method'><a href="ServerManager.html#uploadAudioVideo">uploadAudioVideo</a></li><li data-type='method'><a href="ServerManager.html#uploadData">uploadData</a></li><li data-type='method'><a href="ServerManager.html#uploadLog">uploadLog</a></li><li data-type='method'><a href="ServerManager.html#waitForResources">waitForResources</a></li></ul></li><li><a href="ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ShapeStim.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="ShapeStim.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="ShapeStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ShapeStim.html#contains">contains</a></li><li data-type='method'><a href="ShapeStim.html#setVertices">setVertices</a></li></ul></li><li><a href="Shelf.html">Shelf</a><ul class='methods'><li data-type='method'><a href="Shelf.html#_checkAvailability">_checkAvailability</a></li><li data-type='method'><a href="Shelf.html#_checkKey">_checkKey</a></li><li data-type='method'><a href="Shelf.html#_getValue">_getValue</a></li><li data-type='method'><a href="Shelf.html#_updateValue">_updateValue</a></li><li data-type='method'><a href="Shelf.html#addIntegerValue">addIntegerValue</a></li><li data-type='method'><a href="Shelf.html#appendListValue">appendListValue</a></li><li data-type='method'><a href="Shelf.html#clearListValue">clearListValue</a></li><li data-type='method'><a href="Shelf.html#counterBalanceSelect">counterBalanceSelect</a></li><li data-type='method'><a href="Shelf.html#flipBooleanValue">flipBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getBooleanValue">getBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldNames">getDictionaryFieldNames</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldValue">getDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryValue">getDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#getIntegerValue">getIntegerValue</a></li><li data-type='method'><a href="Shelf.html#getListValue">getListValue</a></li><li data-type='method'><a href="Shelf.html#getTextValue">getTextValue</a></li><li data-type='method'><a href="Shelf.html#incrementComponent">incrementComponent</a></li><li data-type='method'><a href="Shelf.html#popListValue">popListValue</a></li><li data-type='method'><a href="Shelf.html#setBooleanValue">setBooleanValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryFieldValue">setDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryValue">setDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#setIntegerValue">setIntegerValue</a></li><li data-type='method'><a href="Shelf.html#setListValue">setListValue</a></li><li data-type='method'><a href="Shelf.html#setTextValue">setTextValue</a></li><li data-type='method'><a href="Shelf.html#shuffleListValue">shuffleListValue</a></li></ul></li><li><a href="Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="Slider.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Slider.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Slider.html#_getPosition_px">_getPosition_px</a></li><li data-type='method'><a href="Slider.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="Slider.html#_granularise">_granularise</a></li><li data-type='method'><a href="Slider.html#_handlePointerDown">_handlePointerDown</a></li><li data-type='method'><a href="Slider.html#_handlePointerMove">_handlePointerMove</a></li><li data-type='method'><a href="Slider.html#_handlePointerUp">_handlePointerUp</a></li><li data-type='method'><a href="Slider.html#_isHorizontal">_isHorizontal</a></li><li data-type='method'><a href="Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="Slider.html#_posToRating">_posToRating</a></li><li data-type='method'><a href="Slider.html#_ratingToPos">_ratingToPos</a></li><li data-type='method'><a href="Slider.html#_removeEventListeners">_removeEventListeners</a></li><li data-type='method'><a href="Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="Slider.html#_setupBar">_setupBar</a></li><li data-type='method'><a href="Slider.html#_setupLabels">_setupLabels</a></li><li data-type='method'><a href="Slider.html#_setupMarker">_setupMarker</a></li><li data-type='method'><a href="Slider.html#_setupSlider">_setupSlider</a></li><li data-type='method'><a href="Slider.html#_setupStyle">_setupStyle</a></li><li data-type='method'><a href="Slider.html#_setupTicks">_setupTicks</a></li><li data-type='method'><a href="Slider.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Slider.html#contains">contains</a></li><li data-type='method'><a href="Slider.html#draw">draw</a></li><li data-type='method'><a href="Slider.html#getRating">getRating</a></li><li data-type='method'><a href="Slider.html#getRT">getRT</a></li><li data-type='method'><a href="Slider.html#hide">hide</a></li><li data-type='method'><a href="Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="Slider.html#recordRating">recordRating</a></li><li data-type='method'><a href="Slider.html#refresh">refresh</a></li><li data-type='method'><a href="Slider.html#release">release</a></li><li data-type='method'><a href="Slider.html#reset">reset</a></li><li data-type='method'><a href="Slider.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Slider.html#setDepth">setDepth</a></li><li data-type='method'><a href="Slider.html#setMarkerPos">setMarkerPos</a></li><li data-type='method'><a href="Slider.html#setOri">setOri</a></li><li data-type='method'><a href="Slider.html#setPos">setPos</a></li><li data-type='method'><a href="Slider.html#setRating">setRating</a></li><li data-type='method'><a href="Slider.html#setReadOnly">setReadOnly</a></li><li data-type='method'><a href="Slider.html#setSize">setSize</a></li></ul></li><li><a href="SpeechRecognition.html">SpeechRecognition</a><ul class='methods'><li data-type='method'><a href="SpeechRecognition.html#_onChange">_onChange</a></li><li data-type='method'><a href="SpeechRecognition.html#_prepareRecognition">_prepareRecognition</a></li><li data-type='method'><a href="SpeechRecognition.html#clearTranscripts">clearTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#getTranscripts">getTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#start">start</a></li><li data-type='method'><a href="SpeechRecognition.html#stop">stop</a></li></ul></li><li><a href="TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="TextBox.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextBox.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextBox.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextBox.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="TextBox.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextBox.html#clear">clear</a></li><li data-type='method'><a href="TextBox.html#getText">getText</a></li><li data-type='method'><a href="TextBox.html#reset">reset</a></li><li data-type='method'><a href="TextBox.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="TextBox.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="TextBox.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="TextBox.html#setColor">setColor</a></li><li data-type='method'><a href="TextBox.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="TextBox.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="TextBox.html#setFont">setFont</a></li><li data-type='method'><a href="TextBox.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="TextBox.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="TextBox.html#setSize">setSize</a></li><li data-type='method'><a href="TextBox.html#setText">setText</a></li></ul></li><li><a href="TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextStim.html#_getDefaultWrapWidth">_getDefaultWrapWidth</a></li><li data-type='method'><a href="TextStim.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="TextStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextStim.html#getBoundingBox">getBoundingBox</a></li><li data-type='method'><a href="TextStim.html#getTextMetrics">getTextMetrics</a></li><li data-type='method'><a href="TextStim.html#setColor">setColor</a></li></ul></li><li><a href="TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="TonePlayer.html#_initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TonePlayer.html#play">play</a></li><li data-type='method'><a href="TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TonePlayer.html#stop">stop</a></li></ul></li><li><a href="TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TrackPlayer.html#play">play</a></li><li data-type='method'><a href="TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="Transcript.html">Transcript</a></li><li><a href="Window.html">Window</a><ul class='methods'><li data-type='method'><a href="Window.html#_fullRefresh">_fullRefresh</a></li><li data-type='method'><a href="Window.html#_refresh">_refresh</a></li><li data-type='method'><a href="Window.html#_setupPixi">_setupPixi</a></li><li data-type='method'><a href="Window.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Window.html#_writeLogOnFlip">_writeLogOnFlip</a></li><li data-type='method'><a href="Window.html#addPixiObject">addPixiObject</a></li><li data-type='method'><a href="Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="Window.html#close">close</a></li><li data-type='method'><a href="Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="Window.html#removePixiObject">removePixiObject</a></li><li data-type='method'><a href="Window.html#render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="SoundPlayer.html#play">play</a></li><li data-type='method'><a href="SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="SoundPlayer.html#stop">stop</a></li></ul></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">core/Window.js</h1>
+    
 
     
 
@@ -30,37 +54,26 @@
  * Window responsible for displaying the experiment stimuli
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
-import * as PIXI from 'pixi.js-legacy';
-import {Color} from '../util/Color';
-import {PsychObject} from '../util/PsychObject';
-import {MonotonicClock} from '../util/Clock';
-import {Logger} from "./Logger";
+import * as PIXI from "pixi.js-legacy";
+import {AdjustmentFilter} from "@pixi/filter-adjustment";
+import { MonotonicClock } from "../util/Clock.js";
+import { Color } from "../util/Color.js";
+import { PsychObject } from "../util/PsychObject.js";
+import { Logger } from "./Logger.js";
 
 /**
  * &lt;p>Window displays the various stimuli of the experiment.&lt;/p>
  * &lt;p>It sets up a [PIXI]{@link http://www.pixijs.com/} renderer, which we use to render the experiment stimuli.&lt;/p>
  *
- * @name module:core.Window
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {string} [options.name] the name of the window
- * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
- * @param {Color} [options.color= Color('black')] the background color of the window
- * @param {string} [options.units= 'pix'] the units of the window
- * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
- * before flipping
- * @param {boolean} [options.autoLog= true] whether or not to log
  */
 export class Window extends PsychObject
 {
-
 	/**
 	 * Getter for monitorFramePeriod.
 	 *
@@ -73,31 +86,62 @@ export class Window extends PsychObject
 		return 1.0 / this.getActualFrameRate();
 	}
 
+	/**
+	 * @memberof module:core
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {string} [options.name] the name of the window
+	 * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
+	 * @param {Color} [options.color= Color('black')] the background color of the window
+	 * @param {number} [options.gamma= 1] sets the divisor for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
+	 * @param {number} [options.contrast= 1] sets the contrast value
+	 * @param {string} [options.units= 'pix'] the units of the window
+	 * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
+	 * before flipping
+	 * @param {boolean} [options.autoLog= true] whether or not to log
+	 */
 	constructor({
-								psychoJS,
-								name,
-								fullscr = false,
-								color = new Color('black'),
-								units = 'pix',
-								waitBlanking = false,
-								autoLog = true
-							} = {})
+		psychoJS,
+		name,
+		fullscr = false,
+		color = new Color("black"),
+		gamma = 1,
+		contrast = 1,
+		units = "pix",
+		waitBlanking = false,
+		autoLog = true,
+	} = {})
 	{
 		super(psychoJS, name);
 
 		// messages to be logged at the next "flip":
 		this._msgToBeLogged = [];
 
+		// storing AdjustmentFilter instance to access later;
+		this._adjustmentFilter = new AdjustmentFilter({
+			gamma,
+			contrast
+		});
+
 		// list of all elements, in the order they are currently drawn:
 		this._drawList = [];
 
-		this._addAttribute('fullscr', fullscr);
-		this._addAttribute('color', color);
-		this._addAttribute('units', units);
-		this._addAttribute('waitBlanking', waitBlanking);
-		this._addAttribute('autoLog', autoLog);
-		this._addAttribute('size', []);
-
+		this._addAttribute("fullscr", fullscr);
+		this._addAttribute("color", color, new Color("black"), () => {
+			if (this._backgroundSprite) {
+				this._backgroundSprite.tint = this._color.int;
+			}
+		});
+		this._addAttribute("gamma", gamma, 1, () => {
+			this._adjustmentFilter.gamma = this._gamma;
+		});
+		this._addAttribute("contrast", contrast, 1, () => {
+			this._adjustmentFilter.contrast = this._contrast;
+		});
+		this._addAttribute("units", units);
+		this._addAttribute("waitBlanking", waitBlanking);
+		this._addAttribute("autoLog", autoLog);
+		this._addAttribute("size", []);
 
 		// setup PIXI:
 		this._setupPixi();
@@ -106,15 +150,14 @@ export class Window extends PsychObject
 
 		this._flipCallbacks = [];
 
-
 		// fullscreen listener:
 		this._windowAlreadyInFullScreen = false;
 		const self = this;
-		document.addEventListener('fullscreenchange', (event) =>
+		document.addEventListener("fullscreenchange", (event) =>
 		{
 			self._windowAlreadyInFullScreen = !!document.fullscreenElement;
 
-			console.log('windowAlreadyInFullScreen:', self._windowAlreadyInFullScreen);
+			console.log("windowAlreadyInFullScreen:", self._windowAlreadyInFullScreen);
 
 			// the Window and all of the stimuli need to be updated:
 			self._needUpdate = true;
@@ -124,22 +167,16 @@ export class Window extends PsychObject
 			}
 		});
 
-
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
 	}
 
-
 	/**
 	 * Close the window.
 	 *
 	 * &lt;p> Note: this actually only removes the canvas used to render the experiment stimuli.&lt;/p>
-	 *
-	 * @name module:core.Window#close
-	 * @function
-	 * @public
 	 */
 	close()
 	{
@@ -148,33 +185,31 @@ export class Window extends PsychObject
 			return;
 		}
 
+		this._rootContainer.destroy();
+		
 		if (document.body.contains(this._renderer.view))
 		{
 			document.body.removeChild(this._renderer.view);
 		}
 
 		// destroy the renderer and the WebGL context:
-		if (typeof this._renderer.gl !== 'undefined')
+		if (typeof this._renderer.gl !== "undefined")
 		{
-			const extension = this._renderer.gl.getExtension('WEBGL_lose_context');
+			const extension = this._renderer.gl.getExtension("WEBGL_lose_context");
 			extension.loseContext();
 		}
 
 		this._renderer.destroy();
 
-		window.removeEventListener('resize', this._resizeCallback);
-		window.removeEventListener('orientationchange', this._resizeCallback);
+		window.removeEventListener("resize", this._resizeCallback);
+		window.removeEventListener("orientationchange", this._resizeCallback);
 
 		this._renderer = null;
 	}
 
-
 	/**
 	 * Estimate the frame rate.
 	 *
-	 * @name module:core.Window#getActualFrameRate
-	 * @function
-	 * @public
 	 * @return {number} rAF based delta time based approximation, 60.0 by default
 	 */
 	getActualFrameRate()
@@ -186,13 +221,8 @@ export class Window extends PsychObject
 		return fps;
 	}
 
-
 	/**
 	 * Take the browser full screen if possible.
-	 *
-	 * @name module:core.Window#adjustScreenSize
-	 * @function
-	 * @public
 	 */
 	adjustScreenSize()
 	{
@@ -201,103 +231,91 @@ export class Window extends PsychObject
 		// test whether the window is already fullscreen.
 		// this._windowAlreadyInFullScreen = (!window.screenTop &amp;&amp; !window.screenY);
 
-		if (this.fullscr/* &amp;&amp; !this._windowAlreadyInFullScreen*/)
+		if (this.fullscr /* &amp;&amp; !this._windowAlreadyInFullScreen*/)
 		{
-			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'to full screen.');
+			this._psychoJS.logger.debug("Resizing Window: ", this._name, "to full screen.");
 
-			if (typeof document.documentElement.requestFullscreen === 'function')
+			if (typeof document.documentElement.requestFullscreen === "function")
 			{
 				document.documentElement.requestFullscreen()
 					.catch(() =>
 					{
-						this.psychoJS.logger.warn('Unable to go fullscreen.');
+						this.psychoJS.logger.warn("Unable to go fullscreen.");
 					});
 			}
-			else if (typeof document.documentElement.mozRequestFullScreen === 'function')
+			else if (typeof document.documentElement.mozRequestFullScreen === "function")
 			{
 				document.documentElement.mozRequestFullScreen();
 			}
-			else if (typeof document.documentElement.webkitRequestFullscreen === 'function')
+			else if (typeof document.documentElement.webkitRequestFullscreen === "function")
 			{
 				document.documentElement.webkitRequestFullscreen();
 			}
-			else if (typeof document.documentElement.msRequestFullscreen === 'function')
+			else if (typeof document.documentElement.msRequestFullscreen === "function")
 			{
 				document.documentElement.msRequestFullscreen();
 			}
 			else
 			{
-				this.psychoJS.logger.warn('Unable to go fullscreen.');
+				this.psychoJS.logger.warn("Unable to go fullscreen.");
 			}
 		}
-
 	}
-
 
 	/**
 	 * Take the browser back from full screen if needed.
-	 *
-	 * @name module:core.Window#closeFullScreen
-	 * @function
-	 * @public
 	 */
 	closeFullScreen()
 	{
 		if (this.fullscr)
 		{
-			this._psychoJS.logger.debug('Resizing Window: ', this._name, 'back from full screen.');
+			this._psychoJS.logger.debug("Resizing Window: ", this._name, "back from full screen.");
 
-			if (typeof document.exitFullscreen === 'function')
+			if (typeof document.exitFullscreen === "function")
 			{
 				document.exitFullscreen()
 					.catch(() =>
 					{
-						this.psychoJS.logger.warn('Unable to close fullscreen.');
+						this.psychoJS.logger.warn("Unable to close fullscreen.");
 					});
 			}
-			else if (typeof document.mozCancelFullScreen === 'function')
+			else if (typeof document.mozCancelFullScreen === "function")
 			{
 				document.mozCancelFullScreen();
 			}
-			else if (typeof document.webkitExitFullscreen === 'function')
+			else if (typeof document.webkitExitFullscreen === "function")
 			{
 				document.webkitExitFullscreen();
 			}
-			else if (typeof document.msExitFullscreen === 'function')
+			else if (typeof document.msExitFullscreen === "function")
 			{
 				document.msExitFullscreen();
 			}
 			else
 			{
-				this.psychoJS.logger.warn('Unable to close fullscreen.');
+				this.psychoJS.logger.warn("Unable to close fullscreen.");
 			}
 		}
-
 	}
-
 
 	/**
 	 * Log a message.
 	 *
 	 * &lt;p> Note: the message will be time-stamped at the next call to requestAnimationFrame.&lt;/p>
 	 *
-	 * @name module:core.Window#logOnFlip
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {String} options.msg the message to be logged
 	 * @param {module:util.Logger.ServerLevel} [level = module:util.Logger.ServerLevel.EXP] the log level
 	 * @param {Object} [obj] the object associated with the message
 	 */
 	logOnFlip({
-							msg,
-							level = Logger.ServerLevel.EXP,
-							obj
-						} = {})
+		msg,
+		level = Logger.ServerLevel.EXP,
+		obj,
+	} = {})
 	{
-		this._msgToBeLogged.push({msg, level, obj});
+		this._msgToBeLogged.push({ msg, level, obj });
 	}
-
 
 	/**
 	 * Callback function for callOnFlip.
@@ -311,24 +329,32 @@ export class Window extends PsychObject
 	 *
 	 * &lt;p>This is typically used to reset a timer or clock.&lt;/p>
 	 *
-	 * @name module:core.Window#callOnFlip
-	 * @function
-	 * @public
 	 * @param {module:core.Window~OnFlipCallback} flipCallback - callback function.
 	 * @param {...*} flipCallbackArgs - arguments for the callback function.
 	 */
 	callOnFlip(flipCallback, ...flipCallbackArgs)
 	{
-		this._flipCallbacks.push({function: flipCallback, arguments: flipCallbackArgs});
+		this._flipCallbacks.push({ function: flipCallback, arguments: flipCallbackArgs });
 	}
 
+	/**
+	 * Add PIXI.DisplayObject to the container displayed on the scene (window)
+	 */
+	addPixiObject(pixiObject)
+	{
+		this._stimsContainer.addChild(pixiObject);
+	}
+
+	/**
+	 * Remove PIXI.DisplayObject from the container displayed on the scene (window)
+	 */
+	removePixiObject(pixiObject)
+	{
+		this._stimsContainer.removeChild(pixiObject);	
+	}
 
 	/**
 	 * Render the stimuli onto the canvas.
-	 *
-	 * @name module:core.Window#render
-	 * @function
-	 * @public
 	 */
 	render()
 	{
@@ -337,13 +363,12 @@ export class Window extends PsychObject
 			return;
 		}
 
-
 		this._frameCount++;
 
 		// render the PIXI container:
 		this._renderer.render(this._rootContainer);
 
-		if (typeof this._renderer.gl !== 'undefined')
+		if (typeof this._renderer.gl !== "undefined")
 		{
 			// this is to make sure that the GPU is done rendering, it may not be necessary
 			// [http://www.html5gamedevs.com/topic/27849-detect-when-view-has-been-rendered/]
@@ -359,7 +384,7 @@ export class Window extends PsychObject
 		// call the callOnFlip functions and remove them:
 		for (let callback of this._flipCallbacks)
 		{
-			callback['function'](...callback['arguments']);
+			callback["function"](...callback["arguments"]);
 		}
 		this._flipCallbacks = [];
 
@@ -370,13 +395,10 @@ export class Window extends PsychObject
 		this._refresh();
 	}
 
-
 	/**
 	 * Update this window, if need be.
 	 *
-	 * @name module:core.Window#_updateIfNeeded
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -385,6 +407,7 @@ export class Window extends PsychObject
 			if (this._renderer)
 			{
 				this._renderer.backgroundColor = this._color.int;
+				this._backgroundSprite.tint = this._color.int;
 			}
 
 			// we also change the background color of the body since
@@ -395,13 +418,10 @@ export class Window extends PsychObject
 		}
 	}
 
-
 	/**
 	 * Recompute this window's draw list and _container children for the next animation frame.
 	 *
-	 * @name module:core.Window#_refresh
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_refresh()
 	{
@@ -411,22 +431,19 @@ export class Window extends PsychObject
 		// update it, then put it back
 		for (const stimulus of this._drawList)
 		{
-			if (stimulus._needUpdate &amp;&amp; typeof stimulus._pixi !== 'undefined')
+			if (stimulus._needUpdate &amp;&amp; typeof stimulus._pixi !== "undefined")
 			{
-				this._rootContainer.removeChild(stimulus._pixi);
+				this._stimsContainer.removeChild(stimulus._pixi);
 				stimulus._updateIfNeeded();
-				this._rootContainer.addChild(stimulus._pixi);
+				this._stimsContainer.addChild(stimulus._pixi);
 			}
 		}
 	}
 
-
 	/**
 	 * Force an update of all stimuli in this window's drawlist.
 	 *
-	 * @name module:core.Window#_fullRefresh
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_fullRefresh()
 	{
@@ -440,16 +457,13 @@ export class Window extends PsychObject
 		this._refresh();
 	}
 
-
 	/**
 	 * Setup PIXI.
 	 *
 	 * &lt;p>A new renderer is created and a container is added to it. The renderer's touch and mouse events
 	 * are handled by the {@link EventManager}.&lt;/p>
 	 *
-	 * @name module:core.Window#_setupPixi
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupPixi()
 	{
@@ -462,18 +476,42 @@ export class Window extends PsychObject
 			width: this._size[0],
 			height: this._size[1],
 			backgroundColor: this.color.int,
-			resolution: window.devicePixelRatio
+			powerPreference: "high-performance",
+			resolution: window.devicePixelRatio,
 		});
-		this._renderer.view.style.transform = 'translatez(0)';
-		this._renderer.view.style.position = 'absolute';
+		this._renderer.view.style.transform = "translatez(0)";
+		this._renderer.view.style.position = "absolute";
 		document.body.appendChild(this._renderer.view);
 
 		// we also change the background color of the body since the dialog popup may be longer than the window's height:
 		document.body.style.backgroundColor = this._color.hex;
 
+		// filters in PIXI work in a slightly unexpected fashion:
+		// when setting this._rootContainer.filters, filtering itself
+		// ignores backgroundColor of this._renderer and in addition to that
+		// all child elements of this._rootContainer ignore backgroundColor when blending.
+		// To circumvent that creating a separate PIXI.Sprite that serves as background color.
+		// Then placing all Stims to a separate this._stimsContainer which hovers on top of
+		// background sprite so that if we need to move all stims at once, the background sprite
+		// won't get affected.
+		this._backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		this._backgroundSprite.tint = this.color.int;
+		this._backgroundSprite.width = this._size[0];
+		this._backgroundSprite.height = this._size[1];
+		this._backgroundSprite.anchor.set(.5);
+		this._stimsContainer = new PIXI.Container();
+		this._stimsContainer.sortableChildren = true;
+
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
+		this._rootContainer.addChild(this._backgroundSprite, this._stimsContainer);
+    
+		// sorts children according to their zIndex value. Higher zIndex means it will be moved towards the end of the array,
+		// and thus rendered on top of previous one.
+		this._rootContainer.sortableChildren = true;
+    
 		this._rootContainer.interactive = true;
+		this._rootContainer.filters = [this._adjustmentFilter];
 
 		// set the initial size of the PIXI renderer and the position of the root container:
 		Window._resizePixiRenderer(this);
@@ -485,36 +523,35 @@ export class Window extends PsychObject
 		this._resizeCallback = (e) =>
 		{
 			Window._resizePixiRenderer(this, e);
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
 			this._fullRefresh();
 		};
-		window.addEventListener('resize', this._resizeCallback);
-		window.addEventListener('orientationchange', this._resizeCallback);
+		window.addEventListener("resize", this._resizeCallback);
+		window.addEventListener("orientationchange", this._resizeCallback);
 	}
-
 
 	/**
 	 * Adjust the size of the renderer and the position of the root container
 	 * in response to a change in the browser's size.
 	 *
-	 * @name module:core.Window#_resizePixiRenderer
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {module:core.Window} pjsWindow - the PsychoJS Window
 	 * @param event
 	 */
 	static _resizePixiRenderer(pjsWindow, event)
 	{
-		pjsWindow._psychoJS.logger.debug('resizing Window: ', pjsWindow._name, 'event:', JSON.stringify(event));
+		pjsWindow._psychoJS.logger.debug("resizing Window: ", pjsWindow._name, "event:", JSON.stringify(event));
 
 		// update the size of the PsychoJS Window:
 		pjsWindow._size[0] = window.innerWidth;
 		pjsWindow._size[1] = window.innerHeight;
 
 		// update the PIXI renderer:
-		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + 'px';
-		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + 'px';
-		pjsWindow._renderer.view.style.left = '0px';
-		pjsWindow._renderer.view.style.top = '0px';
+		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + "px";
+		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + "px";
+		pjsWindow._renderer.view.style.left = "0px";
+		pjsWindow._renderer.view.style.top = "0px";
 		pjsWindow._renderer.resize(pjsWindow._size[0], pjsWindow._size[1]);
 
 		// setup the container such that (0,0) is at the centre of the window
@@ -524,13 +561,10 @@ export class Window extends PsychObject
 		pjsWindow._rootContainer.scale.y = -1;
 	}
 
-
 	/**
 	 * Send all logged messages to the {@link Logger}.
 	 *
-	 * @name module:core.Window#_writeLogOnFlip
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_writeLogOnFlip()
 	{
@@ -542,7 +576,6 @@ export class Window extends PsychObject
 
 		this._msgToBeLogged = [];
 	}
-
 }
 </code></pre>
         </article>
@@ -551,19 +584,23 @@ export class Window extends PsychObject
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="module-core.BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="module-core.EventManager.html">EventManager</a></li><li><a href="module-core.GUI.html">GUI</a></li><li><a href="module-core.Keyboard.html">Keyboard</a></li><li><a href="module-core.KeyPress.html">KeyPress</a></li><li><a href="module-core.Logger.html">Logger</a></li><li><a href="module-core.MinimalStim.html">MinimalStim</a></li><li><a href="module-core.Mouse.html">Mouse</a></li><li><a href="module-core.PsychoJS.html">PsychoJS</a></li><li><a href="module-core.ServerManager.html">ServerManager</a></li><li><a href="module-core.Window.html">Window</a></li><li><a href="module-data.ExperimentHandler.html">ExperimentHandler</a></li><li><a href="module-data.TrialHandler.html">TrialHandler</a></li><li><a href="module-sound.AudioClip.html">AudioClip</a></li><li><a href="module-sound.AudioClipPlayer.html">AudioClipPlayer</a></li><li><a href="module-sound.Microphone.html">Microphone</a></li><li><a href="module-sound.Sound.html">Sound</a></li><li><a href="module-sound.TonePlayer.html">TonePlayer</a></li><li><a href="module-sound.TrackPlayer.html">TrackPlayer</a></li><li><a href="module-util.Clock.html">Clock</a></li><li><a href="module-util.Color.html">Color</a></li><li><a href="module-util.CountdownTimer.html">CountdownTimer</a></li><li><a href="module-util.EventEmitter.html">EventEmitter</a></li><li><a href="module-util.MixinBuilder.html">MixinBuilder</a></li><li><a href="module-util.MonotonicClock.html">MonotonicClock</a></li><li><a href="module-util.PsychObject.html">PsychObject</a></li><li><a href="module-util.Scheduler.html">Scheduler</a></li><li><a href="module-visual.ButtonStim.html">ButtonStim</a></li><li><a href="module-visual.Form.html">Form</a></li><li><a href="module-visual.ImageStim.html">ImageStim</a></li><li><a href="module-visual.MovieStim.html">MovieStim</a></li><li><a href="module-visual.Polygon.html">Polygon</a></li><li><a href="module-visual.Rect.html">Rect</a></li><li><a href="module-visual.ShapeStim.html">ShapeStim</a></li><li><a href="module-visual.Slider.html">Slider</a></li><li><a href="module-visual.TextBox.html">TextBox</a></li><li><a href="module-visual.TextStim.html">TextStim</a></li><li><a href="module-visual.VisualStim.html">VisualStim</a></li></ul><h3>Interfaces</h3><ul><li><a href="module-sound.SoundPlayer.html">SoundPlayer</a></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a></li><li><a href="module-util.ColorMixin.html">ColorMixin</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Mon Jun 21 2021 07:34:20 GMT+0200 (Central European Summer Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Aug 01 2022 10:19:55 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
 </body>
 </html>

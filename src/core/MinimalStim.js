@@ -2,8 +2,8 @@
  * Base class for all stimuli.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.0
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -14,17 +14,18 @@ import { PsychoJS } from "./PsychoJS.js";
 /**
  * <p>MinimalStim is the base class for all stimuli.</p>
  *
- * @name module:core.MinimalStim
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= win.autoLog] - whether or not to log
  */
 export class MinimalStim extends PsychObject
 {
+	/**
+	 * @memberof module:core
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= win.autoLog] - whether to log
+	 */
 	constructor({ name, win, autoDraw, autoLog } = {})
 	{
 		super(win._psychoJS, name);
@@ -55,11 +56,8 @@ export class MinimalStim extends PsychObject
 	/**
 	 * Setter for the autoDraw attribute.
 	 *
-	 * @name module:core.MinimalStim#setAutoDraw
-	 * @function
-	 * @public
 	 * @param {boolean} autoDraw - the new value
-	 * @param {boolean} [log= false] - whether or not to log
+	 * @param {boolean} [log= false] - whether to log
 	 */
 	setAutoDraw(autoDraw, log = false)
 	{
@@ -79,10 +77,6 @@ export class MinimalStim extends PsychObject
 
 	/**
 	 * Draw this stimulus on the next frame draw.
-	 *
-	 * @name module:core.MinimalStim#draw
-	 * @function
-	 * @public
 	 */
 	draw()
 	{
@@ -123,10 +117,6 @@ export class MinimalStim extends PsychObject
 
 	/**
 	 * Hide this stimulus on the next frame draw.
-	 *
-	 * @name module:core.MinimalStim#hide
-	 * @function
-	 * @public
 	 */
 	hide()
 	{
@@ -150,10 +140,7 @@ export class MinimalStim extends PsychObject
 	/**
 	 * Determine whether an object is inside this stimulus.
 	 *
-	 * @name module:core.MinimalStim#contains
-	 * @function
 	 * @abstract
-	 * @public
 	 * @param {Object} object - the object
 	 * @param {String} units - the stimulus units
 	 */
@@ -169,11 +156,7 @@ export class MinimalStim extends PsychObject
 	/**
 	 * Release the PIXI representation, if there is one.
 	 *
-	 * @name module:core.MinimalStim#release
-	 * @function
-	 * @public
-	 *
-	 * @param {boolean} [log= false] - whether or not to log
+	 * @param {boolean} [log= false] - whether to log
 	 */
 	release(log = false)
 	{
@@ -192,10 +175,8 @@ export class MinimalStim extends PsychObject
 	 *
 	 * Note: this is an abstract function, which should not be called.
 	 *
-	 * @name module:core.MinimalStim#_updateIfNeeded
-	 * @function
 	 * @abstract
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{

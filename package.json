@@ -1,6 +1,6 @@
 {
   "name": "psychojs",
-  "version": "2022.1.1",
+  "version": "2022.3.1",
   "private": true,
   "description": "Helps run in-browser neuroscience, psychology, and psychophysics experiments",
   "license": "MIT",
@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
-    "build:docs": "jsdoc src -r -d docs --readme README.md",
+    "build:docs": "jsdoc src -c jsdoc.json & cp jsdoc.css docs/styles/",
     "build:js": "node ./scripts/build.js.cjs",
     "fmt": "dprint fmt",
     "lint": "npm run lint:js && npm run lint:css",
@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "@pixi/filter-adjustment": "^4.1.3",
+    "a11y-dialog": "^7.5.0",
+    "docdash": "^1.2.0",
     "esbuild-plugin-glsl": "^1.0.5",
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
