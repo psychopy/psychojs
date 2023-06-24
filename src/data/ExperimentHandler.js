@@ -294,7 +294,7 @@ export class ExperimentHandler extends PsychObject
 			// TODO only save the given attributes
 			const worksheet = XLSX.utils.json_to_sheet(data);
 			// prepend BOM
-			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet, {FS: this._field_separator});
+			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet, FS=this._field_separator);
 
 			// upload data to the pavlovia server or offer them for download:
 			const filenameWithoutPath = this._dataFileName.split(/[\\/]/).pop();
