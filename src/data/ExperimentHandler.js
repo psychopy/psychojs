@@ -90,6 +90,13 @@ export class ExperimentHandler extends PsychObject
 			`${this._participant}_${this._experimentName}_${this._datetime}`
 		);
 
+		this._addAttribute("field_separator", 
+			(typeof field_separator === "string" || field_separator.length === 1 || field_separator !== '\n')
+				? field_separator
+	  			: ',', 
+			','
+		);
+
 		// loop handlers:
 		this._loops = [];
 		this._unfinishedLoops = [];
@@ -101,11 +108,7 @@ export class ExperimentHandler extends PsychObject
 
 		this._experimentEnded = false;
 
-		// assign output delimiter character
-		this.field_separator = (typeof field_separator === "string" || field_separator.length === 1 || field_separator !== '\n')
-			? field_separator
-  		: ',';
-
+		
 	}
 
 	/**
