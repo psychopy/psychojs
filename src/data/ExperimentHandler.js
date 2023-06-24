@@ -81,9 +81,6 @@ export class ExperimentHandler extends PsychObject
 		this._datetime = (typeof extraInfo.date !== "undefined")
 			? extraInfo.date
 			: MonotonicClock.getDateStr();
-		this._field_seperator = (typeof extraInfo.field_seperator === "string" || extraInfo.field_seperator.length === 1 || extraInfo.field_seperator !== '\n')
-			? extraInfo.field_seperator
-		  : ',';
 
 		this._addAttribute(
 			"dataFileName",
@@ -294,7 +291,7 @@ export class ExperimentHandler extends PsychObject
 			// TODO only save the given attributes
 			const worksheet = XLSX.utils.json_to_sheet(data);
 			// prepend BOM
-			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet, FS=this._field_seperator);
+			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
 
 			// upload data to the pavlovia server or offer them for download:
 			const filenameWithoutPath = this._dataFileName.split(/[\\/]/).pop();
