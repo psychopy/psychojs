@@ -82,6 +82,10 @@ export class Survey extends VisualStim
 	{
 		super({ name, win, units, ori, depth, pos, size, autoDraw, autoLog });
 
+		// Storing all existing signaturePad questions to properly handle their resize.
+		// Unfortunately signaturepad question type can't handle resizing properly by itself.
+		this._signaturePads = [];
+
 		// whether the user is done with the survey, independently of whether the survey is completed:
 		this.isFinished = false;
 
@@ -968,8 +972,6 @@ export class Survey extends VisualStim
 			this.psychoJS.logger.warn(`Flag _isCompletedAll is false!`);
 		}
 
-		this._detachResizeObservers();
-
 		this._surveyRunningPromiseResolve(completionCode);
 	}
 
@@ -1137,32 +1139,44 @@ export class Survey extends VisualStim
 		this._lastPageSwitchHandledIdx = -1;
 	}
 
-	_handleSignaturePadResize(entries)
+	_handleWindowResize(e)
 	{
-		for (let i = 0; i < entries.length; i++)
+		if (this._surveyModel)
 		{
-			// const signatureCanvas = entries[i].target.querySelector("canvas");
-			const question = this._surveyModel.getQuestionByName(entries[i].target.dataset.name);
-			question.signatureWidth = Math.min(question.maxSignatureWidth, entries[i].contentBoxSize[0].inlineSize);
+			for (let i = this._signaturePads.length - 1; i >= 0; i--)
+			{
+				// As of writing this (24.03.2023). SurveyJS doesn't have a proper event
+				// for question being removed from nested locations, such as dynamic panel.
+				// However, surveyJS will set .signaturePad property to null once the question is removed.
+				// Utilising this knowledge to sync our lists.
+				if (this._signaturePads[ i ].question.signaturePad)
+				{
+					this._signaturePads[ i ].question.signatureWidth = Math.min(
+						this._signaturePads[i].question.maxSignatureWidth,
+						this._signaturePads[ i ].htmlElement.getBoundingClientRect().width
+					);
+				}
+				else
+				{
+					// Signature pad was removed. Syncing list.
+					this._signaturePads.splice(i, 1);
+				}
+			}
 		}
 	}
 
 	_addEventListeners()
 	{
-		this._signaturePadRO = new ResizeObserver(this._handleSignaturePadResize.bind(this));
+		window.addEventListener("resize", (e) => this._handleWindowResize(e));
 	}
 
 	_handleAfterQuestionRender (sender, options)
 	{
 		if (options.question.getType() === "signaturepad")
 		{
-			this._signaturePadRO.observe(options.htmlElement);
+			this._signaturePads.push(options);
+			options.question.signatureWidth = Math.min(options.question.maxSignatureWidth, options.htmlElement.getBoundingClientRect().width);
 		}
-	}
-
-	_detachResizeObservers()
-	{
-		this._signaturePadRO.disconnect();
 	}
 
 	/**
