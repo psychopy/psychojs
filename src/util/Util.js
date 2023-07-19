@@ -647,6 +647,11 @@ export function toString(object)
 		return object.toString();
 	}
 
+	if (typeof object === "function")
+	{
+		return `<function ${object.name}>`;
+	}
+
 	try
 	{
 		const symbolReplacer = (key, value) =>
@@ -1471,6 +1476,47 @@ export function loadCss(cssId, cssPath)
 		link.media = "all";
 		head.appendChild(link);
 	}
+}
+
+/**
+ * Whether the user device has a touchscreen, e.g. it is a mobile phone or tablet.
+ *
+ * @return {boolean} true if the user device has a touchscreen.
+ * @note the code below is directly adapted from MDN
+ */
+export function hasTouchScreen()
+{
+	let hasTouchScreen = false;
+
+	if ("maxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.maxTouchPoints > 0;
+	}
+	else if ("msMaxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.msMaxTouchPoints > 0;
+	}
+	else
+	{
+		const mQ = matchMedia?.("(pointer:coarse)");
+		if (mQ?.media === "(pointer:coarse)")
+		{
+			hasTouchScreen = !!mQ.matches;
+		}
+		else if ("orientation" in window)
+		{
+			hasTouchScreen = true;
+		}
+		else
+		{
+			const UA = navigator.userAgent;
+			hasTouchScreen =
+				/\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+				/\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+		}
+	}
+
+	return hasTouchScreen;
 }
 
 /**
