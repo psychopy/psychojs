@@ -9,6 +9,7 @@
 
 import { Mouse } from "../core/Mouse.js";
 import { TextBox } from "./TextBox.js";
+import * as util from "../util/Util";
 
 /**
  * <p>ButtonStim visual stimulus.</p>
@@ -32,6 +33,7 @@ export class ButtonStim extends TextBox
 	 * @param {Color} [options.borderColor= Color("white")] the border color
 	 * @param {Color} [options.borderWidth= 0] the border width
 	 * @param {number} [options.opacity= 1.0] - the opacity
+ 	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
 	 * @param {number} [options.letterHeight= undefined] - the height of the text
 	 * @param {boolean} [options.bold= true] - whether or not the text is bold
 	 * @param {boolean} [options.italic= false] - whether or not the text is italic
@@ -54,11 +56,14 @@ export class ButtonStim extends TextBox
 			borderColor,
 			borderWidth = 0,
 			opacity,
+			depth,
 			letterHeight,
 			bold = true,
 			italic,
 			autoDraw,
 			autoLog,
+			boxFn,
+			multiline
 		} = {},
 	)
 	{
@@ -77,12 +82,15 @@ export class ButtonStim extends TextBox
 			borderColor,
 			borderWidth,
 			opacity,
+			depth,
 			letterHeight,
+			multiline,
 			bold,
 			italic,
 			alignment: "center",
 			autoDraw,
 			autoLog,
+			boxFn
 		});
 
 		this.psychoJS.logger.debug("create a new Button with name: ", name);
@@ -112,7 +120,7 @@ export class ButtonStim extends TextBox
 
 		if (this._autoLog)
 		{
-			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${util.toString(this)}`);
 		}
 	}
 

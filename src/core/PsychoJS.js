@@ -530,6 +530,7 @@ export class PsychoJS
 		const response = { origin: "PsychoJS.quit", context: "when terminating the experiment" };
 
 		this._experiment.experimentEnded = true;
+		this._experiment.isCompleted = isCompleted;
 		this.status = PsychoJS.Status.STOPPED;
 		const isServerEnv = (this.getEnvironment() === ExperimentHandler.Environment.SERVER);
 
@@ -601,7 +602,7 @@ export class PsychoJS
 
 			if (showOK)
 			{
-				let text = "Thank you for your patience.<br/><br/>";
+				let text = "Thank you for your patience.";
 				text += (typeof message !== "undefined") ? message : "Goodbye!";
 				this._gui.dialog({
 					message: text,

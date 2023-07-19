@@ -1293,7 +1293,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// font files:
-			else if (["ttf", "otf", "woff", "woff2"].indexOf(pathExtension) > -1)
+			else if (["ttf", "otf", "woff", "woff2","eot"].indexOf(pathExtension) > -1)
 			{
 				fontResources.push(name);
 			}

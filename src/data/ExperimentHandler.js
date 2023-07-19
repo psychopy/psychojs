@@ -276,6 +276,7 @@ export class ExperimentHandler extends PsychObject
 		}
 
 		let data = this._trialsData;
+
 		// if the experiment data have to be cleared, we first make a copy of them:
 		if (clear)
 		{
@@ -349,6 +350,19 @@ export class ExperimentHandler extends PsychObject
 				util.offerDataForDownload("results.json", JSON.stringify(documents), "application/json");
 			}
 		}
+	}
+
+	/**
+	 * Get the results of the experiment as a .csv string, ready to be uploaded or stored.
+	 *
+	 * @return {string} a .csv representation of the experiment results.
+	 */
+	getResultAsCsv()
+	{
+		// note: we use the XLSX library as it automatically deals with header, takes care of quotes,
+		// newlines, etc.
+		const worksheet = XLSX.utils.json_to_sheet(this._trialsData);
+		return "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
 	}
 
 	/**

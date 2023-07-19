@@ -86,7 +86,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			clipMask,
 			autoDraw,
 			autoLog,
-			fitToContent
+			fitToContent,
+			boxFn
 		} = {},
 	)
 	{
@@ -202,12 +203,14 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		// and setSize called from super class would not have a proper effect
 		this.setSize(size);
 
+		this._addAttribute("boxFn", boxFn, null);
+
 		// estimate the bounding box:
 		this._estimateBoundingBox();
 
 		if (this._autoLog)
 		{
-			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${util.toString(this)}`);
 		}
 	}
 
@@ -481,6 +484,26 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			alignmentStyles = ["center", "center"];
 		}
 
+		let box;
+		if (this._boxFn !== null)
+		{
+			box = this._boxFn;
+		}
+		else
+		{
+			// note: box style properties eventually become PIXI.Graphics settings, so same syntax applies
+			box = {
+				fill: new Color(this._fillColor).int,
+				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
+				rounded: 5,
+				stroke: {
+					color: new Color(this._borderColor).int,
+					width: borderWidth_px,
+					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
+				}
+			};
+		}
+
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
@@ -504,41 +527,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				overflow: "hidden",
 				pointerEvents: "none"
 			},
-			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
-			box: {
-				fill: new Color(this._fillColor).int,
-				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
-				rounded: 5,
-				stroke: {
-					color: new Color(this._borderColor).int,
-					width: borderWidth_px,
-					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
-				},
-				/*default: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				},
-				focused: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				},
-				disabled: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				}*/
-			},
+			box
 		};
 	}
 

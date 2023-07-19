@@ -95,18 +95,11 @@ class MaxDiffMatrix
 			question.setCssRoot(rootClass);
 			question.cssClasses.mainRoot = rootClass;
 		}
-		let html;
-		let headerCells = "";
-		let subHeaderCells = "";
-		let bodyCells = "";
-		let bodyHTML = "";
-		let cellGenerator;
-		let i, j;
 
 		// Relying on a fact that there's always 2 columns.
 		// This is correct according current Qualtrics design for MaxDiff matrices.
 		// Header generation
-		headerCells =
+		let headerCells =
 		`<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">${question.columns[0].text}</th>
 		<td></td>
 		<td></td>
@@ -114,9 +107,10 @@ class MaxDiffMatrix
 		<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">${question.columns[1].text}</th>`;
 
 		// Body generation
-		for (i = 0; i < question.rows.length; i++)
+		let bodyHTML = "";
+		for (let i = 0; i < question.rows.length; i++)
 		{
-			bodyCells =
+			const bodyCells =
 			`<td class="${CSS_CLASSES.TABLE_CELL}">
 			<label class="${CSS_CLASSES.LABEL}">
 				<input type="radio" class="${CSS_CLASSES.ITEM_VALUE}" name="${question.rows[i].value}" data-column=${question.columns[0].value}>
@@ -135,7 +129,7 @@ class MaxDiffMatrix
 			bodyHTML += `<tr class="${CSS_CLASSES.TABLE_ROW}">${bodyCells}</tr>`;
 		}
 
-		html = `<table class="${CSS_CLASSES.TABLE}">
+		let html = `<table class="${CSS_CLASSES.TABLE}">
 		<thead>
 		<tr>${headerCells}</tr>
 		</thead>
@@ -147,14 +141,15 @@ class MaxDiffMatrix
 
 		let inputDOMS = el.querySelectorAll("input");
 
-		for (i = 0; i < inputDOMS.length; i++)
+		for (let i = 0; i < inputDOMS.length; i++)
 		{
 			inputDOMS[i].addEventListener("input", this._bindedHandlers._handleInput);
 		}
 	}
 }
 
-export default function init (Survey) {
+export default function init (Survey)
+{
 	var widget = {
 		//the widget name. It should be unique and written in lowcase.
 		name: "maxdiffmatrix",
