@@ -45,8 +45,16 @@ export class Progress extends VisualStim
 		this._addAttribute("type", type, PROGRESS_TYPES.BAR);
 		this._addAttribute("fillColor", fillColor, "lightgreen");
 		this._addAttribute("fillTexture", fillTexture, PIXI.Texture.WHITE);
+
+		if (this._autoLog)
+		{
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
 	}
 
+	/**
+   * Setter for the progress attribute.
+	 */
 	setProgress (progress = 0, log = false)
 	{
 		this._setAttribute("progress", Math.min(1.0, Math.max(0.0, progress)), log);
