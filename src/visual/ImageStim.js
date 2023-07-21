@@ -46,10 +46,37 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {ImageStim.AspectRatioStrategy} [options.aspectRatio= ImageStim.AspectRatioStrategy.VARIABLE] - the aspect ratio handling strategy
+	 * @param {number} [options.blurVal= 0] - the blur value. Goes 0 to as hish as you like. 0 is no blur.
 	 */
-	constructor({ name, win, image, mask, pos, anchor, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, aspectRatio, autoDraw, autoLog } = {})
+	constructor({
+		name,
+		win,
+		image,
+		mask,
+		pos,
+		anchor,
+		units,
+		ori,
+		size,
+		color,
+		opacity,
+		contrast,
+		texRes,
+		depth,
+		interpolate,
+		flipHoriz,
+		flipVert,
+		autoDraw,
+		autoLog,
+		aspectRatio,
+		blurVal
+	} = {})
 	{
 		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
+
+		// Holds an instance of PIXI blur filter. Used if blur value is passed.
+		this._blurFilter = undefined;
 
 		this._addAttribute(
 			"image",
@@ -99,6 +126,11 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			aspectRatio,
 			ImageStim.AspectRatioStrategy.VARIABLE,
 			this._onChange(true, true),
+		);
+		this._addAttribute(
+			"blurVal",
+			blurVal,
+			0
 		);
 
 		// estimate the bounding box:
@@ -240,6 +272,33 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
+	setBlurVal (blurVal = 0, log = false)
+	{
+		this._setAttribute("blurVal", blurVal, log);
+		if (this._pixi instanceof PIXI.Sprite)
+		{
+			if (this._blurFilter === undefined)
+			{
+				this._blurFilter = new PIXI.filters.BlurFilter();
+				this._blurFilter.blur = blurVal;
+			}
+			else
+			{
+				this._blurFilter.blur = blurVal;
+			}
+
+			// this._pixi might get destroyed and recreated again with no filters.
+			if (this._pixi.filters instanceof Array && this._pixi.filters.indexOf(this._blurFilter) === -1)
+			{
+				this._pixi.filters.push(this._blurFilter);
+			}
+			else
+			{
+				this._pixi.filters = [this._blurFilter];
+			}
+		}
+	}
+
 	/**
 	 * Estimate the bounding box.
 	 *
@@ -282,6 +341,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 			if (typeof this._pixi !== "undefined")
 			{
+				this._pixi.filters = null;
 				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
@@ -391,6 +451,11 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
+
+		if (this._blurVal > 0)
+		{
+			this.setBlurVal(this._blurVal);
+		}
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
