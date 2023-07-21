@@ -17,15 +17,22 @@ class SideBySideMatrix
 		// INCLUDING those added/modified by application's code.
 		const surveyCSS = cfg.question.css;
 		this._CSS_CLASSES = {
-			WRAPPER: surveyCSS.matrix.tableWrapper,
+			WRAPPER: `${surveyCSS.matrix.tableWrapper} sbs-matrix`,
 			TABLE: surveyCSS.matrix.root,
 			TABLE_ROW: surveyCSS.matrixdropdown.row,
 			TABLE_HEADER_CELL: surveyCSS.matrix.headerCell,
 			TABLE_CELL: surveyCSS.matrix.cell,
 			INPUT_TEXT: surveyCSS.text.root,
+			LABEL: surveyCSS.matrix.label,
+			ITEM_CHECKED: surveyCSS.matrix.itemChecked,
+			ITEM_VALUE: surveyCSS.matrix.itemValue,
+			ITEM_DECORATOR: surveyCSS.matrix.materialDecorator,
 			RADIO: surveyCSS.radiogroup.item,
 			SELECT: surveyCSS.dropdown.control,
-			CHECKBOX: surveyCSS.checkbox.item
+			CHECKBOX: surveyCSS.checkbox.item,
+			CHECKBOX_CONTROL: surveyCSS.checkbox.itemControl,
+			CHECKBOX_DECORATOR: surveyCSS.checkbox.materialDecorator,
+			CHECKBOX_DECORATOR_SVG: surveyCSS.checkbox.itemDecorator
 		};
 		this._question = cfg.question;
 		this._DOM = cfg.el;
@@ -71,7 +78,10 @@ class SideBySideMatrix
 		{
 			bodyCells +=
 			`<td class="${CSS_CLASSES.TABLE_CELL}">
-			<input class="${CSS_CLASSES.RADIO}" type="${col.cellType}" name="${row.value}-${col.value}" value="${subColumns[i].value}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input class="${CSS_CLASSES.ITEM_VALUE}" type="${col.cellType}" name="${row.value}-${col.value}" value="${subColumns[i].value}">
+				<span class="${CSS_CLASSES.ITEM_DECORATOR}"></span>
+			</label>
 			</td>`;
 		}
 		return bodyCells;
@@ -85,7 +95,14 @@ class SideBySideMatrix
 		{
 			bodyCells +=
 			`<td class="${CSS_CLASSES.TABLE_CELL}">
-			<input class="${CSS_CLASSES.CHECKBOX}" type="${col.cellType}" name="${row.value}-${col.value}-${subColumns[i].value}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input class="${CSS_CLASSES.CHECKBOX_CONTROL}" type="${col.cellType}" name="${row.value}-${col.value}-${subColumns[i].value}">
+				<span class="${CSS_CLASSES.CHECKBOX_DECORATOR}">
+					<svg class="${CSS_CLASSES.CHECKBOX_DECORATOR_SVG}">
+						<use data-bind="attr:{'xlink:href':question.itemSvgIcon}" xlink:href="#icon-v2check"></use>
+					</svg>
+				</span>
+			</label>
 			</td>`;
 		}
 		return bodyCells;
@@ -168,7 +185,10 @@ class SideBySideMatrix
 		// TODO: Find out how it actually composed inside SurveyJS.
 		if (question.css.matrix.mainRoot)
 		{
-			question.setCssRoot(`${question.css.matrix.mainRoot} ${question.cssClasses.withFrame || ""}`);
+			// Replacing default mainRoot class with those used in matrix type questions, to achieve proper styling and overflow behavior
+			const rootClass = `${question.css.matrix.mainRoot} ${question.cssClasses.withFrame || ""}`;
+			question.setCssRoot(rootClass);
+			question.cssClasses.mainRoot = rootClass;
 		}
 		let html;
 		let headerCells = "";
@@ -189,7 +209,10 @@ class SideBySideMatrix
 				</th>`;
 				for (j = 0; j < question.columns[i].subColumns.length; j++)
 				{
-					subHeaderCells += `<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">${question.columns[i].subColumns[j].text}</th>`;
+					subHeaderCells += `<th
+					class="${CSS_CLASSES.TABLE_HEADER_CELL} sbs-matrix-header-cell--${question.columns[i].cellType}">
+					${question.columns[i].subColumns[j].text}
+					</th>`;
 				}
 			}
 			else
@@ -198,7 +221,7 @@ class SideBySideMatrix
 				`<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">
 				${question.columns[i].title}
 				</th>`;
-				subHeaderCells += "<td></td>";
+				subHeaderCells += `<td class="${CSS_CLASSES.TABLE_HEADER_CELL} sbs-matrix-header-cell--${question.columns[i].cellType}"></td>`;
 			}
 			headerCells += "<td></td>";
 			subHeaderCells += "<td></td>";
@@ -227,8 +250,8 @@ class SideBySideMatrix
 
 		html = `<table class="${CSS_CLASSES.TABLE}">
 		<thead>
-		<tr><th class="${CSS_CLASSES.TABLE_HEADER_CELL}"></th><td></td>${headerCells}</tr>
-		<tr><th class="${CSS_CLASSES.TABLE_HEADER_CELL}"></th><td></td>${subHeaderCells}</tr>
+		<tr><td></td><td></td>${headerCells}</tr>
+		<tr><td></td><td></td>${subHeaderCells}</tr>
 		</thead>
 		<tbody>${bodyHTML}</tbody>
 		</table>`;
@@ -293,10 +316,12 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("sidebysidematrix", [
 				{
 					name: "rows",
+					isArray: true,
 					default: []
 				},
 				{
 					name: "columns",
+					isArray: true,
 					default: []
 				}
 			]);

@@ -45,7 +45,12 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("selectbox", [
 		  	{
 		  		name: "choices",
+		  		isArray: true,
 		  		default: []
+		  	},
+		  	{
+		  		name: "multipleAnswer",
+			  	default: true
 		  	}
 			]);
 		},
@@ -54,7 +59,7 @@ export default function init (Survey) {
 		isDefaultRender: false,
 
 		//You should use it if your set the isDefaultRender to false
-		htmlTemplate: "<div><select multiple></select></div>",
+		htmlTemplate: `<div></div>`,
 
 		//The main function, rendering and two-way binding
 		afterRender: function (question, el) {
@@ -65,9 +70,20 @@ export default function init (Survey) {
 				optionsHTML += `<option value="${question.choices[i].value}">${question.choices[i].text}</option>`;
 			}
 
-			let selectDOM = el.querySelector("select");
-			selectDOM.innerHTML = optionsHTML;
+			let additionalAttr = "";
+			if (question.multipleAnswer)
+			{
+				additionalAttr = "multiple";
+			}
+			else
+			{
+				additionalAttr = "size=\"4\"";
+			}
+			let selectHTML = `<select class="srv-select-multiple" ${additionalAttr}>${optionsHTML}</select>`;
 
+			el.insertAdjacentHTML("beforeend", selectHTML);
+
+			let selectDOM = el.querySelector("select");
 			selectDOM.addEventListener('input', (e) => {
 				let i;
 				let opts = new Array(e.currentTarget.selectedOptions.length);

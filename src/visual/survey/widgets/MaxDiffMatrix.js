@@ -16,6 +16,10 @@ class MaxDiffMatrix
 			TABLE_HEADER_CELL: surveyCSS.matrix.headerCell,
 			TABLE_CELL: surveyCSS.matrix.cell,
 			INPUT_TEXT: surveyCSS.text.root,
+			LABEL: surveyCSS.matrix.label,
+			ITEM_CHECKED: surveyCSS.matrix.itemChecked,
+			ITEM_VALUE: surveyCSS.matrix.itemValue,
+			ITEM_DECORATOR: surveyCSS.matrix.materialDecorator,
 			RADIO: surveyCSS.radiogroup.item,
 			SELECT: surveyCSS.dropdown.control,
 			CHECKBOX: surveyCSS.checkbox.item
@@ -84,18 +88,18 @@ class MaxDiffMatrix
 	{
 		let t = performance.now();
 		const CSS_CLASSES = this._CSS_CLASSES;
-		let html;
-		let headerCells = "";
-		let subHeaderCells = "";
-		let bodyCells = "";
-		let bodyHTML = "";
-		let cellGenerator;
-		let i, j;
+		if (question.css.matrix.mainRoot)
+		{
+			// Replacing default mainRoot class with those used in matrix type questions, to achieve proper styling and overflow behavior
+			const rootClass = `${question.css.matrix.mainRoot} ${question.cssClasses.withFrame || ""}`;
+			question.setCssRoot(rootClass);
+			question.cssClasses.mainRoot = rootClass;
+		}
 
 		// Relying on a fact that there's always 2 columns.
 		// This is correct according current Qualtrics design for MaxDiff matrices.
 		// Header generation
-		headerCells =
+		let headerCells =
 		`<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">${question.columns[0].text}</th>
 		<td></td>
 		<td></td>
@@ -103,18 +107,29 @@ class MaxDiffMatrix
 		<th class="${CSS_CLASSES.TABLE_HEADER_CELL}">${question.columns[1].text}</th>`;
 
 		// Body generation
-		for (i = 0; i < question.rows.length; i++)
+		let bodyHTML = "";
+		for (let i = 0; i < question.rows.length; i++)
 		{
-			bodyCells =
-			`<td class="${CSS_CLASSES.TABLE_CELL}"><input type="radio" class="${CSS_CLASSES.RADIO}" name="${question.rows[i].value}" data-column=${question.columns[0].value}></td>
+			const bodyCells =
+			`<td class="${CSS_CLASSES.TABLE_CELL}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input type="radio" class="${CSS_CLASSES.ITEM_VALUE}" name="${question.rows[i].value}" data-column=${question.columns[0].value}>
+				<span class="${CSS_CLASSES.ITEM_DECORATOR}"></span>
+			</label>
+			</td>
 			<td></td>
 			<td class="${CSS_CLASSES.TABLE_CELL}">${question.rows[i].text}</td>
 			<td></td>
-			<td class="${CSS_CLASSES.TABLE_CELL}"><input type="radio" class="${CSS_CLASSES.RADIO}" name="${question.rows[i].value}" data-column=${question.columns[1].value}></td>`;
+			<td class="${CSS_CLASSES.TABLE_CELL}">
+			<label class="${CSS_CLASSES.LABEL}">
+				<input type="radio" class="${CSS_CLASSES.ITEM_VALUE}" name="${question.rows[i].value}" data-column=${question.columns[1].value}>
+				<span class="${CSS_CLASSES.ITEM_DECORATOR}"></span>
+			</label>
+			</td>`;
 			bodyHTML += `<tr class="${CSS_CLASSES.TABLE_ROW}">${bodyCells}</tr>`;
 		}
 
-		html = `<table class="${CSS_CLASSES.TABLE}">
+		let html = `<table class="${CSS_CLASSES.TABLE}">
 		<thead>
 		<tr>${headerCells}</tr>
 		</thead>
@@ -126,14 +141,15 @@ class MaxDiffMatrix
 
 		let inputDOMS = el.querySelectorAll("input");
 
-		for (i = 0; i < inputDOMS.length; i++)
+		for (let i = 0; i < inputDOMS.length; i++)
 		{
 			inputDOMS[i].addEventListener("input", this._bindedHandlers._handleInput);
 		}
 	}
 }
 
-export default function init (Survey) {
+export default function init (Survey)
+{
 	var widget = {
 		//the widget name. It should be unique and written in lowcase.
 		name: "maxdiffmatrix",
@@ -175,10 +191,12 @@ export default function init (Survey) {
 			Survey.JsonObject.metaData.addProperties("maxdiffmatrix", [
 				{
 					name: "rows",
+					isArray: true,
 					default: []
 				},
 				{
 					name: "columns",
+					isArray: true,
 					default: []
 				}
 			]);

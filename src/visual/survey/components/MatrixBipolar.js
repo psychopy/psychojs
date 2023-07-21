@@ -22,7 +22,8 @@ function handleBipolarMatrixRendering (survey, options)
 	let rowsDOM = options.htmlElement.querySelectorAll("tbody tr");
 	// let rowCaptionsDOM = options.htmlElement.querySelectorAll("tbody tr td:nth-child(1) .sv-string-viewer");
 	let rowCaptionsDOM = options.htmlElement.querySelectorAll("tbody tr td:nth-child(1) span");
-	let captionsClassList = rowCaptionsDOM[0].classList.toString();
+	let captionsClassList = rowCaptionsDOM[0].classList;
+	let cellClassList = rowsDOM[0].children[0].classList;
 	let rowCaptions = new Array(options.question.rows.length);
 	let rowCaptionOppositeHTML = "";
 	let i;
@@ -30,7 +31,7 @@ function handleBipolarMatrixRendering (survey, options)
 	{
 		rowCaptions[i] = options.question.rows[i].text.split(":");
 		rowCaptionsDOM[i].innerText = rowCaptions[i][0];
-		rowCaptionOppositeHTML = `<td><span class="${captionsClassList}">${rowCaptions[i][1]}</span></td>`;
+		rowCaptionOppositeHTML = `<td class="${cellClassList.value}"><span class="${captionsClassList.value}">${rowCaptions[i][1]}</span></td>`;
 		rowsDOM[i].insertAdjacentHTML("beforeend", rowCaptionOppositeHTML);
 	}
 }
@@ -38,7 +39,7 @@ function handleBipolarMatrixRendering (survey, options)
 export default {
 	registerSurveyProperties (Survey)
 	{
-		Survey.Serializer.addProperty("question",
+		Survey.Serializer.addProperty("matrix",
 		{
 			name: "subType:text",
 			default: "",
