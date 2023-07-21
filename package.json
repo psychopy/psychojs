@@ -1,6 +1,6 @@
 {
   "name": "psychojs",
-  "version": "2022.3.0",
+  "version": "2023.2.0",
   "private": true,
   "description": "Helps run in-browser neuroscience, psychology, and psychophysics experiments",
   "license": "MIT",
@@ -34,10 +34,11 @@
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
     "pako": "^1.0.10",
+    "pixi-filters": "^5.0.0",
     "pixi.js-legacy": "^6.0.4",
     "seedrandom": "^3.0.5",
     "tone": "^14.7.77",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "csslint": "^1.0.5",
