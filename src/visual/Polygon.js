@@ -2,8 +2,8 @@
  * Polygonal Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -13,30 +13,33 @@ import { ShapeStim } from "./ShapeStim.js";
 /**
  * <p>Polygonal visual stimulus.</p>
  *
- * @name module:visual.Polygon
- * @class
  * @extends ShapeStim
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {number} [options.lineWidth= 1.5] - the line width
- * @param {Color} [options.lineColor= Color('white')] the line color
- * @param {Color} options.fillColor - the fill color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.edges= 3] - the number of edges of the polygon
- * @param {number} [options.radius= 0.5] - the radius of the polygon
- * @param {Array.<number>} [options.pos= [0, 0]] - the position
- * @param {number} [options.size= 1.0] - the size
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {string} options.units - the units of the stimulus vertices, size and position
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth
- * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class Polygon extends ShapeStim
 {
+	/**
+	 * <p>Polygonal visual stimulus.</p>
+	 *
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {number} [options.lineWidth= 1.5] - the line width
+	 * @param {Color} [options.lineColor= Color('white')] the line color
+	 * @param {Color} options.fillColor - the fill color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.edges= 3] - the number of edges of the polygon
+	 * @param {number} [options.radius= 0.5] - the radius of the polygon
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position
+	 * @param {number} [options.size= 1.0] - the size
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {string} options.units - the units of the stimulus vertices, size and position
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth
+	 * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, edges, radius, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
 		super({
@@ -81,8 +84,6 @@ export class Polygon extends ShapeStim
 	/**
 	 * Setter for the radius attribute.
 	 *
-	 * @name module:visual.Polygon#setRadius
-	 * @public
 	 * @param {number} radius - the polygon radius
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -99,8 +100,6 @@ export class Polygon extends ShapeStim
 	/**
 	 * Setter for the edges attribute.
 	 *
-	 * @name module:visual.Polygon#setEdges
-	 * @public
 	 * @param {number} edges - the number of edges
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -117,8 +116,8 @@ export class Polygon extends ShapeStim
 	/**
 	 * Update the vertices.
 	 *
+	 * @protected
 	 * @name module:visual.Polygon#_updateVertices
-	 * @private
 	 */
 	_updateVertices()
 	{

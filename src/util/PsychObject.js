@@ -3,8 +3,8 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -15,13 +15,14 @@ import * as util from "./Util.js";
  * <p>PsychoObject is the base class for all PsychoJS objects.
  * It is responsible for handling attributes.</p>
  *
- * @class
  * @extends EventEmitter
- * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
- * @param {string} name - the name of the object (mostly useful for debugging)
  */
 export class PsychObject extends EventEmitter
 {
+	/**
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 * @param {string} name - the name of the object (mostly useful for debugging)
+	 */
 	constructor(psychoJS, name)
 	{
 		super();
@@ -40,7 +41,6 @@ export class PsychObject extends EventEmitter
 	/**
 	 * Get the PsychoJS instance.
 	 *
-	 * @public
 	 * @return {PsychoJS} the PsychoJS instance
 	 */
 	get psychoJS()
@@ -51,7 +51,6 @@ export class PsychObject extends EventEmitter
 	/**
 	 * Setter for the PsychoJS attribute.
 	 *
-	 * @public
 	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
 	 */
 	set psychoJS(psychoJS)
@@ -64,7 +63,6 @@ export class PsychObject extends EventEmitter
 	 *
 	 * <p>Note: attribute values are limited to 50 characters.</p>
 	 *
-	 * @public
 	 * @return {string} the representation
 	 */
 	toString()

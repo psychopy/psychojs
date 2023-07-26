@@ -2,8 +2,8 @@
  * Movie Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -15,51 +15,103 @@ import { to_pixiPoint } from "../util/Pixi.js";
 import * as util from "../util/Util.js";
 import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware/Camera.js";
+import YoutubeIframeAPIHandler  from "./YoutubeIframeAPI.js";
 
 
 /**
  * Movie Stimulus.
  *
- * @name module:visual.MovieStim
- * @class
  * @extends VisualStim
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
- * movie resource or of a HTMLVideoElement or of a Camera component
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= Color('white')] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.loop= false] - whether or not to loop the movie
- * @param {number} [options.volume= 1.0] - the volume of the audio track (must be between 0.0 and 1.0)
- * @param {boolean} [options.noAudio= false] - whether or not to play the audio
- * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- *
  * @todo autoPlay does not work for the moment.
  */
 export class MovieStim extends VisualStim
 {
-	constructor({ name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
+	 * movie resource or of a HTMLVideoElement or of a Camera component
+	 * @param {string} [options.youtubeUrl] - link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [options.showYoutubeControls] - whether or not to show youtube player controls.
+	 * @oaram {boolean} [options.disableYoutubePlayerKeyboardControls=false] - Setting the parameter's value to true causes the youtube player to not respond to keyboard controls.
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {Color} [options.color= Color('white')] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
+	 * @param {boolean} [options.loop= false] - whether or not to loop the movie
+	 * @param {number} [options.volume= 1.0] - the volume of the audio track (must be between 0.0 and 1.0)
+	 * @param {boolean} [options.noAudio= false] - whether or not to play the audio
+	 * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
+	constructor({
+		name,
+		win,
+		movie,
+		youtubeUrl,
+		showYoutubeControls,
+		disableYoutubePlayerKeyboardControls,
+		pos,
+		anchor,
+		units,
+		ori,
+		size,
+		color,
+		opacity,
+		contrast,
+		interpolate,
+		flipHoriz,
+		flipVert,
+		loop,
+		volume,
+		noAudio,
+		autoPlay,
+		autoDraw,
+		autoLog
+	} = {})
 	{
-		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog });
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
+
+		// Used in case when youtubeUrl parameter is set to a proper youtube url.
+		this._youtubePlayer = undefined;
+		this._ytPlayerIsReady = false;
+
+		this._bindedHandlers = {
+			_handleResize: this._handleResize.bind(this)
+		};
 
 		// movie and movie control:
 		this._addAttribute(
 			"movie",
 			movie,
+		);
+		this._addAttribute(
+			"youtubeUrl",
+			youtubeUrl,
+			""
+		);
+		this._addAttribute(
+			"showYoutubeControls",
+			showYoutubeControls,
+			true
+		);
+		this._addAttribute(
+			"disableYoutubePlayerKeyboardControls",
+			disableYoutubePlayerKeyboardControls,
+			false
 		);
 		this._addAttribute(
 			"volume",
@@ -135,8 +187,6 @@ export class MovieStim extends VisualStim
 	/**
 	 * Setter for the movie attribute.
 	 *
-	 * @name module:visual.MovieStim#setMovie
-	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
 	 * movie resource or of a HTMLVideoElement or of a Camera component
 	 * @param {boolean} [log= false] - whether or not to log
@@ -200,6 +250,8 @@ export class MovieStim extends VisualStim
 						this.status = PsychoJS.Status.FINISHED;
 					};
 				}
+
+				this.hideYoutubePlayer();
 			}
 
 			this._setAttribute("movie", movie, log);
@@ -209,6 +261,282 @@ export class MovieStim extends VisualStim
 		catch (error)
 		{
 			throw Object.assign(response, { error });
+		}
+	}
+
+	/**
+	 * Setter for the size attribute.
+	 *
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setSize(size, log = false)
+	{
+		// size is either undefined, null, or a tuple of numbers:
+		if (typeof size !== "undefined" && size !== null)
+		{
+			size = util.toNumerical(size);
+			if (!Array.isArray(size))
+			{
+				size = [size, size];
+			}
+		}
+
+		const hasChanged = this._setAttribute("size", size, log);
+
+		if (hasChanged)
+		{
+			this._onChange(true, true)();
+		}
+
+		// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi.
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			let vidSizePx;
+			if (this._size === undefined || this._size === null)
+			{
+				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			}
+			else
+			{
+				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+			}
+
+			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
+		}
+	}
+
+	/**
+	 * Setter for the position attribute.
+	 *
+	 * @param {Array.<number>} pos - position of the center of the stimulus, in stimulus units
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setPos(pos, log = false)
+	{
+		super.setPos(pos);
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			const pos_px = util.to_px(pos, this._units, this._win, false);
+			pos_px[1] *= this._win._rootContainer.scale.y;
+			this._youtubePlayer.getIframe().style.transform = `translate3d(${pos_px[0]}px, ${pos_px[1]}px, 0)`;
+		}
+	}
+
+	/**
+	 * Setter for the volume attribute.
+	 *
+	 * @param {number} volume - desired volume of the movie in [0, 1].
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setVolume(vol, log = false)
+	{
+		this._setAttribute("volume", vol, log);
+		if (this._movie !== undefined)
+		{
+			this._movie.volume = vol;
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			// Original movie takes volume in [0, 1], whereas youtube's player [0, 100].
+			this._youtubePlayer.setVolume(vol * 100);
+		}
+	}
+
+	/**
+	 * Draw this stimulus on the next frame draw.
+	 */
+	draw()
+	{
+		super.draw();
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this.showYoutubePlayer();
+		}
+	}
+
+	/**
+	 * Hide this stimulus on the next frame draw.
+	 */
+	hide()
+	{
+		super.hide();
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this.hideYoutubePlayer();
+		}
+	}
+
+	/**
+	 * Handling youtube player being ready to work.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerReady ()
+	{
+		this._ytPlayerIsReady = true;
+		console.log("yt player rdy", arguments);
+	}
+
+	/**
+	 * Handling youtube player state change.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerStateChange (e)
+	{
+		if (e.data === YT.PlayerState.PLAYING)
+		{
+			console.log("playing");
+		}
+		else if (e.data === YT.PlayerState.PAUSED)
+		{
+			console.log("paused");
+		}
+		else if (e.data === YT.PlayerState.ENDED)
+		{
+			console.log("done");
+		}
+		else if (e.data === YT.PlayerState.ENDED)
+		{
+			// Just in case for potential future requirements.
+		}
+	}
+
+	/**
+	 * Handling youtube player errors.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	_onYoutubePlayerError ()
+	{
+		console.log("handling yt errors", arguments);
+	}
+
+	_handleResize (e)
+	{
+		if (this._youtubePlayer === undefined)
+		{
+			return;
+		}
+
+		// If size wasn't set, matching window size.
+		if (this._size === undefined || this._size === null)
+		{
+			const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
+		}
+	}
+
+	hideYoutubePlayer ()
+	{
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.stopVideo();
+			this._youtubePlayer.getIframe().classList.add("hidden");
+		}
+	}
+
+	showYoutubePlayer ()
+	{
+		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.getIframe().classList.remove("hidden");
+		}
+	}
+
+	/**
+	 * Setter for the youtubeUrl attribute.
+	 *
+	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
+	 * @param {boolean} [log= false] - whether or not to log.
+	 */
+	async setYoutubeUrl (urlString = "", log = false)
+	{
+		if (urlString.length === 0)
+		{
+			// if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+			// {
+			// 	this._youtubePlayer.destroy();
+			// 	this._youtubePlayer = undefined;
+			// 	window.removeEventListener("resize", this._bindedHandlers._handleResize);
+			// }
+			this.hideYoutubePlayer();
+			return;
+		}
+
+		// Handling the case when there's already regular movie is set.
+		if (this._movie !== undefined)
+		{
+			this.stop();
+			this.setMovie(undefined);
+
+			// Removing stimuli from the drawing list.
+			this.hide();
+
+			// if (this._pixi !== undefined)
+			// {
+			// 	// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
+			// 	this._pixi.destroy({
+			// 		children: true,
+			// 		texture: true,
+			// 		baseTexture: false,
+			// 	});
+			// 	this._pixi = undefined;
+			// 	this._texture = undefined;
+			// }
+		}
+
+		const urlObj = new URL(urlString);
+
+		if (this._youtubePlayer === undefined)
+		{
+			// This should be handled systematically, using PsychoJS's window object. Which in turn should be extended to emit "resize" events.
+			window.addEventListener("resize", this._bindedHandlers._handleResize);
+
+			let vidSizePx;
+
+			// If size wasn't set, matching window size.
+			if (this._size === undefined || this._size === null)
+			{
+				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
+			}
+			else
+			{
+				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
+			}
+
+			await YoutubeIframeAPIHandler.init();
+			this._youtubePlayer = YoutubeIframeAPIHandler.createPlayer({
+				videoId: urlObj.searchParams.get("v"),
+				width: vidSizePx[0],
+				height: vidSizePx[1],
+				playerVars: {
+					"rel": 0,
+					"playsinline": 1,
+					"modestbranding": 1,
+					"disablekb": Number(this._disableYoutubePlayerKeyboardControls) || 0,
+					"autoplay": Number(this._autoPlay) || 0,
+					"controls": Number(this._showYoutubeControls) || 0,
+					"loop": Number(this._loop) || 0,
+				},
+				events: {
+					"onReady": this._onYoutubePlayerReady.bind(this),
+					"onStateChange": this._onYoutubePlayerStateChange.bind(this),
+					"onError": this._onYoutubePlayerError.bind(this),
+					// "onPlaybackQualityChange":
+					// "onPlaybackRateChange":
+					// "onApiChange":
+				}
+			});
+		}
+		else
+		{
+			this._youtubePlayer.loadVideoById(urlObj.searchParams.get("v"));
+			this.showYoutubePlayer();
 		}
 	}
 
@@ -279,19 +607,26 @@ export class MovieStim extends VisualStim
 	{
 		this.status = PsychoJS.Status.STARTED;
 
-		// As found on https://goo.gl/LdLk22
-		const playPromise = this._movie.play();
-
-		if (playPromise !== undefined)
+		if (this._movie !== undefined)
 		{
-			playPromise.catch((error) =>
+			// As found on https://goo.gl/LdLk22
+			const playPromise = this._movie.play();
+
+			if (playPromise !== undefined)
 			{
-				throw {
-					origin: "MovieStim.play",
-					context: `when attempting to play MovieStim: ${this._name}`,
-					error,
-				};
-			});
+				playPromise.catch((error) =>
+				{
+					throw {
+						origin: "MovieStim.play",
+						context: `when attempting to play MovieStim: ${this._name}`,
+						error,
+					};
+				});
+			}
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.playVideo();
 		}
 	}
 
@@ -303,7 +638,14 @@ export class MovieStim extends VisualStim
 	pause(log = false)
 	{
 		this.status = PsychoJS.Status.STOPPED;
-		this._movie.pause();
+		if (this._movie !== undefined)
+		{
+			this._movie.pause();
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.pauseVideo();
+		}
 	}
 
 	/**
@@ -314,8 +656,15 @@ export class MovieStim extends VisualStim
 	stop(log = false)
 	{
 		this.status = PsychoJS.Status.STOPPED;
-		this._movie.pause();
-		this.seek(0, log);
+		if (this._movie !== undefined)
+		{
+			this._movie.pause();
+			this.seek(0, log);
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.stopVideo();
+		}
 	}
 
 	/**
@@ -359,6 +708,25 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
+	 * Get the elapsed time in seconds since the video started playing.
+	 *
+	 * @return {number} playback time.
+	 */
+	getPlaybackTime ()
+	{
+		if (this._movie !== undefined)
+		{
+			return this._movie.currentTime;
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			return this._youtubePlayer.getCurrentTime();
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.MovieStim#_estimateBoundingBox
@@ -385,8 +753,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.MovieStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -419,8 +786,18 @@ export class MovieStim extends VisualStim
 				return;
 			}
 
+			// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+			// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
+			// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+			// will affect all MovieStims which happen to share that BaseTexture.
+			this._texture = new PIXI.Texture(new PIXI.BaseTexture(
+				this._movie,
+				{
+					resourceOptions: { autoPlay: this.autoPlay }
+				}
+			));
+
 			// create a PixiJS video sprite:
-			this._texture = PIXI.Texture.from(this._movie, { resourceOptions: { autoPlay: this.autoPlay } });
 			this._pixi = new PIXI.Sprite(this._texture);
 
 			// since _texture.width may not be immedialy available but the rest of the code needs its value
@@ -449,8 +826,7 @@ export class MovieStim extends VisualStim
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
+		this.anchor = this._anchor;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
@@ -462,6 +838,7 @@ export class MovieStim extends VisualStim
 	 *
 	 * @name module:visual.MovieStim#_getDisplaySize
 	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()

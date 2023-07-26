@@ -2,8 +2,8 @@
  * Event Emitter.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -14,9 +14,6 @@ import * as util from "./Util.js";
  *
  * <p>Note: this is heavily inspired by http://www.datchley.name/es6-eventemitter/</p>
  *
- * @name module:util.EventEmitter
- * @class
- *
  * @example
  * let observable = new EventEmitter();
  * let uuid1 = observable.on('change', data => { console.log(data); });
@@ -26,6 +23,9 @@ import * as util from "./Util.js";
  */
 export class EventEmitter
 {
+	/**
+	 * @memberof module:util
+	 */
 	constructor()
 	{
 		this._listeners = new Map();
@@ -42,9 +42,6 @@ export class EventEmitter
 	/**
 	 * Register a new listener for events with the given name emitted by this instance.
 	 *
-	 * @name module:util.EventEmitter#on
-	 * @function
-	 * @public
 	 * @param {String} name - the name of the event
 	 * @param {module:util.EventEmitter~Listener} listener - a listener called upon emission of the event
 	 * @return string - the unique identifier associated with that (event, listener) pair (useful to remove the listener)
@@ -73,9 +70,6 @@ export class EventEmitter
 	/**
 	 * Register a new listener for the given event name, and remove it as soon as the event has been emitted.
 	 *
-	 * @name module:util.EventEmitter#once
-	 * @function
-	 * @public
 	 * @param {String} name - the name of the event
 	 * @param {module:util.EventEmitter~Listener} listener - a listener called upon emission of the event
 	 * @return string - the unique identifier associated with that (event, listener) pair (useful to remove the listener)
@@ -96,9 +90,6 @@ export class EventEmitter
 	/**
 	 * Remove the listener with the given uuid associated to the given event name.
 	 *
-	 * @name module:util.EventEmitter#off
-	 * @function
-	 * @public
 	 * @param {String} name - the name of the event
 	 * @param {module:util.EventEmitter~Listener} listener - a listener called upon emission of the event
 	 */
@@ -117,9 +108,6 @@ export class EventEmitter
 	/**
 	 * Emit an event with a given name and associated data.
 	 *
-	 * @name module:util.EventEmitter#emit
-	 * @function
-	 * @public
 	 * @param {String} name - the name of the event
 	 * @param {object} data - the data of the event
 	 * @return {boolean} true if at least one listener has been registered for that event, and false otherwise

@@ -2,7 +2,7 @@
  * Editable TextBox Stimulus.
  *
  * @author Alain Pitiot, Nikita Agafonov
- * @version 2021.2.0
+ * @version 2022.2.3
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -15,44 +15,44 @@ import { ButtonStim } from "./ButtonStim.js";
 import { TextInput } from "./TextInput.js";
 import { VisualStim } from "./VisualStim.js";
 
-// TODO finish documenting all options
 /**
- * @name module:visual.TextBox
- * @class
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {string} [options.text=""] - the text to be rendered
- * @param {string} [options.font= "Arial"] - the font family
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
- *
- * @param {Color} [options.color= Color('white')] color of the text
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {string} [options.units= "norm"] - the units of the text size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.height= 0.1] - the height of the text
- * @param {boolean} [options.bold= false] - whether or not the text is bold
- * @param {boolean} [options.italic= false] - whether or not the text is italic
- * @param {string} [options.anchor = 'left'] - horizontal alignment
- *
- * @param {boolean} [options.multiline= false] - whether or not a multiline element is used
- * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
- * @param {Color} [options.fillColor= undefined] - fill color of the text-box
- * @param {String} [options.languageStyle= "LTR"] - sets the direction property of the text inputs. Possible values ["LTR", "RTL", "Arabic"]. "Arabic" is added for consistency with PsychoPy
- * @param {Color} [options.borderColor= undefined] - border color of the text-box
- * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- * @param {boolean} [options.fitToContent = false] - whether or not to resize itself automaitcally to fit to the text content
  */
 export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string} [options.text=""] - the text to be rendered
+	 * @param {string} [options.font= "Arial"] - the font family
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the text
+	 *
+	 * @param {Color} [options.color= Color('white')] color of the text
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {string} [options.units= "norm"] - the units of the text size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.letterHeight= <default value>] - the height of the text
+	 * @param {boolean} [options.bold= false] - whether or not the text is bold
+	 * @param {boolean} [options.italic= false] - whether or not the text is italic
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 *
+	 * @param {boolean} [options.multiline= false] - whether or not a multiline element is used
+	 * @param {boolean} [options.autofocus= true] - whether or not the first input should receive focus by default
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip the text horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip the text vertically
+	 * @param {Color} [options.fillColor= undefined] - fill color of the text-box
+	 * @param {String} [options.languageStyle= "LTR"] - sets the direction property of the text inputs. Possible values ["LTR", "RTL", "Arabic"]. "Arabic" is added for consistency with PsychoPy
+	 * @param {Color} [options.borderColor= undefined] - border color of the text-box
+	 * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.fitToContent = false] - whether or not to resize itself automaitcally to fit to the text content
+	 */
 	constructor(
 		{
 			name,
@@ -65,6 +65,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			opacity,
 			depth,
 			text,
+			placeholder,
 			font,
 			letterHeight,
 			bold,
@@ -85,11 +86,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			clipMask,
 			autoDraw,
 			autoLog,
-			fitToContent
+			fitToContent,
+			boxFn
 		} = {},
 	)
 	{
-		super({ name, win, pos, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
+		super({ name, win, pos, anchor, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
 
 		this._addAttribute(
 			"text",
@@ -98,14 +100,9 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		);
 		this._addAttribute(
 			"placeholder",
-			text,
+			placeholder,
 			"",
 			this._onChange(true, true),
-		);
-		this._addAttribute(
-			"anchor",
-			anchor,
-			"center"
 		);
 		this._addAttribute(
 			"flipHoriz",
@@ -146,7 +143,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		this._addAttribute(
 			"alignment",
 			alignment,
-			"left"
+			"center"
 		);
 		this._addAttribute(
 			"languageStyle",
@@ -206,20 +203,19 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		// and setSize called from super class would not have a proper effect
 		this.setSize(size);
 
+		this._addAttribute("boxFn", boxFn, null);
+
 		// estimate the bounding box:
 		this._estimateBoundingBox();
 
 		if (this._autoLog)
 		{
-			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${util.toString(this)}`);
 		}
 	}
 
 	/**
 	 * Clears the current text value or sets it back to match the placeholder.
-	 *
-	 * @name module:visual.TextBox#reset
-	 * @public
 	 */
 	reset()
 	{
@@ -228,9 +224,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 
 	/**
 	 * Clears the current text value.
-	 *
-	 * @name module:visual.TextBox#clear
-	 * @public
 	 */
 	clear()
 	{
@@ -240,24 +233,25 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the alignment attribute.
 	 *
-	 * @name module:visual.TextBox#setAlignment
-	 * @public
 	 * @param {boolean} alignment - alignment of the text
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
-	setAlignment(alignment = "left", log = false)
+	setAlignment(alignment = "center", log = false)
 	{
 		this._setAttribute("alignment", alignment, log);
 		if (this._pixi !== undefined) {
-			this._pixi.setInputStyle("textAlign", alignment);
+			let alignmentStyles = TextBox._alignmentToFlexboxMap.get(alignment);
+			if (!alignmentStyles) {
+				alignmentStyles = ["center", "center"];
+			}
+			this._pixi.setInputStyle("justifyContent", alignmentStyles[0]);
+			this._pixi.setInputStyle("textAlign", alignmentStyles[1]);
 		}
 	}
 
 	/**
 	 * Setter for the languageStyle attribute.
 	 *
-	 * @name module:visual.TextBox#setLanguageStyle
-	 * @public
 	 * @param {String} languageStyle - text direction in textbox, accepts values ["LTR", "RTL", "Arabic"]
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -275,28 +269,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
-	 * Setter for the anchor attribute.
-	 *
-	 * @name module:visual.TextBox#setAnchor
-	 * @public
-	 * @param {boolean} anchor - anchor of the textbox
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setAnchor (anchor = "center", log = false)
-	{
-		this._setAttribute("anchor", anchor, log);
-		if (this._pixi !== undefined) {
-			const anchorUnits = this._getAnchor();
-			this._pixi.anchor.x = anchorUnits[0];
-			this._pixi.anchor.y = anchorUnits[1];
-		}
-	}
-
-	/**
 	 * For tweaking the underlying input value.
 	 *
-	 * @name module:visual.TextBox#setText
-	 * @public
 	 * @param {string} text
 	 */
 	setText(text = "")
@@ -312,9 +286,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Set the font for textbox.
 	 *
-	 * @name module:visual.TextBox#setFont
-	 * @public
-	 * @param {string} text
+	 * @param {string} font - the font family
+	 * @param {boolean} [log = false] - whether to log
 	 */
 	setFont(font = "Arial", log = false)
 	{
@@ -328,9 +301,8 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Set letterHeight (font size) for textbox.
 	 *
-	 * @name module:visual.TextBox#setLetterHeight
-	 * @public
-	 * @param {string} text
+	 * @param {string} [fontSize = <default value>] - the size of the font
+	 * @param {boolean} [log = false] - whether to log
 	 */
 	setLetterHeight(fontSize = this._getDefaultLetterHeight(), log = false)
 	{
@@ -345,8 +317,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * For accessing the underlying input value.
 	 *
-	 * @name module:visual.TextBox#getText
-	 * @public
 	 * @return {string} - the current text value of the underlying input element.
 	 */
 	getText()
@@ -362,8 +332,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the color attribute.
 	 *
-	 * @name module:visual.TextBox#setColor
-	 * @public
 	 * @param {boolean} color - color of the text
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -377,8 +345,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the fillColor attribute.
 	 *
-	 * @name module:visual.TextBox#setFillColor
-	 * @public
 	 * @param {boolean} fillColor - fill color of the text box
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -392,8 +358,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the borderColor attribute.
 	 *
-	 * @name module:visual.TextBox#setBorderColor
-	 * @public
 	 * @param {Color} borderColor - border color of the text box
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -407,8 +371,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the fitToContent attribute.
 	 *
-	 * @name module:visual.TextBox#setFitToContent
-	 * @public
 	 * @param {boolean} fitToContent - whether or not to autoresize textbox to fit to text content
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -426,8 +388,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the size attribute.
 	 *
-	 * @name module:visual.TextBox#setSize
-	 * @public
 	 * @param {boolean} size - whether or not to wrap the text at the given width
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
@@ -470,7 +430,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Add event listeners to text-box object. Method is called internally upon object construction.
 	 *
-	 * @name module:visual.TextBox#_addEventListeners
 	 * @protected
 	 */
 	_addEventListeners ()
@@ -489,7 +448,6 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the default letter height given the stimulus' units.
 	 *
-	 * @name module:visual.TextBox#_getDefaultLetterHeight
 	 * @return {number} - the letter height corresponding to this stimulus' units.
 	 * @protected
 	 */
@@ -512,8 +470,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Get the TextInput options applied to the PIXI.TextInput.
 	 *
-	 * @name module:visual.TextBox#_getTextInputOptions
-	 * @private
+	 * @protected
 	 */
 	_getTextInputOptions()
 	{
@@ -522,18 +479,44 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const borderWidth_px = Math.round(this._getLengthPix(this._borderWidth));
 		const width_px = Math.abs(Math.round(this._getLengthPix(this._size[0])));
 		const height_px = Math.abs(Math.round(this._getLengthPix(this._size[1])));
+		let alignmentStyles = TextBox._alignmentToFlexboxMap.get(this._alignment);
+		if (!alignmentStyles) {
+			alignmentStyles = ["center", "center"];
+		}
+
+		let box;
+		if (this._boxFn !== null)
+		{
+			box = this._boxFn;
+		}
+		else
+		{
+			// note: box style properties eventually become PIXI.Graphics settings, so same syntax applies
+			box = {
+				fill: new Color(this._fillColor).int,
+				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
+				rounded: 5,
+				stroke: {
+					color: new Color(this._borderColor).int,
+					width: borderWidth_px,
+					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
+				}
+			};
+		}
 
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
-				display: "inline-block",
+				display: "flex",
+				flexDirection: "column",
 				fontFamily: this._font,
 				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
 				fontWeight: (this._bold) ? "bold" : "normal",
 				fontStyle: (this._italic) ? "italic" : "normal",
 				direction: util.TEXT_DIRECTION[this._languageStyle],
-				textAlign: this._alignment,
+				justifyContent: alignmentStyles[0],
+				textAlign: alignmentStyles[1],
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
@@ -544,49 +527,13 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				overflow: "hidden",
 				pointerEvents: "none"
 			},
-			// box style properties eventually become PIXI.Graphics settings, so same syntax applies
-			box: {
-				fill: new Color(this._fillColor).int,
-				alpha: this._fillColor === undefined || this._fillColor === null ? 0 : 1,
-				rounded: 5,
-				stroke: {
-					color: new Color(this._borderColor).int,
-					width: borderWidth_px,
-					alpha: this._borderColor === undefined || this._borderColor === null ? 0 : 1
-				},
-				/*default: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				},
-				focused: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				},
-				disabled: {
-					fill: new Color(this._fillColor).int,
-					rounded: 5,
-					stroke: {
-						color: new Color(this._borderColor).int,
-						width: borderWidth_px
-					}
-				}*/
-			},
+			box
 		};
 	}
 
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.TextBox#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -596,7 +543,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		const boxHeight = this._letterHeight + 2 * this._padding + 2 * this._borderWidth;
 
 		// take the alignment into account:
-		const anchor = this._getAnchor();
+		const anchor = this._anchorTextToNum(this._anchor);
 		this._boundingBox = new PIXI.Rectangle(
 			this._pos[0] - anchor[0] * this._size[0],
 			this._pos[1] - anchor[1] * boxHeight,
@@ -610,9 +557,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.TextBox#_updateIfNeeded
-	 * @private
-	 *
+	 * @protected
 	 * @todo take size into account
 	 */
 	_updateIfNeeded()
@@ -689,46 +634,25 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		// apply the clip mask:
 		this._pixi.mask = this._clipMask;
 	}
-
-	/**
-	 * Convert the anchor attribute into numerical values.
-	 *
-	 * @name module:visual.TextBox#_getAnchor
-	 * @function
-	 * @protected
-	 * @return {number[]} - the anchor, as an array of numbers in [0,1]
-	 */
-	_getAnchor()
-	{
-		const anchor = [0.5, 0.5];
-
-		if (this._anchor.indexOf("left") > -1)
-		{
-			anchor[0] = 0;
-		}
-		else if (this._anchor.indexOf("right") > -1)
-		{
-			anchor[0] = 1;
-		}
-		if (this._anchor.indexOf("top") > -1)
-		{
-			anchor[1] = 0;
-		}
-		else if (this._anchor.indexOf("bottom") > -1)
-		{
-			anchor[1] = 1;
-		}
-
-		return anchor;
-	}
 }
+
+TextBox._alignmentToFlexboxMap = new Map([
+	["center", ["center", "center"]],
+	["top-center", ["flex-start", "center"]],
+	["bottom-center", ["flex-end", "center"]],
+	["center-left", ["center", "left"]],
+	["center-right", ["center", "right"]],
+	["top-left", ["flex-start", "left"]],
+	["top-right", ["flex-start", "right"]],
+	["bottom-left", ["flex-end", "left"]],
+	["bottom-right", ["flex-end", "right"]]
+]);
 
 /**
  * <p>This map associates units to default letter height.</p>
  *
- * @name module:visual.TextBox#_defaultLetterHeightMap
  * @readonly
- * @private
+ * @protected
  */
 TextBox._defaultLetterHeightMap = new Map([
 	["cm", 1.0],
@@ -745,9 +669,8 @@ TextBox._defaultLetterHeightMap = new Map([
 /**
  * <p>This map associates units to default sizes.</p>
  *
- * @name module:visual.TextBox#_defaultSizeMap
  * @readonly
- * @private
+ * @protected
  */
 TextBox._defaultSizeMap = new Map([
 	["cm", [15.0, -1]],
