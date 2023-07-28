@@ -483,7 +483,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi = PIXI.Sprite.from(this._texture);
 			}
 
-
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
 			{

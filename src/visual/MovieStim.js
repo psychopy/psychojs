@@ -17,7 +17,6 @@ import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware/Camera.js";
 import YoutubeIframeAPIHandler  from "./YoutubeIframeAPI.js";
 
-
 /**
  * Movie Stimulus.
  *
@@ -89,11 +88,6 @@ export class MovieStim extends VisualStim
 		this._youtubePlayer = undefined;
 		this._ytPlayerIsReady = false;
 
-		this._bindedHandlers = {
-			_handleResize: this._handleResize.bind(this)
-		};
-
-		// movie and movie control:
 		this._addAttribute(
 			"movie",
 			movie,
@@ -208,7 +202,6 @@ export class MovieStim extends VisualStim
 					`setting the movie of MovieStim: ${this._name} with argument: undefined.`);
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: undefined`);
 			}
-
 			else
 			{
 				// if movie is a string, then it should be the name of a resource, which we get:
@@ -251,6 +244,18 @@ export class MovieStim extends VisualStim
 					};
 				}
 
+				// Resize the stim when video is loaded. Otherwise this._texture.width is 1.
+				const loadedDataCb = () =>
+				{
+					this.size = this._size;
+					movie.removeEventListener("loadeddata", loadedDataCb);
+				};
+
+				if (movie.readyState < movie.HAVE_FUTURE_DATA)
+				{
+					movie.addEventListener("loadeddata", loadedDataCb)
+				}
+
 				this.hideYoutubePlayer();
 			}
 
@@ -268,42 +273,51 @@ export class MovieStim extends VisualStim
 	 * Setter for the size attribute.
 	 *
 	 * @param {undefined | null | number | number[]} size - the stimulus size
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setSize(size, log = false)
 	{
-		// size is either undefined, null, or a tuple of numbers:
-		if (typeof size !== "undefined" && size !== null)
+		if (!Array.isArray(size))
 		{
-			size = util.toNumerical(size);
-			if (!Array.isArray(size))
+			size = [size, size];
+		}
+
+		if (Array.isArray(size) && size.length <= 1)
+		{
+			size = [size[0], size[0]];
+		}
+
+		for (let i = 0; i < size.length; i++)
+		{
+			try
 			{
-				size = [size, size];
+				size[i] = util.toNumerical(size[i]);
+			}
+			catch (err)
+			{
+				// Failed to convert to numeric. Set to NaN.
+				size[ i ] = NaN;
 			}
 		}
 
-		const hasChanged = this._setAttribute("size", size, log);
-
-		if (hasChanged)
+		if (this._texture !== undefined)
 		{
-			this._onChange(true, true)();
+			size = this._ensureNaNSizeConversion(size, this._texture);
+			this._applySizeToPixi(size);
 		}
 
-		// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi.
 		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
-			let vidSizePx;
-			if (this._size === undefined || this._size === null)
-			{
-				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-			}
-			else
-			{
-				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
-			}
+			// Handling youtube iframe resize here, since _updateIfNeeded aint going to be triggered due to absence of _pixi component.
+			this._applySizeToYoutubeIframe(size);
 
-			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
+			// Youtube player handles NaN size automatically. Leveraging that to cover unset size.
+			// IMPORTANT! this._youtubePlayer.getSize() is not used intentionally, because it returns initial values event after different size was set.
+			const ytPlayerBCR = this._youtubePlayer.getIframe().getBoundingClientRect();
+			size = util.to_unit([ ytPlayerBCR.width, ytPlayerBCR.height ], "pix", this._win, this._units);
 		}
+
+		this._setAttribute("size", size, log);
 	}
 
 	/**
@@ -373,10 +387,17 @@ export class MovieStim extends VisualStim
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
 	 * @param {boolean} [log= false] - whether or not to log.
 	 */
-	_onYoutubePlayerReady ()
+	_onYoutubePlayerReady (e)
 	{
 		this._ytPlayerIsReady = true;
-		console.log("yt player rdy", arguments);
+
+		if (Number.isNaN(this._size[ 0 ]) || Number.isNaN(this._size[ 1 ]))
+		{
+			// Youtube player handles NaN size automatically. Leveraging that to cover unset size.
+			// IMPORTANT! this._youtubePlayer.getSize() is not used intentionally, because it returns initial values event after different size was set.
+			const ytPlayerBCR = this._youtubePlayer.getIframe().getBoundingClientRect();
+			this._setAttribute("size", util.to_unit([ ytPlayerBCR.width, ytPlayerBCR.height ], "pix", this._win, this._units), true);
+		}
 	}
 
 	/**
@@ -389,15 +410,15 @@ export class MovieStim extends VisualStim
 	{
 		if (e.data === YT.PlayerState.PLAYING)
 		{
-			console.log("playing");
+			// Just in case for potential future requirements.
 		}
 		else if (e.data === YT.PlayerState.PAUSED)
 		{
-			console.log("paused");
+			// Just in case for potential future requirements.
 		}
 		else if (e.data === YT.PlayerState.ENDED)
 		{
-			console.log("done");
+			// Just in case for potential future requirements.
 		}
 		else if (e.data === YT.PlayerState.ENDED)
 		{
@@ -411,24 +432,10 @@ export class MovieStim extends VisualStim
 	 * @param {string} link to a youtube video. If this parameter is present, movie stim will embed a youtube video to an experiment.
 	 * @param {boolean} [log= false] - whether or not to log.
 	 */
-	_onYoutubePlayerError ()
+	_onYoutubePlayerError (err)
 	{
-		console.log("handling yt errors", arguments);
-	}
-
-	_handleResize (e)
-	{
-		if (this._youtubePlayer === undefined)
-		{
-			return;
-		}
-
-		// If size wasn't set, matching window size.
-		if (this._size === undefined || this._size === null)
-		{
-			const vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-			this._youtubePlayer.setSize(vidSizePx[0], vidSizePx[1]);
-		}
+		// Just in case for potential future requirements.
+		console.error("youtube player error:", arguments);
 	}
 
 	hideYoutubePlayer ()
@@ -458,12 +465,6 @@ export class MovieStim extends VisualStim
 	{
 		if (urlString.length === 0)
 		{
-			// if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
-			// {
-			// 	this._youtubePlayer.destroy();
-			// 	this._youtubePlayer = undefined;
-			// 	window.removeEventListener("resize", this._bindedHandlers._handleResize);
-			// }
 			this.hideYoutubePlayer();
 			return;
 		}
@@ -476,38 +477,13 @@ export class MovieStim extends VisualStim
 
 			// Removing stimuli from the drawing list.
 			this.hide();
-
-			// if (this._pixi !== undefined)
-			// {
-			// 	// https://pixijs.download/dev/docs/PIXI.Sprite.html#destroy
-			// 	this._pixi.destroy({
-			// 		children: true,
-			// 		texture: true,
-			// 		baseTexture: false,
-			// 	});
-			// 	this._pixi = undefined;
-			// 	this._texture = undefined;
-			// }
 		}
 
 		const urlObj = new URL(urlString);
 
 		if (this._youtubePlayer === undefined)
 		{
-			// This should be handled systematically, using PsychoJS's window object. Which in turn should be extended to emit "resize" events.
-			window.addEventListener("resize", this._bindedHandlers._handleResize);
-
-			let vidSizePx;
-
-			// If size wasn't set, matching window size.
-			if (this._size === undefined || this._size === null)
-			{
-				vidSizePx = util.to_unit(this._win.size, "pix", this.win, "pix");
-			}
-			else
-			{
-				vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
-			}
+			const vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
 
 			await YoutubeIframeAPIHandler.init();
 			this._youtubePlayer = YoutubeIframeAPIHandler.createPlayer({
@@ -538,52 +514,6 @@ export class MovieStim extends VisualStim
 			this._youtubePlayer.loadVideoById(urlObj.searchParams.get("v"));
 			this.showYoutubePlayer();
 		}
-	}
-
-	/**
-	 * Setter for the size attribute.
-	 *
-	 * @name module:visual.MovieStim#setSize
-	 * @public
-	 * @param {undefined | null | number | number[]} size - the stimulus size
-	 * @param {boolean} [log= false] - whether or not to log
-	 */
-	setSize(size, log = false)
-	{
-		size = util.toNumericalOrNaN(size);
-		if (!Array.isArray(size))
-		{
-			size = [size, size];
-		}
-
-		if (Array.isArray(size) && size.length === 1)
-		{
-			size = [size[0], size[0]];
-		}
-
-		if (this._texture !== undefined)
-		{
-			if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
-			{
-				size = util.to_unit([this._texture.width, this._texture.height], "pix", this._win, this._units);
-			}
-			else if (Number.isNaN(size[0]))
-			{
-				size[0] = size[1] * (this._texture.width / this._texture.height);
-			}
-			else if (Number.isNaN(size[1]))
-			{
-				size[1] = size[0] / (this._texture.width / this._texture.height);
-			}
-
-			const size_px = util.to_px(size, this._units, this._win);
-			const scaleX = size_px[0] / this._texture.width;
-			const scaleY = size_px[1] / this._texture.height;
-			this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-			this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
-		}
-
-		this._setAttribute("size", size, log);
 	}
 
 	/**
@@ -677,33 +607,40 @@ export class MovieStim extends VisualStim
 	 */
 	seek(timePoint, log = false)
 	{
-		if (timePoint < 0 || timePoint > this._movie.duration)
+		if (this._movie !== undefined)
 		{
-			throw {
-				origin: "MovieStim.seek",
-				context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
-				error: `the timepoint does not belong to [0, ${this._movie.duration}`,
-			};
-		}
-
-		if (this._hasFastSeek)
-		{
-			this._movie.fastSeek(timePoint);
-		}
-		else
-		{
-			try
-			{
-				this._movie.currentTime = timePoint;
-			}
-			catch (error)
+			if (timePoint < 0 || timePoint > this._movie.duration)
 			{
 				throw {
 					origin: "MovieStim.seek",
 					context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
-					error,
+					error: `the timepoint does not belong to [0, ${this._movie.duration}`,
 				};
 			}
+
+			if (this._hasFastSeek)
+			{
+				this._movie.fastSeek(timePoint);
+			}
+			else
+			{
+				try
+				{
+					this._movie.currentTime = timePoint;
+				}
+				catch (error)
+				{
+					throw {
+						origin: "MovieStim.seek",
+						context: `when seeking to timepoint: ${timePoint} of MovieStim: ${this._name}`,
+						error,
+					};
+				}
+			}
+		}
+		else if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		{
+			this._youtubePlayer.seekTo(timePoint);
 		}
 	}
 
@@ -727,12 +664,55 @@ export class MovieStim extends VisualStim
 	}
 
 	/**
-	 * Estimate the bounding box.
+	 * Applies given size values to underlying pixi component of the stim.
 	 *
-	 * @name module:visual.MovieStim#_estimateBoundingBox
-	 * @function
-	 * @override
-	 * @protected
+	 * @param {Array} size
+	 */
+	_applySizeToPixi(size)
+	{
+		const size_px = util.to_px(size, this._units, this._win);
+		const scaleX = size_px[0] / this._movie.videoWidth;
+		const scaleY = size_px[1] / this._movie.videoHeight;
+		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+	}
+
+	/**
+	 * Applies given size values to youtube iframe.
+	 *
+	 * @param {*} size
+	 */
+	_applySizeToYoutubeIframe(size)
+	{
+		const size_px = util.to_px(size, this._units, this._win);
+		this._youtubePlayer.setSize(size_px[ 0 ], size_px[ 1 ]);
+	}
+
+	/**
+	 * Ensures to convert NaN in the size values to proper, numerical values using given texture dimensions.
+	 *
+	 * @param {Array} size
+	 */
+	_ensureNaNSizeConversion(size, pixiTex)
+	{
+		if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+		{
+			size = util.to_unit([pixiTex.width, pixiTex.height], "pix", this._win, this._units);
+		}
+		else if (Number.isNaN(size[0]))
+		{
+			size[0] = size[1] * (pixiTex.width / pixiTex.height);
+		}
+		else if (Number.isNaN(size[1]))
+		{
+			size[1] = size[0] / (pixiTex.width / pixiTex.height);
+		}
+
+		return size;
+	}
+
+	/**
+	 * Estimate the bounding box.
 	 */
 	_estimateBoundingBox()
 	{
@@ -820,7 +800,9 @@ export class MovieStim extends VisualStim
 		// opacity:
 		this._pixi.alpha = this.opacity;
 
-		// go through size setter again since texture is available now
+		// initial setSize might be called with incomplete values like [512, null].
+		// Before texture is loaded they are converted to [512, NaN].
+		// At this point the texture is loaded and we can convert NaN to proper values.
 		this.size = this._size;
 
 		// set the position, rotation, and anchor (movie centered on pos):

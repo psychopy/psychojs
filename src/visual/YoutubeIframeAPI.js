@@ -20,40 +20,8 @@ class YoutubeIframeAPI
 
 	_onYoutubeIframeAPIReady ()
 	{
-		console.log("yt iframe api rdy");
 		this.isReady = true;
 		this._initResolver();
-	}
-
-	_handlePostMessage (event)
-	{
-	  // Check that the event was sent from the YouTube IFrame.
-		// console.log(event)
-		// if (event.source === iframeWindow) {
-		var data = JSON.parse(event.data);
-
-		  // The "infoDelivery" event is used by YT to transmit any
-		  // kind of information change in the player,
-		  // such as the current time or a playback quality change.
-		if (
-			data.event === "infoDelivery" &&
-			data.info &&
-			data.info.currentTime
-			) {
-			// currentTime is emitted very frequently (milliseconds),
-			// but we only care about whole second changes.
-			var time = Math.floor(data.info.currentTime);
-			// console.log(time);
-
-			// if (time !== lastTimeUpdate)
-			// {
-			//   lastTimeUpdate = time;
-
-			//   // It's now up to you to format the time.
-			//   document.getElementById("time").innerHTML = time;
-			// }
-		}
-		// }
 	}
 
 	async init ()
@@ -71,24 +39,6 @@ class YoutubeIframeAPI
 		let firstScriptTag = document.getElementsByTagName("script")[0];
 		firstScriptTag.parentNode.insertBefore(el, firstScriptTag);
 
-		// TODO: temporary solution for ease of customer support. Eventually these styles should be included in .css file.
-		const styleEl = document.createElement("style");
-		styleEl.textContent = `
-		.yt-iframe {
-		  display: block;
-		  position: absolute;
-		  border: none;
-		}
-
-		.yt-iframe.hidden {
-		  display: none;
-		}
-		`;
-		document.head.appendChild(styleEl);
-
-		// var iframeWindow = player.getIframe().contentWindow;
-		// window.addEventListener("message", this._handlePostMessage.bind(this));
-
 		return new Promise((res, rej) => {
 			this._initResolver = res;
 		});
@@ -97,10 +47,27 @@ class YoutubeIframeAPI
 	createPlayer (params = {})
 	{
 		const uuid = util.makeUuid();
-		document.body.insertAdjacentHTML("beforeend", `<div id="yt-iframe-placeholder-${uuid}" class="yt-iframe"></div>`);
-		return new YT.Player(`yt-iframe-placeholder-${uuid}`,
+		document.body.insertAdjacentHTML("beforeend",
+			`<div class="yt-player-wrapper">
+				<div id="yt-iframe-placeholder-${uuid}" class="yt-iframe"></div>
+			</div>`);
+		document.querySelector(`#yt-iframe-placeholder-${uuid}`).parentElement.classList.add("inprogress");
+
+		const originalOnready = params.events.onReady;
+		params.events.onReady = (event) =>
+		{
+			document.querySelector(`#yt-iframe-placeholder-${uuid}`).parentElement.classList.remove("inprogress");
+			if (typeof originalOnready === "function")
+			{
+				originalOnready(event);
+			}
+		};
+
+		const ytPlayer = new YT.Player(`yt-iframe-placeholder-${uuid}`,
 			params
 		);
+
+		return ytPlayer;
 	}
 
 	destroyPlayer (ytPlayer)
