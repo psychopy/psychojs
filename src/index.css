@@ -248,3 +248,30 @@ a:hover {
   color: #000;
 }
 
+.yt-iframe {
+  display: block;
+  position: absolute;
+  border: none;
+}
+
+.yt-player-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.yt-player-wrapper.hidden {
+  display: none;
+}
+
+.yt-player-wrapper.inprogress:after {
+  content: "loading youtube...";
+  display: flex;
+  position: absolute;
+  color: white;
+  background: black;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
