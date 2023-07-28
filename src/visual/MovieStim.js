@@ -443,7 +443,7 @@ export class MovieStim extends VisualStim
 		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
 			this._youtubePlayer.stopVideo();
-			this._youtubePlayer.getIframe().classList.add("hidden");
+			this._youtubePlayer.getIframe().parentElement.classList.add("hidden");
 		}
 	}
 
@@ -451,7 +451,7 @@ export class MovieStim extends VisualStim
 	{
 		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		{
-			this._youtubePlayer.getIframe().classList.remove("hidden");
+			this._youtubePlayer.getIframe().parentElement.classList.remove("hidden");
 		}
 	}
 

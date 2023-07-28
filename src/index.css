@@ -254,14 +254,14 @@ a:hover {
   border: none;
 }
 
-.yt-iframe.hidden {
-  display: none;
-}
-
 .yt-player-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.yt-player-wrapper.hidden {
+  display: none;
 }
 
 .yt-player-wrapper.inprogress:after {

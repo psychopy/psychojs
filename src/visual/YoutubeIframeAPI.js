@@ -76,7 +76,7 @@ class YoutubeIframeAPI
 		ytPlayer.destroy();
 
 		// At this point youtubeAPI destroyed the player and returned the placeholder div back in place instead of it. Cleaning up.
-		document.getElementById(elementId).remove();
+		document.getElementById(elementId).parentElement.remove();
 	}
 }
 
