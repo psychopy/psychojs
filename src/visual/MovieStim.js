@@ -300,9 +300,14 @@ export class MovieStim extends VisualStim
 			}
 		}
 
+		// If the html5Video is available and loaded enough, use information from it to convert NaN to proper values.
+		if (this._movie !== undefined && this._movie.readyState >= this._movie.HAVE_FUTURE_DATA)
+		{
+			size = this._ensureNaNSizeConversion(size, this._movie);
+		}
+
 		if (this._texture !== undefined)
 		{
-			size = this._ensureNaNSizeConversion(size, this._texture);
 			this._applySizeToPixi(size);
 		}
 
@@ -329,7 +334,8 @@ export class MovieStim extends VisualStim
 	setPos(pos, log = false)
 	{
 		super.setPos(pos);
-		if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		// if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
+		if (this._youtubePlayer !== undefined)
 		{
 			const pos_px = util.to_px(pos, this._units, this._win, false);
 			pos_px[1] *= this._win._rootContainer.scale.y;
@@ -398,6 +404,8 @@ export class MovieStim extends VisualStim
 			const ytPlayerBCR = this._youtubePlayer.getIframe().getBoundingClientRect();
 			this._setAttribute("size", util.to_unit([ ytPlayerBCR.width, ytPlayerBCR.height ], "pix", this._win, this._units), true);
 		}
+
+		this.setVolume(this._volume, true);
 	}
 
 	/**
@@ -480,16 +488,16 @@ export class MovieStim extends VisualStim
 		}
 
 		const urlObj = new URL(urlString);
-
 		if (this._youtubePlayer === undefined)
 		{
 			const vidSizePx = util.to_unit(this._size, this.units, this.win, "pix");
 
 			await YoutubeIframeAPIHandler.init();
+
 			this._youtubePlayer = YoutubeIframeAPIHandler.createPlayer({
 				videoId: urlObj.searchParams.get("v"),
 				width: vidSizePx[0],
-				height: vidSizePx[1],
+				height: vidSizePx[ 1 ],
 				playerVars: {
 					"rel": 0,
 					"playsinline": 1,
@@ -508,6 +516,9 @@ export class MovieStim extends VisualStim
 					// "onApiChange":
 				}
 			});
+
+			// At this point youtube player is added to the page. Invoking position setter to ensure html element is placed as expected.
+			this.pos = this._pos;
 		}
 		else
 		{
@@ -693,19 +704,19 @@ export class MovieStim extends VisualStim
 	 *
 	 * @param {Array} size
 	 */
-	_ensureNaNSizeConversion(size, pixiTex)
+	_ensureNaNSizeConversion(size, html5Video)
 	{
 		if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
 		{
-			size = util.to_unit([pixiTex.width, pixiTex.height], "pix", this._win, this._units);
+			size = util.to_unit([html5Video.videoWidth, html5Video.videoHeight], "pix", this._win, this._units);
 		}
 		else if (Number.isNaN(size[0]))
 		{
-			size[0] = size[1] * (pixiTex.width / pixiTex.height);
+			size[0] = size[1] * (html5Video.videoWidth / html5Video.videoHeight);
 		}
 		else if (Number.isNaN(size[1]))
 		{
-			size[1] = size[0] / (pixiTex.width / pixiTex.height);
+			size[1] = size[0] / (html5Video.videoWidth / html5Video.videoHeight);
 		}
 
 		return size;

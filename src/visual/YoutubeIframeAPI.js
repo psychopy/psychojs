@@ -16,6 +16,7 @@ class YoutubeIframeAPI
 	{
 		this.isReady = false;
 		this._initResolver = undefined;
+		this._initPromise = undefined;
 	}
 
 	_onYoutubeIframeAPIReady ()
@@ -31,6 +32,13 @@ class YoutubeIframeAPI
 			return Promise.resolve();
 		}
 
+		// If init is in progress but not done yet, return the promise.
+		// This is the case when multiple movie stims are created simultaneously.
+		if (this._initPromise)
+		{
+			return this._initPromise;
+		}
+
 		// Called by Youtube script.
 		window.onYouTubeIframeAPIReady = this._onYoutubeIframeAPIReady.bind(this);
 
@@ -39,9 +47,11 @@ class YoutubeIframeAPI
 		let firstScriptTag = document.getElementsByTagName("script")[0];
 		firstScriptTag.parentNode.insertBefore(el, firstScriptTag);
 
-		return new Promise((res, rej) => {
+		this._initPromise = new Promise((res, rej) => {
 			this._initResolver = res;
 		});
+
+		return this._initPromise;
 	}
 
 	createPlayer (params = {})
