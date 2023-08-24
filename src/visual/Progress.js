@@ -10,7 +10,7 @@ export class Progress extends VisualStim
 	{
 		name,
 		win,
-		units,
+		units = "pix",
 		ori,
 		opacity,
 		depth,
@@ -61,8 +61,7 @@ export class Progress extends VisualStim
 		if (this._pixi !== undefined)
 		{
 			this._pixi.clear();
-			const size_px = util.to_px(this.size, this.units, this.win);
-			const pos_px = util.to_px(this.pos, this.units, this.win);
+			const size_px = util.to_px(this._size, this._units, this._win);
 			const progressWidth = size_px[0] * this._progress;
 			if (this._fillTexture)
 			{
@@ -80,16 +79,37 @@ export class Progress extends VisualStim
 			{
 				this._pixi.beginFill(new Color(this._fillColor).int, this._opacity);
 			}
+
 			if (this._type === PROGRESS_TYPES.BAR)
 			{
-				this._pixi.drawRect(pos_px[0], pos_px[1], progressWidth, size_px[1]);
+				this._pixi.drawRect(0, 0, progressWidth, size_px[1]);
 			}
-			// TODO: check out beginTextureFill(). Perhaps it will allow to use images as filling for progress.
+
 			this._pixi.endFill();
 
 			// TODO: is there a better way to ensure anchor works?
 			this.anchor = this._anchor;
 		}
+	}
+
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		let boundingBox = new PIXI.Rectangle(0, 0, 0, 0);
+		const anchorNum = this._anchorTextToNum(this._anchor);
+		const pos_px = util.to_px(this._pos, this._units, this._win);
+		const size_px = util.to_px(this._size, this._units, this._win);
+		boundingBox.x = pos_px[ 0 ] - anchorNum[ 0 ] * size_px[ 0 ];
+		boundingBox.y = pos_px[ 1 ] - anchorNum[ 1 ] * size_px[ 1 ];
+		boundingBox.width = size_px[ 0 ];
+		boundingBox.height = size_px[ 1 ];
+
+		this._boundingBox = boundingBox;
 	}
 
 	/**
@@ -128,9 +148,10 @@ export class Progress extends VisualStim
 		}
 
 		// set polygon position and rotation:
-		// TODO: what's the difference bw to_px and to_pixiPoint?
-		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.position = to_pixiPoint(this._pos, this._units, this._win);
 		this._pixi.rotation = -this.ori * Math.PI / 180.0;
+
+		this._estimateBoundingBox();
 	}
 }
 
