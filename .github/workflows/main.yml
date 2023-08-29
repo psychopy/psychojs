@@ -19,6 +19,8 @@ jobs:
     - name: Build
       run: |
         cd app
+        echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
+        echo "testing BRANCH_NAME variable: $BRANCH_NAME"
         npm run build:js && npm run build:css
         echo "executing ls out on the directory:"
         ls out
