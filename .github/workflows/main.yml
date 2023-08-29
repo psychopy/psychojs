@@ -2,28 +2,24 @@ name: "Build Branch"
 on: workflow_dispatch
 
 jobs:
-	build_all:
-		runs-on: ubuntu-latest
-		steps:
-		- uses: actions/checkout@master
-			with:
-	 			path: app
+  build_all:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    with:
+      path: app
 
-		- uses: actions/setup-node@master
-			with:
+    - uses: actions/setup-node@master
+    with:
 				node-version: 19
-		
-		- name: Install Node dependencies
-      run: |
-        cd app
-        npm install
 
-    - name: Build
-      env:
-        CODESIGN_PASSWORD: ${{ secrets.OST_CERT_PWORD }}
-        CODESIGN_FILE: "codesign-certificate.pfx"
-        CODESIGN_B64: ${{ secrets.OST_CERT_B64 }}
-      run: |
-        cd app
-        npm run build:js
-				ls out
+  - name: Install Node dependencies
+    run: |
+      cd app
+      npm install
+
+  - name: Build
+    run: |
+      cd app
+      npm run build:js
+      ls out
