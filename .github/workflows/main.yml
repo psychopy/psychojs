@@ -18,7 +18,7 @@ jobs:
 
     - name: Build
       env:
-        BRANCH_NAME: ${{ GITHUB_REF#refs/heads/ }}
+        BRANCH_NAME: "${GITHUB_REF#refs/heads/}"
       run: |
         cd app
         echo "testing GITHUB_REF itself: $GITHUB_REF"
