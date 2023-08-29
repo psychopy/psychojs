@@ -19,6 +19,6 @@ jobs:
     - name: Build
       run: |
         cd app
-        npm run build
+        npm run build:js && npm run build:css
         echo "executing ls out on the directory:"
         ls out
