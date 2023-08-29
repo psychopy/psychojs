@@ -1,4 +1,4 @@
-name: "Build Branch"
+name: Build Branch
 on: workflow_dispatch
 
 jobs:
