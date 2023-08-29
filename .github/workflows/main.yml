@@ -17,13 +17,9 @@ jobs:
         npm install
 
     - name: Build
-      env:
-        BRANCH_NAME: "${GITHUB_REF#refs/heads/}"
       run: |
         cd app
-        echo "testing GITHUB_REF itself: $GITHUB_REF"
         echo "testing GITHUB_REF with details availability: ${GITHUB_REF#refs/heads/}"
-        echo "testing BRANCH_NAME variable: $BRANCH_NAME"
-        npm run build:js && npm run build:css
+        npm run build:js -version=${GITHUB_REF#refs/heads/} && npm run build:css
         echo "executing ls out on the directory:"
         ls out
