@@ -434,6 +434,12 @@ export function shuffle(array, randomNumberGenerator = undefined)
  */
 export function randchoice(a, size = 1, replace = true, p = null, randomNumberGenerator = null)
 {
+	let weights = p
+	if (weights === null) {
+		// if no weights given, use uniform
+		weights = Array.from({length: a.length}, () => 1/a.length)
+	}
+
 	if (!Number.isInteger(size) | size < 1) {
 		// raise error if given an invalid size
 		throw {
@@ -461,7 +467,10 @@ export function randchoice(a, size = 1, replace = true, p = null, randomNumberGe
 			values.push(val)
 			// if replace is false, remove value from copy of array
 			if (!replace) {
-				tempArray.pop(val)
+				let j = tempArray.indexOf(val)
+				tempArray.pop(tempArray[j])
+				weights.pop(weights[j])
+
 			}
 		}
 		return values
@@ -471,12 +480,6 @@ export function randchoice(a, size = 1, replace = true, p = null, randomNumberGe
 	{
 		// use Math.random if no generator given
 		randomNumberGenerator = Math.random;
-	}
-
-	let weights = p
-	if (weights === null) {
-		// if no weights given, use uniform
-		weights = Array.from({length: a.length}, () => 1/a.length)
 	}
 
 	// normalize and accumulate weights
