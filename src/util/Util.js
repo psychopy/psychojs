@@ -960,12 +960,31 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
  * @param {number} max - one above the largest integer to be drawn
  * @returns {number} a random integer in the requested range (signed)
  */
-export function randint(min = 0, max)
+export function randint(min, max = null, size = 1)
 {
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random float",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(randint(min, max, 1));
+		}
+		return values
+	}
+
 	let lo = min;
 	let hi = max;
 
-	if (typeof max === "undefined")
+	// if no max given, go from 0 to min
+	if (max === null)
 	{
 		hi = lo;
 		lo = 0;
