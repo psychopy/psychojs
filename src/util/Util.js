@@ -431,22 +431,37 @@ export function shuffle(array, randomNumberGenerator = undefined)
  * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} a chosen value from the array
  */
-export function randchoice(array, size = 1, randomNumberGenerator = undefined)
+export function randchoice(array, size = 1, replace = true, randomNumberGenerator = undefined)
 {
 	if (!Number.isInteger(size) | size < 1) {
 		// raise error if given an invalid size
 		throw {
 			origin: "util.random",
-			context: "when generating a random float",
+			context: "when choosing a random value from array",
 			error: "size must be a positive integer above 0",
+		};
+	}
+	if (!replace & size > array.length) {
+		// if replace is fase, then size can't exceed size of array as each value can only be used once
+		throw {
+			origin: "util.random",
+			context: "when choosing a random value from array",
+			error: "size cannot exceed length of array when replace is false",
 		};
 	}
 	
 	if (size > 1) {
 		// if size > 1, call function multiple times with size = 1 and return an array
 		let values = []
+		let tempArray = array
 		for (let i = 0; i < size; i++) {
-			values.push(randchoice(array, 1, randomNumberGenerator));
+			// add value taken from copy of array
+			let val = randchoice(tempArray, 1, replace, randomNumberGenerator)
+			values.push(val)
+			// if replace is false, remove value from copy of array
+			if (!replace) {
+				tempArray.pop(val)
+			}
 		}
 		return values
 	}
