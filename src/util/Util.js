@@ -386,6 +386,20 @@ export function randint(min, max = null, size = 1)
 	return Math.floor(Math.random() * (hi - lo)) + lo;
 }
 
+/**
+ * Generate normally distributed random values.
+ * 
+ * Not yet implemented in PsychoJS.
+ * 
+ */
+export function normal(loc = 0.0, scale = 1.0, size = null)
+{
+	throw {
+		origin: "util.normal",
+		context: "when generating a random normally distributed value",
+		error: "function `normal` is not yet implemented in PsychoJS"
+	}
+}
 
 /**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
