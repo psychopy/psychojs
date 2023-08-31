@@ -350,7 +350,7 @@ export function randint(min, max = null, size = 1)
 		// raise error if given an invalid size
 		throw {
 			origin: "util.random",
-			context: "when generating a random float",
+			context: "when generating a random integer",
 			error: "size must be a positive integer above 0",
 		};
 	}
