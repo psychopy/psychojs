@@ -308,6 +308,100 @@ export function IsPointInsidePolygon(point, vertices)
 }
 
 /**
+ * Return random floats a-la NumPy's in the half-open interval [0.0, 1.0). In other words, from 0 inclusive to 1 exclusive.
+ * 
+ * @param {number} [size = 1] - number of values to return
+ * @returns {number} single random float from uniform distribution, if size === 1
+ * @returns {Object[]} array of uniformly distributed random floats, if size > 1
+ */
+export function random(size = 1) {
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random float",
+			error: "size must be a positive integer above 0",
+		};
+	}
+
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(random(1));
+		}
+		return values
+	}
+
+	return Math.random();
+}
+
+/**
+ * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ *
+ * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
+ * @param {number} max - one above the largest integer to be drawn
+ * @param {number} [size = 1] - number of values to return
+ * @returns {number} a random integer in the requested range (signed)
+ */
+export function randint(min, max = null, size = 1)
+{
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random integer",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(randint(min, max, 1));
+		}
+		return values
+	}
+
+	let lo = min;
+	let hi = max;
+
+	// if no max given, go from 0 to min
+	if (max === null)
+	{
+		hi = lo;
+		lo = 0;
+	}
+
+	if (hi < lo)
+	{
+		throw {
+			origin: "util.randint",
+			context: "when generating a random integer",
+			error: "min should be <= max",
+		};
+	}
+
+	return Math.floor(Math.random() * (hi - lo)) + lo;
+}
+
+/**
+ * Generate normally distributed random values.
+ * 
+ * Not yet implemented in PsychoJS.
+ * 
+ */
+export function normal(loc = 0.0, scale = 1.0, size = null)
+{
+	throw {
+		origin: "util.normal",
+		context: "when generating a random normally distributed value",
+		error: "function `normal` is not yet implemented in PsychoJS"
+	}
+}
+
+/**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
@@ -332,18 +426,78 @@ export function shuffle(array, randomNumberGenerator = undefined)
 /**
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
- * @param {Object[]} array - the input 1-D array
- * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {Object[]} a - the input 1-D array
+ * @param {number} [size = 1] - number of values to return
+ * @param {boolean} [replace = true] - Whether the sample is with or without replacement. Default is True, meaning that a value of a can be selected multiple times.
+ * @param {Function} [randomNumberGenerator = null] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} a chosen value from the array
  */
-export function randchoice(array, randomNumberGenerator = undefined)
+export function randchoice(a, size = 1, replace = true, p = null, randomNumberGenerator = null)
 {
-	if (randomNumberGenerator === undefined)
+	let weights = p
+	if (weights === null) {
+		// if no weights given, use uniform
+		weights = Array.from({length: a.length}, () => 1/a.length)
+	}
+
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when choosing a random value from array",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	if (!replace & size > a.length) {
+		// if replace is fase, then size can't exceed size of array as each value can only be used once
+		throw {
+			origin: "util.random",
+			context: "when choosing a random value from array",
+			error: "size cannot exceed length of array when replace is false",
+		};
+	}
+	
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		let tempArray = a
+		for (let i = 0; i < size; i++) {
+			// add value taken from copy of array
+			let val = randchoice(tempArray, 1, replace, p, randomNumberGenerator)
+			values.push(val)
+			// if replace is false, remove value from copy of array
+			if (!replace) {
+				let j = tempArray.indexOf(val)
+				tempArray.splice(j, 1)
+				weights.splice(j, 1)
+			}
+		}
+		return values
+	}
+
+	if (randomNumberGenerator === null)
 	{
+		// use Math.random if no generator given
 		randomNumberGenerator = Math.random;
 	}
-	const j = Math.floor(randomNumberGenerator() * array.length);
-	return array[j]
+
+	// normalize and accumulate weights
+	let total = weights.reduce((x, y) => x + y, 0)
+	let accum = 0
+	for (let i = 0; i < weights.length; i++) {
+		accum += weights[i] / total
+		weights[i] = accum
+	}
+
+	// calculate float index
+	i = randomNumberGenerator()
+
+	// get integer index from weights array
+	for (let w of weights) {
+		if (i < w) {
+			return a[weights.indexOf(w)]
+		}
+	}
 }
 
 /**
@@ -921,36 +1075,6 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 	}
 
 	return matches;
-}
-
-/**
- * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
- *
- * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
- * @param {number} max - one above the largest integer to be drawn
- * @returns {number} a random integer in the requested range (signed)
- */
-export function randint(min = 0, max)
-{
-	let lo = min;
-	let hi = max;
-
-	if (typeof max === "undefined")
-	{
-		hi = lo;
-		lo = 0;
-	}
-
-	if (hi < lo)
-	{
-		throw {
-			origin: "util.randint",
-			context: "when generating a random integer",
-			error: "min should be <= max",
-		};
-	}
-
-	return Math.floor(Math.random() * (hi - lo)) + lo;
 }
 
 /**
