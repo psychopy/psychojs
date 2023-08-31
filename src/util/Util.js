@@ -426,12 +426,13 @@ export function shuffle(array, randomNumberGenerator = undefined)
 /**
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
- * @param {Object[]} array - the input 1-D array
+ * @param {Object[]} a - the input 1-D array
  * @param {number} [size = 1] - number of values to return
- * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {boolean} [replace = true] - Whether the sample is with or without replacement. Default is True, meaning that a value of a can be selected multiple times.
+ * @param {Function} [randomNumberGenerator = null] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} a chosen value from the array
  */
-export function randchoice(array, size = 1, replace = true, randomNumberGenerator = undefined)
+export function randchoice(a, size = 1, replace = true, p = null, randomNumberGenerator = null)
 {
 	if (!Number.isInteger(size) | size < 1) {
 		// raise error if given an invalid size
@@ -441,7 +442,7 @@ export function randchoice(array, size = 1, replace = true, randomNumberGenerato
 			error: "size must be a positive integer above 0",
 		};
 	}
-	if (!replace & size > array.length) {
+	if (!replace & size > a.length) {
 		// if replace is fase, then size can't exceed size of array as each value can only be used once
 		throw {
 			origin: "util.random",
@@ -453,10 +454,10 @@ export function randchoice(array, size = 1, replace = true, randomNumberGenerato
 	if (size > 1) {
 		// if size > 1, call function multiple times with size = 1 and return an array
 		let values = []
-		let tempArray = array
+		let tempArray = a
 		for (let i = 0; i < size; i++) {
 			// add value taken from copy of array
-			let val = randchoice(tempArray, 1, replace, randomNumberGenerator)
+			let val = randchoice(tempArray, 1, replace, p, randomNumberGenerator)
 			values.push(val)
 			// if replace is false, remove value from copy of array
 			if (!replace) {
@@ -466,12 +467,35 @@ export function randchoice(array, size = 1, replace = true, randomNumberGenerato
 		return values
 	}
 
-	if (randomNumberGenerator === undefined)
+	if (randomNumberGenerator === null)
 	{
+		// use Math.random if no generator given
 		randomNumberGenerator = Math.random;
 	}
-	const j = Math.floor(randomNumberGenerator() * array.length);
-	return array[j]
+
+	let weights = p
+	if (weights === null) {
+		// if no weights given, use uniform
+		weights = Array.from({length: a.length}, () => 1/a.length)
+	}
+
+	// normalize and accumulate weights
+	let total = weights.reduce((x, y) => x + y, 0)
+	let accum = 0
+	for (let i = 0; i < weights.length; i++) {
+		accum += weights[i] / total
+		weights[i] = accum
+	}
+
+	// calculate float index
+	i = randomNumberGenerator()
+
+	// get integer index from weights array
+	for (let w of weights) {
+		if (i < w) {
+			return a[weights.indexOf(w)]
+		}
+	}
 }
 
 /**
