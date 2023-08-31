@@ -308,6 +308,36 @@ export function IsPointInsidePolygon(point, vertices)
 }
 
 /**
+ * Return random floats a-la NumPy's in the half-open interval [0.0, 1.0). In other words, from 0 inclusive to 1 exclusive.
+ * 
+ * @param {number} [size = 1] - number of values to return
+ * @returns {number} single random float from uniform distribution, if size === 1
+ * @returns {Object[]} array of uniformly distributed random floats, if size > 1
+ */
+export function random(size = 1) {
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random float",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	
+	if (size === 1) {
+		// if size is 1, return a single value
+		return Math.random();
+	} else {
+		// if size is >1, return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(Math.random());
+		}
+		return values
+	}
+}
+
+/**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
