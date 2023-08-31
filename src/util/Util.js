@@ -323,18 +323,17 @@ export function random(size = 1) {
 			error: "size must be a positive integer above 0",
 		};
 	}
-	
-	if (size === 1) {
-		// if size is 1, return a single value
-		return Math.random();
-	} else {
-		// if size is >1, return an array
+
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
 		let values = []
 		for (let i = 0; i < size; i++) {
 			values.push(random(1));
 		}
 		return values
 	}
+
+	return Math.random();
 }
 
 /**
