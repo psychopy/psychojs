@@ -468,9 +468,8 @@ export function randchoice(a, size = 1, replace = true, p = null, randomNumberGe
 			// if replace is false, remove value from copy of array
 			if (!replace) {
 				let j = tempArray.indexOf(val)
-				tempArray.pop(tempArray[j])
-				weights.pop(weights[j])
-
+				tempArray.splice(j, 1)
+				weights.splice(j, 1)
 			}
 		}
 		return values
