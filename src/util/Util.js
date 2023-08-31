@@ -341,6 +341,7 @@ export function random(size = 1) {
  *
  * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
  * @param {number} max - one above the largest integer to be drawn
+ * @param {number} [size = 1] - number of values to return
  * @returns {number} a random integer in the requested range (signed)
  */
 export function randint(min, max = null, size = 1)
