@@ -331,11 +331,61 @@ export function random(size = 1) {
 		// if size is >1, return an array
 		let values = []
 		for (let i = 0; i < size; i++) {
-			values.push(Math.random());
+			values.push(random(1));
 		}
 		return values
 	}
 }
+
+/**
+ * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
+ *
+ * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
+ * @param {number} max - one above the largest integer to be drawn
+ * @returns {number} a random integer in the requested range (signed)
+ */
+export function randint(min, max = null, size = 1)
+{
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random float",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(randint(min, max, 1));
+		}
+		return values
+	}
+
+	let lo = min;
+	let hi = max;
+
+	// if no max given, go from 0 to min
+	if (max === null)
+	{
+		hi = lo;
+		lo = 0;
+	}
+
+	if (hi < lo)
+	{
+		throw {
+			origin: "util.randint",
+			context: "when generating a random integer",
+			error: "min should be <= max",
+		};
+	}
+
+	return Math.floor(Math.random() * (hi - lo)) + lo;
+}
+
 
 /**
  * Shuffle an array in place using the Fisher-Yastes's modern algorithm
@@ -951,55 +1001,6 @@ export function turnSquareBracketsIntoArrays(input, max = 1)
 	}
 
 	return matches;
-}
-
-/**
- * Generates random integers a-la NumPy's in the "half-open" interval [min, max). In other words, from min inclusive to max exclusive. When max is undefined, as is the case by default, results are chosen from [0, min). An error is thrown if max is less than min.
- *
- * @param {number} [min = 0] - lowest integer to be drawn, or highest plus one if max is undefined (default)
- * @param {number} max - one above the largest integer to be drawn
- * @returns {number} a random integer in the requested range (signed)
- */
-export function randint(min, max = null, size = 1)
-{
-	if (!Number.isInteger(size) | size < 1) {
-		// raise error if given an invalid size
-		throw {
-			origin: "util.random",
-			context: "when generating a random float",
-			error: "size must be a positive integer above 0",
-		};
-	}
-	
-	if (size > 1) {
-		// if size > 1, call function multiple times with size = 1 and return an array
-		let values = []
-		for (let i = 0; i < size; i++) {
-			values.push(randint(min, max, 1));
-		}
-		return values
-	}
-
-	let lo = min;
-	let hi = max;
-
-	// if no max given, go from 0 to min
-	if (max === null)
-	{
-		hi = lo;
-		lo = 0;
-	}
-
-	if (hi < lo)
-	{
-		throw {
-			origin: "util.randint",
-			context: "when generating a random integer",
-			error: "min should be <= max",
-		};
-	}
-
-	return Math.floor(Math.random() * (hi - lo)) + lo;
 }
 
 /**
