@@ -427,11 +427,30 @@ export function shuffle(array, randomNumberGenerator = undefined)
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
  * @param {Object[]} array - the input 1-D array
+ * @param {number} [size = 1] - number of values to return
  * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
  * @return {Object[]} a chosen value from the array
  */
-export function randchoice(array, randomNumberGenerator = undefined)
+export function randchoice(array, size = 1, randomNumberGenerator = undefined)
 {
+	if (!Number.isInteger(size) | size < 1) {
+		// raise error if given an invalid size
+		throw {
+			origin: "util.random",
+			context: "when generating a random float",
+			error: "size must be a positive integer above 0",
+		};
+	}
+	
+	if (size > 1) {
+		// if size > 1, call function multiple times with size = 1 and return an array
+		let values = []
+		for (let i = 0; i < size; i++) {
+			values.push(randchoice(array, 1, randomNumberGenerator));
+		}
+		return values
+	}
+
 	if (randomNumberGenerator === undefined)
 	{
 		randomNumberGenerator = Math.random;
