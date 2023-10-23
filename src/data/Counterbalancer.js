@@ -12,6 +12,14 @@
 import {PsychObject} from "../util/PsychObject.js";
 
 
+class CounterbalancerFinishedError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "CounterbalancerFinishedError";
+    }
+}
+
+
 /**
  * <p>Counterbalancer handles group allocation for a given experiment. Once 
  * allocated to a group using data from the shelf, the Counterbalancer provides 
@@ -44,11 +52,44 @@ export class Counterbalancer extends PsychObject
 	}
 
     /**
+	 * Is this Counterbalancer finished, i.e. has ever group been decremented to/past 0?
+     * 
+     * @returns {boolean} finished state
+	 */
+    get finished() {
+        throw ReferenceError("Counterbalancer.finished is not yet implemented in PsychoJS")
+    }
+
+    /**
 	 * Assign a group to this Counterbalancer object, from the shelf.
      * 
      * @returns {string} group assignment
 	 */
     async allocateGroup({} = {}) {
+        // handle behaviour on finished
+        if (this.finished) {
+            // log warning regardless
+            let msg = `All groups in shelf entry '${self.entry}' are now finished.`;
+            logging.warning(msg);
+
+            if (this.onFinished === "raise") {
+                // if onFinished is raise, raise an error when finished
+                throw new CounterbalancerFinishedError(msg);
+            } else if (this.onFinished === "reset") {
+                // if onFinished is restart, reset caps for all groups
+                throw ReferenceError("Counterbalancer.onFinished === reset is not yet implemented in PsychoJS")
+            } else {
+                // if onFinished is ignore, set group and params to blank
+                this.group = undefined;
+                if (this.conditions.length) {
+                    let params = {}
+                    for (let key in this.params) {
+                        params[key] = undefined;
+                    }
+                    this.params = params;
+                }
+            }
+        }
         // get group names and sizes from conditions array
         let groups = [];
         let groupSizes = [];
@@ -70,6 +111,9 @@ export class Counterbalancer extends PsychObject
                 this.params = row;
             }
         }
+        // remove group and cap from params
+        delete this.params['group'];
+        delete this.params['cap'];
         // return group
         return this.group
     }
