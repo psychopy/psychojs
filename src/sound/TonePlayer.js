@@ -24,7 +24,7 @@ export class TonePlayer extends SoundPlayer
 	 * @memberOf module:sound
 	 * @param {Object} options
 	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
-	 * @param {number} [options.duration_s= 0.5] - duration of the tone (in seconds). If duration_s == -1, the sound will play indefinitely.
+	 * @param {number} [options.secs= 0.5] - duration of the tone (in seconds). If secs == -1, the sound will play indefinitely.
 	 * @param {string|number} [options.note= 'C4'] - note (if string) or frequency (if number)
 	 * @param {number} [options.volume= 1.0] - volume of the tone (must be between 0 and 1.0)
 	 * @param {number} [options.loops= 0] - how many times to repeat the tone after it has played once. If loops == -1, the tone will repeat indefinitely until stopped.
@@ -32,7 +32,7 @@ export class TonePlayer extends SoundPlayer
 	constructor({
 		psychoJS,
 		note = "C4",
-		duration_s = 0.5,
+		secs = 0.5,
 		volume = 1.0,
 		loops = 0,
 		soundLibrary = TonePlayer.SoundLibrary.TONE_JS,
@@ -42,7 +42,7 @@ export class TonePlayer extends SoundPlayer
 		super(psychoJS);
 
 		this._addAttribute("note", note);
-		this._addAttribute("duration_s", duration_s);
+		this._addAttribute("duration_s", secs);
 		this._addAttribute("volume", volume);
 		this._addAttribute("loops", loops);
 		this._addAttribute("soundLibrary", soundLibrary);
@@ -66,25 +66,21 @@ export class TonePlayer extends SoundPlayer
 	 * <p>Note: if TonePlayer accepts the sound but Tone.js is not available, e.g. if the browser is IE11,
 	 * we throw an exception.</p>
 	 *
-	 * @param {module:sound.Sound} sound - the sound
-	 * @return {Object|undefined} an instance of TonePlayer that can play the given sound or undefined otherwise
+	 * @param {string|number} value - potential frequency or note
+	 * @param {number} octave - the octave corresponding to the tone
+	 * @return {Object|boolean} argument needed to instantiate a TonePlayer that can play the given sound
+	 * 	or false otherwise
 	 */
-	static accept(sound)
+	static accept(value, octave)
 	{
 		// if the sound's value is an integer, we interpret it as a frequency:
-		if (isNumeric(sound.value))
+		if (isNumeric(value))
 		{
-			return new TonePlayer({
-				psychoJS: sound.psychoJS,
-				note: sound.value,
-				duration_s: sound.secs,
-				volume: sound.volume,
-				loops: sound.loops,
-			});
+			return { note: value }
 		}
 
 		// if the sound's value is a string, we check whether it is a note:
-		if (typeof sound.value === "string")
+		if (typeof value === "string")
 		{
 			// mapping between the PsychoPY notes and the standard ones:
 			let psychopyToToneMap = new Map();
@@ -96,21 +92,15 @@ export class TonePlayer extends SoundPlayer
 			}
 
 			// check whether the sound's value is a recognised note:
-			const note = psychopyToToneMap.get(sound.value);
+			const note = psychopyToToneMap.get(value);
 			if (typeof note !== "undefined")
 			{
-				return new TonePlayer({
-					psychoJS: sound.psychoJS,
-					note: note + sound.octave,
-					duration_s: sound.secs,
-					volume: sound.volume,
-					loops: sound.loops,
-				});
+				return { note: note + octave };
 			}
 		}
 
-		// TonePlayer is not an appropriate player for the given sound:
-		return undefined;
+		// the value does not seem to correspond to a tone we can play:
+		return false;
 	}
 
 	/**
@@ -126,11 +116,11 @@ export class TonePlayer extends SoundPlayer
 	/**
 	 * Set the duration of the tone.
 	 *
-	 * @param {number} duration_s - the duration of the tone (in seconds) If duration_s == -1, the sound will play indefinitely.
+	 * @param {number} secs - the duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
 	 */
-	setDuration(duration_s)
+	setDuration(secs)
 	{
-		this.duration_s = duration_s;
+		this.duration_s = secs;
 	}
 
 	/**
@@ -169,6 +159,23 @@ export class TonePlayer extends SoundPlayer
 		else
 		{
 			// TODO
+		}
+	}
+
+	/**
+	 * Set the note for tone.
+	 *
+ 	 * @param {string|number} value - potential frequency or note
+	 * @param {number} octave - the octave corresponding to the tone
+	 */
+	setTone(value = "C", octave = 4)
+	{
+		const args = TonePlayer.accept(value, octave);
+		this._note = args.note;
+
+		if (typeof this._synth !== "undefined")
+		{
+			this._synth.setNote(this._note);
 		}
 	}
 

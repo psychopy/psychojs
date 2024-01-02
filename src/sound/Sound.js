@@ -2,7 +2,7 @@
 /**
  * Sound stimulus.
  *
- * @author Alain Pitiot
+ * @author Alain Pitiot, Nikita Agafonov
  * @version 2022.2.3
  * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
@@ -74,7 +74,6 @@ export class Sound extends PsychObject
 		this._player = undefined;
 
 		this._addAttribute("win", win);
-		this._addAttribute("value", value);
 		this._addAttribute("octave", octave);
 		this._addAttribute("secs", secs);
 		this._addAttribute("startTime", startTime);
@@ -84,8 +83,9 @@ export class Sound extends PsychObject
 		this._addAttribute("loops", loops);
 		this._addAttribute("autoLog", autoLog);
 
-		// identify an appropriate player:
-		this._getPlayer();
+		// note: setValue will identify the appropriate SoundPlayer and possibly instantiate it
+		// consequently _addAtribute("value") needs to be the last one so the other attributes are already set
+		this._addAttribute("value", value);
 
 		this.status = PsychoJS.Status.NOT_STARTED;
 	}
@@ -97,7 +97,7 @@ export class Sound extends PsychObject
 	 * Repeat calls to play may results in the sounds being played on top of each other.</p>
 	 *
 	 * @param {number} loops how many times to repeat the sound after it plays once. If loops == -1, the sound will repeat indefinitely until stopped.
-	 * @param {boolean} [log= true] whether or not to log
+	 * @param {boolean} [log= true] whether to log
 	 */
 	play(loops, log = true)
 	{
@@ -109,7 +109,7 @@ export class Sound extends PsychObject
 	 * Stop playing the sound immediately.
 	 *
 	 * @param {Object} options
-	 * @param {boolean} [options.log= true] - whether or not to log
+	 * @param {boolean} [options.log= true] - whether to log
 	 */
 	stop({
 		log = true,
@@ -134,7 +134,7 @@ export class Sound extends PsychObject
 	 *
 	 * @param {number} volume - the volume (values should be between 0 and 1)
 	 * @param {boolean} [mute= false] - whether or not to mute the sound
-	 * @param {boolean} [log= true] - whether of not to log
+	 * @param {boolean} [log= true] - whether to log
 	 */
 	setVolume(volume, mute = false, log = true)
 	{
@@ -147,38 +147,108 @@ export class Sound extends PsychObject
 	}
 
 	/**
-	 * Set the sound value on demand past initialisation.
+	 * Set the sound value.
 	 *
 	 * @param {object} sound - a sound instance to replace the current one
-	 * @param {boolean} [log= true] - whether or not to log
+	 * @param {boolean} [log= true] - whether to log
 	 */
 	setSound(sound, log = true)
 	{
-		if (sound instanceof Sound)
+		if (!(sound instanceof Sound))
 		{
-			this._setAttribute("value", sound.value, log);
+			throw {
+				origin: "Sound.setSound",
+				context: "when setting the sound",
+				error: "the argument should be an instance of the Sound class.",
+			};
+		}
 
-			if (typeof this._player !== "undefined")
+		this._setAttribute("value", sound.value, log);
+
+		if (typeof this._player !== "undefined")
+		{
+			this._player = this._player.constructor.accept(this);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Set the sound value.
+	 *
+	 * @param {number|string} [value = "C"] - the sound value
+	 * @param {number} [octave = 4] - the octave corresponding to the tone (if applicable)
+	 * @param {boolean} [log=true] - whether to log
+   */
+	setValue(value = "C", octave = 4, log = true)
+	{
+		this._setAttribute("value", value, log);
+
+		const args = {
+			psychoJS: this._psychoJS,
+			stereo: this._stereo,
+			volume: this._volume,
+			loops: this._loops,
+			startTime: this._startTime,
+			stopTime: this._stopTime,
+			secs: this._secs
+		}
+
+		let playerArgs = TonePlayer.accept(value, octave);
+		if (playerArgs)
+		{
+			if (this._player instanceof TonePlayer)
 			{
-				this._player = this._player.constructor.accept(this);
+				this._player.setTone(value, octave);
 			}
+			else
+			{
+				this._player = new TonePlayer(Object.assign(args, playerArgs));
+			}
+			return;
+		}
 
-			// Be fluent?
-			return this;
+		playerArgs = TrackPlayer.accept(this._psychoJS, value);
+		if (playerArgs)
+		{
+			if (this._player instanceof TrackPlayer)
+			{
+				this._player.setTrack(value);
+			}
+			else
+			{
+				this._player = new TrackPlayer(Object.assign(args, playerArgs));
+			}
+			return;
+		}
+
+		playerArgs = AudioClipPlayer.accept(this._psychoJS, value);
+		if (playerArgs)
+		{
+			if (this._player instanceof AudioClipPlayer)
+			{
+				this._player.setAudioClip(value);
+			}
+			else
+			{
+				this._player = new AudioClipPlayer(Object.assign(args, playerArgs));
+			}
+			return;
 		}
 
 		throw {
-			origin: "Sound.setSound",
-			context: "when replacing the current sound",
-			error: "invalid input, need an instance of the Sound class.",
+			origin: "Sound.setValue",
+			context: "when setting the sound value",
+			error: "could not find an appropriate player.",
 		};
+
 	}
 
 	/**
 	 * Set the number of loops.
 	 *
 	 * @param {number} [loops=0] - how many times to repeat the sound after it has played once. If loops == -1, the sound will repeat indefinitely until stopped.
-	 * @param {boolean} [log=true] - whether of not to log
+	 * @param {boolean} [log=true] - whether to log
 	 */
 	setLoops(loops = 0, log = true)
 	{
@@ -194,7 +264,7 @@ export class Sound extends PsychObject
 	 * Set the duration (in seconds)
 	 *
 	 * @param {number} [secs=0.5] - duration of the tone (in seconds) If secs == -1, the sound will play indefinitely.
-	 * @param {boolean} [log=true] - whether or not to log
+	 * @param {boolean} [log=true] - whether to log
 	 */
 	setSecs(secs = 0.5, log = true)
 	{

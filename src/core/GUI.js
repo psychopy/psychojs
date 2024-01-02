@@ -50,6 +50,9 @@ export class GUI
 	{
 		this._psychoJS = psychoJS;
 
+		// info fields excluded from the GUI:
+		this._excludedInfo = {};
+
 		// gui listens to RESOURCE events from the server manager:
 		psychoJS.serverManager.on(ServerManager.Event.RESOURCE, (signal) =>
 		{
@@ -87,9 +90,6 @@ export class GUI
 		requireParticipantClick = GUI.DEFAULT_SETTINGS.DlgFromDict.requireParticipantClick
 	})
 	{
-		// get info from URL:
-		const infoFromUrl = util.getUrlParameters();
-
 		this._progressBarMax = 0;
 		this._allResourcesDownloaded = false;
 		this._requiredKeys = [];
@@ -113,6 +113,19 @@ export class GUI
 				self._dialogComponent.tStart = t;
 				self._dialogComponent.status = PsychoJS.Status.STARTED;
 
+				// prepare the info fields excluded from the GUI, including those from the URL:
+				const excludedInfo = {};
+				for (let key in self._excludedInfo)
+				{
+					excludedInfo[key.trim().toLowerCase()] = self._excludedInfo[key];
+				}
+				const infoFromUrl = util.getUrlParameters();
+				infoFromUrl.forEach((value, key) =>
+				{
+					excludedInfo[key.trim().toLowerCase()] = value;
+				});
+
+
 				// if the experiment is licensed, and running on the license rather than on credit,
 				// we use the license logo:
 				if (self._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
@@ -130,7 +143,13 @@ export class GUI
 				markup += "<div class='dialog-content'>";
 
 				// alert title and close button:
-				markup += `<div id='experiment-dialog-title' class='dialog-title'><p>${title}</p><button id='dialogClose' class='dialog-close' data-a11y-dialog-hide aria-label='Cancel Experiment'>&times;</button></div>`;
+				markup += "<div id='experiment-dialog-title' class='dialog-title'>";
+				markup += `<p>${title}</p>`;
+				markup += "<button id='dialogClose' class='dialog-close' data-a11y-dialog-hide aria-label='Cancel Experiment'>&times;</button>";
+				markup += "</div>";
+
+				// everything above the buttons is in a scrollable container:
+				markup += "<div class='scrollable-container'>";
 
 				// logo, if need be:
 				if (typeof logoUrl === "string")
@@ -139,14 +158,16 @@ export class GUI
 				}
 
 				// add a combobox or text areas for each entry in the dictionary:
+				let atLeastOneIncludedKey = false;
 				Object.keys(dictionary).forEach((key, keyIdx) =>
 				{
 					const value = dictionary[key];
 					const keyId = "form-input-" + keyIdx;
 
 					// only create an input if the key is not in the URL:
-					let inUrl = false;
 					const cleanedDictKey = key.trim().toLowerCase();
+					const isIncluded = !(cleanedDictKey in excludedInfo);
+					/*let inUrl = false;
 					infoFromUrl.forEach((urlValue, urlKey) =>
 					{
 						const cleanedUrlKey = urlKey.trim().toLowerCase();
@@ -155,10 +176,13 @@ export class GUI
 							inUrl = true;
 							// break;
 						}
-					});
+					});*/
 
-					if (!inUrl)
+					if (isIncluded)
+					// if (!inUrl)
 					{
+						atLeastOneIncludedKey = true;
+
 						markup += `<label for='${keyId}'> ${key} </label>`;
 
 						// if the field is required:
@@ -185,7 +209,7 @@ export class GUI
 
 							markup += "</select>";
 						}
-							// otherwise we use a single string input:
+						// otherwise we use a single string input:
 						//if (typeof value === 'string')
 						else
 						{
@@ -199,17 +223,27 @@ export class GUI
 					markup += "<p class='validateTips'>Fields marked with an asterisk (*) are required.</p>";
 				}
 
+				markup += "</div>"; // scrollable-container
+
+				// separator, if need be:
+				if (atLeastOneIncludedKey)
+				{
+					markup += "<hr>";
+				}
+
 				// progress bar:
-				markup += `<hr><div id='progressMsg' class='progress-msg'>${self._progressMessage}</div>`;
+				markup += `<div id='progressMsg' class='progress-msg'>${self._progressMessage}</div>`;
 				markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
 
 				// buttons:
 				markup += "<hr>";
+				markup += "<div class='dialog-button-group'>";
 				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Cancel Experiment'>Cancel</button>";
 				if (self._requireParticipantClick)
 				{
 					markup += "<button id='dialogOK' class='dialog-button disabled' aria-label='Start Experiment'>Ok</button>";
 				}
+				markup += "</div>"; // button-group
 
 				markup += "</div></div>";
 
@@ -267,23 +301,30 @@ export class GUI
 	 * @callback GUI.onOK
 	 */
 	/**
+	 * @callback GUI.onCancel
+	 */
+	/**
 	 * Show a message to the participant in a dialog box.
 	 *
-	 * <p>This function can be used to display both warning and error messages.</p>
+	 * <p>This function can be used to display ordinary, warning, and error messages.</p>
 	 *
 	 * @param {Object} options
 	 * @param {string} options.message - the message to be displayed
 	 * @param {Object.<string, *>} options.error - an exception
 	 * @param {string} options.warning - a warning message
-	 * @param {boolean} [options.showOK=true] - specifies whether to show the OK button
+	 * @param {boolean} [options.showOK=true] - whether to show the OK button
 	 * @param {GUI.onOK} [options.onOK] - function called when the participant presses the OK button
+	 * @param {boolean} [options.showCancel=false] - whether to show the Cancel button
+	 * @param {GUI.onCancel} [options.onCancel] - function called when the participant presses the Cancel button
 	 */
 	dialog({
 		message,
 		warning,
 		error,
 		showOK = true,
-		onOK
+		onOK,
+		showCancel = false,
+		onCancel
 	} = {})
 	{
 		// close the previously opened dialog box, if there is one:
@@ -339,14 +380,18 @@ export class GUI
 			{
 				const error = this._userFriendlyError(errorCode);
 				markup += `<div id='experiment-dialog-title' class='dialog-title ${error.class}'><p>${error.title}</p></div>`;
+				markup += "<div class='scrollable-container'>";
 				markup += `<p>${error.text}</p>`;
+				markup += "</div>";
 			}
 			else
 			{
 				markup += `<div id='experiment-dialog-title' class='dialog-title dialog-error'><p>Error</p></div>`;
+				markup += "<div class='scrollable-container'>";
 				markup += `<p>Unfortunately we encountered the following error:</p>`;
 				markup += stackCode;
 				markup += "<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>";
+				markup += "</div>";
 			}
 		}
 
@@ -354,19 +399,36 @@ export class GUI
 		else if (typeof warning !== "undefined")
 		{
 			markup += `<div id='experiment-dialog-title' class='dialog-title dialog-warning'><p>Warning</p></div>`;
+			markup += "<div class='scrollable-container'>";
 			markup += `<p>${warning}</p>`;
+			markup += "</div>";
 		}
 
 		// we are displaying a message:
 		else if (typeof message !== "undefined")
 		{
-			markup += `<div id='experiment-dialog-title' class='dialog-title'><p>Message</p></div>`;
+			markup += "<div id='experiment-dialog-title' class='dialog-title'><p>Message</p></div>";
+			markup += "<div class='scrollable-container'>";
 			markup += `<p>${message}</p>`;
+			markup += "</div>";
 		}
 
-		if (showOK)
+		if (showOK || showCancel)
 		{
-			markup += "<hr><button id='dialogOK' class='dialog-button' aria-label='Close dialog'>Ok</button>";
+			markup += "<hr>";
+		}
+		if (showCancel || showOK)
+		{
+			markup += "<div class='button-group'>";
+			if (showCancel)
+			{
+				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>Cancel</button>";
+			}
+			if (showOK)
+			{
+				markup += "<button id='dialogOK' class='dialog-button' aria-label='Close dialog'>Ok</button>";
+			}
+			markup += "</div>"; // button-group
 		}
 		markup += "</div></div>";
 
@@ -391,6 +453,20 @@ export class GUI
 				if (typeof onOK !== "undefined")
 				{
 					onOK();
+				}
+			};
+		}
+		if (showCancel)
+		{
+			this._cancelButton = document.getElementById("dialogCancel");
+			this._cancelButton.onclick = () =>
+			{
+				this.closeDialog();
+
+				// execute callback function:
+				if (typeof onCancel !== "undefined")
+				{
+					onCancel();
 				}
 			};
 		}
@@ -611,19 +687,16 @@ export class GUI
 				// locally the OK button is always enabled, otherwise only if all requirements have been fulfilled:
 				if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || allRequirementsFulfilled)
 				{
+					this._okButton.classList.add("dialog-button");
+					this._okButton.classList.remove("disabled");
 					if (changeOKButtonFocus)
 					{
-						this._okButton.classList = ["dialog-button"];
 						this._okButton.focus();
-					}
-					else
-					{
-						this._okButton.classList = ["dialog-button"];
 					}
 				}
 				else
 				{
-					this._okButton.classList = ["dialog-button", "disabled"];
+					this._okButton.classList.add("dialog-button", "disabled");
 				}
 			}
 

@@ -8,6 +8,8 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import seedrandom from "seedrandom";
+
 /**
  * Syntactic sugar for Mixins
  *
@@ -55,18 +57,30 @@ export function promiseToTupple(promise)
 }
 
 /**
- * Get a Universally Unique Identifier (RFC4122 version 4)
+ * Get a Universally Unique Identifier (RFC4122 version 4) or a pseudo-uuid based on a root
  * <p> See details here: https://www.ietf.org/rfc/rfc4122.txt</p>
  *
+ * @param {string} [root] - the root, for string dependent pseudo uuid's
  * @return {string} the uuid
  */
-export function makeUuid()
+export function makeUuid(root)
 {
-	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c)
+	// bonafide uuid v4 generator:
+	if (typeof root === "undefined")
 	{
-		const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
-		return v.toString(16);
-	});
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+			const r = Math.random() * 16 | 0, v = (c === "x") ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	}
+	else
+	{
+		// our in-house pseudo uuid generator:
+		const generator = seedrandom(root);
+		let digits = generator().toString().substring(2);
+		digits += generator().toString().substring(2);
+		return `${digits.substring(0, 8)}-${digits.substring(8, 12)}-4${digits.substring(12, 15)}-8${digits.substring(15, 18)}-${digits.substring(18, 30)}`;
+	}
 }
 
 /**
@@ -308,25 +322,62 @@ export function IsPointInsidePolygon(point, vertices)
 }
 
 /**
- * Shuffle an array in place using the Fisher-Yastes's modern algorithm
+ * Shuffle an array, or a portion of that array, in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
  * @param {Object[]} array - the input 1-D array
- * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {Function} [randomNumberGenerator= undefined] - A function used to generated random numbers in the interval [0, 1). Defaults to Math.random
+ * @param [startIndex= undefined]	- start index in the array
+ * @param [endIndex= undefined] - end index in the array
  * @return {Object[]} the shuffled array
  */
-export function shuffle(array, randomNumberGenerator = undefined)
+export function shuffle(array, randomNumberGenerator = undefined, startIndex = undefined, endIndex = undefined)
 {
-	if (randomNumberGenerator === undefined)
+	// if array is not an array, we return it untouched rather than throwing an exception:
+	if (!array || !Array.isArray(array))
+	{
+		return array;
+	}
+
+	if (typeof startIndex === "undefined")
+	{
+		startIndex = 0;
+	}
+	if (typeof endIndex === "undefined")
+	{
+		endIndex = array.length - 1;
+	}
+
+	if (typeof randomNumberGenerator === "undefined")
 	{
 		randomNumberGenerator = Math.random;
 	}
-	for (let i = array.length - 1; i > 0; i--)
+
+	for (let i = endIndex; i > startIndex; i--)
 	{
 		const j = Math.floor(randomNumberGenerator() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
+
 	return array;
+}
+
+/**
+ * linspace
+ *
+ * @name module:util.linspace
+ * @function
+ * @public
+ * @param {Object[]} startValue, stopValue, cardinality
+ * @return {Object[]} an array from startValue to stopValue with cardinality steps
+ */
+export function linspace(startValue, stopValue, cardinality) {
+  var arr = [];
+  var step = (stopValue - startValue) / (cardinality - 1);
+  for (var i = 0; i < cardinality; i++) {
+    arr.push(startValue + (step * i));
+  }
+  return arr;
 }
 
 /**
@@ -594,6 +645,11 @@ export function toString(object)
 	if (object.constructor.toString().substring(0, 5) === "class" && typeof object.toString === "function")
 	{
 		return object.toString();
+	}
+
+	if (typeof object === "function")
+	{
+		return `<function ${object.name}>`;
 	}
 
 	try
@@ -1357,7 +1413,7 @@ export function extensionFromMimeType(mimeType)
  * 	the download speed
  * @return {number} the download speed, in megabits per second
  */
-export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
+export function getDownloadSpeed(psychoJS, nbDownloads = 1)
 {
 	// url of the image to download and size of the image in bits:
 	// TODO use a variety of files, with different sizes
@@ -1374,11 +1430,11 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 		{
 			const toc = performance.now();
 			downloadTimeAccumulator += (toc-tic);
-			++ downloadCounter;
+			++downloadCounter;
 
 			if (downloadCounter === nbDownloads)
 			{
-				const speed_bps = (imageSize_b  * nbDownloads) / (downloadTimeAccumulator / 1000);
+				const speed_bps = (imageSize_b * nbDownloads) / (downloadTimeAccumulator / 1000);
 				resolve(speed_bps / 1024 / 1024);
 			}
 			else
@@ -1386,18 +1442,81 @@ export async function getDownloadSpeed(psychoJS, nbDownloads = 1)
 				tic = performance.now();
 				download.src = `${imageUrl}?salt=${tic}`;
 			}
-		}
+		};
 
 		download.onerror = (event) =>
 		{
 			const errorMsg = `unable to estimate the download speed: ${JSON.stringify(event)}`;
 			psychoJS.logger.error(errorMsg);
 			reject(errorMsg);
-		}
+		};
 
 		let tic = performance.now();
 		download.src = `${imageUrl}?salt=${tic}`;
 	});
+}
+
+/**
+ * Dynamically load a css stylesheet.
+ *
+ * @param {string} cssId - the unique id
+ * @param {string} cssPath - the path to the stylesheet
+ * @return {void}
+ */
+export function loadCss(cssId, cssPath)
+{
+	if (!document.getElementById(cssId))
+	{
+		const head = document.getElementsByTagName("head")[0];
+		const link = document.createElement("link");
+		link.id = cssId;
+		link.rel = "stylesheet";
+		link.type = "text/css";
+		link.href = cssPath;
+		link.media = "all";
+		head.appendChild(link);
+	}
+}
+
+/**
+ * Whether the user device has a touchscreen, e.g. it is a mobile phone or tablet.
+ *
+ * @return {boolean} true if the user device has a touchscreen.
+ * @note the code below is directly adapted from MDN
+ */
+export function hasTouchScreen()
+{
+	let hasTouchScreen = false;
+
+	if ("maxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.maxTouchPoints > 0;
+	}
+	else if ("msMaxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.msMaxTouchPoints > 0;
+	}
+	else
+	{
+		const mQ = matchMedia?.("(pointer:coarse)");
+		if (mQ?.media === "(pointer:coarse)")
+		{
+			hasTouchScreen = !!mQ.matches;
+		}
+		else if ("orientation" in window)
+		{
+			hasTouchScreen = true;
+		}
+		else
+		{
+			const UA = navigator.userAgent;
+			hasTouchScreen =
+				/\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+				/\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+		}
+	}
+
+	return hasTouchScreen;
 }
 
 /**

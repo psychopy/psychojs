@@ -27,22 +27,6 @@ export class SoundPlayer extends PsychObject
 	}
 
 	/**
-	 * Determine whether this player can play the given sound.
-	 *
-	 * @abstract
-	 * @param {module:sound.Sound} - the sound
-	 * @return {Object|undefined} an instance of the SoundPlayer that can play the sound, or undefined if none could be found
-	 */
-	static accept(sound)
-	{
-		throw {
-			origin: "SoundPlayer.accept",
-			context: "when evaluating whether this player can play a given sound",
-			error: "this method is abstract and should not be called.",
-		};
-	}
-
-	/**
 	 * Start playing the sound.
 	 *
 	 * @abstract

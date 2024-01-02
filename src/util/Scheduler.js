@@ -117,9 +117,12 @@ export class Scheduler
 	 * Start this scheduler.
 	 *
 	 * <p>Note: tasks are run after each animation frame.</p>
+	 *
+	 * @return {Promise<void>} a promise resolved when the scheduler stops, e.g. when the experiments finishes
 	 */
-	async start()
+	start()
 	{
+		let shedulerResolve;
 		const self = this;
 		const update = async (timestamp) =>
 		{
@@ -127,6 +130,7 @@ export class Scheduler
 			if (self._stopAtNextUpdate)
 			{
 				self._status = Scheduler.Status.STOPPED;
+				shedulerResolve();
 				return;
 			}
 
@@ -137,6 +141,7 @@ export class Scheduler
 			if (state === Scheduler.Event.QUIT)
 			{
 				self._status = Scheduler.Status.STOPPED;
+				shedulerResolve();
 				return;
 			}
 
@@ -155,6 +160,12 @@ export class Scheduler
 
 		// start the animation:
 		requestAnimationFrame(update);
+
+		// return a promise resolved when the scheduler is stopped:
+		return new Promise((resolve, _) =>
+		{
+			shedulerResolve = resolve;
+		});
 	}
 
 	/**

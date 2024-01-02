@@ -3,7 +3,7 @@
  *
  * @author Nikita Agafonov
  * @version 2021.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -27,6 +27,21 @@ import crossShader from "./shaders/crossShader.frag";
 import radRampShader from "./shaders/radRampShader.frag";
 import raisedCosShader from "./shaders/raisedCosShader.frag";
 import radialStim from "./shaders/radialShader.frag";
+
+import defaultQuadVertWGL1 from "./shaders/wgl1/defaultQuad.vert";
+import imageShaderWGL1 from "./shaders/wgl1/imageShader.frag";
+import sinShaderWGL1 from "./shaders/wgl1/sinShader.frag";
+import sqrShaderWGL1 from "./shaders/wgl1/sqrShader.frag";
+import sawShaderWGL1 from "./shaders/wgl1/sawShader.frag";
+import triShaderWGL1 from "./shaders/wgl1/triShader.frag";
+import sinXsinShaderWGL1 from "./shaders/wgl1/sinXsinShader.frag";
+import sqrXsqrShaderWGL1 from "./shaders/wgl1/sqrXsqrShader.frag";
+import circleShaderWGL1 from "./shaders/wgl1/circleShader.frag";
+import gaussShaderWGL1 from "./shaders/wgl1/gaussShader.frag";
+import crossShaderWGL1 from "./shaders/wgl1/crossShader.frag";
+import radRampShaderWGL1 from "./shaders/wgl1/radRampShader.frag";
+import raisedCosShaderWGL1 from "./shaders/wgl1/raisedCosShader.frag";
+import radialStimWGL1 from "./shaders/wgl1/radialShader.frag";
 
 /**
  * Grating Stimulus.
@@ -253,6 +268,127 @@ export class GratingStim extends VisualStim
 		}
 	};
 
+	static #SHADERSWGL1 = {
+		imageShader: {
+			shader: imageShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sin: {
+			shader: sinShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sqr: {
+			shader: sqrShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		saw: {
+			shader: sawShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		tri: {
+			shader: triShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uPeriod: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sinXsin: {
+			shader: sinXsinShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		sqrXsqr: {
+			shader: sqrXsqrShaderWGL1,
+			uniforms: {
+				uFreq: 1.0,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		circle: {
+			shader: circleShaderWGL1,
+			uniforms: {
+				uRadius: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		gauss: {
+			shader: gaussShaderWGL1,
+			uniforms: {
+				uA: 1.0,
+				uB: 0.0,
+				uC: 0.16,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		cross: {
+			shader: crossShaderWGL1,
+			uniforms: {
+				uThickness: 0.2,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		radRamp: {
+			shader: radRampShaderWGL1,
+			uniforms: {
+				uSqueeze: 1.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		raisedCos: {
+			shader: raisedCosShaderWGL1,
+			uniforms: {
+				uBeta: 0.25,
+				uPeriod: 0.625,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		},
+		radialStim: {
+			shader: radialStimWGL1,
+			uniforms: {
+				uFreq: 20.0,
+				uStep: .0017,
+				uDX: 1.,
+				uPhase: 0.0,
+				uColor: [1., 1., 1.],
+				uAlpha: 1.0
+			}
+		}
+	};
+
 	/**
 	 * Default size of the Grating Stimuli in pixels.
 	 *
@@ -279,6 +415,7 @@ export class GratingStim extends VisualStim
 	 * @param {number} [options.sf=1.0] - spatial frequency of the function used in grating stimulus
 	 * @param {number} [options.phase=0.0] - phase of the function used in grating stimulus, multiples of period of that function
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
 	 * @param {number} [options.size] - the size of the rendered image (DEFAULT_STIM_SIZE_PX will be used if size is not specified)
 	 * @param {Color} [options.color= "white"] - Foreground color of the stimulus. Can be String like "red" or "#ff0000" or Number like 0xff0000.
@@ -296,6 +433,7 @@ export class GratingStim extends VisualStim
 		win,
 		mask,
 		pos,
+		anchor,
 		units,
 		sf = 1.0,
 		ori,
@@ -313,7 +451,7 @@ export class GratingStim extends VisualStim
 		maskParams
 	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
 
 		this._adjustmentFilter = new AdjustmentFilter({
 			contrast
@@ -531,9 +669,21 @@ export class GratingStim extends VisualStim
 			2
 		);
 		geometry.addIndex([0, 1, 2, 0, 2, 3]);
-		const vertexSrc = defaultQuadVert;
-		const fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
-		const uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
+		let vertexSrc;
+		let fragmentSrc;
+		let uniformsFinal;
+		if (this._win._renderer.context.webGLVersion >= 2)
+		{
+			vertexSrc = defaultQuadVert;
+			fragmentSrc = GratingStim.#SHADERS[shaderName].shader;
+			uniformsFinal = Object.assign({}, GratingStim.#SHADERS[shaderName].uniforms, uniforms);
+		}
+		else
+		{
+			vertexSrc = defaultQuadVertWGL1;
+			fragmentSrc = GratingStim.#SHADERSWGL1[shaderName].shader;
+			uniformsFinal = Object.assign({}, GratingStim.#SHADERSWGL1[shaderName].uniforms, uniforms);
+		}
 		const shader = PIXI.Shader.from(vertexSrc, fragmentSrc, uniformsFinal);
 		return new PIXI.Mesh(geometry, shader);
 	}
@@ -741,9 +891,15 @@ export class GratingStim extends VisualStim
 				}
 				else
 				{
-					// for some reason setting PIXI.Mesh as .mask doesn't do anything,
-					// rendering mask to texture for further use.
 					const maskMesh = this._getPixiMeshFromPredefinedShaders(this._mask);
+
+					// Since maskMesh is centered around (0, 0) (has vertices going around it),
+					// offsetting maskMesh position to properly cover render target texture,
+					// which created with top-left corner at (0, 0).
+					maskMesh.position.set(this._size_px[0] * 0.5, this._size_px[1] * 0.5);
+
+					// For some reason setting PIXI.Mesh as .mask doesn't do anything,
+					// rendering mask to texture for further use.
 					const rt = PIXI.RenderTexture.create({
 						width: this._size_px[0],
 						height: this._size_px[1],
@@ -756,6 +912,8 @@ export class GratingStim extends VisualStim
 					this._pixi.mask = maskSprite;
 					this._pixi.addChild(maskSprite);
 				}
+				// Since grating mesh is centered around (0, 0), setting mask's anchor to center to properly cover target image.
+				this._pixi.mask.anchor.set(0.5);
 			}
 
 			// since _pixi.width may not be immediately available but the rest of the code needs its value
