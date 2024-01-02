@@ -19,5 +19,7 @@ jobs:
     - name: Build
       run: |
         cd app
-        npm run build:js
+        echo "testing GITHUB_REF with details availability: ${GITHUB_REF#refs/heads/}"
+        npm run build:js && npm run build:css
+        echo "executing ls out on the directory:"
         ls out
