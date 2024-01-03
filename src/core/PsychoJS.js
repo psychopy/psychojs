@@ -108,9 +108,9 @@ export class PsychoJS
 	}
 
 	/**
-	 * @param {Object} options
-	 * @param {boolean} [options.debug= true] whether to log debug information in the browser console
-	 * @param {boolean} [options.collectIP= false] whether to collect the IP information of the participant
+	 * @param {Object} options - options
+	 * @param {boolean} [options.debug= true] - whether to log debug information in the browser console
+	 * @param {boolean} [options.collectIP= false] - whether to collect the IP information of the participant
 	 */
 	constructor({
 		debug = true,
@@ -186,7 +186,7 @@ export class PsychoJS
 		this._saveResults = saveResults;
 
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2022.3.0");
+		this.logger.info("[PsychoJS] @version 2024.1.0");
 
 		// hide the initialisation message:
 		const root = document.getElementById("root");
@@ -399,9 +399,18 @@ export class PsychoJS
 				{
 					if (self._config.session.status === "OPEN")
 					{
+						// stop the regular uploading of results, if need be:
+						if (self._config.experiment.resultsUpload.intervalId > 0)
+						{
+							clearInterval(self._config.experiment.resultsUpload.intervalId);
+							self._config.experiment.resultsUpload.intervalId = -1;
+						}
+
 						// save the incomplete results if need be:
 						if (self._config.experiment.saveIncompleteResults && self._saveResults)
 						{
+							// note: we set lastUploadTimestamp to undefined to prevent uploadData from throttling this call
+							delete self._config.experiment.resultsUpload.lastUploadTimestamp;
 							self._experiment.save({ sync: true });
 						}
 
@@ -414,6 +423,20 @@ export class PsychoJS
 						self._window.close();
 					}
 				});
+
+				// upload the data at regular interval, if need be:
+				if (self._saveResults && self._config.experiment.resultsUpload.period > 0)
+				{
+					self._config.experiment.resultsUpload.intervalId = setInterval(() =>
+					{
+						self._experiment.save({
+							tag: "",
+							clear: true
+						});
+					},
+					self._config.experiment.resultsUpload.period * 60 * 1000
+					);
+				}
 			}
 
 			// start the asynchronous download of resources:
@@ -423,7 +446,7 @@ export class PsychoJS
 			if (this._checkWebGLSupport && !Window.checkWebGLSupport())
 			{
 				// add an entry to experiment results to warn the designer about a potential WebGL issue:
-				this._experiment.addData('hardware_acceleration', 'NOT SUPPORTED');
+				this._experiment.addData("hardware_acceleration", "NOT SUPPORTED");
 				this._experiment.nextEntry();
 
 				this._gui.dialog({
@@ -519,9 +542,10 @@ export class PsychoJS
 	 * <p>Note: if the resource manager is busy, we inform the participant
 	 * that he or she needs to wait for a bit.</p>
 	 *
-	 * @param {Object} options
+	 * @param {Object} options - options
 	 * @param {string} [options.message] - optional message to be displayed in a dialog box before quitting
 	 * @param {boolean} [options.isCompleted = false] - whether the participant has completed the experiment
+	 * @return {void}
 	 */
 	async quit({ message, isCompleted = false, closeWindow = true, showOK = true } = {})
 	{
@@ -544,6 +568,14 @@ export class PsychoJS
 			{
 				window.removeEventListener("beforeunload", this.beforeunloadCallback);
 			}
+
+			// stop the regular uploading of results, if need be:
+			if (this._config.experiment.resultsUpload.intervalId > 0)
+			{
+				clearInterval(this._config.experiment.resultsUpload.intervalId);
+				this._config.experiment.resultsUpload.intervalId = -1;
+			}
+			delete this._config.experiment.resultsUpload.lastUploadTimestamp;
 
 			// save the results and the logs of the experiment:
 			this.gui.finishDialog({
@@ -629,6 +661,7 @@ export class PsychoJS
 	 * @protected
 	 * @param {string} configURL - the URL of the configuration file
 	 * @param {string} name - the name of the experiment
+	 * @return {void}
 	 */
 	async _configure(configURL, name)
 	{
@@ -701,10 +734,15 @@ export class PsychoJS
 						name,
 						saveFormat: ExperimentHandler.SaveFormat.CSV,
 						saveIncompleteResults: true,
-						keys: [],
+						keys: []
 					},
 				};
 			}
+			// init the partial results upload options
+			this._config.experiment.resultsUpload = {
+				period: -1,
+				intervalId: -1
+			};
 
 			// get the server parameters (those starting with a double underscore):
 			this._serverMsg = new Map();
@@ -737,6 +775,7 @@ export class PsychoJS
 	 *
 	 * <p>Note: we use [http://www.geoplugin.net/json.gp]{@link http://www.geoplugin.net/json.gp}.</p>
 	 * @protected
+	 * @return {void}
 	 */
 	async _getParticipantIPInfo()
 	{

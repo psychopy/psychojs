@@ -266,7 +266,7 @@ export class ExperimentHandler extends PsychObject
 					}
 				}
 			}
-			for (let a in this.extraInfo)
+			for (const a in this.extraInfo)
 			{
 				if (this.extraInfo.hasOwnProperty(a))
 				{
@@ -303,7 +303,7 @@ export class ExperimentHandler extends PsychObject
 				&& !this._psychoJS._serverMsg.has("__pilotToken")
 			)
 			{
-				return /*await*/ this._psychoJS.serverManager.uploadData(key, csv, sync);
+				return this._psychoJS.serverManager.uploadData(key, csv, sync);
 			}
 			else
 			{
@@ -320,7 +320,7 @@ export class ExperimentHandler extends PsychObject
 
 			for (let r = 0; r < data.length; r++)
 			{
-				let doc = {
+				const doc = {
 					__projectId,
 					__experimentName: this._experimentName,
 					__participant: this._participant,

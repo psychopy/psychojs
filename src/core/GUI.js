@@ -80,14 +80,17 @@ export class GUI
 	 * @param {Object} options.dictionary - associative array of values for the participant to set
 	 * @param {String} options.title - name of the project
 	 * @param {boolean} [options.requireParticipantClick=true] - whether the participant must click on the OK
-     * 	button, when it becomes enabled, to move on with the experiment
+   * 	button, when it becomes enabled, to move on with the experiment
+	 * @param {boolean} [options.OKAlwaysEnabledForLocal=false] - whether the OK button is always enabled
+	 * 	when the experiment runs locally
 	 */
 	DlgFromDict({
 		logoUrl,
 		text,
 		dictionary,
 		title,
-		requireParticipantClick = GUI.DEFAULT_SETTINGS.DlgFromDict.requireParticipantClick
+		requireParticipantClick = GUI.DEFAULT_SETTINGS.DlgFromDict.requireParticipantClick,
+		OKAlwaysEnabledForLocal = true
 	})
 	{
 		this._progressBarMax = 0;
@@ -96,6 +99,7 @@ export class GUI
 		this._setRequiredKeys = new Map();
 		this._progressMessage = "&nbsp;";
 		this._requireParticipantClick = requireParticipantClick;
+		this._OKAlwaysEnabledForLocal = OKAlwaysEnabledForLocal;
 		this._dictionary = dictionary;
 
 		// prepare a PsychoJS component:
@@ -276,7 +280,7 @@ export class GUI
 				self._updateProgressBar();
 
 				// setup change event handlers for all required keys:
-				this._requiredKeys.forEach((keyId) =>
+				self._requiredKeys.forEach((keyId) =>
 				{
 					const input = document.getElementById(keyId);
 					if (input)
@@ -685,7 +689,10 @@ export class GUI
 			if (typeof this._okButton !== "undefined")
 			{
 				// locally the OK button is always enabled, otherwise only if all requirements have been fulfilled:
-				if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || allRequirementsFulfilled)
+				if (
+					(this._OKAlwaysEnabledForLocal && this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL)
+					|| allRequirementsFulfilled
+				)
 				{
 					this._okButton.classList.add("dialog-button");
 					this._okButton.classList.remove("disabled");

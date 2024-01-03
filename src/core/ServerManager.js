@@ -58,6 +58,13 @@ export class ServerManager extends PsychObject
 		this._nbLoadedResources = 0;
 		this._setupPreloadQueue();
 
+		// throttling period for calls to uploadData and uploadLog (in mn):
+		// note: 	(a) the period is potentially updated when a session is opened to reflect that associated with
+		//						the experiment on the back-end database
+		//				(b) throttling is also enforced on the back-end: artificially altering the period
+		//						on the participant's browser will result in server errors
+		this._uploadThrottlePeriod = 5;
+
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("status", ServerManager.Status.READY);
 	}
@@ -192,6 +199,21 @@ export class ServerManager extends PsychObject
 				else
 				{
 					self._psychoJS.config.experiment.keys = [];
+				}
+
+				// partial results upload options:
+				if ("partialResultsUploadPeriod" in experiment)
+				{
+					// note: resultsUpload is initialised in PsychoJS._configure but we reinitialise it here
+					// all the same (belt and braces approach)
+					self._psychoJS.config.experiment.resultsUpload = {
+						period: experiment.partialResultsUploadPeriod,
+						intervalId: -1
+					};
+				}
+				if ("uploadThrottlePeriod" in experiment)
+				{
+					this._uploadThrottlePeriod = experiment.uploadThrottlePeriod;
 				}
 
 				self.setStatus(ServerManager.Status.READY);
@@ -782,6 +804,16 @@ export class ServerManager extends PsychObject
 			context: "when uploading participant's results for experiment: " + this._psychoJS.config.experiment.fullpath,
 		};
 		this._psychoJS.logger.debug("uploading data for experiment: " + this._psychoJS.config.experiment.fullpath);
+
+		// data upload throttling:
+		const now = MonotonicClock.getReferenceTime();
+		if ( (typeof this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp !== "undefined") &&
+			(now - this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp < this._uploadThrottlePeriod * 60)
+		)
+		{
+			return Promise.reject({ ...response, error: "upload canceled by throttling"});
+		}
+		this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp = now;
 
 		this.setStatus(ServerManager.Status.BUSY);
 
