@@ -56,12 +56,14 @@ export class ExperimentHandler extends PsychObject
 	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
 	 * @param {string} options.name - name of the experiment
 	 * @param {Object} options.extraInfo - additional information, such as session name, participant name, etc.
+	 * @param {string} field_separator - Delimiter character specification
 	 */
 	constructor({
 		psychoJS,
 		name,
 		extraInfo,
-		dataFileName
+		dataFileName,
+		field_separator
 	} = {})
 	{
 		super(psychoJS, name);
@@ -88,6 +90,13 @@ export class ExperimentHandler extends PsychObject
 			`${this._participant}_${this._experimentName}_${this._datetime}`
 		);
 
+		this._addAttribute("field_separator", 
+			(typeof field_separator === "string" || field_separator.length === 1 || field_separator !== '\n')
+				? field_separator
+	  			: ',', 
+			','
+		);
+
 		// loop handlers:
 		this._loops = [];
 		this._unfinishedLoops = [];
@@ -98,6 +107,8 @@ export class ExperimentHandler extends PsychObject
 		this._currentTrialData = {};
 
 		this._experimentEnded = false;
+
+		
 	}
 
 	/**
@@ -292,7 +303,7 @@ export class ExperimentHandler extends PsychObject
 			// TODO only save the given attributes
 			const worksheet = XLSX.utils.json_to_sheet(data);
 			// prepend BOM
-			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet);
+			const csv = "\ufeff" + XLSX.utils.sheet_to_csv(worksheet, {FS: this.field_separator});
 
 			// upload data to the pavlovia server or offer them for download:
 			const filenameWithoutPath = this._dataFileName.split(/[\\/]/).pop();
