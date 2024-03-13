@@ -3,7 +3,8 @@
  **************/
 
 // import { core, data, sound, util, visual } from '../../psychojs_experimental/psychojsPR519.js';
-import { core, data, sound, util, visual } from "../out/psychojs-2024.1.0.js";
+// import { core, data, sound, util, visual } from "../out/psychojs-2024.1.0.js";
+import { core, data, sound, util, visual } from "./index.js";
 
 // import {StimInspector} from 'https://run.pavlovia.org/lgtst/stiminspector/StimInspector.js';
 // import {StimInspector} from '../stiminspector/StimInspector.js';
