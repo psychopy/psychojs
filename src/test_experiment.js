@@ -149,7 +149,9 @@ async function experimentInit() {
 			size: [512, 512],
 			pos: [0, 0],
 			units: "pix",
-			depth: 0
+			depth: 0,
+			dotLife: 60,
+			fieldShape: "circle"
 		})
 	);
 

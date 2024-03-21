@@ -122,42 +122,93 @@ export class DotStim extends VisualStim
 			this.size = util.to_unit(DotStim.#DEFAULT_STIM_SIZE_PX, "pix", this.win, this.units);
 		}
 
+		this._positioningFunctions = {
+			"sqr": this._getRandomPositionWithinSquareField,
+			"circle": this._getRandomPosWithinCircleField
+		};
+
 		this._size_px = util.to_px(this.size, this.units, this.win);
+		this._dotsLife = new Float32Array(nDots);
+
+		// TODO: DEBUG.
+		// const s = new PIXI.Sprite(PIXI.Texture.WHITE);
+		// s.width = this._size_px[ 0 ];
+		// s.height = this._size_px[ 1 ];
+		// s.tint = 0xff0000;
+		// this._pixi.addChild(s);
+
 		this._spawnDots();
 	}
 
-	_getRandomPositionWithinSquareField(fieldWidth, fieldHeight)
+	_getRandomPositionWithinSquareField()
 	{
-		const x = Math.random() * fieldWidth;
-		const y = Math.random() * fieldHeight;
+		const fieldWidth = this._size_px[ 0 ];
+		const fieldHeight = this._size_px[ 1 ];
+		const x = Math.min(Math.random() * fieldWidth, fieldWidth - this._dotSize);
+		const y = Math.min(Math.random() * fieldHeight, fieldHeight - this._dotSize);
 
 		return { x, y };
 	}
 
-	_getRandomPosWithinCircleField(fieldRadius)
+	_getRandomPosWithinCircleField()
 	{
-		const f = Math.random();
-		const x = Math.cos(f) * fieldRadius;
-		const y = Math.sin(f) * fieldRadius;
+		const fieldRadius = this._size_px[ 0 ] * 0.5 - this._dotSize * 0.5;
+		const f = Math.random() * 2 * Math.PI - Math.PI;
+		const r = Math.random();
+		const x = Math.cos(f) * fieldRadius * r + this._size_px[0] * 0.5;
+		const y = Math.sin(f) * fieldRadius * r + this._size_px[1] * 0.5;
 
 		return { x, y };
+	}
+
+	_configureDot()
+	{
+		const positioningFunc = this._positioningFunctions[ this._fieldShape ];
+
+		return {
+			position: positioningFunc.call(this),
+			lifetime: Math.random() * this._dotLife
+		};
 	}
 
 	_spawnDots()
 	{
 		let i;
-		let p;
 		let dot;
+		let dotConfig;
 
 		for (i = 0; i < this._nDots; i ++)
 		{
-			p = this._getRandomPositionWithinSquareField(this._size_px[0], this._size_px[1]);
 			dot = new PIXI.Sprite(PIXI.Texture.WHITE);
-			dot.x = p.x;
-			dot.y = p.y;
+			dotConfig = this._configureDot();
+			dot.x = dotConfig.position.x;
+			dot.y = dotConfig.position.y;
 			dot.width = this._dotSize;
 			dot.height = this._dotSize;
 			this._pixi.addChild(dot);
+			this._dotsLife[ i ] = dotConfig.lifetime;
+		}
+	}
+
+	_updateDots()
+	{
+		if (this._dotLife === 0)
+		{
+			return;
+		}
+
+		let dotConfig;
+		let i;
+		for (i = 0; i < this._nDots; i++)
+		{
+			this._dotsLife[ i ] = Math.max(0, this._dotsLife[ i ] - 1);
+			if (this._dotsLife[ i ] === 0)
+			{
+				dotConfig = this._configureDot();
+				this._pixi.children[ i ].x = dotConfig.position.x;
+				this._pixi.children[ i ].y = dotConfig.position.y;
+				this._dotsLife[ i ] = dotConfig.lifetime;
+			}
 		}
 	}
 
@@ -351,8 +402,8 @@ export class DotStim extends VisualStim
 		if (this._pixi !== undefined)
 		{
 			const anchorNum = this._anchorTextToNum(this._anchor);
-			this._pixi.pivot.x = anchorNum[0] * this._pixi.scale.x * this._pixi.width;
-			this._pixi.pivot.y = anchorNum[1] * this._pixi.scale.y * this._pixi.height;
+			this._pixi.pivot.x = anchorNum[0] * this._pixi.scale.x * this._size_px[0];
+			this._pixi.pivot.y = anchorNum[1] * this._pixi.scale.y * this._size_px[1];
 		}
 	}
 
@@ -363,18 +414,15 @@ export class DotStim extends VisualStim
 	 */
 	_updateIfNeeded()
 	{
-		if (!this._needUpdate)
+		// Always update dots.
+		this._updateDots();
+
+		if (!this._needPixiUpdate)
 		{
 			return;
 		}
-		this._needUpdate = false;
 
-		// update the PIXI representation, if need be:
-		if (this._needPixiUpdate)
-		{
-			this._needPixiUpdate = false;
-			this._size_px = util.to_px(this._size, this.units, this.win);
-		}
+		this._needPixiUpdate = false;
 
 		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
