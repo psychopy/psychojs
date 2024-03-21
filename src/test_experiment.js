@@ -150,7 +150,8 @@ async function experimentInit() {
 			pos: [0, 0],
 			units: "pix",
 			depth: 0,
-			dotLife: 60,
+			dotLife: 0,
+			speed: 0.5,
 			fieldShape: "circle"
 		})
 	);

@@ -192,22 +192,65 @@ export class DotStim extends VisualStim
 
 	_updateDots()
 	{
-		if (this._dotLife === 0)
-		{
-			return;
-		}
-
 		let dotConfig;
 		let i;
 		for (i = 0; i < this._nDots; i++)
 		{
-			this._dotsLife[ i ] = Math.max(0, this._dotsLife[ i ] - 1);
-			if (this._dotsLife[ i ] === 0)
+			// Ignore lifetime dot updates if initial dotLife setting was explicitly set to 0.
+			if (this._dotLife > 0)
 			{
-				dotConfig = this._configureDot();
-				this._pixi.children[ i ].x = dotConfig.position.x;
-				this._pixi.children[ i ].y = dotConfig.position.y;
-				this._dotsLife[ i ] = dotConfig.lifetime;
+				this._dotsLife[ i ] = Math.max(0, this._dotsLife[ i ] - 1);
+				if (this._dotsLife[ i ] === 0)
+				{
+					dotConfig = this._configureDot();
+					this._pixi.children[ i ].x = dotConfig.position.x;
+					this._pixi.children[ i ].y = dotConfig.position.y;
+					this._dotsLife[ i ] = dotConfig.lifetime;
+				}
+			}
+
+			// Move dots.
+			if (this._noiseDots === "direction")
+			{
+				const x = Math.cos(this._dir * Math.PI / 180);
+				const y = Math.sin(this._dir * Math.PI / 180);
+
+				// TODO: ensure this is adequate conversion of speed.
+				const speed_px = util.to_px([ this._speed, this._speed ], this.units, this.win)[ 0 ];
+
+				this._pixi.children[ i ].x += x * speed_px;
+				this._pixi.children[ i ].y += y * speed_px;
+			}
+
+			// Field bounds check.
+			if (this._fieldShape === "sqr")
+			{
+				if (this._pixi.children[ i ].x < 0 ||
+					this._pixi.children[ i ].y < 0 ||
+					this._pixi.children[ i ].x + this._dotSize > this._size_px[ 0 ] ||
+					this._pixi.children[ i ].y + this._dotSize > this._size_px[ 1 ])
+				{
+					// Reset position if out of bounds.
+					dotConfig = this._configureDot();
+					this._pixi.children[ i ].x = dotConfig.position.x;
+					this._pixi.children[ i ].y = dotConfig.position.y;
+				}
+			}
+			else if (this._fieldShape === "circle")
+			{
+				// Shift positions back to the origin for ease of calculations.
+				const x = this._pixi.children[ i ].x - this._size_px[ 0 ] * 0.5;
+				const y = this._pixi.children[ i ].y - this._size_px[ 1 ] * 0.5;
+				const l = Math.sqrt(x * x + y * y);
+				const r = this._size_px[ 0 ] * 0.5;
+
+				if (l > r)
+				{
+					// Reset position if out of bounds.
+					dotConfig = this._configureDot();
+					this._pixi.children[ i ].x = dotConfig.position.x;
+					this._pixi.children[ i ].y = dotConfig.position.y;
+				}
 			}
 		}
 	}
@@ -430,7 +473,7 @@ export class DotStim extends VisualStim
 
 		// set the scale:
 		this._pixi.scale.x = 1;
-		this._pixi.scale.y = -1;
+		this._pixi.scale.y = 1;
 
 		let pos = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.position.set(pos.x, pos.y);
