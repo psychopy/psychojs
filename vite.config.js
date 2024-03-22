@@ -5,6 +5,9 @@ const fileName = `psychojs-${process.env.npm_package_version}`;
 export default {
     root: "./src/",
     base: "./",
+    define: {
+        PSYCHOJS_VERSION: JSON.stringify(process.env.npm_package_version)
+    },
     build:
     {
         outDir: "../out",
