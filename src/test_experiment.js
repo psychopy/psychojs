@@ -6,7 +6,7 @@
 // import { core, data, sound, util, visual } from "../out/psychojs-2024.1.0.js";
 import { core, data, sound, util, visual } from "./index.js";
 
-// import {StimInspector} from 'https://run.pavlovia.org/lgtst/stiminspector/StimInspector.js';
+import {StimInspector} from 'https://run.pavlovia.org/lgtst/stiminspector/StimInspector.js';
 // import {StimInspector} from '../stiminspector/StimInspector.js';
 // import {PsyexpReader} from '../psyexpreader/PsyexpReader.js';
 const { PsychoJS } = core;
@@ -38,7 +38,7 @@ psychoJS.openWindow({
 	waitBlanking: true
 });
 
-// new StimInspector(psychoJS.window, { core, data, sound, util, visual });
+new StimInspector(psychoJS.window, { core, data, sound, util, visual });
 
 // schedule the experiment:
 // psychoJS.schedule(psychoJS.gui.DlgFromDict({
@@ -136,11 +136,11 @@ async function experimentInit() {
 		// 	tex: 'sin',
 		// 	mask: undefined,
 		// 	ori: 0,
-		// 	size: [256, 512],
+		// 	size: [512, 512],
 		// 	pos: [0, 0],
 		// 	units: "pix",
 		// 	depth: 0
-		// })
+		// }),
 		new visual.DotStim({
 			win : psychoJS.window,
 			name: 'dots',
@@ -150,6 +150,7 @@ async function experimentInit() {
 			pos: [0, 0],
 			units: "pix",
 			depth: 0,
+			dotSize: 10,
 			dotLife: 0,
 			speed: 0.5,
 			fieldShape: "circle"

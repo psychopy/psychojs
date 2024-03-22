@@ -129,6 +129,7 @@ export class DotStim extends VisualStim
 
 		this._size_px = util.to_px(this.size, this.units, this.win);
 		this._dotsLife = new Float32Array(nDots);
+		this._dotsDir = new Float32Array(nDots);
 
 		// TODO: DEBUG.
 		// const s = new PIXI.Sprite(PIXI.Texture.WHITE);
@@ -176,17 +177,25 @@ export class DotStim extends VisualStim
 		let i;
 		let dot;
 		let dotConfig;
+		const coherentDots = Math.round(this._coherence * this._nDots);
 
 		for (i = 0; i < this._nDots; i ++)
 		{
-			dot = new PIXI.Sprite(PIXI.Texture.WHITE);
+			// TODO: ensure this is an optimal way to do this.
+			dot = new PIXI.Graphics();
+			dot.beginFill(0xffffff);
+			dot.arc(0, 0, this._dotSize * 0.5, 0, Math.PI * 2);
+			dot.endFill();
 			dotConfig = this._configureDot();
 			dot.x = dotConfig.position.x;
 			dot.y = dotConfig.position.y;
-			dot.width = this._dotSize;
-			dot.height = this._dotSize;
 			this._pixi.addChild(dot);
 			this._dotsLife[ i ] = dotConfig.lifetime;
+			this._dotsDir[ i ] = this._dir;
+			if (i > coherentDots)
+			{
+				this._dotsDir[ i ] = Math.random() * 360;
+			}
 		}
 	}
 
@@ -212,8 +221,8 @@ export class DotStim extends VisualStim
 			// Move dots.
 			if (this._noiseDots === "direction")
 			{
-				const x = Math.cos(this._dir * Math.PI / 180);
-				const y = Math.sin(this._dir * Math.PI / 180);
+				const x = Math.cos(this._dotsDir[ i ] * Math.PI / 180);
+				const y = Math.sin(this._dotsDir[ i ] * Math.PI / 180);
 
 				// TODO: ensure this is adequate conversion of speed.
 				const speed_px = util.to_px([ this._speed, this._speed ], this.units, this.win)[ 0 ];
@@ -450,6 +459,12 @@ export class DotStim extends VisualStim
 		}
 	}
 
+	setCoherence(c = 1, log = false)
+	{
+		const coherence = Math.max(0, Math.min(1, c));
+		this._setAttribute("coherence", coherence, log);
+	}
+
 	/**
 	 * Update the stimulus, if necessary.
 	 *
@@ -460,12 +475,17 @@ export class DotStim extends VisualStim
 		// Always update dots.
 		this._updateDots();
 
-		if (!this._needPixiUpdate)
-		{
-			return;
-		}
+		// if (!this._needUpdate)
+		// {
+		// 	return;
+		// }
 
-		this._needPixiUpdate = false;
+		// this._needUpdate = false;
+
+		// if (this._needPixiUpdate)
+		// {
+		// 	this._needPixiUpdate = false;
+		// }
 
 		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
