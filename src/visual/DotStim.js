@@ -487,6 +487,7 @@ export class DotStim extends VisualStim
 		// 	this._needPixiUpdate = false;
 		// }
 
+		this._size_px = util.to_px(this._size, this.units, this.win);
 		this._pixi.zIndex = -this._depth;
 		this.opacity = this._opacity;
 		this.anchor = this._anchor;
