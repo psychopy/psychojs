@@ -1,6 +1,6 @@
 {
   "name": "psychojs",
-  "version": "2023.2.3",
+  "version": "2024.1.0",
   "private": true,
   "description": "Helps run in-browser neuroscience, psychology, and psychophysics experiments",
   "license": "MIT",
@@ -15,6 +15,9 @@
   },
   "main": "./src/index.js",
   "scripts": {
+    "dev": "vite",
+    "vitebuild": "vite build",
+    "preview": "vite preview",
     "build": "npm run build:js && npm run build:css && npm run build:docs",
     "build:css": "node ./scripts/build.css.cjs",
     "build:docs": "jsdoc src -c jsdoc.json & cp jsdoc.css docs/styles/",
@@ -41,6 +44,8 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "vite": "^5.1.6",
+    "vite-plugin-glsl": "^1.2.1",
     "csslint": "^1.0.5",
     "dprint": "^0.15.3",
     "esbuild": "^0.12.1",
