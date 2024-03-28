@@ -1,9 +1,9 @@
 /**
  * Window responsible for displaying the experiment stimuli
  *
- * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @author Alain Pitiot & Nikita Agafonov
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -13,40 +13,59 @@ import { MonotonicClock } from "../util/Clock.js";
 import { Color } from "../util/Color.js";
 import { PsychObject } from "../util/PsychObject.js";
 import { Logger } from "./Logger.js";
+import { hasTouchScreen } from "../util/Util.js";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
  * <p>It sets up a [PIXI]{@link http://www.pixijs.com/} renderer, which we use to render the experiment stimuli.</p>
  *
- * @name module:core.Window
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {string} [options.name] the name of the window
- * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
- * @param {Color} [options.color= Color('black')] the background color of the window
- * @param {number} [options.gamma= 1] sets the divisor for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
- * @param {number} [options.contrast= 1] sets the contrast value
- * @param {string} [options.units= 'pix'] the units of the window
- * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
- * before flipping
- * @param {boolean} [options.autoLog= true] whether or not to log
  */
 export class Window extends PsychObject
 {
 	/**
+	 * Check whether PsychoJS/Pixi.js is actually using WebGL in the participant's browser, i.e.
+	 * hardware acceleration, rather than software emulation or Pixi.js' canvas fallback.
+	 *
+	 * @return true if WebGL is supported and false if it is not or if it is supported
+	 * 	only through software emulation
+	 */
+	static checkWebGLSupport()
+	{
+		// Note: in order to detect whether the participant's browser has hardware acceleration turned off
+		// we set FAIL_IF_MAJOR_PERFORMANCE_CAVEAT to true. This ensures that the WebGL context creation that
+		// takes place in PIXI.utils.isWebGLSupported fails if the performance is low, which is typically the case
+		// with software emulation.
+		// See details here: https://registry.khronos.org/webgl/specs/latest/1.0/#5.2
+		PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
+		return PIXI.utils.isWebGLSupported();
+	}
+
+	/**
 	 * Getter for monitorFramePeriod.
 	 *
 	 * @name module:core.Window#monitorFramePeriod
-	 * @function
-	 * @public
+	 * @return the estimated monitor frame period
 	 */
 	get monitorFramePeriod()
 	{
 		return 1.0 / this.getActualFrameRate();
 	}
 
+	/**
+	 * @memberof module:core
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {string} [options.name] the name of the window
+	 * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
+	 * @param {Color} [options.color= Color('black')] the background color of the window
+	 * @param {number} [options.gamma= 1] sets the divisor for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
+	 * @param {number} [options.contrast= 1] sets the contrast value
+	 * @param {string} [options.units= 'pix'] the units of the window
+	 * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
+	 * before flipping
+	 * @param {boolean} [options.autoLog= true] whether or not to log
+	 */
 	constructor({
 		psychoJS,
 		name,
@@ -124,10 +143,6 @@ export class Window extends PsychObject
 	 * Close the window.
 	 *
 	 * <p> Note: this actually only removes the canvas used to render the experiment stimuli.</p>
-	 *
-	 * @name module:core.Window#close
-	 * @function
-	 * @public
 	 */
 	close()
 	{
@@ -161,26 +176,19 @@ export class Window extends PsychObject
 	/**
 	 * Estimate the frame rate.
 	 *
-	 * @name module:core.Window#getActualFrameRate
-	 * @function
-	 * @public
 	 * @return {number} rAF based delta time based approximation, 60.0 by default
 	 */
 	getActualFrameRate()
 	{
 		// gets updated frame by frame
 		const lastDelta = this.psychoJS.scheduler._lastDelta;
-		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
+		const fps = (lastDelta === 0) ? 60.0 : (1000.0 / lastDelta);
 
 		return fps;
 	}
 
 	/**
 	 * Take the browser full screen if possible.
-	 *
-	 * @name module:core.Window#adjustScreenSize
-	 * @function
-	 * @public
 	 */
 	adjustScreenSize()
 	{
@@ -222,10 +230,6 @@ export class Window extends PsychObject
 
 	/**
 	 * Take the browser back from full screen if needed.
-	 *
-	 * @name module:core.Window#closeFullScreen
-	 * @function
-	 * @public
 	 */
 	closeFullScreen()
 	{
@@ -265,9 +269,6 @@ export class Window extends PsychObject
 	 *
 	 * <p> Note: the message will be time-stamped at the next call to requestAnimationFrame.</p>
 	 *
-	 * @name module:core.Window#logOnFlip
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {String} options.msg the message to be logged
 	 * @param {module:util.Logger.ServerLevel} [level = module:util.Logger.ServerLevel.EXP] the log level
@@ -294,9 +295,6 @@ export class Window extends PsychObject
 	 *
 	 * <p>This is typically used to reset a timer or clock.</p>
 	 *
-	 * @name module:core.Window#callOnFlip
-	 * @function
-	 * @public
 	 * @param {module:core.Window~OnFlipCallback} flipCallback - callback function.
 	 * @param {...*} flipCallbackArgs - arguments for the callback function.
 	 */
@@ -307,10 +305,6 @@ export class Window extends PsychObject
 
 	/**
 	 * Add PIXI.DisplayObject to the container displayed on the scene (window)
-	 *
-	 * @name module:core.Window#addPixiObject
-	 * @function
-	 * @public
 	 */
 	addPixiObject(pixiObject)
 	{
@@ -319,10 +313,6 @@ export class Window extends PsychObject
 
 	/**
 	 * Remove PIXI.DisplayObject from the container displayed on the scene (window)
-	 *
-	 * @name module:core.Window#removePixiObject
-	 * @function
-	 * @public
 	 */
 	removePixiObject(pixiObject)
 	{
@@ -331,10 +321,6 @@ export class Window extends PsychObject
 
 	/**
 	 * Render the stimuli onto the canvas.
-	 *
-	 * @name module:core.Window#render
-	 * @function
-	 * @public
 	 */
 	render()
 	{
@@ -378,9 +364,7 @@ export class Window extends PsychObject
 	/**
 	 * Update this window, if need be.
 	 *
-	 * @name module:core.Window#_updateIfNeeded
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -403,9 +387,7 @@ export class Window extends PsychObject
 	/**
 	 * Recompute this window's draw list and _container children for the next animation frame.
 	 *
-	 * @name module:core.Window#_refresh
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_refresh()
 	{
@@ -427,9 +409,7 @@ export class Window extends PsychObject
 	/**
 	 * Force an update of all stimuli in this window's drawlist.
 	 *
-	 * @name module:core.Window#_fullRefresh
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_fullRefresh()
 	{
@@ -449,15 +429,19 @@ export class Window extends PsychObject
 	 * <p>A new renderer is created and a container is added to it. The renderer's touch and mouse events
 	 * are handled by the {@link EventManager}.</p>
 	 *
-	 * @name module:core.Window#_setupPixi
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupPixi()
 	{
 		// the size of the PsychoJS Window is always that of the browser
 		this._size[0] = window.innerWidth;
 		this._size[1] = window.innerHeight;
+
+		if (this._psychoJS._checkWebGLSupport)
+		{
+			// see checkWebGLSupport() method for details.
+			PIXI.settings.FAIL_IF_MAJOR_PERFORMANCE_CAVEAT = true;
+		}
 
 		// create a PIXI renderer and add it to the document:
 		this._renderer = PIXI.autoDetectRenderer({
@@ -510,6 +494,17 @@ export class Window extends PsychObject
 		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
 		this._resizeCallback = (e) =>
 		{
+			// if the user device is a mobile phone or tablet (we use the presence of a touch screen as a
+			// proxy), we need to detect whether the change in size is due to the appearance of a virtual keyboard
+			// in which case we do not want to resize the canvas. This is rather tricky and so we resort to
+			// the below trick. It would be better to use the VirtualKeyboard API, but it is not widely
+			// available just yet, as of 2023-06.
+			const keyboardHeight = 300;
+			if (hasTouchScreen() && (window.screen.height - window.visualViewport.height) > keyboardHeight)
+			{
+				return;
+			}
+
 			Window._resizePixiRenderer(this, e);
 			this._backgroundSprite.width = this._size[0];
 			this._backgroundSprite.height = this._size[1];
@@ -523,9 +518,7 @@ export class Window extends PsychObject
 	 * Adjust the size of the renderer and the position of the root container
 	 * in response to a change in the browser's size.
 	 *
-	 * @name module:core.Window#_resizePixiRenderer
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {module:core.Window} pjsWindow - the PsychoJS Window
 	 * @param event
 	 */
@@ -554,9 +547,7 @@ export class Window extends PsychObject
 	/**
 	 * Send all logged messages to the {@link Logger}.
 	 *
-	 * @name module:core.Window#_writeLogOnFlip
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_writeLogOnFlip()
 	{

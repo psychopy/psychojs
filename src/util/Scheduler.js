@@ -2,8 +2,8 @@
  * Scheduler.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -12,7 +12,7 @@
  * called tasks, after each frame is displayed.</p>
  *
  * <p>
- * Tasks are either another [Scheduler]{@link module:util.Scheduler}, or a
+ * Tasks are either another [Scheduler]{@link Scheduler}, or a
  * JavaScript functions returning one of the following codes:
  * <ul>
  * <li>Scheduler.Event.NEXT: Move onto the next task *without* rendering the scene first.</li>
@@ -24,19 +24,17 @@
  *
  * <p> It is possible to create sub-schedulers, e.g. to handle loops.
  * Sub-schedulers are added to a parent scheduler as a normal
- * task would be by calling [scheduler.add(subScheduler)]{@link module:util.Scheduler#add}.</p>
+ * task would be by calling [scheduler.add(subScheduler)]{@link Scheduler#add}.</p>
  *
  * <p> Conditional branching is also available:
- * [scheduler.addConditionalBranches]{@link module:util.Scheduler#addConditional}</p>
- *
- *
- * @name module:util.Scheduler
- * @class
- * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
- *
+ * [scheduler.addConditionalBranches]{@link Scheduler#addConditional}</p>
  */
 export class Scheduler
 {
+	/**
+	 * @memberof module:util
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 */
 	constructor(psychoJS)
 	{
 		this._psychoJS = psychoJS;
@@ -55,9 +53,7 @@ export class Scheduler
 	/**
 	 * Get the status of the scheduler.
 	 *
-	 * @name module:util.Scheduler#status
-	 * @public
-	 * @returns {module:util.Scheduler#Status} the status of the scheduler
+	 * @returns {Scheduler#Status} the status of the scheduler
 	 */
 	get status()
 	{
@@ -67,15 +63,13 @@ export class Scheduler
 	/**
 	 * Task to be run by the scheduler.
 	 *
-	 * @callback module:util.Scheduler~Task
+	 * @callback Scheduler~Task
 	 * @param {*} [args] optional arguments
 	 */
 	/**
 	 * Schedule a new task.
 	 *
-	 * @name module:util.Scheduler#add
-	 * @public
-	 * @param {module:util.Scheduler~Task | module:util.Scheduler} task - the task to be scheduled
+	 * @param {Scheduler~Task | Scheduler} task - the task to be scheduled
 	 * @param {...*} args - arguments for that task
 	 */
 	add(task, ...args)
@@ -87,19 +81,17 @@ export class Scheduler
 	/**
 	 * Condition evaluated when the task is run.
 	 *
-	 * @callback module:util.Scheduler~Condition
+	 * @callback Scheduler~Condition
 	 * @return {boolean}
 	 */
 	/**
 	 * Schedule a series of task or another, based on a condition.
 	 *
-	 * <p>Note: the tasks are [sub-schedulers]{@link module:util.Scheduler}.</p>
+	 * <p>Note: the tasks are [sub-schedulers]{@link Scheduler}.</p>
 	 *
-	 * @name module:util.Scheduler#addConditional
-	 * @public
-	 * @param {module:util.Scheduler~Condition} condition - the condition
-	 * @param {module:util.Scheduler} thenScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is satisfied
-	 * @param {module:util.Scheduler} elseScheduler - the [Scheduler]{@link module:util.Scheduler} to be run if the condition is not satisfied
+	 * @param {Scheduler~Condition} condition - the condition
+	 * @param {Scheduler} thenScheduler - the [Scheduler]{@link Scheduler} to be run if the condition is satisfied
+	 * @param {Scheduler} elseScheduler - the [Scheduler]{@link Scheduler} to be run if the condition is not satisfied
 	 */
 	addConditional(condition, thenScheduler, elseScheduler)
 	{
@@ -126,11 +118,11 @@ export class Scheduler
 	 *
 	 * <p>Note: tasks are run after each animation frame.</p>
 	 *
-	 * @name module:util.Scheduler#start
-	 * @public
+	 * @return {Promise<void>} a promise resolved when the scheduler stops, e.g. when the experiments finishes
 	 */
-	async start()
+	start()
 	{
+		let shedulerResolve;
 		const self = this;
 		const update = async (timestamp) =>
 		{
@@ -138,6 +130,7 @@ export class Scheduler
 			if (self._stopAtNextUpdate)
 			{
 				self._status = Scheduler.Status.STOPPED;
+				shedulerResolve();
 				return;
 			}
 
@@ -148,6 +141,7 @@ export class Scheduler
 			if (state === Scheduler.Event.QUIT)
 			{
 				self._status = Scheduler.Status.STOPPED;
+				shedulerResolve();
 				return;
 			}
 
@@ -166,13 +160,16 @@ export class Scheduler
 
 		// start the animation:
 		requestAnimationFrame(update);
+
+		// return a promise resolved when the scheduler is stopped:
+		return new Promise((resolve, _) =>
+		{
+			shedulerResolve = resolve;
+		});
 	}
 
 	/**
 	 * Stop this scheduler.
-	 *
-	 * @name module:util.Scheduler#stop
-	 * @public
 	 */
 	stop()
 	{
@@ -184,9 +181,9 @@ export class Scheduler
 	/**
 	 * Run the next scheduled tasks, in sequence, until a rendering of the scene is requested.
 	 *
-	 * @name module:util.Scheduler#_runNextTasks
+	 * @name Scheduler#_runNextTasks
 	 * @private
-	 * @return {module:util.Scheduler#Event} the state of the scheduler after the last task ran
+	 * @return {Scheduler#Event} the state of the scheduler after the last task ran
 	 */
 	async _runNextTasks()
 	{
@@ -260,10 +257,8 @@ export class Scheduler
 /**
  * Events.
  *
- * @name module:util.Scheduler#Event
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Scheduler.Event = {
 	/**
@@ -290,10 +285,8 @@ Scheduler.Event = {
 /**
  * Status.
  *
- * @name module:util.Scheduler#Status
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Scheduler.Status = {
 	/**

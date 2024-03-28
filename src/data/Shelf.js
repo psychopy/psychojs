@@ -1,9 +1,9 @@
-/** @module data */
 /**
  * Shelf handles persistent key/value pairs, or records, which are stored in the shelf collection on the
- * server, and be accessed and manipulated in a concurrent fashion.
+ * server, and can be accessed and manipulated in a concurrent fashion.
  *
  * @author Alain Pitiot
+ * @version 2021.2.3
  * @copyright (c) 2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -16,27 +16,25 @@ import {Scheduler} from "../util/Scheduler.js";
 
 /**
  * <p>Shelf handles persistent key/value pairs, or records, which are stored in the shelf collection on the
- * server, and be accessed and manipulated in a concurrent fashion.</p>
+ * server, and can be accessed and manipulated in a concurrent fashion.</p>
  *
- * <p></p>
- *
- * @name module:data.Shelf
- * @class
  * @extends PsychObject
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS 	the PsychoJS instance
- * @param {boolean} [options.autoLog= false] 				whether to log
  */
 export class Shelf extends PsychObject
 {
 	/**
 	 * Maximum number of components in a key
-	 * @name module:data.Shelf.#MAX_KEY_LENGTH
 	 * @type {number}
 	 * @note this value should mirror that on the server, i.e. the server also checks that the key is valid
 	 */
 	static #MAX_KEY_LENGTH = 10;
 
+	/**
+	 * @memberOf module:data
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS 	the PsychoJS instance
+	 * @param {boolean} [options.autoLog= false] 				whether to log
+	 */
 	constructor({psychoJS, autoLog = false } = {})
 	{
 		super(psychoJS);
@@ -56,9 +54,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a record of type BOOLEAN associated with the given key.
 	 *
-	 * @name module:data.Shelf#getBooleanValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					 	key as an array of key components
 	 * @param {boolean} options.defaultValue		the default value returned if no record with the given key exists
@@ -75,9 +70,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set the value of a record of type BOOLEAN associated with the given key.
 	 *
-	 * @name module:data.Shelf#setBooleanValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 	key as an array of key components
 	 * @param {boolean} options.value 		the new value
@@ -108,9 +100,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Flip the value of a record of type BOOLEAN associated with the given key.
 	 *
-	 * @name module:data.Shelf#flipBooleanValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @return {Promise<boolean>}				the new, flipped, value
@@ -129,9 +118,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a record of type INTEGER associated with the given key.
 	 *
-	 * @name module:data.Shelf#getIntegerValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 			key as an array of key components
 	 * @param {number} options.defaultValue		the default value returned if no record with the given key
@@ -148,9 +134,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set the value of a record of type INTEGER associated with the given key.
 	 *
-	 * @name module:data.Shelf#setIntegerValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @param {number} options.value 		the new value
@@ -181,9 +164,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Add a delta to  the value of a record of type INTEGER associated with the given key.
 	 *
-	 * @name module:data.Shelf#addIntegerValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 	key as an array of key components
 	 * @param {number} options.delta 		the delta, positive or negative, to add to the value
@@ -214,9 +194,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a record of type TEXT associated with the given key.
 	 *
-	 * @name module:data.Shelf#getTextValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					 	key as an array of key components
 	 * @param {string} options.defaultValue		the default value returned if no record with the given key exists on
@@ -233,9 +210,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set the value of a record of type TEXT associated with the given key.
 	 *
-	 * @name module:data.Shelf#setTextValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 	key as an array of key components
 	 * @param {string} options.value 			the new value
@@ -266,9 +240,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a record of type LIST associated with the given key.
 	 *
-	 * @name module:data.Shelf#getListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					 			key as an array of key components
 	 * @param {Array.<*>} options.defaultValue		the default value returned if no record with the given key exists on
@@ -285,9 +256,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set the value of a record of type LIST associated with the given key.
 	 *
-	 * @name module:data.Shelf#setListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 		key as an array of key components
 	 * @param {Array.<*>} options.value 	the new value
@@ -318,9 +286,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Append an element, or a list of elements, to the value of a record of type LIST associated with the given key.
 	 *
-	 * @name module:data.Shelf#appendListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @param {*} options.elements 		the element or list of elements to be appended
@@ -342,9 +307,6 @@ export class Shelf extends PsychObject
 	 * Pop an element, at the given index, from the value of a record of type LIST associated
 	 * with the given key.
 	 *
-	 * @name module:data.Shelf#popListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key						key as an array of key components
 	 * @param {number} [options.index = -1] 	the index of the element to be popped
@@ -365,9 +327,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Empty the value of a record of type LIST associated with the given key.
 	 *
-	 * @name module:data.Shelf#clearListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @return {Promise<Array.<*>>}		the new, empty value, i.e. []
@@ -386,9 +345,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Shuffle the elements of the value of a record of type LIST associated with the given key.
 	 *
-	 * @name module:data.Shelf#shuffleListValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @return {Promise<Array.<*>>}		the new, shuffled value
@@ -408,9 +364,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the names of the fields in the dictionary record associated with the given key.
 	 *
-	 * @name module:data.Shelf#getDictionaryFieldNames
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		key as an array of key components
 	 * @return {Promise<string[]>}			the list of field names
@@ -425,9 +378,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a given field in the dictionary record associated with the given key.
 	 *
-	 * @name module:data.Shelf#getDictionaryFieldValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					 	key as an array of key components
 	 * @param {string} options.fieldName				the name of the field
@@ -445,9 +395,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set a field in the dictionary record associated to the given key.
 	 *
-	 * @name module:data.Shelf#setDictionaryFieldValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					key as an array of key components
 	 * @param {string} options.fieldName			the name of the field
@@ -470,9 +417,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the value of a record of type DICTIONARY associated with the given key.
 	 *
-	 * @name module:data.Shelf#getDictionaryValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key		 									key as an array of key components
 	 * @param {Object.<string, *>} options.defaultValue		the default value returned if no record with the given key
@@ -489,9 +433,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Set the value of a record of type DICTIONARY associated with the given key.
 	 *
-	 * @name module:data.Shelf#setDictionaryValue
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key							key as an array of key components
 	 * @param {Object.<string, *>} options.value 	the new value
@@ -523,9 +464,6 @@ export class Shelf extends PsychObject
 	 * Schedulable component that will block the experiment until the counter associated with the given key
 	 * has been incremented by the given amount.
 	 *
-	 * @name module:data.Shelf#incrementComponent
-	 * @function
-	 * @public
 	 * @param key
 	 * @param increment
 	 * @param callback
@@ -576,9 +514,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the name of a group, using a counterbalanced design.
 	 *
-	 * @name module:data.Shelf#counterBalanceSelect
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} options.key					key as an array of key components
 	 * @param {string[]} options.groups				the names of the groups
@@ -648,9 +583,6 @@ export class Shelf extends PsychObject
 	 *
 	 * <p>This is a generic method, typically called from the Shelf helper methods, e.g. setBinaryValue.</p>
 	 *
-	 * @name module:data.Shelf#_updateValue
-	 * @function
-	 * @protected
 	 * @param {string[]} key					 	key as an array of key components
 	 * @param {Shelf.Type} type 				the type of the record associated with the given key
 	 * @param {*} update 							the desired update
@@ -716,11 +648,8 @@ export class Shelf extends PsychObject
 	 *
 	 * <p>This is a generic method, typically called from the Shelf helper methods, e.g. getBinaryValue.</p>
 	 *
-	 * @name module:data.Shelf#_getValue
-	 * @function
-	 * @protected
-	 * @param {string[]} key					 	key as an array of key components
-	 * @param {Shelf.Type} type 				the type of the record associated with the given key
+	 * @param {string[]} key					key as an array of key components
+	 * @param {Shelf.Type} type 			the type of the record associated with the given key
 	 * @param {Object} [options] 			the options, e.g. the default value returned if no record with the
 	 * given key exists on the shelf
 	 * @return {Promise<any>}					the value
@@ -794,16 +723,8 @@ export class Shelf extends PsychObject
 	 *
 	 * <p>Since all Shelf methods call _checkAvailability, we also use it as a means to throttle those calls.</p>
 	 *
-	 * @name module:data.Shelf#_checkAvailability
-	 * @function
-	 * @public
-<<<<<<< HEAD
-	 * @param {string} [methodName=""] 	name of the method requiring a check
-	 * @throws {Object.<string, *>} 				exception if it is not possible to run the given shelf command
-=======
-	 * @param {string} [methodName=""] name of the method requiring a check
-	 * @throw {Object.<string, *>} exception when it is not possible to run the given shelf command
->>>>>>> 8cc27b9cc9844d435c0177263ef7c2991463196c
+	 * @param {string} [methodName=""] - name of the method requiring a check
+	 * @throws {Object.<string, *>} exception if it is not possible to run the given shelf command
 	 */
 	_checkAvailability(methodName = "")
 	{
@@ -852,9 +773,6 @@ export class Shelf extends PsychObject
 	/**
 	 * Check the validity of the key.
 	 *
-	 * @name module:data.Shelf#_checkKey
-	 * @function
-	 * @public
 	 * @param {object} key 							key whose validity is to be checked
 	 * @throws {Object.<string, *>} 	exception if the key is invalid
 	 */
@@ -879,10 +797,8 @@ export class Shelf extends PsychObject
 /**
  * Shelf status
  *
- * @name module:data.Shelf#Status
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Shelf.Status = {
 	/**
@@ -906,7 +822,6 @@ Shelf.Status = {
  *
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Shelf.Type = {
 	INTEGER: Symbol.for('INTEGER'),

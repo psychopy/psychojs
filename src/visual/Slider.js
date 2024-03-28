@@ -2,8 +2,8 @@
  * Slider Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -20,46 +20,8 @@ import { VisualStim } from "./VisualStim.js";
 /**
  * Slider stimulus.
  *
- * @name module:visual.Slider
- * @class
  * @extends module:visual.VisualStim
  * @mixes module:util.ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
- * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
- * @param {number} [options.ori = 0.0] - the orientation (in degrees)
- * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
- *
- * @param {Color} [options.color= Color('LightGray')] the color of the slider
- * @param {number} [options.contrast= 1.0] - the contrast of the slider
- * @param {number} [options.opacity= 1.0] - the opacity of the slider
- *
- * @param {string} [options.style= [Slider.Style.RATING]] - the slider style
- * @param {number[]} [options.ticks= [1,2,3,4,5]] - the array of ticks
- * @param {number[]} [options.labels= []] - the array of labels
- * @param {number} [options.granularity= 0] - the granularity
- * @param {boolean} [options.flip= false] - whether or not to flip the position of the marker, ticks,
- * and labels with respect to the central bar
- * @param {boolean} [options.readOnly= false] - whether or not the slider is read only
- *
- * @param {string} [options.font= 'Arial'] - the text font
- * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
- * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
- * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
- * Slider's units: 14 for 'pix', 0.03 otherwise
- *
- * @param {boolean} [options.compact= false] - whether or not the slider is compact, i.e. whether all graphical
- * elements (e.g. labels) fit within its size
- *
- * @param {PIXI.Graphics} options.clipMask - the clip mask
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
- *   frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- *
- * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
- * 	which must be updated when this Slider is updated, e.g. a Form.
  *
  * @todo check that parameters are valid, e.g. ticks are an array of numbers, etc.
  * @todo readOnly
@@ -68,6 +30,45 @@ import { VisualStim } from "./VisualStim.js";
  */
 export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number[]} [options.pos= [0, 0]] - the position of the center of the slider
+	 * @param {number[]} options.size - the size of the slider, e.g. [1, 0.1] for an horizontal slider
+	 * @param {number} [options.ori = 0.0] - the orientation (in degrees)
+	 * @param {string} [options.units= 'height'] - the units of the Slider position, and font size
+	 *
+	 * @param {Color} [options.color= Color('LightGray')] the color of the slider
+	 * @param {number} [options.contrast= 1.0] - the contrast of the slider
+	 * @param {number} [options.opacity= 1.0] - the opacity of the slider
+	 *
+	 * @param {string} [options.style= [Slider.Style.RATING]] - the slider style
+	 * @param {number[]} [options.ticks= [1,2,3,4,5]] - the array of ticks
+	 * @param {number[]} [options.labels= []] - the array of labels
+	 * @param {number} [options.granularity= 0] - the granularity
+	 * @param {boolean} [options.flip= false] - whether or not to flip the position of the marker, ticks,
+	 * and labels with respect to the central bar
+	 * @param {boolean} [options.readOnly= false] - whether or not the slider is read only
+	 *
+	 * @param {string} [options.font= 'Arial'] - the text font
+	 * @param {boolean} [options.bold= true] - whether or not the font of the labels is bold
+	 * @param {boolean} [options.italic= false] - whether or not the font of the labels is italic
+	 * @param {number} [options.fontSize] - the font size of the labels (in pixels), the default fontSize depends on the
+	 * Slider's units: 14 for 'pix', 0.03 otherwise
+	 *
+	 * @param {boolean} [options.compact= false] - whether or not the slider is compact, i.e. whether all graphical
+	 * elements (e.g. labels) fit within its size
+	 *
+	 * @param {PIXI.Graphics} options.clipMask - the clip mask
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
+	 *   frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 *
+	 * @param {core.MinimalStim[]} [options.dependentStims = [] ] - the list of dependent stimuli,
+	 * 	which must be updated when this Slider is updated, e.g. a Form.
+	 */
 	constructor(
 		{
 			name,
@@ -264,9 +265,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 	/**
 	 * Force a refresh of the stimulus.
-	 *
-	 * @name module:visual.Slider#refresh
-	 * @public
 	 */
 	refresh()
 	{
@@ -277,9 +275,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 	/**
 	 * Reset the slider.
-	 *
-	 * @name module:visual.Slider#reset
-	 * @public
 	 */
 	reset()
 	{
@@ -304,9 +299,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Query whether or not the marker is currently being dragged.
 	 *
-	 * @name module:visual.Slider#isMarkerDragging
-	 * @function
-	 * @public
 	 * @returns {boolean} whether or not the marker is being dragged
 	 */
 	isMarkerDragging()
@@ -317,8 +309,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Get the current value of the rating.
 	 *
-	 * @name module:visual.Slider#getRating
-	 * @public
 	 * @returns {number | undefined} the rating or undefined if there is none
 	 */
 	getRating()
@@ -337,8 +327,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Get the response time of the most recent change to the rating.
 	 *
-	 * @name module:visual.Slider#getRT
-	 * @public
 	 * @returns {number | undefined} the response time (in second) or undefined if there is none
 	 */
 	getRT()
@@ -359,9 +347,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * <p>Read-only sliders are half-opaque and do not provide responses.</p>
 	 *
-	 *
-	 * @name module:visual.Slider#setReadOnly
-	 * @public
 	 * @param {boolean} [readOnly= true] - whether or not the slider is read-only
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -391,9 +376,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * <p>Setting markerPos changes the visible position of the marker to the specified rating
 	 * but does not change the actual rating returned by the slider.</p>
 	 *
-	 *
-	 * @name module:visual.Slider#setMarkerPos
-	 * @public
 	 * @param {number} displayedRating - the displayed rating
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -415,8 +397,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * <p>Setting the rating does not change the visible position of the marker.</p>
 	 *
-	 * @name module:visual.Slider#setRating
-	 * @public
 	 * @param {number} rating - the rating
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -435,8 +415,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setter for the orientation attribute.
 	 *
-	 * @name module:visual.Slider#setOri
-	 * @public
 	 * @param {number} ori - the orientation in degree with 0 as the vertical position, positive values rotate clockwise.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -451,6 +429,24 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 			{
 				this._pixiLabels[i].rotation = -(this._ori + this._labelOri) * Math.PI / 180;
 			}
+		}
+	}
+
+	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// container has origin at [0, 0], subtracting 0.5 from anchorNum vals to get a desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * this._pixi.scale.y * this._pixi.height;
 		}
 	}
 
@@ -502,8 +498,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * @note this method calculates the position of the labels, since that is necessary to the estimation of
 	 * the bounding box.
 	 *
-	 * @name module:visual.Slider#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -634,8 +628,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Sanitize the slider attributes: check for attribute conflicts, missing values, etc.
 	 *
-	 * @name module:visual.Slider#_sanitizeAttributes
-	 * @function
 	 * @protected
 	 */
 	_sanitizeAttributes()
@@ -712,9 +704,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * <p>Setting the rating does also change the visible position of the marker.</p>
 	 *
-	 * @name module:visual.Slider#recordRating
-	 * @function
-	 * @public
 	 * @param {number} rating - the rating
 	 * @param {number} [responseTime] - the reaction time
 	 * @param {boolean} [log= false] - whether of not to log
@@ -744,10 +733,6 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Release the PIXI representation, if there is one.
 	 *
-	 * @name module:core.Slider#release
-	 * @function
-	 * @public
-	 *
 	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	release (log = false)
@@ -759,8 +744,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.Slider#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -782,6 +766,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 
 		this._pixi.alpha = this._opacity;
 		this._pixi.zIndex = -this._depth;
+		this.anchor = this._anchor;
 
 		// make sure that the dependent Stimuli are also updated:
 		for (const dependentStim of this._dependentStims)
@@ -793,9 +778,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Estimate the position of the slider, taking the compactness into account.
 	 *
-	 * @name module:visual.Slider#_getPosition_px
 	 * @return {number[]} - the position of the slider, in pixels
-	 * @private
+	 * @protected
 	 */
 	_getPosition_px()
 	{
@@ -822,7 +806,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 * Update the position of the marker if necessary.
 	 *
 	 * @name module:visual.Slider#_updateMarker
-	 * @private
+	 * @protected
 	 */
 	_updateMarker()
 	{
@@ -850,8 +834,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Handle pointerdown event.
 	 *
-	 * @name module:visual.Slider#_handlePointerDown
-	 * @private
+	 * @protected
 	 */
 	_handlePointerDown (e) {
 		if (e.data.pointerType === "mouse" && e.data.button !== 0)
@@ -873,8 +856,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Handle pointermove event.
 	 *
-	 * @name module:visual.Slider#_handlePointerMove
-	 * @private
+	 * @protected
 	 */
 	_handlePointerMove (e)
 	{
@@ -894,8 +876,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Handle pointerup event.
 	 *
-	 * @name module:visual.Slider#_handlePointerUp
-	 * @private
+	 * @protected
 	 */
 	_handlePointerUp (e)
 	{
@@ -917,8 +898,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Add event listeners.
 	 *
-	 * @name module:visual.Slider#_addEventListeners
-	 * @private
+	 * @protected
 	 */
 	_addEventListeners ()
 	{
@@ -930,8 +910,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Remove event listeners.
 	 *
-	 * @name module:visual.Slider#_removeEventListeners
-	 * @private
+	 * @protected
 	 */
 	_removeEventListeners ()
 	{
@@ -946,9 +925,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the PIXI components of the slider (bar, ticks, labels, marker, etc.).
 	 *
-	 * @name module:visual.Slider#_setupSlider
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupSlider()
 	{
@@ -1021,9 +998,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the central bar.
 	 *
-	 * @name module:visual.Slider#_setupBar
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupBar()
 	{
@@ -1050,9 +1025,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the marker, and the associated mouse events.
 	 *
-	 * @name module:visual.Slider#_setupMarker
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupMarker()
 	{
@@ -1183,9 +1156,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the ticks.
 	 *
-	 * @name module:visual.Slider#_setupTicks
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupTicks()
 	{
@@ -1218,9 +1189,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Get the PIXI Text Style applied to the PIXI.Text labels.
 	 *
-	 * @name module:visual.Slider#_getTextStyle
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_getTextStyle()
 	{
@@ -1239,9 +1208,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Setup the labels.
 	 *
-	 * @name module:visual.Slider#_setupLabels
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupLabels()
 	{
@@ -1266,9 +1233,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * @note: We are mirroring PsychoPy here, rather than using a skin approach.
 	 *
-	 * @name module:visual.Slider#_setupStyle
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_setupStyle()
 	{
@@ -1382,9 +1347,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Convert an array of ratings into an array of [x,y] positions (in Slider units, with 0 at the center of the Slider)
 	 *
-	 * @name module:visual.Slider#_ratingToPos
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number[]} ratings - the array of ratings
 	 * @returns {Array.<Array.<number>>} the positions corresponding to the ratings (in Slider units,
 	 * with 0 at the center of the Slider)
@@ -1443,9 +1406,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Convert a [x,y] position, in pixel units, relative to the slider, into a rating.
 	 *
-	 * @name module:visual.Slider#_posToRating
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number[]} pos_px - the [x,y] position, in pixel units, relative to the slider.
 	 * @returns {number} the corresponding rating.
 	 */
@@ -1491,9 +1452,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	 *
 	 * <p>The slider is horizontal is its x-axis size is larger than its y-axis size.</p>
 	 *
-	 * @name module:visual.Slider#_isHorizontal
-	 * @function
-	 * @private
+	 * @protected
 	 * @returns {boolean} whether or not the slider is horizontal
 	 */
 	_isHorizontal()
@@ -1504,9 +1463,7 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 	/**
 	 * Calculate the rating once granularity has been taken into account.
 	 *
-	 * @name module:visual.Slider#_granularise
-	 * @function
-	 * @private
+	 * @protected
 	 * @param {number} rating - the input rating
 	 * @returns {number} the new rating with granularity applied
 	 */
@@ -1530,10 +1487,8 @@ export class Slider extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 /**
  * Shape of the marker and of the ticks.
  *
- * @name module:visual.Slider#Shape
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Slider.Shape = {
 	DISC: Symbol.for("DISC"),
@@ -1545,10 +1500,8 @@ Slider.Shape = {
 /**
  * Styles.
  *
- * @name module:visual.Slider#Style
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Slider.Style = {
 	RATING: Symbol.for("RATING"),
@@ -1562,10 +1515,8 @@ Slider.Style = {
 /**
  * Skin.
  *
- * @name module:visual.Slider#Skin
  * @enum {any}
  * @readonly
- * @public
  *
  * @note a null value indicates that the value is calculated when the style is setup, rather than simply assigned.
  */

@@ -1,10 +1,9 @@
-/** @module visual */
 /**
  * Basic Shape Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -19,33 +18,36 @@ import { VisualStim } from "./VisualStim.js";
 /**
  * <p>This class provides the basic functionality of shape stimuli.</p>
  *
- * @class
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {number} options.lineWidth - the line width
- * @param {Color} [options.lineColor= 'white'] the line color
- * @param {Color} options.fillColor - the fill color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {Array.<Array.<number>>} [options.vertices= [[-0.5, 0], [0, 0.5], [0.5, 0]]] - the shape vertices
- * @param {boolean} [options.closeShape= true] - whether or not the shape is closed
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the shape
- * @param {number} [options.size= 1.0] - the size
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {string} options.units - the units of the stimulus vertices, size and position
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth
- * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin)
 {
-	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {number} options.lineWidth - the line width
+	 * @param {Color} [options.lineColor= 'white'] the line color
+	 * @param {Color} options.fillColor - the fill color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {Array.<Array.<number>>} [options.vertices= [[-0.5, 0], [0, 0.5], [0.5, 0]]] - the shape vertices
+	 * @param {boolean} [options.closeShape= true] - whether or not the shape is closed
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the shape
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {number} [options.size= 1.0] - the size
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {string} options.units - the units of the stimulus vertices, size and position
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth
+	 * @param {boolean} [options.interpolate= true] - whether or not the shape is interpolated
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
+	constructor({ name, win, lineWidth, lineColor, fillColor, opacity, vertices, closeShape, pos, anchor, size, ori, units, contrast, depth, interpolate, autoDraw, autoLog } = {})
 	{
-		super({ name, win, units, ori, opacity, pos, depth, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, depth, size, autoDraw, autoLog });
 
 		// the PIXI polygon corresponding to the vertices, in pixel units:
 		this._pixiPolygon_px = undefined;
@@ -106,8 +108,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	/**
 	 * Setter for the vertices attribute.
 	 *
-	 * @name module:visual.ShapeStim#setVertices
-	 * @public
 	 * @param {Array.<Array.<number>>} vertices - the vertices
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -150,8 +150,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	 *
 	 * This is overridden in order to provide a finer inclusion test.
 	 *
-	 * @name module:visual.ShapeStim#contains
-	 * @public
 	 * @override
 	 * @param {Object} object - the object
 	 * @param {string} units - the units
@@ -179,10 +177,28 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	}
 
 	/**
+	 * Setter for the anchor attribute.
+	 *
+	 * @param {string} anchor - anchor of the stim
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setAnchor (anchor = "center", log = false)
+	{
+		this._setAttribute("anchor", anchor, log);
+		if (this._pixi !== undefined)
+		{
+			// since vertices are passed directly, usually assuming origin at [0, 0]
+			// and already being centered around it, subtracting 0.5 from anchorNum vals
+			// to get a desired effect.
+			const anchorNum = this._anchorTextToNum(this._anchor);
+			this._pixi.pivot.x = (anchorNum[0] - 0.5) * this._pixi.scale.x * this._pixi.width;
+			this._pixi.pivot.y = (anchorNum[1] - 0.5) * -this._pixi.scale.y * this._pixi.height;
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ShapeStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -218,8 +234,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.ShapeStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -258,6 +273,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 			}
 
 			this._pixi.zIndex = -this._depth;
+			this.anchor = this._anchor;
 		}
 
 		// set polygon position and rotation:
@@ -268,8 +284,7 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	/**
 	 * Get the PIXI polygon (in pixel units) corresponding to the vertices.
 	 *
-	 * @name module:visual.ShapeStim#_getPolygon
-	 * @private
+	 * @protected
 	 * @return {Object} the PIXI polygon corresponding to this stimulus vertices.
 	 */
 	_getPixiPolygon()
@@ -295,7 +310,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 				coords_px.push(coords_px[1]);
 			}
 		}
-
 		// destroy the previous PIXI polygon and create a new one:
 		this._pixiPolygon_px = new PIXI.Polygon(coords_px);
 		this._pixiPolygon_px.closeStroke = this._closeShape;
@@ -305,7 +319,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
 	/**
 	 * Get the vertices in pixel units.
 	 *
-	 * @name module:visual.ShapeStim#_getVertices_px
 	 * @protected
 	 * @return {Array.<number[]>} the vertices (in pixel units)
 	 */
@@ -339,7 +352,6 @@ export class ShapeStim extends util.mix(VisualStim).with(ColorMixin, WindowMixin
  * Known shapes.
  *
  * @readonly
- * @public
  */
 ShapeStim.KnownShapes = {
 	cross: [
@@ -373,4 +385,29 @@ ShapeStim.KnownShapes = {
 		[-0.39, 0.31],
 		[-0.09, 0.18],
 	],
+
+	triangle: [
+        [+0.0, 0.5],  // Point
+        [-0.5, -0.5],  // Bottom left
+        [+0.5, -0.5],  // Bottom right
+    ],
+
+	rectangle: [
+			[-.5,  .5],  // Top left
+			[ .5,  .5],  // Top right
+			[ .5, -.5],  // Bottom left
+			[-.5, -.5],  // Bottom right
+	],
+
+	arrow: [
+			[0.0, 0.5],
+			[-0.5, 0.0],
+			[-1/6, 0.0],
+			[-1/6, -0.5],
+			[1/6, -0.5],
+			[1/6, 0.0],
+			[0.5, 0.0],
+	],
 };
+// Alias some names for convenience
+ShapeStim.KnownShapes['star'] = ShapeStim.KnownShapes['star7']

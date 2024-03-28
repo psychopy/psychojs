@@ -867,6 +867,9 @@ function DefaultBoxGenerator(styles)
 		let box = new PIXI.Graphics();
 
 		if (this._multiline) {
+			// When fill and alpha both 0 it for some reason ignores pointer events.
+			// But not when hitArea is set directly...
+			box.hitArea = new PIXI.Rectangle(0, 0, w, h);
 			box.interactive = !this._disabled;
 			box.on("pointerdown", () => {
 				this._dom_input.focus();

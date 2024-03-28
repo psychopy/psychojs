@@ -2,32 +2,34 @@
  * Track Player.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
 import { SoundPlayer } from "./SoundPlayer.js";
+import { Howl } from "howler";
 
 /**
  * <p>This class handles the playback of sound tracks.</p>
  *
- * @name module:sound.TrackPlayer
- * @class
  * @extends SoundPlayer
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {Object} options.howl - the sound object (see {@link https://howlerjs.com/})
- * @param {number} [options.startTime= 0] - start of playback (in seconds)
- * @param {number} [options.stopTime= -1] - end of playback (in seconds)
- * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
- * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
- * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played *
  * @todo stopTime is currently not implemented (tracks will play from startTime to finish)
  * @todo stereo is currently not implemented
  */
 export class TrackPlayer extends SoundPlayer
 {
+	/**
+	 * @memberOf module:sound
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {Object} options.howl - the sound object (see {@link https://howlerjs.com/})
+	 * @param {number} [options.startTime= 0] - start of playback (in seconds)
+	 * @param {number} [options.stopTime= -1] - end of playback (in seconds)
+	 * @param {boolean} [options.stereo= true] whether or not to play the sound or track in stereo
+	 * @param {number} [options.volume= 1.0] - volume of the sound (must be between 0 and 1.0)
+	 * @param {number} [options.loops= 0] - how many times to repeat the track or tone after it has played
+	 */
 	constructor({
 		psychoJS,
 		howl,
@@ -53,46 +55,48 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Determine whether this player can play the given sound.
 	 *
-	 * @name module:sound.TrackPlayer.accept
-	 * @function
-	 * @static
-	 * @public
-	 * @param {module:sound.Sound} sound - the sound, which should be the name of an audio resource
-	 * 	file
-	 * @return {Object|undefined} an instance of TrackPlayer that can play the given track or undefined otherwise
+	 * @param {string} value - the sound, which should be the name of an audio resource file
+	 * @return {boolean} whether or not value is supported
 	 */
-	static accept(sound)
+	static checkValueSupport (value)
 	{
-		// if the sound's value is a string, we check whether it is the name of a resource:
-		if (typeof sound.value === "string")
+		if (typeof value === "string")
 		{
-			const howl = sound.psychoJS.serverManager.getResource(sound.value);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determine whether this player can play the given sound.
+	 *
+	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
+	 * @param {string} value - the sound value, which should be the name of an audio resource
+	 * 	file
+	 * @return {Object|boolean} argument needed to instantiate a TrackPlayer that can play the given sound
+	 * 	or false otherwise
+	 */
+	static accept(psychoJS, value)
+	{
+		// value should be a string:
+		if (typeof value === "string")
+		{
+			// check whether the value is the name of a resource:
+			const howl = psychoJS.serverManager.getResource(value);
 			if (typeof howl !== "undefined")
 			{
-				// build the player:
-				const player = new TrackPlayer({
-					psychoJS: sound.psychoJS,
-					howl: howl,
-					startTime: sound.startTime,
-					stopTime: sound.stopTime,
-					stereo: sound.stereo,
-					loops: sound.loops,
-					volume: sound.volume,
-				});
-				return player;
+				return { howl };
 			}
 		}
 
 		// TonePlayer is not an appropriate player for the given sound:
-		return undefined;
+		return false;
 	}
 
 	/**
 	 * Get the duration of the sound, in seconds.
 	 *
-	 * @name module:sound.TrackPlayer#getDuration
-	 * @function
-	 * @public
 	 * @return {number} the duration of the track, in seconds
 	 */
 	getDuration()
@@ -103,9 +107,6 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Set the duration of the track.
 	 *
-	 * @name module:sound.TrackPlayer#setDuration
-	 * @function
-	 * @public
 	 * @param {number} duration_s - the duration of the track in seconds
 	 */
 	setDuration(duration_s)
@@ -120,9 +121,6 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Set the volume of the tone.
 	 *
-	 * @name module:sound.TrackPlayer#setVolume
-	 * @function
-	 * @public
 	 * @param {Integer} volume - the volume of the track (must be between 0 and 1.0)
 	 * @param {boolean} [mute= false] - whether or not to mute the track
 	 */
@@ -137,9 +135,6 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Set the number of loops.
 	 *
-	 * @name module:sound.TrackPlayer#setLoops
-	 * @function
-	 * @public
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
 	 */
 	setLoops(loops)
@@ -158,11 +153,38 @@ export class TrackPlayer extends SoundPlayer
 	}
 
 	/**
+	 * Set new track to play.
+	 *
+	 * @param {Object|string} track - a track resource name or Howl object (see {@link https://howlerjs.com/})
+	 */
+	setTrack(track)
+	{
+		let newHowl = undefined;
+
+		if (typeof track === "string")
+		{
+			newHowl = this.psychoJS.serverManager.getResource(track);
+		}
+		else if (track instanceof Howl)
+		{
+			newHowl = track;
+		}
+
+		if (newHowl !== undefined)
+		{
+			this._howl.once("fade", (id) =>
+			{
+				this._howl.stop(id);
+				this._howl.off("end");
+				this._howl = newHowl;
+			});
+			this._howl.fade(this._howl.volume(), 0, 17, this._id);
+		}
+	}
+
+	/**
 	 * Start playing the sound.
 	 *
-	 * @name module:sound.TrackPlayer#play
-	 * @function
-	 * @public
 	 * @param {number} loops - how many times to repeat the track after it has played once. If loops == -1, the track will repeat indefinitely until stopped.
 	 * @param {number} [fadeDuration = 17] - how long should the fading in last in ms
 	 */
@@ -201,9 +223,6 @@ export class TrackPlayer extends SoundPlayer
 	/**
 	 * Stop playing the sound immediately.
 	 *
-	 * @name module:sound.TrackPlayer#stop
-	 * @function
-	 * @public
 	 * @param {number} [fadeDuration = 17] - how long should the fading out last in ms
 	 */
 	stop(fadeDuration = 17)
