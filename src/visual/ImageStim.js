@@ -46,6 +46,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 * @param {ImageStim.AspectRatioStrategy} [options.aspectRatio= ImageStim.AspectRatioStrategy.VARIABLE] - the aspect ratio handling strategy
 	 * @param {number} [options.blurVal= 0] - the blur value. Goes 0 to as hish as you like. 0 is no blur.
 	 */
@@ -70,10 +71,11 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		autoDraw,
 		autoLog,
 		aspectRatio,
+		draggable,
 		blurVal
 	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog, draggable });
 
 		// Holds an instance of PIXI blur filter. Used if blur value is passed.
 		this._blurFilter = undefined;

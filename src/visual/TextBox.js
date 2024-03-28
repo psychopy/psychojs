@@ -52,6 +52,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 * @param {boolean} [options.fitToContent = false] - whether or not to resize itself automaitcally to fit to the text content
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
 	constructor(
 		{
@@ -87,11 +88,12 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			autoDraw,
 			autoLog,
 			fitToContent,
+			draggable,
 			boxFn
 		} = {},
 	)
 	{
-		super({ name, win, pos, anchor, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
+		super({ name, win, pos, anchor, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog, draggable });
 
 		this._addAttribute(
 			"text",
