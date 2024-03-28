@@ -315,6 +315,46 @@ export class ServerManager extends PsychObject
 	}
 
 	/**
+	 * Get full data of a resource.
+	 *
+	 * @name module:core.ServerManager#getFullResourceData
+	 * @function
+	 * @public
+	 * @param {string} name - name of the requested resource
+	 * @param {boolean} [errorIfNotDownloaded = false] whether or not to throw an exception if the
+	 * resource status is not DOWNLOADED
+	 * @return {Object} full available data for resource, or undefined if the resource has been registered
+	 * but not downloaded yet.
+	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
+	 */
+	getFullResourceData (name, errorIfNotDownloaded = false)
+	{
+		const response = {
+			origin: "ServerManager.getResource",
+			context: "when getting the value of resource: " + name,
+		};
+
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		if (errorIfNotDownloaded && pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+		{
+			throw Object.assign(response, {
+				error: name + " is not available for use (yet), its current status is: "
+					+ util.toString(pathStatusData.status),
+			});
+		}
+
+		return pathStatusData;
+	}
+
+	/**
 	 * Release a resource.
 	 *
 	 * @param {string} name - the name of the resource to release
@@ -660,6 +700,19 @@ export class ServerManager extends PsychObject
 			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
+	}
+
+	cacheResourceData (name, dataToCache)
+	{
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		pathStatusData.cachedData = dataToCache;
 	}
 
 	/**
@@ -1265,7 +1318,7 @@ export class ServerManager extends PsychObject
 			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
 
 			// preload.js with forced binary:
-			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
+			if (["csv", "odp", "xls", "xlsx", "json", "gif"].indexOf(extension) > -1)
 			{
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
@@ -1310,7 +1363,7 @@ export class ServerManager extends PsychObject
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
-					crossOrigin: "Anonymous",
+					crossOrigin: "Anonymous"
 				} /*)*/);
 			}
 		}

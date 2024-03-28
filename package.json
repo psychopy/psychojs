@@ -34,6 +34,7 @@
     "a11y-dialog": "^7.5.0",
     "docdash": "^1.2.0",
     "esbuild-plugin-glsl": "^1.0.5",
+    "gifuct-js": "^2.1.2",
     "howler": "^2.2.1",
     "log4javascript": "github:Ritzlgrmft/log4javascript",
     "pako": "^1.0.10",

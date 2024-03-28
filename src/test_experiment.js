@@ -66,8 +66,16 @@ psychoJS.start({
   expName: expName,
   expInfo: expInfo,
   configURL: "../config.json",
-  resources: [
-    // {
+	resources: [
+		{
+			name: "cool.gif",
+			path: "./test_resources/cool.gif"
+		},
+		{
+			name: "delorean.gif",
+			path: "./test_resources/delorean.gif"
+		}
+		// {
     //   name: "007",
     //   path: "007.jpg"
     // },
@@ -126,17 +134,28 @@ async function experimentInit() {
   gaborClock = new util.Clock();
 
   stims.push(
-    new visual.GratingStim({
-      win : psychoJS.window,
-      name: 'morph',
-      tex: 'sin',
-      mask: undefined,
-      ori: 0,
-      size: [256, 512],
-      pos: [0, 0],
-      units: "pix",
-      depth: 0
-    })
+    // new visual.GratingStim({
+    //   win : psychoJS.window,
+    //   name: 'morph',
+    //   tex: 'sin',
+    //   mask: undefined,
+    //   ori: 0,
+    //   size: [256, 512],
+    //   pos: [0, 0],
+    //   units: "pix",
+    //   depth: 0
+	  // })
+	  new visual.GifStim({
+		win : psychoJS.window,
+		name: 'morph',
+		image: "cool.gif",
+		mask: undefined,
+		ori: 0,
+		size: [512, 512],
+		pos: [0, 0],
+		units: "pix",
+		depth: 0
+	  })
   );
 
   window.stims = stims;
