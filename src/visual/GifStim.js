@@ -16,7 +16,7 @@ import { VisualStim } from "./VisualStim.js";
 import {Camera} from "../hardware";
 // import { parseGIF, decompressFrames } from "gifuct-js";
 import { AnimatedGIF } from "./AnimatedGIF.js";
-import { parseGIF, decompressFrames, decompressFramesContiguous } from "../util/GifParser.js";
+import { parseGIF, decompressFrames } from "../util/GifParser.js";
 
 /**
  * Gif Stimulus.
@@ -257,10 +257,6 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 					}
 					this._resource = { parsedGif, decompressedFrames, fullFrames };
 					this.psychoJS.serverManager.cacheResourceData(image, this._resource);
-					// let t2c = performance.now();
-					// let pixels2 = decompressFramesContiguous(gif, false);
-					// window.pixels2 = pixels2;
-					// let dect2 = performance.now() - t2c;
 					console.log(`animated gif "${this._name}",`, "parse=", pt, "decompress=", dect);
 				}
 				else

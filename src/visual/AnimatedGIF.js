@@ -98,7 +98,6 @@ class AnimatedGIF extends PIXI.Sprite
         let colorData;
 
         if (decompressedFrameData.pixels.length === pixelBuffer.length / 4)
-        // if (false)
         {
             // Not all GIF files are perfectly optimized
             // and instead of having tiny patch of pixels that actually changed from previous frame
