@@ -345,6 +345,36 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 	}
 
 	/**
+	 * Setter for the size attribute.
+	 *
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setSize(size, log = false)
+	{
+		// size is either undefined, null, or a tuple of numbers:
+		if (typeof size !== "undefined" && size !== null)
+		{
+			size = util.toNumerical(size);
+			if (!Array.isArray(size))
+			{
+				size = [size, size];
+			}
+		}
+
+		this._setAttribute("size", size, log);
+
+		if (this._pixi)
+		{
+			const size_px = util.to_px(size, this.units, this.win);
+			const scaleX = size_px[0] / this._pixi.texture.width;
+			const scaleY = size_px[1] / this._pixi.texture.height;
+			this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+			this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+		}
+	}
+
+	/**
 	 * Estimate the bounding box.
 	 *
 	 * @name module:visual.GifStim#_estimateBoundingBox
@@ -424,7 +454,6 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				// a 0.5, 0.5 anchor is required for the mask to be aligned with the image
 				this._pixi.mask.anchor.x = 0.5;
 				this._pixi.mask.anchor.y = 0.5;
-
 				this._pixi.addChild(this._pixi.mask);
 			}
 
@@ -436,15 +465,6 @@ export class GifStim extends util.mix(VisualStim).with(ColorMixin)
 				this._needPixiUpdate = true;
 				return;
 			}
-
-			// const colorFilter = new PIXI.filters.ColorMatrixFilter();
-			// colorFilter.matrix[0] = 2;
-			// colorFilter.matrix[6] = 1;
-			// colorFilter.matrix[12] = 1;
-			// // colorFilter.alpha = 1;
-			// colorFilter.blendMode = PIXI.BLEND_MODES.MULTIPLY;
-			// console.log(colorFilter.matrix);
-			// this._pixi.filters = [colorFilter];
 		}
 
 		this._pixi.zIndex = -this._depth;
