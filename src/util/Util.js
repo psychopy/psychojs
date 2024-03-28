@@ -363,6 +363,24 @@ export function shuffle(array, randomNumberGenerator = undefined, startIndex = u
 }
 
 /**
+ * linspace
+ *
+ * @name module:util.linspace
+ * @function
+ * @public
+ * @param {Object[]} startValue, stopValue, cardinality
+ * @return {Object[]} an array from startValue to stopValue with cardinality steps
+ */
+export function linspace(startValue, stopValue, cardinality) {
+  var arr = [];
+  var step = (stopValue - startValue) / (cardinality - 1);
+  for (var i = 0; i < cardinality; i++) {
+    arr.push(startValue + (step * i));
+  }
+  return arr;
+}
+
+/**
  * Pick a random value from an array, uses `util.shuffle` to shuffle the array and returns the last value.
  *
  * @param {Object[]} array - the input 1-D array
@@ -627,6 +645,11 @@ export function toString(object)
 	if (object.constructor.toString().substring(0, 5) === "class" && typeof object.toString === "function")
 	{
 		return object.toString();
+	}
+
+	if (typeof object === "function")
+	{
+		return `<function ${object.name}>`;
 	}
 
 	try
@@ -1453,6 +1476,47 @@ export function loadCss(cssId, cssPath)
 		link.media = "all";
 		head.appendChild(link);
 	}
+}
+
+/**
+ * Whether the user device has a touchscreen, e.g. it is a mobile phone or tablet.
+ *
+ * @return {boolean} true if the user device has a touchscreen.
+ * @note the code below is directly adapted from MDN
+ */
+export function hasTouchScreen()
+{
+	let hasTouchScreen = false;
+
+	if ("maxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.maxTouchPoints > 0;
+	}
+	else if ("msMaxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.msMaxTouchPoints > 0;
+	}
+	else
+	{
+		const mQ = matchMedia?.("(pointer:coarse)");
+		if (mQ?.media === "(pointer:coarse)")
+		{
+			hasTouchScreen = !!mQ.matches;
+		}
+		else if ("orientation" in window)
+		{
+			hasTouchScreen = true;
+		}
+		else
+		{
+			const UA = navigator.userAgent;
+			hasTouchScreen =
+				/\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+				/\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+		}
+	}
+
+	return hasTouchScreen;
 }
 
 /**

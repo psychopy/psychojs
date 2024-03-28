@@ -13,6 +13,7 @@ import { MonotonicClock } from "../util/Clock.js";
 import { Color } from "../util/Color.js";
 import { PsychObject } from "../util/PsychObject.js";
 import { Logger } from "./Logger.js";
+import { hasTouchScreen } from "../util/Util.js";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -151,7 +152,7 @@ export class Window extends PsychObject
 		}
 
 		this._rootContainer.destroy();
-		
+
 		if (document.body.contains(this._renderer.view))
 		{
 			document.body.removeChild(this._renderer.view);
@@ -180,7 +181,7 @@ export class Window extends PsychObject
 	{
 		// gets updated frame by frame
 		const lastDelta = this.psychoJS.scheduler._lastDelta;
-		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
+		const fps = (lastDelta === 0) ? 60.0 : (1000.0 / lastDelta);
 
 		return fps;
 	}
@@ -314,7 +315,7 @@ export class Window extends PsychObject
 	 */
 	removePixiObject(pixiObject)
 	{
-		this._stimsContainer.removeChild(pixiObject);	
+		this._stimsContainer.removeChild(pixiObject);
 	}
 
 	/**
@@ -475,11 +476,11 @@ export class Window extends PsychObject
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
 		this._rootContainer.addChild(this._backgroundSprite, this._stimsContainer);
-    
+
 		// sorts children according to their zIndex value. Higher zIndex means it will be moved towards the end of the array,
 		// and thus rendered on top of previous one.
 		this._rootContainer.sortableChildren = true;
-    
+
 		this._rootContainer.interactive = true;
 		this._rootContainer.filters = [this._adjustmentFilter];
 
@@ -575,6 +576,17 @@ export class Window extends PsychObject
 		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
 		this._resizeCallback = (e) =>
 		{
+			// if the user device is a mobile phone or tablet (we use the presence of a touch screen as a
+			// proxy), we need to detect whether the change in size is due to the appearance of a virtual keyboard
+			// in which case we do not want to resize the canvas. This is rather tricky and so we resort to
+			// the below trick. It would be better to use the VirtualKeyboard API, but it is not widely
+			// available just yet, as of 2023-06.
+			const keyboardHeight = 300;
+			if (hasTouchScreen() && (window.screen.height - window.visualViewport.height) > keyboardHeight)
+			{
+				return;
+			}
+
 			Window._resizePixiRenderer(this, e);
 			this._backgroundSprite.width = this._size[0];
 			this._backgroundSprite.height = this._size[1];

@@ -1,0 +1,25 @@
+name: Build Branch
+on: workflow_dispatch
+
+jobs:
+  build_all:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        path: app
+    - uses: actions/setup-node@master
+      with:
+        node-version: 19
+    - name: Install Node dependencies
+      run: |
+        cd app
+        npm install
+
+    - name: Build
+      run: |
+        cd app
+        echo "testing GITHUB_REF with details availability: ${GITHUB_REF#refs/heads/}"
+        npm run build:js && npm run build:css
+        echo "executing ls out on the directory:"
+        ls out

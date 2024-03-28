@@ -402,4 +402,29 @@ ShapeStim.KnownShapes = {
 		[-0.39, 0.31],
 		[-0.09, 0.18],
 	],
+
+	triangle: [
+        [+0.0, 0.5],  // Point
+        [-0.5, -0.5],  // Bottom left
+        [+0.5, -0.5],  // Bottom right
+    ],
+
+	rectangle: [
+			[-.5,  .5],  // Top left
+			[ .5,  .5],  // Top right
+			[ .5, -.5],  // Bottom left
+			[-.5, -.5],  // Bottom right
+	],
+
+	arrow: [
+			[0.0, 0.5],
+			[-0.5, 0.0],
+			[-1/6, 0.0],
+			[-1/6, -0.5],
+			[1/6, -0.5],
+			[1/6, 0.0],
+			[0.5, 0.0],
+	],
 };
+// Alias some names for convenience
+ShapeStim.KnownShapes['star'] = ShapeStim.KnownShapes['star7']
