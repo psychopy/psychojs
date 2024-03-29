@@ -68,6 +68,10 @@ psychoJS.start({
   configURL: "../config.json",
 	resources: [
 		{
+			name: "starformation.jpg",
+			path: "./test_resources/starformation.jpg"
+		},
+		{
 			name: "cool.gif",
 			path: "./test_resources/cool.gif"
 		},
@@ -132,7 +136,7 @@ async function experimentInit() {
   // Initialize components for Routine "instruct"
   instructClock = new util.Clock();
   ready = new core.Keyboard({psychoJS: psychoJS, clock: new util.Clock(), waitForStart: true});
-  psychoJS.window.backgroundImage = "toxen";
+  psychoJS.window.backgroundImage = "starformation.jpg";
 
   // Initialize components for Routine "gabor"
   gaborClock = new util.Clock();
