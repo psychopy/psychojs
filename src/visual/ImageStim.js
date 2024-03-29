@@ -148,7 +148,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Setter for the image attribute.
 	 *
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setImage(image, log = false)
 	{
@@ -216,7 +216,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Setter for the mask attribute.
 	 *
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
-	 * @param {boolean} [log= false] - whether of not to log
+	 * @param {boolean} [log= false] - whether or not to log
 	 */
 	setMask(mask, log = false)
 	{
@@ -274,6 +274,12 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
+	/**
+	 *	Sets the amount of blur for image stimuli.
+	 *
+	 * @param {number} blurVal - the amount of blur. 0 is no blur, max is as high as you like.
+	 * @param {boolean} [log=false] - whether or not to log.
+	 */
 	setBlurVal (blurVal = 0, log = false)
 	{
 		this._setAttribute("blurVal", blurVal, log);
@@ -299,6 +305,96 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				this._pixi.filters = [this._blurFilter];
 			}
 		}
+	}
+
+	/**
+	 * Setter for the size attribute.
+	 *
+	 * @param {undefined | null | number | number[]} size - the stimulus size
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	setSize(size, log = false)
+	{
+		if (!Array.isArray(size))
+		{
+			size = [size, size];
+		}
+
+		if (Array.isArray(size) && size.length <= 1)
+		{
+			size = [size[0], size[0]];
+		}
+
+		for (let i = 0; i < size.length; i++)
+		{
+			try
+			{
+				size[i] = util.toNumerical(size[i]);
+			}
+			catch (err)
+			{
+				// Failed to convert to numeric. Set to NaN.
+				size[ i ] = NaN;
+			}
+		}
+
+		if (this._texture !== undefined)
+		{
+			size = this._ensureNaNSizeConversion(size, this._texture);
+			this._applySizeToPixi(size);
+		}
+
+		this._setAttribute("size", size, log);
+	}
+
+	/**
+	 * Applies given size values to underlying pixi component of the stim.
+	 *
+	 * @param {Array} size
+	 */
+	_applySizeToPixi(size)
+	{
+		const size_px = util.to_px(size, this._units, this._win);
+		let scaleX = size_px[0] / this._texture.width;
+		let scaleY = size_px[1] / this._texture.height;
+		if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_WIDTH)
+		{
+			scaleY = scaleX;
+		}
+		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_HEIGHT)
+		{
+			scaleX = scaleY;
+		}
+		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.HORIZONTAL_TILING)
+		{
+			scaleX = 1.0;
+			scaleY = 1.0;
+		}
+		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+	}
+
+	/**
+	 * Ensures to convert NaN in the size values to proper, numerical values using given texture dimensions.
+	 *
+	 * @param {Array} size
+	 */
+	_ensureNaNSizeConversion(size, pixiTex)
+	{
+		if (Number.isNaN(size[0]) && Number.isNaN(size[1]))
+		{
+			size = util.to_unit([pixiTex.width, pixiTex.height], "pix", this._win, this._units);
+		}
+		else if (Number.isNaN(size[0]))
+		{
+			size[0] = size[1] * (pixiTex.width / pixiTex.height);
+		}
+		else if (Number.isNaN(size[1]))
+		{
+			size[1] = size[0] / (pixiTex.width / pixiTex.height);
+		}
+
+		return size;
 	}
 
 	/**
@@ -360,7 +456,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
 				// As a result of that we can have multiple ImageStim instances using same PIXI.BaseTexture,
 				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
-				// will affect all ImageStims who happen to share that BaseTexture.
+				// will affect all ImageStims which happen to share that BaseTexture.
 				const texOpts =
 				{
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST
@@ -388,7 +484,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			{
 				this._pixi = PIXI.Sprite.from(this._texture);
 			}
-
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
@@ -425,30 +520,14 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		this._pixi.zIndex = -this._depth;
 		this._pixi.alpha = this.opacity;
 
-		// set the scale:
-		const displaySize = this._getDisplaySize();
-		const size_px = util.to_px(displaySize, this.units, this.win);
-		let scaleX = size_px[0] / this._texture.width;
-		let scaleY = size_px[1] / this._texture.height;
-		if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_WIDTH)
-		{
-			scaleY = scaleX;
-		}
-		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_HEIGHT)
-		{
-			scaleX = scaleY;
-		}
-		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.HORIZONTAL_TILING)
-		{
-			scaleX = 1.0;
-			scaleY = 1.0;
-		}
+		// initial setSize might be called with incomplete values like [512, null].
+		// Before texture is loaded they are converted to [512, NaN].
+		// At this point the texture is loaded and we can convert NaN to proper values.
+		this.size = this._getDisplaySize();
 
 		// note: this calls VisualStim.setAnchor, which properly sets the PixiJS anchor
 		// from the PsychoPy text format
 		this.anchor = this._anchor;
-		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
-		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
