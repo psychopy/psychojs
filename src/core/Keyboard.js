@@ -2,8 +2,8 @@
  * Manager handling the keyboard events.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -13,15 +13,16 @@ import { EventManager } from "./EventManager.js";
 import { PsychoJS } from "./PsychoJS.js";
 
 /**
- * @name module:core.KeyPress
- * @class
- *
- * @param {string} code - W3C Key Code
- * @param {number} tDown - time of key press (keydown event) relative to the global Monotonic Clock
- * @param {string | undefined} name - pyglet key name
+ * <pKeyPress holds information about a key that has been pressed, such as the duration of the press.</p>
  */
 export class KeyPress
 {
+	/**
+	 * @memberof module:core
+	 * @param {string} code - W3C Key Code
+	 * @param {number} tDown - time of key press (keydown event) relative to the global Monotonic Clock
+	 * @param {string | undefined} name - pyglet key name
+	 */
 	constructor(code, tDown, name)
 	{
 		this.code = code;
@@ -39,18 +40,20 @@ export class KeyPress
 /**
  * <p>This manager handles all keyboard events. It is a substitute for the keyboard component of EventManager. </p>
  *
- * @name module:core.Keyboard
- * @class
- * @param {Object} options
- * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
- * @param {number} [options.bufferSize= 10000] - the maximum size of the circular keyboard event buffer
- * @param {boolean} [options.waitForStart= false] - whether or not to wait for a call to module:core.Keyboard#start
- * before recording keyboard events
- * @param {Clock} [options.clock= undefined] - an optional clock
- * @param {boolean} [options.autoLog= false] - whether or not to log
+ * @extends PsychObject
  */
 export class Keyboard extends PsychObject
 {
+	/**
+	 * @memberof module:core
+	 * @param {Object} options
+	 * @param {module:core.PsychoJS} options.psychoJS - the PsychoJS instance
+	 * @param {number} [options.bufferSize= 10000] - the maximum size of the circular keyboard event buffer
+	 * @param {boolean} [options.waitForStart= false] - whether or not to wait for a call to module:core.Keyboard#start
+	 * before recording keyboard events
+	 * @param {Clock} [options.clock= undefined] - an optional clock
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 */
 	constructor({
 		psychoJS,
 		bufferSize = 10000,
@@ -82,11 +85,6 @@ export class Keyboard extends PsychObject
 
 	/**
 	 * Start recording keyboard events.
-	 *
-	 * @name module:core.Keyboard#start
-	 * @function
-	 * @public
-	 *
 	 */
 	start()
 	{
@@ -95,11 +93,6 @@ export class Keyboard extends PsychObject
 
 	/**
 	 * Stop recording keyboard events.
-	 *
-	 * @name module:core.Keyboard#stop
-	 * @function
-	 * @public
-	 *
 	 */
 	stop()
 	{
@@ -119,9 +112,6 @@ export class Keyboard extends PsychObject
 	 * Get the list of those keyboard events still in the buffer, i.e. those that have not been
 	 * previously cleared by calls to getKeys with clear = true.
 	 *
-	 * @name module:core.Keyboard#getEvents
-	 * @function
-	 * @public
 	 * @return {Keyboard.KeyEvent[]} the list of events still in the buffer
 	 */
 	getEvents()
@@ -151,9 +141,6 @@ export class Keyboard extends PsychObject
 	/**
 	 * Get the list of keys pressed or pushed by the participant.
 	 *
-	 * @name module:core.Keyboard#getKeys
-	 * @function
-	 * @public
 	 * @param {Object} options
 	 * @param {string[]} [options.keyList= []]] - the list of keys to consider. If keyList is empty, we consider all keys.
 	 * Note that we use pyglet keys here, to make the PsychoJs code more homogeneous with PsychoPy.
@@ -300,9 +287,6 @@ export class Keyboard extends PsychObject
 
 	/**
 	 * Clear all events and resets the circular buffers.
-	 *
-	 * @name module:core.Keyboard#clearEvents
-	 * @function
 	 */
 	clearEvents()
 	{
@@ -319,9 +303,6 @@ export class Keyboard extends PsychObject
 	/**
 	 * Test whether a list of KeyPress's contains one with a particular name.
 	 *
-	 * @name module:core.Keyboard#includes
-	 * @function
-	 * @static
 	 * @param {module:core.KeyPress[]} keypressList - list of KeyPress's
 	 * @param {string } keyName - pyglet key name, e.g. 'escape', 'left'
 	 * @return {boolean} whether or not a KeyPress with the given pyglet key name is present in the list
@@ -340,9 +321,7 @@ export class Keyboard extends PsychObject
 	/**
 	 * Add key listeners to the document.
 	 *
-	 * @name module:core.Keyboard#_addKeyListeners
-	 * @function
-	 * @private
+	 * @protected
 	 */
 	_addKeyListeners()
 	{
@@ -375,7 +354,13 @@ export class Keyboard extends PsychObject
 			 */
 			self._previousKeydownKey = event.key;
 
-			let code = event.code;
+			// Note: we are using event.key since we are interested in the input character rather than
+			// the physical key position on the keyboard, i.e. we need to take into account the keyboard
+			// layout
+			// See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code for a comment regarding
+			// event.code's lack of suitability
+			let code = EventManager._pygletMap[event.key];
+			// let code = event.code;
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === "undefined")
@@ -415,7 +400,9 @@ export class Keyboard extends PsychObject
 
 			self._previousKeydownKey = undefined;
 
-			let code = event.code;
+			// Note: see above for explanation regarding the use of event.key in lieu of event.code
+			let code = EventManager._pygletMap[event.key];
+			// let code = event.code;
 
 			// take care of legacy Microsoft Edge:
 			if (typeof code === "undefined")
@@ -455,10 +442,8 @@ export class Keyboard extends PsychObject
 /**
  * Keyboard KeyStatus.
  *
- * @name module:core.Keyboard#KeyStatus
  * @enum {Symbol}
  * @readonly
- * @public
  */
 Keyboard.KeyStatus = {
 	KEY_DOWN: Symbol.for("KEY_DOWN"),

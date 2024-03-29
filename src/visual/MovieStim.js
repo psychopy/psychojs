@@ -2,8 +2,8 @@
  * Movie Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -20,39 +20,41 @@ import {Camera} from "../hardware/Camera.js";
 /**
  * Movie Stimulus.
  *
- * @name module:visual.MovieStim
- * @class
  * @extends VisualStim
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {module:core.Window} options.win - the associated Window
- * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
- * movie resource or of a HTMLVideoElement or of a Camera component
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= Color('white')] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.loop= false] - whether or not to loop the movie
- * @param {number} [options.volume= 1.0] - the volume of the audio track (must be between 0.0 and 1.0)
- * @param {boolean} [options.noAudio= false] - whether or not to play the audio
- * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
- *
  * @todo autoPlay does not work for the moment.
  */
 export class MovieStim extends VisualStim
 {
-	constructor({ name, win, movie, pos, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog } = {})
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {module:core.Window} options.win - the associated Window
+	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
+	 * movie resource or of a HTMLVideoElement or of a Camera component
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {Color} [options.color= Color('white')] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
+	 * @param {boolean} [options.loop= false] - whether or not to loop the movie
+	 * @param {number} [options.volume= 1.0] - the volume of the audio track (must be between 0.0 and 1.0)
+	 * @param {boolean} [options.noAudio= false] - whether or not to play the audio
+	 * @param {boolean} [options.autoPlay= true] - whether or not to autoplay the video
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
+	 */
+	constructor({ name, win, movie, pos, anchor, units, ori, size, color, opacity, contrast, interpolate, flipHoriz, flipVert, loop, volume, noAudio, autoPlay, autoDraw, autoLog, draggable } = {})
 	{
-		super({ name, win, units, ori, opacity, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, pos, anchor, size, autoDraw, autoLog, draggable });
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
@@ -135,8 +137,6 @@ export class MovieStim extends VisualStim
 	/**
 	 * Setter for the movie attribute.
 	 *
-	 * @name module:visual.MovieStim#setMovie
-	 * @public
 	 * @param {string | HTMLVideoElement | module:visual.Camera} movie - the name of a
 	 * movie resource or of a HTMLVideoElement or of a Camera component
 	 * @param {boolean} [log= false] - whether of not to log
@@ -315,8 +315,6 @@ export class MovieStim extends VisualStim
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -339,8 +337,7 @@ export class MovieStim extends VisualStim
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.MovieStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -408,8 +405,7 @@ export class MovieStim extends VisualStim
 		// set the position, rotation, and anchor (movie centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
+		this.anchor = this._anchor;
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
@@ -419,8 +415,7 @@ export class MovieStim extends VisualStim
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
-	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()

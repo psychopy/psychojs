@@ -2,8 +2,8 @@
  * Image Stimulus.
  *
  * @author Alain Pitiot
- * @version 2021.2.0
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2021 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @version 2022.2.3
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -18,36 +18,67 @@ import {Camera} from "../hardware";
 /**
  * Image Stimulus.
  *
- * @name module:visual.ImageStim
- * @class
  * @extends VisualStim
  * @mixes ColorMixin
- * @param {Object} options
- * @param {String} options.name - the name used when logging messages from this stimulus
- * @param {Window} options.win - the associated Window
- * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
- * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
- * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
- * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
- * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
- * @param {number} [options.ori= 0.0] - the orientation (in degrees)
- * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
- * @param {Color} [options.color= 'white'] the background color
- * @param {number} [options.opacity= 1.0] - the opacity
- * @param {number} [options.contrast= 1.0] - the contrast
- * @param {number} [options.depth= 0] - the depth (i.e. the z order)
- * @param {number} [options.texRes= 128] - the resolution of the text
- * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
- * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
- * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
- * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
- * @param {boolean} [options.autoLog= false] - whether or not to log
  */
 export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 {
-	constructor({ name, win, image, mask, pos, units, ori, size, color, opacity, contrast, texRes, depth, interpolate, flipHoriz, flipVert, autoDraw, autoLog } = {})
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {string | HTMLImageElement} options.image - the name of the image resource or the HTMLImageElement corresponding to the image
+	 * @param {string | HTMLImageElement} options.mask - the name of the mask resource or HTMLImageElement corresponding to the mask
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {string} [options.anchor = "center"] - sets the origin point of the stim
+	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {Color} [options.color= 'white'] the background color
+	 * @param {number} [options.opacity= 1.0] - the opacity
+	 * @param {number} [options.contrast= 1.0] - the contrast
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {number} [options.texRes= 128] - the resolution of the text
+	 * @param {boolean} [options.interpolate= false] - whether or not the image is interpolated
+	 * @param {boolean} [options.flipHoriz= false] - whether or not to flip horizontally
+	 * @param {boolean} [options.flipVert= false] - whether or not to flip vertically
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
+	 * @param {ImageStim.AspectRatioStrategy} [options.aspectRatio= ImageStim.AspectRatioStrategy.VARIABLE] - the aspect ratio handling strategy
+	 * @param {number} [options.blurVal= 0] - the blur value. Goes 0 to as hish as you like. 0 is no blur.
+	 */
+	constructor({
+		name,
+		win,
+		image,
+		mask,
+		pos,
+		anchor,
+		units,
+		ori,
+		size,
+		color,
+		opacity,
+		contrast,
+		texRes,
+		depth,
+		interpolate,
+		flipHoriz,
+		flipVert,
+		autoDraw,
+		autoLog,
+		aspectRatio,
+		draggable,
+		blurVal
+	} = {})
 	{
-		super({ name, win, units, ori, opacity, depth, pos, size, autoDraw, autoLog });
+		super({ name, win, units, ori, opacity, depth, pos, anchor, size, autoDraw, autoLog, draggable });
+
+		// Holds an instance of PIXI blur filter. Used if blur value is passed.
+		this._blurFilter = undefined;
 
 		this._addAttribute(
 			"image",
@@ -92,6 +123,17 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			false,
 			this._onChange(false, false),
 		);
+		this._addAttribute(
+			"aspectRatio",
+			aspectRatio,
+			ImageStim.AspectRatioStrategy.VARIABLE,
+			this._onChange(true, true),
+		);
+		this._addAttribute(
+			"blurVal",
+			blurVal,
+			0
+		);
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -105,8 +147,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the image attribute.
 	 *
-	 * @name module:visual.ImageStim#setImage
-	 * @public
 	 * @param {HTMLImageElement | string} image - the name of the image resource or HTMLImageElement corresponding to the image
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -175,8 +215,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Setter for the mask attribute.
 	 *
-	 * @name module:visual.ImageStim#setMask
-	 * @public
 	 * @param {HTMLImageElement | string} mask - the name of the mask resource or HTMLImageElement corresponding to the mask
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
@@ -225,8 +263,6 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Whether to interpolate (linearly) the texture in the stimulus.
 	 *
-	 * @name module:visual.ImageStim#setInterpolate
-	 * @public
 	 * @param {boolean} interpolate - interpolate or not.
 	 * @param {boolean} [log=false] - whether or not to log
 	 */
@@ -238,11 +274,36 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
+	setBlurVal (blurVal = 0, log = false)
+	{
+		this._setAttribute("blurVal", blurVal, log);
+		if (this._pixi instanceof PIXI.Sprite)
+		{
+			if (this._blurFilter === undefined)
+			{
+				this._blurFilter = new PIXI.filters.BlurFilter();
+				this._blurFilter.blur = blurVal;
+			}
+			else
+			{
+				this._blurFilter.blur = blurVal;
+			}
+
+			// this._pixi might get destroyed and recreated again with no filters.
+			if (this._pixi.filters instanceof Array && this._pixi.filters.indexOf(this._blurFilter) === -1)
+			{
+				this._pixi.filters.push(this._blurFilter);
+			}
+			else
+			{
+				this._pixi.filters = [this._blurFilter];
+			}
+		}
+	}
+
 	/**
 	 * Estimate the bounding box.
 	 *
-	 * @name module:visual.ImageStim#_estimateBoundingBox
-	 * @function
 	 * @override
 	 * @protected
 	 */
@@ -265,8 +326,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	/**
 	 * Update the stimulus, if necessary.
 	 *
-	 * @name module:visual.ImageStim#_updateIfNeeded
-	 * @private
+	 * @protected
 	 */
 	_updateIfNeeded()
 	{
@@ -283,6 +343,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 
 			if (typeof this._pixi !== "undefined")
 			{
+				this._pixi.filters = null;
 				this._pixi.destroy(true);
 			}
 			this._pixi = undefined;
@@ -316,7 +377,18 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				this._texture = new PIXI.Texture(new PIXI.BaseTexture(this._image, texOpts));
 			}
 
-			this._pixi = PIXI.Sprite.from(this._texture);
+			if (this.aspectRatio === ImageStim.AspectRatioStrategy.HORIZONTAL_TILING)
+			{
+				const [width_px, _] = util.to_px([this.size[0], 0], this.units, this.win);
+				this._pixi = PIXI.TilingSprite.from(this._texture, 1, 1);
+				this._pixi.width = width_px;
+				this._pixi.height = this._texture.height;
+			}
+			else
+			{
+				this._pixi = PIXI.Sprite.from(this._texture);
+			}
+
 
 			// add a mask if need be:
 			if (typeof this._mask !== "undefined")
@@ -356,16 +428,36 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		// set the scale:
 		const displaySize = this._getDisplaySize();
 		const size_px = util.to_px(displaySize, this.units, this.win);
-		const scaleX = size_px[0] / this._texture.width;
-		const scaleY = size_px[1] / this._texture.height;
+		let scaleX = size_px[0] / this._texture.width;
+		let scaleY = size_px[1] / this._texture.height;
+		if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_WIDTH)
+		{
+			scaleY = scaleX;
+		}
+		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_HEIGHT)
+		{
+			scaleX = scaleY;
+		}
+		else if (this.aspectRatio === ImageStim.AspectRatioStrategy.HORIZONTAL_TILING)
+		{
+			scaleX = 1.0;
+			scaleY = 1.0;
+		}
+
+		// note: this calls VisualStim.setAnchor, which properly sets the PixiJS anchor
+		// from the PsychoPy text format
+		this.anchor = this._anchor;
 		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
 		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
 
 		// set the position, rotation, and anchor (image centered on pos):
 		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
 		this._pixi.rotation = -this.ori * Math.PI / 180;
-		this._pixi.anchor.x = 0.5;
-		this._pixi.anchor.y = 0.5;
+
+		if (this._blurVal > 0)
+		{
+			this.setBlurVal(this._blurVal);
+		}
 
 		// re-estimate the bounding box, as the texture's width may now be available:
 		this._estimateBoundingBox();
@@ -375,8 +467,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 	 * Get the size of the display image, which is either that of the ImageStim or that of the image
 	 * it contains.
 	 *
-	 * @name module:visual.ImageStim#_getDisplaySize
-	 * @private
+	 * @protected
 	 * @return {number[]} the size of the displayed image
 	 */
 	_getDisplaySize()
@@ -392,7 +483,47 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				displaySize = util.to_unit(textureSize, "pix", this.win, this.units);
 			}
 		}
+		else
+		{
+			if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_WIDTH)
+			{
+				// use the size of the texture, if we have access to it:
+				if (typeof this._texture !== "undefined" && this._texture.width > 0)
+				{
+					displaySize = [displaySize[0], displaySize[0] * this._texture.height / this._texture.width];
+				}
+			}
+			else if (this.aspectRatio === ImageStim.AspectRatioStrategy.FIT_TO_HEIGHT)
+			{
+				// use the size of the texture, if we have access to it:
+				if (typeof this._texture !== "undefined" && this._texture.width > 0)
+				{
+					displaySize = [displaySize[1] * this._texture.width / this._texture.height, displaySize[1]];
+				}
+			}
+			else if (this.aspectRatio === ImageStim.AspectRatioStrategy.HORIZONTAL_TILING)
+			{
+				// use the size of the texture, if we have access to it:
+				if (typeof this._texture !== "undefined" && this._texture.width > 0)
+				{
+					displaySize = [displaySize[0], this._texture.height];
+				}
+			}
+		}
 
 		return displaySize;
 	}
 }
+
+/**
+ * ImageStim Aspect Ratio Strategy.
+ *
+ * @enum {Symbol}
+ * @readonly
+ */
+ImageStim.AspectRatioStrategy = {
+	FIT_TO_WIDTH: Symbol.for("FIT_TO_WIDTH"),
+	HORIZONTAL_TILING: Symbol.for("HORIZONTAL_TILING"),
+	FIT_TO_HEIGHT: Symbol.for("FIT_TO_HEIGHT"),
+	VARIABLE: Symbol.for("VARIABLE"),
+};
