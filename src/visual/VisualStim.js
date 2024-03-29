@@ -393,6 +393,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		{
 			anchor[0] = 1.0;
 		}
+
 		if (anchorText.indexOf("top") > -1)
 		{
 			anchor[1] = 0.0;

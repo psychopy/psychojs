@@ -335,7 +335,7 @@ export class MovieStim extends VisualStim
 	 */
 	setPos(pos, log = false)
 	{
-		super.setPos(pos);
+		super.setPos(pos, log);
 		// if (this._youtubePlayer !== undefined && this._ytPlayerIsReady)
 		if (this._youtubePlayer !== undefined)
 		{
