@@ -2,3 +2,5 @@
 dist
 out
 node_modules
+src/test_experiment.js
+src/test_resources

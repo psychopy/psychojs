@@ -74,7 +74,11 @@ psychoJS.start({
 		{
 			name: "delorean.gif",
 			path: "./test_resources/delorean.gif"
-		}
+		},
+		{
+			name: "silverhand.gif",
+			path: "./test_resources/silverhand.gif"
+		},
 		// {
     //   name: "007",
     //   path: "007.jpg"
@@ -148,7 +152,7 @@ async function experimentInit() {
 	  new visual.GifStim({
 		win : psychoJS.window,
 		name: 'morph',
-		image: "cool.gif",
+		image: "silverhand.gif",
 		mask: undefined,
 		ori: 0,
 		size: [512, 512],
