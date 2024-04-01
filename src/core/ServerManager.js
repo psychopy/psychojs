@@ -134,7 +134,7 @@ export class ServerManager extends PsychObject
 	 * @property {Object.<string, *>} [error] an error message if we could not open the session
 	 */
 	/**
-	 * Open a session for this experiment on the remote PsychoJS manager.
+	 * Open a session for this experiment on the pavlovia server.
 	 *
 	 * @param {Object} params - the open session parameters
 	 *
@@ -236,10 +236,10 @@ export class ServerManager extends PsychObject
 	 *   previously been opened)
 	 */
 	/**
-	 * Close the session for this experiment on the remote PsychoJS manager.
+	 * Close the session for this experiment on the pavlovia server.
 	 *
-	 * @param {boolean} [isCompleted= false] - whether or not the experiment was completed
-	 * @param {boolean} [sync= false] - whether or not to communicate with the server in a synchronous manner
+	 * @param {boolean} [isCompleted= false] - whether the experiment was completed
+	 * @param {boolean} [sync= false] - whether to communicate with the server in a synchronous manner
 	 * @returns {Promise<ServerManager.CloseSessionPromise> | void} the response
 	 */
 	async closeSession(isCompleted = false, sync = false)
@@ -260,6 +260,10 @@ export class ServerManager extends PsychObject
 				+ "/sessions/"  + this._psychoJS.config.session.token + "/delete";
 			const formData = new FormData();
 			formData.append("isCompleted", isCompleted);
+			if (typeof this._psychoJS._surveyId !== "undefined")
+			{
+				formData.append("surveyId", this._psychoJS._surveyId);
+			}
 
 			navigator.sendBeacon(url, formData);
 			this._psychoJS.config.session.status = "CLOSED";
@@ -272,10 +276,18 @@ export class ServerManager extends PsychObject
 			{
 				try
 				{
+					const data = {
+						isCompleted
+					};
+					if (typeof this._psychoJS._surveyId !== "undefined")
+					{
+						data["surveyId"] = this._psychoJS._surveyId;
+					}
+
 					const deleteResponse = await this._queryServerAPI(
 						"DELETE",
 						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}`,
-						{ isCompleted },
+						data,
 						"FORM"
 					);
 
@@ -591,18 +603,24 @@ export class ServerManager extends PsychObject
 						{
 							// add the SurveyJS and PsychoJS Survey .js and .css resources:
 							resources[r] = {
-								name: "jquery-3.6.0.min.js",
-								path: "./lib/vendors/jquery-3.6.0.min.js",
+								name: "jquery-3.5.1.min.js",
+								path: "./lib/vendors/jquery-3.5.1.min.js",
+								// name: "jquery-3.6.0.min.js",
+								// path: "./lib/vendors/jquery-3.6.0.min.js",
 								download: true
 							};
 							resources.push({
-								name: "survey.jquery-1.9.50.min.js",
-								path: "./lib/vendors/survey.jquery-1.9.50.min.js",
+								name: "surveyjs.jquery-1.9.126.min.js",
+								path: "./lib/vendors/surveyjs.jquery-1.9.126.min.js",
+								// name: "survey.jquery-1.9.50.min.js",
+								// path: "./lib/vendors/survey.jquery-1.9.50.min.js",
 								download: true
 							});
 							resources.push({
-								name: "survey.defaultV2-1.9.50.min.css",
-								path: "./lib/vendors/survey.defaultV2-1.9.50.min.css",
+								name: "surveyjs.defaultV2-1.9.126-OST.min.css",
+								path: "./lib/vendors/surveyjs.defaultV2-1.9.126-OST.min.css",
+								// name: "survey.defaultV2-1.9.50.min.css",
+								// path: "./lib/vendors/survey.defaultV2-1.9.50.min.css",
 								download: true
 							});
 							resources.push({
@@ -807,9 +825,8 @@ export class ServerManager extends PsychObject
 
 		// data upload throttling:
 		const now = MonotonicClock.getReferenceTime();
-		if ( (typeof this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp !== "undefined") &&
-			(now - this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp < this._uploadThrottlePeriod * 60)
-		)
+		const checkThrottling = (typeof this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp !== "undefined");
+		if (checkThrottling && (now - this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp < this._uploadThrottlePeriod * 60))
 		{
 			return Promise.reject({ ...response, error: "upload canceled by throttling"});
 		}

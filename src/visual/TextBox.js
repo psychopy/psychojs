@@ -573,21 +573,16 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 		{
 			this._needPixiUpdate = false;
 
-			let enteredText = "";
-			// at this point this._pixi might exist but is removed from the scene, in such cases this._pixi.text
-			// does not retain the information about new lines etc. so we go with a local copy of entered text
-			if (this._pixi !== undefined && this._pixi.parent !== null) {
-				enteredText = this._pixi.text;
-			} else {
-				enteredText = this._text;
-			}
+			// note: destroying _pixi will get rid of _pixi.text, which will, in turn, remove information about
+			// new lines etc., so we get a copy here, which we will restore on the new _pixi
+			const prevText = (this._pixi !== undefined && this._pixi.parent !== null) ? this._pixi.text : this._text;
 
 			if (typeof this._pixi !== "undefined")
 			{
 				this._pixi.destroy(true);
 			}
 
-			// Create new TextInput
+			// create a new TextInput
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
@@ -610,7 +605,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			}
 			if (this._editable)
 			{
-				this.text = enteredText;
+				this.text = prevText;
 				this._pixi.placeholder = this._placeholder;
 			}
 			else

@@ -187,13 +187,26 @@ export class GUI
 					{
 						atLeastOneIncludedKey = true;
 
-						markup += `<label for='${keyId}'> ${key} </label>`;
-
-						// if the field is required:
+						// deal with field options:
+						// - if the field is required:
+						if (key.slice(-4) === "|req")
+						{
+							key = `${key.slice(0, -4)}*`;
+						}
 						if (key.slice(-1) === "*")
 						{
 							self._requiredKeys.push(keyId);
 						}
+						// - all other new options are currently discarded
+						// TODO
+
+						// remove the new option extensions:
+						if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+						{
+							key = key.slice(0, -4);
+						}
+
+						markup += `<label for='${keyId}'> ${key} </label>`;
 
 						// if value is an array, we create a select drop-down menu:
 						if (Array.isArray(value))
@@ -240,7 +253,6 @@ export class GUI
 				markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
 
 				// buttons:
-				markup += "<hr>";
 				markup += "<div class='dialog-button-group'>";
 				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Cancel Experiment'>Cancel</button>";
 				if (self._requireParticipantClick)
@@ -417,13 +429,13 @@ export class GUI
 			markup += "</div>";
 		}
 
-		if (showOK || showCancel)
-		{
-			markup += "<hr>";
-		}
+		// if (showOK || showCancel)
+		// {
+		// 	markup += "<hr>";
+		// }
 		if (showCancel || showOK)
 		{
-			markup += "<div class='button-group'>";
+			markup += "<div class='dialog-button-group'>";
 			if (showCancel)
 			{
 				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>Cancel</button>";
@@ -493,11 +505,15 @@ export class GUI
 		markup += "<div class='dialog-overlay'></div>";
 		markup += "<div class='dialog-content'>";
 		markup += `<div id='experiment-dialog-title' class='dialog-title dialog-warning'><p>Warning</p></div>`;
+
+		markup += "<div class='scrollable-container'>";
 		markup += `<p>${text}</p>`;
+		markup += "</div>";
 
 		// progress bar:
 		markup += `<hr><div id='progressMsg' class='progress-msg'>&nbsp;</div>`;
 		markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
+		markup += "<div class='dialog-button-group'></div>";
 
 		markup += "</div></div>";
 
@@ -608,8 +624,11 @@ export class GUI
 		// clear all events (and keypresses) accumulated until now:
 		this._psychoJS.eventManager.clearEvents();
 
-		this._dialog.hide();
-		this._dialog = null;
+		if (this._dialog)
+		{
+			this._dialog.hide();
+			this._dialog = null;
+		}
 		this._dialogComponent.status = PsychoJS.Status.FINISHED;
 	}
 
@@ -709,7 +728,6 @@ export class GUI
 
 			return;
 		}
-
 
 		// if all requirements are fulfilled and the participant is not required to click on the OK button,
 		// then we close the dialog box and move on with the experiment:

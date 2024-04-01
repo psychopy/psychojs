@@ -144,8 +144,8 @@ export class PsychoJS
 		});
 
 		// add the pavlovia server to the list of hosts:
-		const hostsWithPavlovia = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/"]);
-		this._hosts = Array.from(hostsWithPavlovia);
+		const pavloviaHosts = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/", "https://devlovia.org/run/", "https://run.devlovia.org/"]);
+		this._hosts = Array.from(pavloviaHosts);
 
 		// GUI:
 		this._gui = new GUI(this);
@@ -165,6 +165,9 @@ export class PsychoJS
 		// redirection URLs:
 		this._cancellationUrl = undefined;
 		this._completionUrl = undefined;
+
+		// survey id, if applicable:
+		this._surveyId = undefined;
 
 		// status:
 		this.status = PsychoJS.Status.NOT_CONFIGURED;
@@ -377,6 +380,7 @@ export class PsychoJS
 				if (typeof surveyId !== "undefined")
 				{
 					params.surveyId = surveyId;
+					this._surveyId = surveyId;
 				}
 				await this._serverManager.openSession(params);
 
@@ -411,7 +415,9 @@ export class PsychoJS
 						{
 							// note: we set lastUploadTimestamp to undefined to prevent uploadData from throttling this call
 							delete self._config.experiment.resultsUpload.lastUploadTimestamp;
-							self._experiment.save({ sync: true });
+							self._experiment.save({
+								sync: true
+							});
 						}
 
 						// close the session:
@@ -634,7 +640,7 @@ export class PsychoJS
 
 			if (showOK)
 			{
-				let text = "Thank you for your patience.";
+				let text = "Thank you for your patience. ";
 				text += (typeof message !== "undefined") ? message : "Goodbye!";
 				this._gui.dialog({
 					message: text,

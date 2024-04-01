@@ -514,31 +514,105 @@ export class Shelf extends PsychObject
 	/**
 	 * Get the name of a group, using a counterbalanced design.
 	 *
+	 * @note the participant token returned by this call is useful when confirming or cancelling that participant's
+	 * 	participation with counterBalanceConfirm/Cancel
+	 *
 	 * @param {Object} options
-	 * @param {string[]} options.key					key as an array of key components
-	 * @param {string[]} options.groups				the names of the groups
-	 * @param {number[]} options.groupSizes		the size of the groups
-	 * @return {Promise<{string, boolean}>}		an object with the name of the selected group and whether all groups
-	 * 	have been depleted
+	 * @param {string[]} options.key													key as an array of key components
+	 * @return {Promise<{string, boolean, string}>}		an object with the name of the selected group,
+	 * 	whether all groups have been depleted, and a participant token
 	 */
-	async counterBalanceSelect({key, groups, groupSizes} = {})
+	async counterbalanceSelect({
+			key,
+			reserveTimeout
+	} = {})
 	{
 		const response = {
-			origin: 'Shelf.counterBalanceSelect',
-			context: `when getting the name of a group, using a counterbalanced design, with key: ${JSON.stringify(key)}`
+			origin: 'Shelf.counterbalanceSelect',
+			context: `when getting the name of a group, using a counterbalanced design with key: ${JSON.stringify(key)}`
 		};
 
 		try
 		{
-			await this._checkAvailability("counterBalanceSelect");
+			await this._checkAvailability("counterbalanceSelect");
 			this._checkKey(key);
 
 			// prepare the request:
-			const url = `${this._psychoJS.config.pavlovia.URL}/api/v2/shelf/${this._psychoJS.config.session.token}/counterbalance`;
+			const url = `${this._psychoJS.config.pavlovia.URL}/api/v2/shelf/${this._psychoJS.config.session.token}/counterbalance/select`;
+			const data = {
+				key
+			};
+			if (typeof reserveTimeout !== "undefined")
+			{
+				data.reserveTimeout = reserveTimeout;
+			}
+
+			// query the server:
+			const putResponse = await fetch(url, {
+				method: 'PUT',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				redirect: 'follow',
+				referrerPolicy: 'no-referrer',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			// convert the response to json:
+			const document = await putResponse.json();
+
+			if (putResponse.status !== 200)
+			{
+				throw ('error' in document) ? document.error : document;
+			}
+
+			// return the result:
+			this._status = Shelf.Status.READY;
+			return {
+				group: document.group,
+				finished: document.finished,
+				participantToken: document.participantToken
+			};
+		}
+		catch (error)
+		{
+			this._status = Shelf.Status.ERROR;
+			throw {...response, error};
+		}
+	}
+
+	/**
+	 * Confirm or cancel a participant's participation to a counterbalanced design.
+	 *
+	 * @note the required participant token is the one returned by a call to counterBalanceSelect
+	 *
+	 * @param {string[]} key							- key as an array of key components
+	 * @param {string} participantToken		- the participant token
+	 * @param {boolean} confirmed					- when the participant's participation is confirmed or cancelled
+	 * @return {Promise<{string, boolean, string}>}		an object with the name of the participant group, and
+	 * 	whether all groups have been depleted
+	 */
+	async counterbalanceConfirm(key, participantToken, confirmed)
+	{
+		const response = {
+			origin: 'Shelf.counterBalanceConfirm',
+			context: `when confirming or cancelling a participant's participation to the counterbalanced design with key: ${JSON.stringify(key)}`
+		};
+
+		try
+		{
+			await this._checkAvailability("counterbalanceConfirm");
+			this._checkKey(key);
+
+			// prepare the request:
+			const url = `${this._psychoJS.config.pavlovia.URL}/api/v2/shelf/${this._psychoJS.config.session.token}/counterbalance/confirm`;
 			const data = {
 				key,
-				groups,
-				groupSizes
+				participantToken,
+				confirmed
 			};
 
 			// query the server:
@@ -563,7 +637,7 @@ export class Shelf extends PsychObject
 				throw ('error' in document) ? document.error : document;
 			}
 
-			// return the updated value:
+			// return the result:
 			this._status = Shelf.Status.READY;
 			return {
 				group: document.group,
@@ -576,7 +650,6 @@ export class Shelf extends PsychObject
 			throw {...response, error};
 		}
 	}
-
 
 	/**
 	 * Update the value associated with the given key.
