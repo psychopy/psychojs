@@ -86,6 +86,8 @@ export class MovieStim extends VisualStim
 
 		this.psychoJS.logger.debug("create a new MovieStim with name: ", name);
 
+		this._pixiTextureResource = undefined;
+
 		// Used in case when youtubeUrl parameter is set to a proper youtube url.
 		this._youtubePlayer = undefined;
 		this._ytPlayerIsReady = false;
@@ -196,6 +198,9 @@ export class MovieStim extends VisualStim
 
 		try
 		{
+			let htmlVideo = undefined;
+			this._pixiTextureResource = undefined;
+
 			// movie is undefined: that's fine but we raise a warning in case this is
 			// a symptom of an actual problem
 			if (typeof movie === "undefined")
@@ -206,47 +211,74 @@ export class MovieStim extends VisualStim
 			}
 			else
 			{
-				// if movie is a string, then it should be the name of a resource, which we get:
+				let videoResource;
+
+				// If movie is a string, then it should be the name of a resource, which we get:
 				if (typeof movie === "string")
 				{
-					movie = this.psychoJS.serverManager.getResource(movie);
+					videoResource = this.psychoJS.serverManager.getResource(movie);
 				}
-
-				// if movie is an instance of camera, get a video element from it:
+				// If movie is a HTMLVideoElement, pass it as is:
+				else if (movie instanceof HTMLVideoElement)
+				{
+					videoResource = movie;
+				}
+				// If movie is an instance of camera, get a video element from it:
 				else if (movie instanceof Camera)
 				{
 					// old behaviour: feeding a Camera to MovieStim plays the live stream:
-					const video = movie.getVideo();
-					// TODO remove previous one if there is one
-					movie = video;
+					videoResource = movie.getVideo();
+					// TODO remove previous movie if there is one
 
 					/*
 					// new behaviour: feeding a Camera to MovieStim replays the video previously recorded by the Camera:
 					const video = movie.getRecording();
 					movie = video;
-				 */
+					*/
 				}
 
-				// check that movie is now an HTMLVideoElement
-				if (!(movie instanceof HTMLVideoElement))
+				if (videoResource instanceof HTMLVideoElement)
 				{
-					throw `${movie.toString()} is not a video`;
+					htmlVideo = videoResource;
+					htmlVideo.playsInline = true;
+				}
+				else if (videoResource instanceof PIXI.Texture)
+				{
+					htmlVideo = videoResource.baseTexture.resource.source;
+				}
+				else
+				{
+					throw `${videoResource.toString()} is not a HTMLVideoElement nor PIXI.Texture!`;
 				}
 
-				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${movie.src}, size= ${movie.videoWidth}x${movie.videoHeight}, duration= ${movie.duration}s`);
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all MovieStims which happen to share that BaseTexture.
+				this._pixiTextureResource = new PIXI.Texture(
+					new PIXI.BaseTexture(
+						htmlVideo,
+						{
+							resourceOptions: { autoPlay: this.autoPlay }
+						}
+					)
+				);
+
+				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${htmlVideo.src}, size= ${htmlVideo.videoWidth}x${htmlVideo.videoHeight}, duration= ${htmlVideo.duration}s`);
 
 				// ensure we have only one onended listener per HTMLVideoElement, since we can have several
 				// MovieStim with the same underlying HTMLVideoElement
 				// https://stackoverflow.com/questions/11455515
-				if (!movie.onended)
+				// TODO: make it actually work!
+				if (!htmlVideo.onended)
 				{
-					movie.onended = () =>
+					htmlVideo.onended = () =>
 					{
 						this.status = PsychoJS.Status.FINISHED;
 					};
 				}
 
-				// Resize the stim when video is loaded. Otherwise this._texture.width is 1.
+				// Resize the stim when video is loaded. Otherwise this._pixiTextureResource.width is 1.
 				const loadedDataCb = () =>
 				{
 					this.size = this._size;
@@ -261,7 +293,7 @@ export class MovieStim extends VisualStim
 				this.hideYoutubePlayer();
 			}
 
-			this._setAttribute("movie", movie, log);
+			this._setAttribute("movie", htmlVideo, log);
 			this._needUpdate = true;
 			this._needPixiUpdate = true;
 		}
@@ -308,7 +340,7 @@ export class MovieStim extends VisualStim
 			size = this._ensureNaNSizeConversion(size, this._movie);
 		}
 
-		if (this._texture !== undefined)
+		if (this._pixiTextureResource !== undefined)
 		{
 			this._applySizeToPixi(size);
 		}
@@ -779,23 +811,24 @@ export class MovieStim extends VisualStim
 				return;
 			}
 
-			// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
-			// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
-			// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
-			// will affect all MovieStims which happen to share that BaseTexture.
-			this._texture = new PIXI.Texture(new PIXI.BaseTexture(
-				this._movie,
-				{
-					resourceOptions: { autoPlay: this.autoPlay }
-				}
-			));
+			// No PIXI.Texture, also return immediately.
+			if (this._pixiTextureResource === undefined)
+			{
+				return;
+			}
 
 			// create a PixiJS video sprite:
-			this._pixi = new PIXI.Sprite(this._texture);
+			this._pixiTextureResource.baseTexture.resource.autoPlay = this._autoPlay;
+			this._pixi = new PIXI.Sprite(this._pixiTextureResource);
 
-			// since _texture.width may not be immedialy available but the rest of the code needs its value
+			if (this._autoPlay)
+			{
+				this._pixiTextureResource.baseTexture.resource.source.play();
+			}
+
+			// since _pixiTextureResource.width may not be immedialy available but the rest of the code needs its value
 			// we arrange for repeated calls to _updateIfNeeded until we have a width:
-			if (this._texture.width === 0)
+			if (this._pixiTextureResource.width === 0)
 			{
 				this._needUpdate = true;
 				this._needPixiUpdate = true;
@@ -843,9 +876,9 @@ export class MovieStim extends VisualStim
 		if (typeof displaySize === "undefined")
 		{
 			// use the size of the texture, if we have access to it:
-			if (typeof this._texture !== "undefined" && this._texture.width > 0)
+			if (typeof this._pixiTextureResource !== "undefined" && this._pixiTextureResource.width > 0)
 			{
-				const textureSize = [this._texture.width, this._texture.height];
+				const textureSize = [this._pixiTextureResource.width, this._pixiTextureResource.height];
 				displaySize = util.to_unit(textureSize, "pix", this.win, this.units);
 			}
 		}
