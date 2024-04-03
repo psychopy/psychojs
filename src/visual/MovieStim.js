@@ -92,7 +92,6 @@ export class MovieStim extends VisualStim
 		this._youtubePlayer = undefined;
 		this._ytPlayerIsReady = false;
 
-		// movie and movie control:
 		this._addAttribute(
 			"movie",
 			movie,
@@ -242,27 +241,28 @@ export class MovieStim extends VisualStim
 				{
 					htmlVideo = videoResource;
 					htmlVideo.playsInline = true;
-					this._pixiTextureResource = PIXI.Texture.from(htmlVideo, { resourceOptions: { autoPlay: false } });
-					// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
-					// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
-					// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
-					// will affect all MovieStims which happen to share that BaseTexture.
-					this._pixiTextureResource = new PIXI.Texture(new PIXI.BaseTexture(
-						this._movie,
-						{
-							resourceOptions: { autoPlay: this.autoPlay }
-						}
-					));
 				}
 				else if (videoResource instanceof PIXI.Texture)
 				{
 					htmlVideo = videoResource.baseTexture.resource.source;
-					this._pixiTextureResource = videoResource;
 				}
 				else
 				{
 					throw `${videoResource.toString()} is not a HTMLVideoElement nor PIXI.Texture!`;
 				}
+
+				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
+				// As a result of that we can have multiple MovieStim instances using same PIXI.BaseTexture,
+				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
+				// will affect all MovieStims which happen to share that BaseTexture.
+				this._pixiTextureResource = new PIXI.Texture(
+					new PIXI.BaseTexture(
+						htmlVideo,
+						{
+							resourceOptions: { autoPlay: this.autoPlay }
+						}
+					)
+				);
 
 				this.psychoJS.logger.debug(`set the movie of MovieStim: ${this._name} as: src= ${htmlVideo.src}, size= ${htmlVideo.videoWidth}x${htmlVideo.videoHeight}, duration= ${htmlVideo.duration}s`);
 
