@@ -54,6 +54,7 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
 	 *   frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
 	constructor(
 		{
@@ -82,10 +83,11 @@ export class Form extends util.mix(VisualStim).with(ColorMixin)
 			clipMask,
 			autoDraw,
 			autoLog,
+			draggable
 		} = {},
 	)
 	{
-		super({ name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog });
+		super({ name, win, units, opacity, depth, pos, size, clipMask, autoDraw, autoLog, draggable });
 
 		this._addAttribute(
 			"itemPadding",

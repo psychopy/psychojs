@@ -316,6 +316,74 @@ export class ServerManager extends PsychObject
 	}
 
 	/**
+	 * Get full data of a resource.
+	 *
+	 * @name module:core.ServerManager#getFullResourceData
+	 * @function
+	 * @public
+	 * @param {string} name - name of the requested resource
+	 * @param {boolean} [errorIfNotDownloaded = false] whether or not to throw an exception if the
+	 * resource status is not DOWNLOADED
+	 * @return {Object} full available data for resource, or undefined if the resource has been registered
+	 * but not downloaded yet.
+	 * @throws {Object.<string, *>} exception if no resource with that name has previously been registered
+	 */
+	getFullResourceData (name, errorIfNotDownloaded = false)
+	{
+		const response = {
+			origin: "ServerManager.getResource",
+			context: "when getting the value of resource: " + name,
+		};
+
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		if (errorIfNotDownloaded && pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+		{
+			throw Object.assign(response, {
+				error: name + " is not available for use (yet), its current status is: "
+					+ util.toString(pathStatusData.status),
+			});
+		}
+
+		return pathStatusData;
+	}
+
+	/**
+	 * Release a resource.
+	 *
+	 * @param {string} name - the name of the resource to release
+	 * @return {boolean} true if a resource with the given name was previously registered with the manager,
+	 * 	false otherwise.
+	 */
+	releaseResource(name)
+	{
+		const response = {
+			origin: "ServerManager.releaseResource",
+			context: "when releasing resource: " + name,
+		};
+
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			return false;
+		}
+
+		// TODO check the current status: prevent the release of a resources currently downloading
+
+		this._psychoJS.logger.debug(`releasing resource: ${name}`);
+		this._resources.delete(name);
+		return true;
+	}
+
+	/**
 	 * Get the status of a single resource or the reduced status of an array of resources.
 	 *
 	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
@@ -507,17 +575,17 @@ export class ServerManager extends PsychObject
 					// pre-process the resources:
 					for (let r = 0; r < resources.length; ++r)
 					{
-						const resource = resources[r];
-
 						// convert those resources that are only a string to an object with name and path:
-						if (typeof resource === "string")
+						if (typeof resources[r] === "string")
 						{
 							resources[r] = {
-								name: resource,
-								path: resource,
+								name: resources[r],
+								path: resources[r],
 								download: true
 							};
 						}
+
+						const resource = resources[r];
 
 						// deal with survey models:
 						if ("surveyId" in resource)
@@ -633,6 +701,19 @@ export class ServerManager extends PsychObject
 			throw Object.assign(response, { error });
 			// throw { ...response, error: error };
 		}
+	}
+
+	cacheResourceData (name, dataToCache)
+	{
+		const pathStatusData = this._resources.get(name);
+
+		if (typeof pathStatusData === "undefined")
+		{
+			// throw { ...response, error: 'unknown resource' };
+			throw Object.assign(response, { error: "unknown resource" });
+		}
+
+		pathStatusData.cachedData = dataToCache;
 	}
 
 	/**
@@ -1256,7 +1337,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// preload.js with forced binary:
-			if (["csv", "odp", "xls", "xlsx", "json"].indexOf(extension) > -1)
+			if (["csv", "odp", "xls", "xlsx", "json", "gif"].indexOf(extension) > -1)
 			{
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
@@ -1284,7 +1365,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// font files:
-			else if (["ttf", "otf", "woff", "woff2"].indexOf(extension) > -1)
+			else if (["ttf", "otf", "woff", "woff2", "eot"].indexOf(extension) > -1)
 			{
 				fontResources.push(name);
 			}
@@ -1332,7 +1413,7 @@ export class ServerManager extends PsychObject
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
 					src: pathStatusData.path,
-					crossOrigin: "Anonymous",
+					crossOrigin: "Anonymous"
 				} /*)*/);
 			}
 		}

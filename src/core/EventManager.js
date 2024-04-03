@@ -49,6 +49,12 @@ export class EventManager
 			// clock reset when mouse is moved:
 			moveClock: new Clock(),
 		};
+
+		// storing touches in both map and array for fast search and fast access if touchID is known
+		this._touchInfo = {
+			touchesArray: [],
+			touchesMap: {}
+		};
 	}
 
 	/**
@@ -141,6 +147,19 @@ export class EventManager
 	}
 
 	/**
+	 * Returns all the data gathered about touches.
+	 *
+	 * @name module:core.EventManager#getTouchInfo
+	 * @function
+	 * @public
+	 * @return {object} the touch info.
+	 */
+	getTouchInfo ()
+	{
+		return this._touchInfo;
+	}
+
+	/**
 	 * Clear all events from the event buffer.
 	 *
 	 * @todo handle the attribs argument
@@ -200,7 +219,6 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[event.button] = 1;
 			self._mouseInfo.buttons.times[event.button] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[event.button].getLastResetTime();
-
 			self._mouseInfo.pos = [event.offsetX, event.offsetY];
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
@@ -212,10 +230,21 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[0] = 1;
 			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY],
+					busy: false
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button down, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -249,10 +278,20 @@ export class EventManager
 
 			self._mouseInfo.buttons.pressed[0] = 0;
 			self._mouseInfo.buttons.times[0] = self._psychoJS._monotonicClock.getTime() - self._mouseInfo.buttons.clocks[0].getLastResetTime();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY]
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
 
 			this._psychoJS.experimentLogger.data("Mouse: " + event.button + " button up, pos=(" + self._mouseInfo.pos[0] + "," + self._mouseInfo.pos[1] + ")");
 		}, false);
@@ -270,10 +309,20 @@ export class EventManager
 			event.preventDefault();
 
 			self._mouseInfo.moveClock.reset();
+			self._mouseInfo.pos = [event.changedTouches[0].pageX, event.changedTouches[0].pageY];
 
-			// we use the first touch, discarding all others:
-			const touches = event.changedTouches;
-			self._mouseInfo.pos = [touches[0].pageX, touches[0].pageY];
+			this._touchInfo.touchesArray = new Array(event.touches.length);
+			this._touchInfo.touchesMap = {};
+			let i;
+			for (i = 0; i < event.touches.length; i++)
+			{
+				this._touchInfo.touchesArray[i] = {
+					id: event.touches[i].identifier,
+					force: event.touches[i].force,
+					pos: [event.touches[i].pageX, event.touches[i].pageY]
+				};
+				this._touchInfo.touchesMap[event.touches[i].identifier] = this._touchInfo.touchesArray[i];
+			}
 		}, false);
 
 		// (*) wheel
@@ -302,7 +351,13 @@ export class EventManager
 		{
 			const timestamp = MonotonicClock.getReferenceTime();
 
-			let code = event.code;
+			// Note: we are using event.key since we are interested in the input character rather than
+			// the physical key position on the keyboard, i.e. we need to take into account the keyboard
+			// layout
+			// See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code for a comment regarding
+			// event.code's lack of suitability
+			let code = EventManager._pygletMap[event.key];
+			// let code = event.code;
 
 			// take care of legacy Microsoft browsers (IE11 and pre-Chromium Edge):
 			if (typeof code === "undefined")

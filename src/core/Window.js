@@ -13,6 +13,7 @@ import { MonotonicClock } from "../util/Clock.js";
 import { Color } from "../util/Color.js";
 import { PsychObject } from "../util/PsychObject.js";
 import { Logger } from "./Logger.js";
+import { hasTouchScreen } from "../util/Util.js";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -58,6 +59,8 @@ export class Window extends PsychObject
 	 * @param {string} [options.name] the name of the window
 	 * @param {boolean} [options.fullscr= false] whether or not to go fullscreen
 	 * @param {Color} [options.color= Color('black')] the background color of the window
+	 * @param {string | HTMLImageElement} [options.backgroundImage = ""] - background image of the window.
+	 * @param {string} [options.backgroundFit = "cover"] - how to fit background image in the window.
 	 * @param {number} [options.gamma= 1] sets the divisor for gamma correction. In other words gamma correction is calculated as pow(rgb, 1/gamma)
 	 * @param {number} [options.contrast= 1] sets the contrast value
 	 * @param {string} [options.units= 'pix'] the units of the window
@@ -70,6 +73,8 @@ export class Window extends PsychObject
 		name,
 		fullscr = false,
 		color = new Color("black"),
+		backgroundImage = "",
+		backgroundFit = "cover",
 		gamma = 1,
 		contrast = 1,
 		units = "pix",
@@ -92,11 +97,7 @@ export class Window extends PsychObject
 		this._drawList = [];
 
 		this._addAttribute("fullscr", fullscr);
-		this._addAttribute("color", color, new Color("black"), () => {
-			if (this._backgroundSprite) {
-				this._backgroundSprite.tint = this._color.int;
-			}
-		});
+		this._addAttribute("color", color, new Color("black"));
 		this._addAttribute("gamma", gamma, 1, () => {
 			this._adjustmentFilter.gamma = this._gamma;
 		});
@@ -107,6 +108,8 @@ export class Window extends PsychObject
 		this._addAttribute("waitBlanking", waitBlanking);
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("size", []);
+		this._addAttribute("backgroundImage", backgroundImage, "");
+		this._addAttribute("backgroundFit", backgroundFit, "cover");
 
 		// setup PIXI:
 		this._setupPixi();
@@ -138,6 +141,12 @@ export class Window extends PsychObject
 		}
 	}
 
+	static BACKGROUND_FIT_ENUM = {
+		cover: 0,
+		contain: 1,
+		auto: 2
+	};
+
 	/**
 	 * Close the window.
 	 *
@@ -151,7 +160,7 @@ export class Window extends PsychObject
 		}
 
 		this._rootContainer.destroy();
-		
+
 		if (document.body.contains(this._renderer.view))
 		{
 			document.body.removeChild(this._renderer.view);
@@ -165,7 +174,6 @@ export class Window extends PsychObject
 		}
 
 		this._renderer.destroy();
-
 		window.removeEventListener("resize", this._resizeCallback);
 		window.removeEventListener("orientationchange", this._resizeCallback);
 
@@ -181,7 +189,7 @@ export class Window extends PsychObject
 	{
 		// gets updated frame by frame
 		const lastDelta = this.psychoJS.scheduler._lastDelta;
-		const fps = lastDelta === 0 ? 60.0 : 1000 / lastDelta;
+		const fps = (lastDelta === 0) ? 60.0 : (1000.0 / lastDelta);
 
 		return fps;
 	}
@@ -315,7 +323,7 @@ export class Window extends PsychObject
 	 */
 	removePixiObject(pixiObject)
 	{
-		this._stimsContainer.removeChild(pixiObject);	
+		this._stimsContainer.removeChild(pixiObject);
 	}
 
 	/**
@@ -361,6 +369,134 @@ export class Window extends PsychObject
 	}
 
 	/**
+	 * Set background image of the window.
+	 *
+	 * @name module:core.Window#setBackgroundImage
+	 * @function
+	 * @public
+	 * @param {string} backgroundImage - name of the image resource (should be one specified in resource manager)
+	 * @param {boolean} log - whether or not to log
+	 */
+	setBackgroundImage (backgroundImage = "", log = false)
+	{
+		this._setAttribute("backgroundImage", backgroundImage, log);
+
+		if (this._backgroundSprite === undefined)
+		{
+			return;
+		}
+
+		let imgResource = backgroundImage;
+
+		if (this._backgroundSprite instanceof PIXI.Sprite && this._backgroundSprite.texture !== PIXI.Texture.WHITE)
+		{
+			this._backgroundSprite.texture.destroy(true);
+		}
+
+		if (typeof backgroundImage === "string" && backgroundImage.length > 0)
+		{
+			imgResource = this.psychoJS.serverManager.getResource(backgroundImage);
+		}
+
+		if (imgResource instanceof HTMLImageElement)
+		{
+			const texOpts =
+			{
+				scaleMode: PIXI.SCALE_MODES.LINEAR
+			};
+			this._backgroundSprite.texture = new PIXI.Texture(new PIXI.BaseTexture(imgResource, texOpts));
+			this._backgroundSprite.tint = 0xffffff;
+			this.backgroundFit = this._backgroundFit;
+		}
+		else
+		{
+			this._backgroundSprite.texture = PIXI.Texture.WHITE;
+			this._backgroundSprite.width = this._size[0];
+			this._backgroundSprite.height = this._size[1];
+			this._backgroundSprite.anchor.set(.5);
+			this.color = this._color;
+		}
+	}
+
+	/**
+	 * Set fit mode for background image of the window.
+	 *
+	 * @name module:core.Window#setBackgroundFit
+	 * @function
+	 * @public
+	 * @param {string} [backgroundFit = "cover"] - fit mode for background image ["cover", "contain", "scaledown", "none"].
+	 * @param {boolean} log - whether or not to log
+	 */
+	setBackgroundFit (backgroundFit = "cover", log = false)
+	{
+		if (this._backgroundImage === "")
+		{
+			return;
+		}
+
+		const backgroundFitCode = Window.BACKGROUND_FIT_ENUM[backgroundFit.replace("-", "").toLowerCase()];
+
+		if (backgroundFitCode === undefined)
+		{
+			return;
+		}
+
+		this._setAttribute("backgroundFit", backgroundFit, log);
+		const backgroundAspectRatio = this._backgroundSprite.texture.width / this._backgroundSprite.texture.height;
+		const windowAspectRatio = this._size[0] / this._size[1];
+
+		if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.cover)
+		{
+			if (windowAspectRatio >= backgroundAspectRatio)
+			{
+				this._backgroundSprite.width = this._size[0];
+				this._backgroundSprite.height = this._size[0] / backgroundAspectRatio;
+			}
+			else
+			{
+				this._backgroundSprite.height = this._size[1];
+				this._backgroundSprite.width = this._size[1] * backgroundAspectRatio;
+			}
+		}
+		else if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.contain)
+		{
+			if (windowAspectRatio >= backgroundAspectRatio)
+			{
+				this._backgroundSprite.height = this._size[1];
+				this._backgroundSprite.width = this._size[1] * backgroundAspectRatio;
+			}
+			else
+			{
+				this._backgroundSprite.width = this._size[0];
+				this._backgroundSprite.height = this._size[0] / backgroundAspectRatio;
+			}
+		}
+		else if (backgroundFitCode === Window.BACKGROUND_FIT_ENUM.auto)
+		{
+			this._backgroundSprite.width = this._backgroundSprite.texture.width;
+			this._backgroundSprite.height = this._backgroundSprite.texture.height;
+		}
+	}
+
+	/**
+	 * Set foreground color value for the window.
+	 *
+	 * @name module:visual.Window#setColor
+	 * @public
+	 * @param {Color} colorVal - color value, can be String like "red" or "#ff0000" or Number like 0xff0000.
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setColor(colorVal = "white", log = false)
+	{
+		const colorObj = (colorVal instanceof Color) ? colorVal : new Color(colorVal, Color.COLOR_SPACE.RGB);
+		this._setAttribute("color", colorObj, log);
+		if (this._backgroundSprite && !this._backgroundImage)
+		{
+			this._backgroundSprite.tint = this._color.int;
+		}
+	}
+
+	/**
 	 * Update this window, if need be.
 	 *
 	 * @protected
@@ -372,7 +508,7 @@ export class Window extends PsychObject
 			if (this._renderer)
 			{
 				this._renderer.backgroundColor = this._color.int;
-				this._backgroundSprite.tint = this._color.int;
+				this.color = this._color;
 			}
 
 			// we also change the background color of the body since
@@ -466,6 +602,7 @@ export class Window extends PsychObject
 		// background sprite so that if we need to move all stims at once, the background sprite
 		// won't get affected.
 		this._backgroundSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		this._backgroundSprite.scale.y = -1;
 		this._backgroundSprite.tint = this.color.int;
 		this._backgroundSprite.width = this._size[0];
 		this._backgroundSprite.height = this._size[1];
@@ -476,11 +613,11 @@ export class Window extends PsychObject
 		// create a top-level PIXI container:
 		this._rootContainer = new PIXI.Container();
 		this._rootContainer.addChild(this._backgroundSprite, this._stimsContainer);
-    
+
 		// sorts children according to their zIndex value. Higher zIndex means it will be moved towards the end of the array,
 		// and thus rendered on top of previous one.
 		this._rootContainer.sortableChildren = true;
-    
+
 		this._rootContainer.interactive = true;
 		this._rootContainer.filters = [this._adjustmentFilter];
 
@@ -489,17 +626,7 @@ export class Window extends PsychObject
 
 		// touch/mouse events are treated by PsychoJS' event manager:
 		this.psychoJS.eventManager.addMouseListeners(this._renderer);
-
-		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
-		this._resizeCallback = (e) =>
-		{
-			Window._resizePixiRenderer(this, e);
-			this._backgroundSprite.width = this._size[0];
-			this._backgroundSprite.height = this._size[1];
-			this._fullRefresh();
-		};
-		window.addEventListener("resize", this._resizeCallback);
-		window.addEventListener("orientationchange", this._resizeCallback);
+		this._addEventListeners();
 	}
 
 	/**
@@ -530,6 +657,87 @@ export class Window extends PsychObject
 		pjsWindow._rootContainer.position.x = pjsWindow._size[0] / 2.0;
 		pjsWindow._rootContainer.position.y = pjsWindow._size[1] / 2.0;
 		pjsWindow._rootContainer.scale.y = -1;
+	}
+
+	_handlePointerDown (e)
+	{
+		let i;
+		let pickedPixi;
+		let tmpPoint = new PIXI.Point();
+		const cursorPos = new PIXI.Point(e.pageX, e.pageY);
+		for (i = this._stimsContainer.children.length - 1; i >= 0; i--)
+		{
+			if (typeof this._stimsContainer.children[i].containsPoint === "function" &&
+				this._stimsContainer.children[i].containsPoint(cursorPos))
+			{
+				pickedPixi = this._stimsContainer.children[i];
+				break;
+			}
+			else if (this._stimsContainer.children[i].containsPoint === undefined &&
+				this._stimsContainer.children[i] instanceof PIXI.DisplayObject)
+			{
+				this._stimsContainer.children[i].worldTransform.applyInverse(cursorPos, tmpPoint);
+				if (this._stimsContainer.children[i].getLocalBounds().contains(tmpPoint.x, tmpPoint.y))
+				{
+					pickedPixi = this._stimsContainer.children[i];
+					break;
+				}
+			}
+		}
+		this.emit("pointerdown", {
+			pixi: pickedPixi,
+			originalEvent: e
+		});
+	}
+
+	_handlePointerUp (e)
+	{
+		this.emit("pointerup", {
+			originalEvent: e
+		});
+	}
+
+	_handlePointerMove (e)
+	{
+		this.emit("pointermove", {
+			originalEvent: e
+		});
+	}
+
+	_addEventListeners ()
+	{
+		this._renderer.view.addEventListener("pointerdown", this._handlePointerDown.bind(this));
+		this._renderer.view.addEventListener("pointerup", this._handlePointerUp.bind(this));
+		this._renderer.view.addEventListener("pointermove", this._handlePointerMove.bind(this));
+
+		// update the renderer size and the Window's stimuli whenever the browser's size or orientation change:
+		this._resizeCallback = (e) =>
+		{
+			// if the user device is a mobile phone or tablet (we use the presence of a touch screen as a
+			// proxy), we need to detect whether the change in size is due to the appearance of a virtual keyboard
+			// in which case we do not want to resize the canvas. This is rather tricky and so we resort to
+			// the below trick. It would be better to use the VirtualKeyboard API, but it is not widely
+			// available just yet, as of 2023-06.
+			const keyboardHeight = 300;
+			if (hasTouchScreen() && (window.screen.height - window.visualViewport.height) > keyboardHeight)
+			{
+				return;
+			}
+
+			Window._resizePixiRenderer(this, e);
+			if (this._backgroundImage === undefined)
+			{
+				this._backgroundSprite.width = this._size[0];
+				this._backgroundSprite.height = this._size[1];
+			}
+			else
+			{
+				this.backgroundFit = this._backgroundFit;
+			}
+			this._fullRefresh();
+		};
+		window.addEventListener("resize", this._resizeCallback);
+		window.addEventListener("orientationchange", this._resizeCallback);
 	}
 
 	/**

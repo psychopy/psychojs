@@ -35,8 +35,9 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	 * @param {PIXI.Graphics} [options.clipMask= null] - the clip mask
 	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
+	 * @param {boolean} [options.draggable= false] - whether or not to make stim draggable with mouse/touch/other pointer device
 	 */
-	constructor({ name, win, units, ori, opacity, depth, pos, anchor, size, clipMask, autoDraw, autoLog } = {})
+	constructor({ name, win, units, ori, opacity, depth, pos, anchor, size, clipMask, autoDraw, autoLog, draggable } = {})
 	{
 		super({ win, name, autoDraw, autoLog });
 
@@ -84,6 +85,12 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 			null,
 			this._onChange(false, false),
 		);
+		this._addAttribute("draggable", draggable, false);
+
+		// data needed to properly support drag and drop functionality
+		this._associatedPointerId = undefined;
+		this._initialPointerOffset = [0, 0];
+		this._pointerEventHandlersUuids = {};
 
 		// bounding box of the stimulus, in stimulus units
 		// note: boundingBox does not take the orientation into account
@@ -94,6 +101,14 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		// the PIXI representation also needs to be updated:
 		this._needPixiUpdate = true;
+	}
+
+	/**
+	 * Whether or not stimuli is being dragged by pointer. Works in conjunction with draggable attribute.
+	 */
+	get isDragging()
+	{
+		return this._associatedPointerId !== undefined;
 	}
 
 	/**
@@ -180,14 +195,44 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 	}
 
 	/**
+	 * Setter for the draggable attribute.
+	 *
+	 * @name module:visual.VisualStim#setDraggable
+	 * @public
+	 * @param {boolean} [draggable=false] - whether or not to make stim draggable using mouse/touch/other pointer device
+	 * @param {boolean} [log= false] - whether of not to log
+	 */
+	setDraggable(draggable = false, log = false)
+	{
+		const hasChanged = this._setAttribute("draggable", draggable, log);
+		if (hasChanged)
+		{
+			if (draggable)
+			{
+				this._pointerEventHandlersUuids[ "pointerdown" ] = this._win.on("pointerdown", this._handlePointerDown.bind(this));
+				this._pointerEventHandlersUuids[ "pointerup" ] = this._win.on("pointerup", this._handlePointerUp.bind(this));
+				this._pointerEventHandlersUuids[ "pointermove" ] = this._win.on("pointermove", this._handlePointerMove.bind(this));
+			}
+			else
+			{
+				this._win.off("pointerdown", this._pointerEventHandlersUuids[ "pointerdown" ]);
+				this._win.off("pointerup", this._pointerEventHandlersUuids[ "pointerup" ]);
+				this._win.off("pointermove", this._pointerEventHandlersUuids[ "pointermove" ]);
+			}
+		}
+	}
+
+	/**
 	 * Setter for the depth attribute.
 	 *
 	 * @param {Array.<number>} depth - order in which stimuli is rendered, kind of css's z-index with a negative sign.
 	 * @param {boolean} [log= false] - whether of not to log
 	 */
-	setDepth (depth = 0, log = false) {
+	setDepth(depth = 0, log = false)
+	{
 		this._setAttribute("depth", depth, log);
-		if (this._pixi) {
+		if (this._pixi)
+		{
 			this._pixi.zIndex = -this._depth;
 		}
 	}
@@ -215,6 +260,93 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 
 		// test for inclusion:
 		return this._getBoundingBox_px().contains(objectPos_px[0], objectPos_px[1]);
+	}
+
+	/**
+	 * Determine whether a point that is nown to have pixel dimensions is inside the bounding box of the stimulus.
+	 *
+	 * @name module:visual.VisualStim#containsPointPx
+	 * @public
+	 * @param {number[]} point_px - the point in pixels
+	 * @return {boolean} whether or not the object is inside the bounding box of the stimulus
+	 */
+	containsPointPx (point_px)
+	{
+		return this._getBoundingBox_px().contains(point_px[0], point_px[1]);
+	}
+
+	/**
+	 * Release the PIXI representation, if there is one.
+	 *
+	 * @name module:core.VisualStim#release
+	 * @function
+	 * @public
+	 *
+	 * @param {boolean} [log= false] - whether or not to log
+	 */
+	release(log = false)
+	{
+		this.draggable = false;
+		super.release(log);
+	}
+
+	/**
+	 * Handler of pointerdown event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerDown
+	 * @private
+	 * @param {Object} e - pointerdown event data.
+	 */
+	_handlePointerDown (e)
+	{
+		if (e.pixi === undefined || e.pixi !== this._pixi)
+		{
+			return;
+		}
+		let relativePos = [];
+		let pixPos = util.to_unit(this._pos, this._units, this._win, "pix");
+		relativePos[0] = e.originalEvent.pageX - this._win.size[0] * 0.5 - this._pixi.parent.position.x;
+		relativePos[1] = -(e.originalEvent.pageY - this._win.size[1] * 0.5) - this._pixi.parent.position.y;
+		this._associatedPointerId = e.originalEvent.pointerId;
+		this._initialPointerOffset[0] = relativePos[0] - pixPos[0];
+		this._initialPointerOffset[1] = relativePos[1] - pixPos[1];
+		this.emit("pointerdown", e);
+	}
+
+	/**
+	 * Handler of pointerup event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerUp
+	 * @private
+	 * @param {Object} e - pointerup event data.
+	 */
+	_handlePointerUp (e)
+	{
+		if (e.originalEvent.pointerId === this._associatedPointerId)
+		{
+			this._associatedPointerId = undefined;
+			this._initialPointerOffset.fill(0);
+			this.emit("pointerup", e);
+		}
+	}
+
+	/**
+	 * Handler of pointermove event.
+	 *
+	 * @name module:visual.VisualStim#_handlePointerMove
+	 * @private
+	 * @param {Object} e - pointermove event data.
+	 */
+	_handlePointerMove (e)
+	{
+		if (e.originalEvent.pointerId === this._associatedPointerId)
+		{
+			let newPos = [];
+			newPos[ 0 ] = e.originalEvent.pageX - this._win.size[ 0 ] * 0.5 - this._pixi.parent.position.x - this._initialPointerOffset[ 0 ];
+			newPos[ 1 ] = -(e.originalEvent.pageY - this._win.size[ 1 ] * 0.5) - this._pixi.parent.position.y - this._initialPointerOffset[ 1 ];
+			this.setPos(util.to_unit(newPos, "pix", this._win, this._units));
+			this.emit("pointermove", e);
+		}
 	}
 
 	/**
@@ -261,6 +393,7 @@ export class VisualStim extends util.mix(MinimalStim).with(WindowMixin)
 		{
 			anchor[0] = 1.0;
 		}
+
 		if (anchorText.indexOf("top") > -1)
 		{
 			anchor[1] = 0.0;

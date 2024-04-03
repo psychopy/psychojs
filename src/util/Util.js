@@ -322,25 +322,62 @@ export function IsPointInsidePolygon(point, vertices)
 }
 
 /**
- * Shuffle an array in place using the Fisher-Yastes's modern algorithm
+ * Shuffle an array, or a portion of that array, in place using the Fisher-Yastes's modern algorithm
  * <p>See details here: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm</p>
  *
  * @param {Object[]} array - the input 1-D array
- * @param {Function} [randomNumberGenerator = undefined] - A function used to generated random numbers in the interal [0, 1). Defaults to Math.random
+ * @param {Function} [randomNumberGenerator= undefined] - A function used to generated random numbers in the interval [0, 1). Defaults to Math.random
+ * @param [startIndex= undefined]	- start index in the array
+ * @param [endIndex= undefined] - end index in the array
  * @return {Object[]} the shuffled array
  */
-export function shuffle(array, randomNumberGenerator = undefined)
+export function shuffle(array, randomNumberGenerator = undefined, startIndex = undefined, endIndex = undefined)
 {
-	if (randomNumberGenerator === undefined)
+	// if array is not an array, we return it untouched rather than throwing an exception:
+	if (!array || !Array.isArray(array))
+	{
+		return array;
+	}
+
+	if (typeof startIndex === "undefined")
+	{
+		startIndex = 0;
+	}
+	if (typeof endIndex === "undefined")
+	{
+		endIndex = array.length - 1;
+	}
+
+	if (typeof randomNumberGenerator === "undefined")
 	{
 		randomNumberGenerator = Math.random;
 	}
-	for (let i = array.length - 1; i > 0; i--)
+
+	for (let i = endIndex; i > startIndex; i--)
 	{
 		const j = Math.floor(randomNumberGenerator() * (i + 1));
 		[array[i], array[j]] = [array[j], array[i]];
 	}
+
 	return array;
+}
+
+/**
+ * linspace
+ *
+ * @name module:util.linspace
+ * @function
+ * @public
+ * @param {Object[]} startValue, stopValue, cardinality
+ * @return {Object[]} an array from startValue to stopValue with cardinality steps
+ */
+export function linspace(startValue, stopValue, cardinality) {
+  var arr = [];
+  var step = (stopValue - startValue) / (cardinality - 1);
+  for (var i = 0; i < cardinality; i++) {
+    arr.push(startValue + (step * i));
+  }
+  return arr;
 }
 
 /**
@@ -608,6 +645,11 @@ export function toString(object)
 	if (object.constructor.toString().substring(0, 5) === "class" && typeof object.toString === "function")
 	{
 		return object.toString();
+	}
+
+	if (typeof object === "function")
+	{
+		return `<function ${object.name}>`;
 	}
 
 	try
@@ -1434,6 +1476,47 @@ export function loadCss(cssId, cssPath)
 		link.media = "all";
 		head.appendChild(link);
 	}
+}
+
+/**
+ * Whether the user device has a touchscreen, e.g. it is a mobile phone or tablet.
+ *
+ * @return {boolean} true if the user device has a touchscreen.
+ * @note the code below is directly adapted from MDN
+ */
+export function hasTouchScreen()
+{
+	let hasTouchScreen = false;
+
+	if ("maxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.maxTouchPoints > 0;
+	}
+	else if ("msMaxTouchPoints" in navigator)
+	{
+		hasTouchScreen = navigator.msMaxTouchPoints > 0;
+	}
+	else
+	{
+		const mQ = matchMedia?.("(pointer:coarse)");
+		if (mQ?.media === "(pointer:coarse)")
+		{
+			hasTouchScreen = !!mQ.matches;
+		}
+		else if ("orientation" in window)
+		{
+			hasTouchScreen = true;
+		}
+		else
+		{
+			const UA = navigator.userAgent;
+			hasTouchScreen =
+				/\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+				/\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+		}
+	}
+
+	return hasTouchScreen;
 }
 
 /**

@@ -90,6 +90,7 @@ export class MonotonicClock
 	{
 		// yyyy-mm-dd, hh:mm:ss.sss
 		return MonotonicClock.getDate()
+			.replaceAll("/","-")
 			// yyyy-mm-dd_hh:mm:ss.sss
 			.replace(", ", "_")
 			// yyyy-mm-dd_hh[h]mm:ss.sss
