@@ -610,6 +610,12 @@ export class GUI
 			const input = document.getElementById("form-input-" + keyIdx);
 			if (input)
 			{
+				// deal with field options:
+				if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+				{
+					delete this._dictionary[key];
+					key = key.slice(0, -4);
+				}
 				this._dictionary[key] = input.value;
 			}
 		});
