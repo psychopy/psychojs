@@ -104,6 +104,8 @@ export class ButtonStim extends VisualStim
 		this._addAttribute("timesOff", []);
 		this._addAttribute("numClicks", 0);
 
+		this._estimateBoundingBox();
+
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${util.toString(this)}`);
@@ -138,13 +140,35 @@ export class ButtonStim extends VisualStim
 	_composeTextConfig()
 	{
 		const fontSize = Math.round(this._getLengthPix(this._letterHeight));
+		const size_px = util.to_px(this._size, this._units, this._win);
 
 		return {
 			fontFamily: this._font,
 			fontSize,
 			fill: new Color(this._color).int,
-			align: "center"
+			align: "center",
+			breakWords: true,
+			wordWrap: true,
+			wordWrapWidth: size_px[ 0 ]
 		};
+	}
+
+	/**
+	 * Estimate the bounding box. this._boundingBox is used by other components like mouse listeners.
+	 *
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		// take the alignment into account:
+		const anchor = this._anchorTextToNum(this._anchor);
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] - anchor[0] * this._size[0],
+			this._pos[1] - anchor[1] * this._size[1],
+			this._size[0],
+			this._size[1],
+		);
 	}
 
 	_updateIfNeeded()
@@ -174,7 +198,6 @@ export class ButtonStim extends VisualStim
 			this._pixiText = new PIXI.Text(this._text, pixiTextConfig);
 
 			this._pixi.addChild(this._pixiGraphics, this._pixiText);
-			this._pixi.interactive = true;
 
 			const fillColor = new Color(this._fillColor);
 
@@ -190,6 +213,9 @@ export class ButtonStim extends VisualStim
 			this._pixiGraphics.drawRect(0, 0, size_px[0], size_px[1]);
 			this._pixiGraphics.endFill();
 			this._pixiGraphics.closePath();
+			this._pixiText.x = Math.round((size_px[ 0 ] - this._pixiText.width) * 0.5);
+			this._pixiText.y = Math.round((size_px[ 1 ] - this._pixiText.height) * 0.5);
+			// this._pixiText.width = size_px[ 0 ];
 		}
 
 		this.anchor = this._anchor;
