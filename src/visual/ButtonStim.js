@@ -7,16 +7,18 @@
  * @license Distributed under the terms of the MIT License
  */
 
+import { VisualStim } from "./VisualStim.js";
 import { Mouse } from "../core/Mouse.js";
-import { TextBox } from "./TextBox.js";
+import * as PIXI from "pixi.js-legacy";
 import * as util from "../util/Util";
+import { Color } from "../util/Color.js";
 
 /**
  * <p>ButtonStim visual stimulus.</p>
  *
- * @extends TextBox
+ * @extends VisualStim
  */
-export class ButtonStim extends TextBox
+export class ButtonStim extends VisualStim
 {
 	/**
 	 * @memberOf module:visual
@@ -52,7 +54,7 @@ export class ButtonStim extends TextBox
 			padding,
 			anchor = "center",
 			units,
-			color,
+			color = "white",
 			fillColor = "darkgrey",
 			borderColor,
 			borderWidth = 0,
@@ -73,23 +75,12 @@ export class ButtonStim extends TextBox
 			win,
 			name,
 			text,
-			font,
 			pos,
 			size,
-			padding,
 			anchor,
 			units,
-			color,
-			fillColor,
-			borderColor,
-			borderWidth,
 			opacity,
 			depth,
-			letterHeight,
-			multiline,
-			bold,
-			italic,
-			alignment: "center",
 			autoDraw,
 			autoLog,
 			draggable,
@@ -97,29 +88,23 @@ export class ButtonStim extends TextBox
 		});
 
 		this.psychoJS.logger.debug("create a new Button with name: ", name);
-
 		this.listener = new Mouse({ name, win, autoLog });
 
-		this._addAttribute(
-			"wasClicked",
-			false,
-		);
+		this._addAttribute("text", text, "");
+		this._addAttribute("font", font, "Arial");
+		this._addAttribute("letterHeight", letterHeight, 20);
+		this._addAttribute("color", color, "white");
+		this._addAttribute("fillColor", fillColor, "darkgrey");
+		this._addAttribute("borderWidth", borderWidth, 1);
+		this._addAttribute("borderColor", borderColor, "black");
+		this._addAttribute("wasClicked", false, false);
 
 		// Arrays to store times of clicks on and off
-		this._addAttribute(
-			"timesOn",
-			[],
-		);
+		this._addAttribute("timesOn", []);
+		this._addAttribute("timesOff", []);
+		this._addAttribute("numClicks", 0);
 
-		this._addAttribute(
-			"timesOff",
-			[],
-		);
-
-		this._addAttribute(
-			"numClicks",
-			0,
-		);
+		this._estimateBoundingBox();
 
 		if (this._autoLog)
 		{
@@ -145,5 +130,104 @@ export class ButtonStim extends TextBox
 	get isClicked()
 	{
 		return this.listener.isPressedIn(this, [1, 0, 0]);
+	}
+
+	reset()
+	{
+
+	}
+
+	_composeTextConfig()
+	{
+		const fontSize = Math.round(this._getLengthPix(this._letterHeight));
+		const size_px = util.to_px(this._size, this._units, this._win);
+
+		return {
+			fontFamily: this._font,
+			fontSize,
+			fill: new Color(this._color).int,
+			align: "center",
+			breakWords: true,
+			wordWrap: true,
+			wordWrapWidth: size_px[ 0 ]
+		};
+	}
+
+	/**
+	 * Estimate the bounding box. this._boundingBox is used by other components like mouse listeners.
+	 *
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		// take the alignment into account:
+		const anchor = this._anchorTextToNum(this._anchor);
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] - anchor[0] * this._size[0],
+			this._pos[1] - anchor[1] * this._size[1],
+			this._size[0],
+			this._size[1],
+		);
+	}
+
+	_updateIfNeeded()
+	{
+		if (!this._needUpdate)
+		{
+			return;
+		}
+		this._needUpdate = false;
+
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
+		{
+			this._needPixiUpdate = false;
+
+			if (typeof this._pixi !== "undefined")
+			{
+				this._pixiText.destroy(true);
+				this._pixiGraphics.destroy(true);
+				this._pixi.destroy();
+			}
+
+			this._pixi = new PIXI.Container();
+			this._pixiGraphics = new PIXI.Graphics();
+
+			const pixiTextConfig = this._composeTextConfig();
+			this._pixiText = new PIXI.Text(this._text, pixiTextConfig);
+
+			this._pixi.addChild(this._pixiGraphics, this._pixiText);
+
+			const fillColor = new Color(this._fillColor);
+
+			this._pixiGraphics.beginFill(fillColor.int, 1);
+
+			if (this._borderWidth > 0)
+			{
+				this._pixiGraphics.lineStyle(this._borderWidth, this._borderColor, 1);
+			}
+
+			const size_px = util.to_px(this._size, this._units, this._win);
+
+			this._pixiGraphics.drawRect(0, 0, size_px[0], size_px[1]);
+			this._pixiGraphics.endFill();
+			this._pixiGraphics.closePath();
+			this._pixiText.x = Math.round((size_px[ 0 ] - this._pixiText.width) * 0.5);
+			this._pixiText.y = Math.round((size_px[ 1 ] - this._pixiText.height) * 0.5);
+			// this._pixiText.width = size_px[ 0 ];
+		}
+
+		this.anchor = this._anchor;
+		this._pixi.scale.x = this._flipHoriz ? -1 : 1;
+		this._pixi.scale.y = this._flipVert ? 1 : -1;
+		this._pixi.rotation = -this._ori * Math.PI / 180;
+		[this._pixi.x, this._pixi.y] = util.to_px(this._pos, this._units, this._win);
+
+		this._pixi.alpha = this._opacity;
+		this._pixi.zIndex = -this._depth;
+
+		// apply the clip mask:
+		this._pixi.mask = this._clipMask;
 	}
 }
