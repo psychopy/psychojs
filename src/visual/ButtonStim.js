@@ -143,4 +143,18 @@ export class ButtonStim extends TextBox
 	{
 		return this.listener.isPressedIn(this, [1, 0, 0]);
 	}
+
+	/**
+	 * Clear previously stored times on / off and check current click state.
+	 * 
+	 * In Builder, this is called at the start of each routine.
+	 */
+	reset() {
+
+        // Update wasClicked (so continued clicks at routine start are considered)
+        this.wasClicked = this.isClicked
+        // Clear on/off times
+        this.timesOn = []
+        this.timesOff = []
+	}
 }
