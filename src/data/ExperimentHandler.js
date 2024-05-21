@@ -296,11 +296,15 @@ export class ExperimentHandler extends PsychObject
 			// we need a header if it is asked for and there is actual data to save:
 			const withHeader = this._isCsvHeaderNeeded && (data.length > 0);
 
+/* INCORRECT: since new attributes can be added throughout the participant session, we need, currently,
+							to upload the whole result data, on each call to save.
+
 			// if we are outputting a header on this occasion, we won't need one thereafter:
 			if (this._isCsvHeaderNeeded)
 			{
 				this._isCsvHeaderNeeded = !withHeader;
 			}
+*/
 
 			// TODO only save the given attributes
 			const worksheet = XLSX.utils.json_to_sheet(data, {skipHeader: !withHeader});

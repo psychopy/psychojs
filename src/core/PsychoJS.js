@@ -437,7 +437,7 @@ export class PsychoJS
 					{
 						self._experiment.save({
 							tag: "",
-							clear: true
+							clear: false
 						});
 					},
 					self._config.experiment.resultsUpload.period * 60 * 1000
