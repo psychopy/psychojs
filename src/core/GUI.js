@@ -3,8 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sijia Zhao - fine-grained resource loading
- * @version 2021.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -80,14 +79,17 @@ export class GUI
 	 * @param {Object} options.dictionary - associative array of values for the participant to set
 	 * @param {String} options.title - name of the project
 	 * @param {boolean} [options.requireParticipantClick=true] - whether the participant must click on the OK
-     * 	button, when it becomes enabled, to move on with the experiment
+   * 	button, when it becomes enabled, to move on with the experiment
+	 * @param {boolean} [options.OKAlwaysEnabledForLocal=false] - whether the OK button is always enabled
+	 * 	when the experiment runs locally
 	 */
 	DlgFromDict({
 		logoUrl,
 		text,
 		dictionary,
 		title,
-		requireParticipantClick = GUI.DEFAULT_SETTINGS.DlgFromDict.requireParticipantClick
+		requireParticipantClick = GUI.DEFAULT_SETTINGS.DlgFromDict.requireParticipantClick,
+		OKAlwaysEnabledForLocal = true
 	})
 	{
 		this._progressBarMax = 0;
@@ -96,6 +98,7 @@ export class GUI
 		this._setRequiredKeys = new Map();
 		this._progressMessage = "&nbsp;";
 		this._requireParticipantClick = requireParticipantClick;
+		this._OKAlwaysEnabledForLocal = OKAlwaysEnabledForLocal;
 		this._dictionary = dictionary;
 
 		// prepare a PsychoJS component:
@@ -183,13 +186,26 @@ export class GUI
 					{
 						atLeastOneIncludedKey = true;
 
-						markup += `<label for='${keyId}'> ${key} </label>`;
-
-						// if the field is required:
+						// deal with field options:
+						// - if the field is required:
+						if (key.slice(-4) === "|req")
+						{
+							key = `${key.slice(0, -4)}*`;
+						}
 						if (key.slice(-1) === "*")
 						{
 							self._requiredKeys.push(keyId);
 						}
+						// - all other new options are currently discarded
+						// TODO
+
+						// remove the new option extensions:
+						if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+						{
+							key = key.slice(0, -4);
+						}
+
+						markup += `<label for='${keyId}'> ${key} </label>`;
 
 						// if value is an array, we create a select drop-down menu:
 						if (Array.isArray(value))
@@ -236,7 +252,6 @@ export class GUI
 				markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
 
 				// buttons:
-				markup += "<hr>";
 				markup += "<div class='dialog-button-group'>";
 				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Cancel Experiment'>Cancel</button>";
 				if (self._requireParticipantClick)
@@ -276,7 +291,7 @@ export class GUI
 				self._updateProgressBar();
 
 				// setup change event handlers for all required keys:
-				this._requiredKeys.forEach((keyId) =>
+				self._requiredKeys.forEach((keyId) =>
 				{
 					const input = document.getElementById(keyId);
 					if (input)
@@ -413,13 +428,13 @@ export class GUI
 			markup += "</div>";
 		}
 
-		if (showOK || showCancel)
-		{
-			markup += "<hr>";
-		}
+		// if (showOK || showCancel)
+		// {
+		// 	markup += "<hr>";
+		// }
 		if (showCancel || showOK)
 		{
-			markup += "<div class='button-group'>";
+			markup += "<div class='dialog-button-group'>";
 			if (showCancel)
 			{
 				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>Cancel</button>";
@@ -489,11 +504,15 @@ export class GUI
 		markup += "<div class='dialog-overlay'></div>";
 		markup += "<div class='dialog-content'>";
 		markup += `<div id='experiment-dialog-title' class='dialog-title dialog-warning'><p>Warning</p></div>`;
+
+		markup += "<div class='scrollable-container'>";
 		markup += `<p>${text}</p>`;
+		markup += "</div>";
 
 		// progress bar:
 		markup += `<hr><div id='progressMsg' class='progress-msg'>&nbsp;</div>`;
 		markup += "<div class='progress-container'><div id='progressBar' class='progress-bar'></div></div>";
+		markup += "<div class='dialog-button-group'></div>";
 
 		markup += "</div></div>";
 
@@ -590,6 +609,12 @@ export class GUI
 			const input = document.getElementById("form-input-" + keyIdx);
 			if (input)
 			{
+				// deal with field options:
+				if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+				{
+					delete this._dictionary[key];
+					key = key.slice(0, -4);
+				}
 				this._dictionary[key] = input.value;
 			}
 		});
@@ -604,8 +629,11 @@ export class GUI
 		// clear all events (and keypresses) accumulated until now:
 		this._psychoJS.eventManager.clearEvents();
 
-		this._dialog.hide();
-		this._dialog = null;
+		if (this._dialog)
+		{
+			this._dialog.hide();
+			this._dialog = null;
+		}
 		this._dialogComponent.status = PsychoJS.Status.FINISHED;
 	}
 
@@ -685,7 +713,10 @@ export class GUI
 			if (typeof this._okButton !== "undefined")
 			{
 				// locally the OK button is always enabled, otherwise only if all requirements have been fulfilled:
-				if (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL || allRequirementsFulfilled)
+				if (
+					(this._OKAlwaysEnabledForLocal && this._psychoJS.getEnvironment() === ExperimentHandler.Environment.LOCAL)
+					|| allRequirementsFulfilled
+				)
 				{
 					this._okButton.classList.add("dialog-button");
 					this._okButton.classList.remove("disabled");
@@ -702,7 +733,6 @@ export class GUI
 
 			return;
 		}
-
 
 		// if all requirements are fulfilled and the participant is not required to click on the OK button,
 		// then we close the dialog box and move on with the experiment:

@@ -3,8 +3,7 @@
  * Sound stimulus.
  *
  * @author Alain Pitiot, Nikita Agafonov
- * @version 2022.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -40,6 +39,7 @@ import { TrackPlayer } from "./TrackPlayer.js";
 export class Sound extends PsychObject
 {
 	/**
+	 * @memberOf module:sound
 	 * @param {Object} options
 	 * @param {String} options.name - the name used when logging messages from this stimulus
 	 * @param {module:core.Window} options.win - the associated Window

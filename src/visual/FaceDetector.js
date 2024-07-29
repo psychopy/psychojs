@@ -2,7 +2,6 @@
  * Manager handling the detecting of faces in video streams.
  *
  * @author Alain Pitiot
- * @version 2022.2.3
  * @copyright (c) 2021 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

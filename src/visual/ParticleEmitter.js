@@ -2,7 +2,6 @@
  * Particle Emitter.
  *
  * @author Nikita Agafonov
- * @version 2023.2.0
  * @copyright (c) 2020-2023 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

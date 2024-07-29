@@ -3,8 +3,7 @@
  * Core Object.
  *
  * @author Alain Pitiot
- * @version 2022.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -21,7 +20,7 @@ export class PsychObject extends EventEmitter
 {
 	/**
 	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
-	 * @param {string} name - the name of the object (mostly useful for debugging)
+	 * @param {string} [name] - the name of the object (mostly useful for debugging)
 	 */
 	constructor(psychoJS, name)
 	{

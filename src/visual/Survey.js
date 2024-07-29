@@ -2,7 +2,6 @@
  * Survey Stimulus.
  *
  * @author Alain Pitiot and Nikita Agafonov
- * @version 2022.3
  * @copyright (c) 2023 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
@@ -101,7 +100,7 @@ export class Survey extends VisualStim
 
 		this._overallSurveyResults = {};
 		this._surveyData = undefined;
-		this._surveyModel = undefined;
+		this._surveyJSModel = undefined;
 		this._expressionsRunner = undefined;
 		this._lastPageSwitchHandledIdx = -1;
 		this._variables = {};
@@ -198,8 +197,8 @@ export class Survey extends VisualStim
 					model = {
 						surveys: [model],
 						embeddedData: [],
-						surveysMap: {},
-						questionMapsBySurvey: {},
+						// surveysMap: {},
+						// questionMapsBySurvey: {},
 						surveyFlow: {
 							name: "root",
 							type: "SEQUENTIAL_GROUP",
@@ -211,7 +210,7 @@ export class Survey extends VisualStim
 
 						surveySettings: { showPrevButton: false },
 
-						surveyRunLogic: {},
+						// surveyRunLogic: {},
 						inQuestionRandomization: {},
 						questionsOrderRandomization: [],
 						questionSkipLogic: {},
@@ -224,7 +223,14 @@ export class Survey extends VisualStim
 					this.psychoJS.logger.debug(`converted the legacy model to the new super-flow model: ${JSON.stringify(model)}`);
 				}
 
+				// mark the root (top-most) node:
+				model.surveyFlow.isRootNode = true;
+
 				this._surveyData = model;
+
+				// augment the question names with block names:
+				this._augmentQuestionNames();
+
 				this._setAttribute("model", model, log);
 				this._onChange(true, true)();
 			}
@@ -294,7 +300,7 @@ export class Survey extends VisualStim
 	 */
 	evaluateExpression(expression)
 	{
-		if (typeof expression === "undefined" || typeof this._surveyModel === "undefined")
+		if (typeof expression === "undefined" || typeof this._surveyJSModel === "undefined")
 		{
 			return undefined;
 		}
@@ -306,7 +312,7 @@ export class Survey extends VisualStim
 			expression = `'${expression}'`;
 		}
 
-		return this._surveyModel.runExpression(expression);
+		return this._surveyJSModel.runExpression(expression);
 	}
 
 	/**
@@ -478,15 +484,12 @@ export class Survey extends VisualStim
 			// if a survey div does not exist, create it:
 			if (document.getElementById(this._surveyDivId) === null)
 			{
-				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey'></div>`)
+				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey'></div>`);
 			}
 
 			// start the survey flow:
 			if (typeof this._surveyData !== "undefined")
 			{
-				// this._startSurvey(surveyId, this._surveyModel);
-				// jQuery(`#${surveyId}`).Survey({model: this._surveyModel});
-
 				this._runSurveyFlow(this._surveyData.surveyFlow, this._surveyData);
 			}
 		}
@@ -701,7 +704,6 @@ export class Survey extends VisualStim
 
 	_applyInQuestionRandomization (questionData, inQuestionRandomizationSettings, surveyData)
 	{
-		let t = performance.now();
 		let choicesFieldName;
 		let valueFieldName;
 		if (questionData.rows !== undefined)
@@ -721,7 +723,7 @@ export class Survey extends VisualStim
 		}
 		else
 		{
-			console.log("[Survey runner]: Uknown choicesFieldName for", questionData);
+			console.log("[Survey runner]: Unknown choicesFieldName for", questionData);
 		}
 
 		if (inQuestionRandomizationSettings.randomizeAll)
@@ -745,8 +747,7 @@ export class Survey extends VisualStim
 			let choicesMap = {};
 			// TODO: generalize further i.e. figure out how to calculate the length of array based on availability of sets.
 			const setIndices = [0, 0, 0];
-			let i;
-			for (i = 0; i < questionData[choicesFieldName].length; i++)
+			for (let i = 0; i < questionData[choicesFieldName].length; i++)
 			{
 				choicesMap[questionData[choicesFieldName][i][valueFieldName]] = questionData[choicesFieldName][i];
 			}
@@ -758,7 +759,7 @@ export class Survey extends VisualStim
 			// const shuffledSet0 = this._FisherYatesShuffle(inQuestionRandomizationSettings.set0);
 			// const shuffledSet1 = this._FisherYatesShuffle(inQuestionRandomizationSettings.set1);
 			const reversedSet = Math.round(Math.random()) === 1 ? inQuestionRandomizationSettings.reverseOrder.reverse() : inQuestionRandomizationSettings.reverseOrder;
-			for (i = 0; i < inQuestionRandomizationSettings.layout.length; i++)
+			for (let i = 0; i < inQuestionRandomizationSettings.layout.length; i++)
 			{
 				if (inQuestionRandomizationSettings.layout[i] === "set0")
 				{
@@ -797,53 +798,58 @@ export class Survey extends VisualStim
 			}
 		}
 
-		console.log("applying question randomization took", performance.now() - t);
 		// console.log(questionData);
 	}
 
 	/**
-	 * @desc: Go over required surveyModelData and apply randomization settings.
+	 * Go over required surveyModelData and apply randomization settings.
+	 * @protected
 	 */
-	_processSurveyData (surveyData, surveyIdx)
+	_processSurveyData(surveyData, surveyIdx)
 	{
-		let t = performance.now();
-		let i, j;
 		let newSurveyModel = undefined;
-		if (surveyData.questionsOrderRandomization[surveyIdx] !== undefined)
+
+		// Qualtrics's in-block randomization ignores the presence of page breaks within the block.
+		// Hence creating a fresh survey data object with shuffled question order.
+		if (typeof surveyData.questionsOrderRandomization[surveyIdx] !== "undefined")
 		{
-			// Qualtrics's in-block randomization ignores presense of page breaks within the block.
-			// Hence creating a fresh survey data object with shuffled question order.
-			newSurveyModel = this._composeModelWithRandomizedQuestions(surveyData.surveys[surveyIdx], surveyData.questionsOrderRandomization[surveyIdx]);
+			newSurveyModel = this._composeModelWithRandomizedQuestions(
+				surveyData.surveys[surveyIdx],
+				surveyData.questionsOrderRandomization[surveyIdx]
+			);
 		}
 
-		// Checking if there's in-question randomization that needs to be applied.
-		for (i = 0; i < surveyData.surveys[surveyIdx].pages.length; i++)
+		// note: we need to check whether the survey model has a "pages" field since empty surveys do not:
+		if ("pages" in surveyData.surveys[surveyIdx])
 		{
-			for (j = 0; j < surveyData.surveys[surveyIdx].pages[i].elements.length; j++)
+			// checking whether in-question randomization needs to be applied:
+			for (let i = 0; i < surveyData.surveys[surveyIdx].pages.length; ++i)
 			{
-				if (surveyData.inQuestionRandomization[surveyData.surveys[surveyIdx].pages[i].elements[j].name] !== undefined)
+				for (let j = 0; j < surveyData.surveys[surveyIdx].pages[i].elements.length; ++j)
 				{
-					if (newSurveyModel === undefined)
+					if (typeof surveyData.inQuestionRandomization[surveyData.surveys[surveyIdx].pages[i].elements[j].name] !== "undefined")
 					{
-						// Marking a deep copy of survey model input data, to avoid data loss if randomization returns a subset of choices.
-						// TODO: think of somehting more optimal.
-						newSurveyModel = JSON.parse(JSON.stringify(surveyData.surveys[surveyIdx]));
+						if (typeof newSurveyModel === "undefined")
+						{
+							// Marking a deep copy of survey model input data, to avoid data loss if randomization returns a subset of choices.
+							// TODO: think of something more optimal.
+							newSurveyModel = JSON.parse(JSON.stringify(surveyData.surveys[surveyIdx]));
+						}
+						this._applyInQuestionRandomization(
+							newSurveyModel.pages[i].elements[j],
+							surveyData.inQuestionRandomization[newSurveyModel.pages[i].elements[j].name],
+							surveyData
+						);
 					}
-					this._applyInQuestionRandomization(
-						newSurveyModel.pages[i].elements[j],
-						surveyData.inQuestionRandomization[newSurveyModel.pages[i].elements[j].name],
-						surveyData
-					);
 				}
 			}
 		}
 
-		if (newSurveyModel === undefined)
+		if (typeof newSurveyModel === "undefined")
 		{
 			// No changes were made, just return original data.
 			newSurveyModel = surveyData.surveys[surveyIdx];
 		}
-		console.log("survey model preprocessing took", performance.now() - t);
 		return newSurveyModel;
 	}
 
@@ -907,16 +913,19 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Callback triggered when the participant is done with the survey, i.e. when the
-	 * [Complete] button as been pressed.
+	 * Callback triggered when the participant has completed a SurveyJS Question Block.
 	 *
-	 * @param surveyModel
-	 * @param options
+	 * @param {Object} node - super-flow QUESTION_BLOCK node
+	 * @param surveyModel		- the associated SurveyJS model
+	 * @param options				- the SurveyJS model options
 	 * @protected
 	 */
-	_onSurveyComplete(surveyModel, options)
+	_onSurveyJSComplete(node, surveyModel, options)
 	{
+		// note: we need to add the node title to the responses
 		Object.assign(this._overallSurveyResults, surveyModel.data);
+
+
 		let completionCode = Survey.SURVEY_COMPLETION_CODES.NORMAL;
 		const questions = surveyModel.getAllQuestions();
 
@@ -944,7 +953,7 @@ export class Survey extends VisualStim
 		surveyModel.stopTimer();
 
 		// check whether the survey was completed:
-		const surveyVisibleQuestions = this._surveyModel.getAllQuestions(true);
+		const surveyVisibleQuestions = this._surveyJSModel.getAllQuestions(true);
 		const nbAnsweredQuestions = surveyVisibleQuestions.reduce(
 			(count, question) =>
 			{
@@ -975,7 +984,12 @@ export class Survey extends VisualStim
 		this._surveyRunningPromiseResolve(completionCode);
 	}
 
-	_onFlowComplete ()
+	/**
+	 * Callback triggered when we have run through the whole flow.
+	 *
+	 * @protected
+	 */
+	_onFlowComplete()
 	{
 		this.isFinished = true;
 		this._onFinishedCallback();
@@ -988,51 +1002,49 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Run the survey using flow data provided. This method runs recursively.
+	 * Run a QUESTION_BLOCK as a SurveyJS survey.
 	 *
+	 * @param {Object} node - super-flow QUESTION_BLOCK node
+	 * @param {Object} surveyData - the complete surveyData (model)
 	 * @protected
-	 * @param {Object} surveyData - surveyData / model.
-	 * @param {Object} surveyFlowBlock - XXX
-	 * @return {void}
 	 */
-	_beginSurvey(surveyData, surveyFlowBlock)
+	_runQuestionBlock(node, surveyData)
 	{
 		this._lastPageSwitchHandledIdx = -1;
-		const surveyIdx = surveyFlowBlock.surveyIdx;
-		let surveyModelInput = this._processSurveyData(surveyData, surveyIdx);
+		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
 
-		this._surveyModel = new window.Survey.Model(surveyModelInput);
+		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
 		for (let j in this._variables)
 		{
 			// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
 			// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
-			this._surveyModel.variablesHash[j] = this._variables[j];
+			this._surveyJSModel.variablesHash[j] = this._variables[j];
 			// this._surveyModel.setVariable(j, this._variables[j]);
 		}
 
-		if (!this._surveyModel.isInitialized)
+		if (!this._surveyJSModel.isInitialized)
 		{
-			this._registerCustomComponentCallbacks(this._surveyModel);
-			this._surveyModel.onValueChanged.add(this._onQuestionValueChanged.bind(this));
-			this._surveyModel.onCurrentPageChanging.add(this._onCurrentPageChanging.bind(this));
-			this._surveyModel.onComplete.add(this._onSurveyComplete.bind(this));
-			this._surveyModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
-			this._surveyModel.isInitialized = true;
-			this._surveyModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
+			this._registerCustomComponentCallbacks(this._surveyJSModel);
+			this._surveyJSModel.onValueChanged.add(this._onQuestionValueChanged.bind(this));
+			this._surveyJSModel.onCurrentPageChanging.add(this._onCurrentPageChanging.bind(this));
+			this._surveyJSModel.onComplete.add( (surveyJSModel, options) => this._onSurveyJSComplete(node, surveyJSModel, options) );
+			this._surveyJSModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
+			this._surveyJSModel.isInitialized = true;
+			this._surveyJSModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
 		}
 
-		const completeText = surveyIdx < this._surveyData.surveys.length - 1 ? (this._surveyModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
+		const completeText = node.surveyIdx < this._surveyData.surveys.length - 1 ? (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
 		jQuery(".survey").Survey({
-			model: this._surveyModel,
+			model: this._surveyJSModel,
 			showItemsInOrder: "column",
 			completeText,
-			...surveyData.surveySettings,
+			...surveyData.surveySettings
 		});
 
 		this._questionAnswerTimestampClock.reset();
 
 		// TODO: should this be conditional?
-		this._surveyModel.startTimer();
+		this._surveyJSModel.startTimer();
 
 		this._surveyRunningPromise = new Promise((res, rej) => {
 			this._surveyRunningPromiseResolve = res;
@@ -1042,32 +1054,41 @@ export class Survey extends VisualStim
 		return this._surveyRunningPromise;
 	}
 
-	async _runSurveyFlow(surveyBlock, surveyData, prevBlockResults = {})
+	/**
+	 *
+	 * @param node
+	 * @param surveyData
+	 * @param prevBlockResults
+	 * @return {Promise<number>}
+	 * @private
+	 */
+	async _runSurveyFlow(node, surveyData, prevBlockResults = {})
 	{
 		let nodeExitCode = Survey.NODE_EXIT_CODES.NORMAL;
 
-		if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
+		if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
 		{
 			const dataset = Object.assign({}, this._overallSurveyResults, this._variables);
-			this._expressionsRunner.expressionExecutor.setExpression(surveyBlock.condition);
-			if (this._expressionsRunner.run(dataset) && surveyBlock.nodes[0] !== undefined)
+			this._expressionsRunner.expressionExecutor.setExpression(node.condition);
+			if (this._expressionsRunner.run(dataset) && node.nodes[0] !== undefined)
 			{
-				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[0], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(node.nodes[0], surveyData, prevBlockResults);
 			}
-			else if (surveyBlock.nodes[1] !== undefined)
+			else if (node.nodes[1] !== undefined)
 			{
-				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[1], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(node.nodes[1], surveyData, prevBlockResults);
 			}
 		}
-		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.RANDOMIZER)
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.RANDOMIZER)
 		{
-			util.shuffle(surveyBlock.nodes, Math.random, 0, surveyBlock.nodes.length - 1);
-			// this._InPlaceFisherYatesShuffle(surveyBlock.nodes, 0, surveyBlock.nodes.length - 1);
+			util.shuffle(node.nodes, Math.random, 0, node.nodes.length - 1);
 		}
-		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.EMBEDDED_DATA)
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.EMBEDDED_DATA)
 		{
 			let t = performance.now();
-			const surveyBlockData = surveyData.embeddedData[surveyBlock.dataIdx];
+			const surveyBlockData = surveyData.embeddedData[node.dataIdx];
 			for (let j = 0; j < surveyBlockData.length; j++)
 			{
 				// TODO: handle the rest data types.
@@ -1090,19 +1111,22 @@ export class Survey extends VisualStim
 			}
 			console.log("embedded data variables accumulation took", performance.now() - t);
 		}
-		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
 		{
-			if (this._surveyModel)
+			if (this._surveyJSModel)
 			{
-				this._surveyModel.setCompleted();
+				this._surveyJSModel.setCompleted();
 			}
 			console.log("EndSurvey block encountered, exiting.");
 			nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
 		}
-		else if (surveyBlock.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
+
+		// QUESTION_BLOCK:
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
 		{
-			const surveyCompletionCode = await this._beginSurvey(surveyData, surveyBlock);
-			Object.assign({}, prevBlockResults, this._surveyModel.data);
+			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData);
+			Object.assign({}, prevBlockResults, this._surveyJSModel.data);
 
 			// SkipLogic had destination set to ENDOFSURVEY.
 			if (surveyCompletionCode === Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
@@ -1111,13 +1135,14 @@ export class Survey extends VisualStim
 			}
 		}
 
+		// run through the children nodes of this node:
 		if (nodeExitCode === Survey.NODE_EXIT_CODES.NORMAL &&
-			surveyBlock.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL &&
-			surveyBlock.nodes instanceof Array)
+			node.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL &&
+			node.nodes instanceof Array)
 		{
-			for (let i = 0; i < surveyBlock.nodes.length; i++)
+			for (const childNode of node.nodes)
 			{
-				nodeExitCode = await this._runSurveyFlow(surveyBlock.nodes[i], surveyData, prevBlockResults);
+				nodeExitCode = await this._runSurveyFlow(childNode, surveyData, prevBlockResults);
 				if (nodeExitCode === Survey.NODE_EXIT_CODES.BREAK_FLOW)
 				{
 					break;
@@ -1125,9 +1150,9 @@ export class Survey extends VisualStim
 			}
 		}
 
-		if (surveyBlock.name === "root")
+		// if we have just run through the top node, mark the whole flow as completed:
+		if (node.isRootNode)
 		{
-			// At this point we went through the entire survey flow tree.
 			this._onFlowComplete();
 		}
 
@@ -1141,7 +1166,7 @@ export class Survey extends VisualStim
 
 	_handleWindowResize(e)
 	{
-		if (this._surveyModel)
+		if (this._surveyJSModel)
 		{
 			for (let i = this._signaturePads.length - 1; i >= 0; i--)
 			{
@@ -1206,5 +1231,32 @@ export class Survey extends VisualStim
 		// load the desired style:
 		// TODO
 		// util.loadCss("./survey/css/grey_style.css");
+	}
+
+	/**
+	 * Augment the model question names with model names.
+	 *
+	 * @protected
+	 */
+	_augmentQuestionNames()
+	{
+		if (!("surveys" in this._surveyData))
+		{
+			return;
+		}
+
+		const surveys = this._surveyData["surveys"];
+		for (const survey of surveys)
+		{
+			if (!("title" in survey) || !("pages" in survey))
+			{
+				continue;
+			}
+
+			for (const page of survey["pages"])
+			{
+				
+			}
+		}
 	}
 }

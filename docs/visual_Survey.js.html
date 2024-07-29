@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>visual/Survey.js - PsychoJS API</title>
+    
+    
+    
+        <meta name="keywords" content="psychopy, psychojs, api" />
+        <meta name="keyword" content="psychopy, psychojs, api" />
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://psychopy.org" target="_blank" class="menu-item" id="website_link" >Project Website</a></h2><h2><a href="https://discourse.psychopy.org/" target="_blank" class="menu-item" id="forum_link" >Forum</a></h2><h2><a href="https://github.com/psychopy/psychojs" target="_blank" class="menu-item" id="github_link" >Github</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a></li><li><a href="module-data.html">data</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-util.html">util</a><ul class='methods'><li data-type='method'><a href="module-util.html#~_match">_match</a></li></ul></li><li></li><li><a href="module-visual.html">visual</a></li></ul><h3>Classes</h3><ul><li><a href="AudioClip.html">AudioClip</a><ul class='methods'><li data-type='method'><a href="AudioClip.html#_base64ArrayBuffer">_base64ArrayBuffer</a></li><li data-type='method'><a href="AudioClip.html#_decodeAudio">_decodeAudio</a></li><li data-type='method'><a href="AudioClip.html#_GoogleTranscribe">_GoogleTranscribe</a></li><li data-type='method'><a href="AudioClip.html#download">download</a></li><li data-type='method'><a href="AudioClip.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClip.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClip.html#startPlayback">startPlayback</a></li><li data-type='method'><a href="AudioClip.html#stopPlayback">stopPlayback</a></li><li data-type='method'><a href="AudioClip.html#transcribe">transcribe</a></li><li data-type='method'><a href="AudioClip.html#upload">upload</a></li></ul></li><li><a href="AudioClipPlayer.html">AudioClipPlayer</a><ul class='methods'><li data-type='method'><a href="AudioClipPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#play">play</a></li><li data-type='method'><a href="AudioClipPlayer.html#setAudioClip">setAudioClip</a></li><li data-type='method'><a href="AudioClipPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="AudioClipPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="AudioClipPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="AudioClipPlayer.html#stop">stop</a></li></ul></li><li><a href="BuilderKeyResponse.html">BuilderKeyResponse</a></li><li><a href="ButtonStim.html">ButtonStim</a><ul class='methods'><li data-type='method'><a href="ButtonStim.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="ButtonStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ButtonStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="ButtonStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ButtonStim.html#clear">clear</a></li><li data-type='method'><a href="ButtonStim.html#getText">getText</a></li><li data-type='method'><a href="ButtonStim.html#reset">reset</a></li><li data-type='method'><a href="ButtonStim.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="ButtonStim.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="ButtonStim.html#setColor">setColor</a></li><li data-type='method'><a href="ButtonStim.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="ButtonStim.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="ButtonStim.html#setFont">setFont</a></li><li data-type='method'><a href="ButtonStim.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="ButtonStim.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="ButtonStim.html#setSize">setSize</a></li><li data-type='method'><a href="ButtonStim.html#setText">setText</a></li></ul></li><li><a href="Clock.html">Clock</a><ul class='methods'><li data-type='method'><a href="Clock.html#add">add</a></li><li data-type='method'><a href="Clock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="Clock.html#getTime">getTime</a></li><li data-type='method'><a href="Clock.html#reset">reset</a></li></ul></li><li><a href="Color.html">Color</a><ul class='methods'><li data-type='method'><a href="Color.html#toString">toString</a></li></ul></li><li><a href="CountdownTimer.html">CountdownTimer</a><ul class='methods'><li data-type='method'><a href="CountdownTimer.html#add">add</a></li><li data-type='method'><a href="CountdownTimer.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="CountdownTimer.html#getTime">getTime</a></li><li data-type='method'><a href="CountdownTimer.html#reset">reset</a></li></ul></li><li><a href="EventEmitter.html">EventEmitter</a><ul class='methods'><li data-type='method'><a href="EventEmitter.html#emit">emit</a></li><li data-type='method'><a href="EventEmitter.html#off">off</a></li><li data-type='method'><a href="EventEmitter.html#on">on</a></li><li data-type='method'><a href="EventEmitter.html#once">once</a></li></ul></li><li><a href="EventManager.html">EventManager</a><ul class='methods'><li data-type='method'><a href="EventManager.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="EventManager.html#addMouseListeners">addMouseListeners</a></li><li data-type='method'><a href="EventManager.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="EventManager.html#clearKeys">clearKeys</a></li><li data-type='method'><a href="EventManager.html#getKeys">getKeys</a></li><li data-type='method'><a href="EventManager.html#getMouseInfo">getMouseInfo</a></li><li data-type='method'><a href="EventManager.html#resetMoveClock">resetMoveClock</a></li><li data-type='method'><a href="EventManager.html#startMoveClock">startMoveClock</a></li><li data-type='method'><a href="EventManager.html#stopMoveClock">stopMoveClock</a></li></ul></li><li><a href="ExperimentHandler.html">ExperimentHandler</a><ul class='methods'><li data-type='method'><a href="ExperimentHandler.html#addData">addData</a></li><li data-type='method'><a href="ExperimentHandler.html#addLoop">addLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#getResultAsCsv">getResultAsCsv</a></li><li data-type='method'><a href="ExperimentHandler.html#isEntryEmpty">isEntryEmpty</a></li><li data-type='method'><a href="ExperimentHandler.html#nextEntry">nextEntry</a></li><li data-type='method'><a href="ExperimentHandler.html#removeLoop">removeLoop</a></li><li data-type='method'><a href="ExperimentHandler.html#save">save</a></li></ul></li><li><a href="FaceDetector.html">FaceDetector</a><ul class='methods'><li data-type='method'><a href="FaceDetector.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="FaceDetector.html#_initFaceApi">_initFaceApi</a></li><li data-type='method'><a href="FaceDetector.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="FaceDetector.html#isReady">isReady</a></li><li data-type='method'><a href="FaceDetector.html#setInput">setInput</a></li><li data-type='method'><a href="FaceDetector.html#start">start</a></li><li data-type='method'><a href="FaceDetector.html#stop">stop</a></li></ul></li><li><a href="Form.html">Form</a><ul class='methods'><li data-type='method'><a href="Form.html#_anchorTextToNum">_anchorTextToNum</a></li><li data-type='method'><a href="Form.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Form.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Form.html#_importItems">_importItems</a></li><li data-type='method'><a href="Form.html#_onChange">_onChange</a></li><li data-type='method'><a href="Form.html#_processItems">_processItems</a></li><li data-type='method'><a href="Form.html#_sanitizeItems">_sanitizeItems</a></li><li data-type='method'><a href="Form.html#_setupStimuli">_setupStimuli</a></li><li data-type='method'><a href="Form.html#_updateDecorations">_updateDecorations</a></li><li data-type='method'><a href="Form.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Form.html#_updateVisibleStimuli">_updateVisibleStimuli</a></li><li data-type='method'><a href="Form.html#addDataToExp">addDataToExp</a></li><li data-type='method'><a href="Form.html#contains">contains</a></li><li data-type='method'><a href="Form.html#draw">draw</a></li><li data-type='method'><a href="Form.html#formComplete">formComplete</a></li><li data-type='method'><a href="Form.html#getData">getData</a></li><li data-type='method'><a href="Form.html#hide">hide</a></li><li data-type='method'><a href="Form.html#refresh">refresh</a></li><li data-type='method'><a href="Form.html#release">release</a></li><li data-type='method'><a href="Form.html#reset">reset</a></li><li data-type='method'><a href="Form.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="Form.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Form.html#setDepth">setDepth</a></li><li data-type='method'><a href="Form.html#setOri">setOri</a></li><li data-type='method'><a href="Form.html#setPos">setPos</a></li><li data-type='method'><a href="Form.html#setSize">setSize</a></li></ul></li><li><a href="GratingStim.html">GratingStim</a><ul class='methods'><li data-type='method'><a href="GratingStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="GratingStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="GratingStim.html#_getPixiMeshFromPredefinedShaders">_getPixiMeshFromPredefinedShaders</a></li><li data-type='method'><a href="GratingStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="GratingStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="GratingStim.html#setBlendmode">setBlendmode</a></li><li data-type='method'><a href="GratingStim.html#setColor">setColor</a></li><li data-type='method'><a href="GratingStim.html#setColorSpace">setColorSpace</a></li><li data-type='method'><a href="GratingStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="GratingStim.html#setMask">setMask</a></li><li data-type='method'><a href="GratingStim.html#setOpacity">setOpacity</a></li><li data-type='method'><a href="GratingStim.html#setPhase">setPhase</a></li><li data-type='method'><a href="GratingStim.html#setSF">setSF</a></li><li data-type='method'><a href="GratingStim.html#setTex">setTex</a></li></ul></li><li><a href="GUI.html">GUI</a><ul class='methods'><li data-type='method'><a href="GUI.html#_onCancelExperiment">_onCancelExperiment</a></li><li data-type='method'><a href="GUI.html#_onResourceEvents">_onResourceEvents</a></li><li data-type='method'><a href="GUI.html#_onStartExperiment">_onStartExperiment</a></li><li data-type='method'><a href="GUI.html#_setProgressMessage">_setProgressMessage</a></li><li data-type='method'><a href="GUI.html#_updateDialog">_updateDialog</a></li><li data-type='method'><a href="GUI.html#_updateProgressBar">_updateProgressBar</a></li><li data-type='method'><a href="GUI.html#_userFriendlyError">_userFriendlyError</a></li><li data-type='method'><a href="GUI.html#closeDialog">closeDialog</a></li><li data-type='method'><a href="GUI.html#dialog">dialog</a></li><li data-type='method'><a href="GUI.html#DlgFromDict">DlgFromDict</a></li><li data-type='method'><a href="GUI.html#finishDialog">finishDialog</a></li></ul></li><li><a href="ImageStim.html">ImageStim</a><ul class='methods'><li data-type='method'><a href="ImageStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ImageStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="ImageStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ImageStim.html#setImage">setImage</a></li><li data-type='method'><a href="ImageStim.html#setInterpolate">setInterpolate</a></li><li data-type='method'><a href="ImageStim.html#setMask">setMask</a></li></ul></li><li><a href="Keyboard.html">Keyboard</a><ul class='methods'><li data-type='method'><a href="Keyboard.html#_addKeyListeners">_addKeyListeners</a></li><li data-type='method'><a href="Keyboard.html#clearEvents">clearEvents</a></li><li data-type='method'><a href="Keyboard.html#getEvents">getEvents</a></li><li data-type='method'><a href="Keyboard.html#getKeys">getKeys</a></li><li data-type='method'><a href="Keyboard.html#start">start</a></li><li data-type='method'><a href="Keyboard.html#stop">stop</a></li></ul></li><li><a href="KeyPress.html">KeyPress</a></li><li><a href="Logger.html">Logger</a><ul class='methods'><li data-type='method'><a href="Logger.html#_customConsoleLayout">_customConsoleLayout</a></li><li data-type='method'><a href="Logger.html#_getValue">_getValue</a></li><li data-type='method'><a href="Logger.html#_throttle">_throttle</a></li><li data-type='method'><a href="Logger.html#data">data</a></li><li data-type='method'><a href="Logger.html#exp">exp</a></li><li data-type='method'><a href="Logger.html#flush">flush</a></li><li data-type='method'><a href="Logger.html#log">log</a></li><li data-type='method'><a href="Logger.html#setLevel">setLevel</a></li></ul></li><li><a href="MaxDiffMatrix.html">MaxDiffMatrix</a></li><li><a href="Microphone.html">Microphone</a><ul class='methods'><li data-type='method'><a href="Microphone.html#_onChange">_onChange</a></li><li data-type='method'><a href="Microphone.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="Microphone.html#download">download</a></li><li data-type='method'><a href="Microphone.html#flush">flush</a></li><li data-type='method'><a href="Microphone.html#getRecording">getRecording</a></li><li data-type='method'><a href="Microphone.html#pause">pause</a></li><li data-type='method'><a href="Microphone.html#resume">resume</a></li><li data-type='method'><a href="Microphone.html#start">start</a></li><li data-type='method'><a href="Microphone.html#stop">stop</a></li><li data-type='method'><a href="Microphone.html#upload">upload</a></li></ul></li><li><a href="MinimalStim.html">MinimalStim</a><ul class='methods'><li data-type='method'><a href="MinimalStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MinimalStim.html#contains">contains</a></li><li data-type='method'><a href="MinimalStim.html#draw">draw</a></li><li data-type='method'><a href="MinimalStim.html#hide">hide</a></li><li data-type='method'><a href="MinimalStim.html#release">release</a></li><li data-type='method'><a href="MinimalStim.html#setAutoDraw">setAutoDraw</a></li></ul></li><li><a href="module-core.PsychoJS.html">PsychoJS</a><ul class='methods'><li data-type='method'><a href="module-core.PsychoJS.html#_captureErrors">_captureErrors</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_configure">_configure</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_getParticipantIPInfo">_getParticipantIPInfo</a></li><li data-type='method'><a href="module-core.PsychoJS.html#_makeStatusTopLevel">_makeStatusTopLevel</a></li><li data-type='method'><a href="module-core.PsychoJS.html#getEnvironment">getEnvironment</a></li><li data-type='method'><a href="module-core.PsychoJS.html#importAttributes">importAttributes</a></li><li data-type='method'><a href="module-core.PsychoJS.html#openWindow">openWindow</a></li><li data-type='method'><a href="module-core.PsychoJS.html#quit">quit</a></li><li data-type='method'><a href="module-core.PsychoJS.html#schedule">schedule</a></li><li data-type='method'><a href="module-core.PsychoJS.html#scheduleCondition">scheduleCondition</a></li><li data-type='method'><a href="module-core.PsychoJS.html#setRedirectUrls">setRedirectUrls</a></li><li data-type='method'><a href="module-core.PsychoJS.html#start">start</a></li><li data-type='method'><a href="module-core.PsychoJS.html#waitForResources">waitForResources</a></li></ul></li><li><a href="module-data.TrialHandler.html">TrialHandler</a><ul class='methods'><li data-type='method'><a href="module-data.TrialHandler.html#_prepareSequence">_prepareSequence</a></li><li data-type='method'><a href="module-data.TrialHandler.html#_prepareTrialList">_prepareTrialList</a></li><li data-type='method'><a href="module-data.TrialHandler.html#addData">addData</a></li><li data-type='method'><a href="module-data.TrialHandler.html#forEach">forEach</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getAttributes">getAttributes</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getCurrentTrial">getCurrentTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getEarlierTrial">getEarlierTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getFutureTrial">getFutureTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getSnapshot">getSnapshot</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrial">getTrial</a></li><li data-type='method'><a href="module-data.TrialHandler.html#getTrialIndex">getTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#next">next</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setSeed">setSeed</a></li><li data-type='method'><a href="module-data.TrialHandler.html#setTrialIndex">setTrialIndex</a></li><li data-type='method'><a href="module-data.TrialHandler.html#Symbol.iterator">Symbol.iterator</a></li></ul></li><li><a href="module-hardware.Camera.html">Camera</a><ul class='methods'><li data-type='method'><a href="module-hardware.Camera.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-hardware.Camera.html#_prepareRecording">_prepareRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#_upload">_upload</a></li><li data-type='method'><a href="module-hardware.Camera.html#authorize">authorize</a></li><li data-type='method'><a href="module-hardware.Camera.html#close">close</a></li><li data-type='method'><a href="module-hardware.Camera.html#flush">flush</a></li><li data-type='method'><a href="module-hardware.Camera.html#getRecording">getRecording</a></li><li data-type='method'><a href="module-hardware.Camera.html#getStream">getStream</a></li><li data-type='method'><a href="module-hardware.Camera.html#getVideo">getVideo</a></li><li data-type='method'><a href="module-hardware.Camera.html#isReady">isReady</a></li><li data-type='method'><a href="module-hardware.Camera.html#open">open</a></li><li data-type='method'><a href="module-hardware.Camera.html#pause">pause</a></li><li data-type='method'><a href="module-hardware.Camera.html#record">record</a></li><li data-type='method'><a href="module-hardware.Camera.html#resume">resume</a></li><li data-type='method'><a href="module-hardware.Camera.html#stop">stop</a></li></ul></li><li><a href="module-sound.Sound.html">Sound</a><ul class='methods'><li data-type='method'><a href="module-sound.Sound.html#_getPlayer">_getPlayer</a></li><li data-type='method'><a href="module-sound.Sound.html#getDuration">getDuration</a></li><li data-type='method'><a href="module-sound.Sound.html#play">play</a></li><li data-type='method'><a href="module-sound.Sound.html#setLoops">setLoops</a></li><li data-type='method'><a href="module-sound.Sound.html#setSecs">setSecs</a></li><li data-type='method'><a href="module-sound.Sound.html#setSound">setSound</a></li><li data-type='method'><a href="module-sound.Sound.html#setValue">setValue</a></li><li data-type='method'><a href="module-sound.Sound.html#setVolume">setVolume</a></li><li data-type='method'><a href="module-sound.Sound.html#stop">stop</a></li></ul></li><li><a href="module-util.PsychObject.html">PsychObject</a><ul class='methods'><li data-type='method'><a href="module-util.PsychObject.html#_addAttribute">_addAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#_setAttribute">_setAttribute</a></li><li data-type='method'><a href="module-util.PsychObject.html#emit">emit</a></li><li data-type='method'><a href="module-util.PsychObject.html#off">off</a></li><li data-type='method'><a href="module-util.PsychObject.html#on">on</a></li><li data-type='method'><a href="module-util.PsychObject.html#once">once</a></li><li data-type='method'><a href="module-util.PsychObject.html#toString">toString</a></li></ul></li><li><a href="module-visual.VisualStim.html">VisualStim</a><ul class='methods'><li data-type='method'><a href="module-visual.VisualStim.html#_anchorTextToNum">_anchorTextToNum</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_onChange">_onChange</a></li><li data-type='method'><a href="module-visual.VisualStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="module-visual.VisualStim.html#contains">contains</a></li><li data-type='method'><a href="module-visual.VisualStim.html#draw">draw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#hide">hide</a></li><li data-type='method'><a href="module-visual.VisualStim.html#refresh">refresh</a></li><li data-type='method'><a href="module-visual.VisualStim.html#release">release</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setDepth">setDepth</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setOri">setOri</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setPos">setPos</a></li><li data-type='method'><a href="module-visual.VisualStim.html#setSize">setSize</a></li></ul></li><li><a href="MonotonicClock.html">MonotonicClock</a><ul class='methods'><li data-type='method'><a href="MonotonicClock.html#getLastResetTime">getLastResetTime</a></li><li data-type='method'><a href="MonotonicClock.html#getTime">getTime</a></li></ul></li><li><a href="Mouse.html">Mouse</a><ul class='methods'><li data-type='method'><a href="Mouse.html#clickReset">clickReset</a></li><li data-type='method'><a href="Mouse.html#getPos">getPos</a></li><li data-type='method'><a href="Mouse.html#getPressed">getPressed</a></li><li data-type='method'><a href="Mouse.html#getRel">getRel</a></li><li data-type='method'><a href="Mouse.html#getWheelRel">getWheelRel</a></li><li data-type='method'><a href="Mouse.html#isPressedIn">isPressedIn</a></li><li data-type='method'><a href="Mouse.html#mouseMoved">mouseMoved</a></li><li data-type='method'><a href="Mouse.html#mouseMoveTime">mouseMoveTime</a></li></ul></li><li><a href="MovieStim.html">MovieStim</a><ul class='methods'><li data-type='method'><a href="MovieStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="MovieStim.html#_getDisplaySize">_getDisplaySize</a></li><li data-type='method'><a href="MovieStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="MovieStim.html#pause">pause</a></li><li data-type='method'><a href="MovieStim.html#play">play</a></li><li data-type='method'><a href="MovieStim.html#reset">reset</a></li><li data-type='method'><a href="MovieStim.html#seek">seek</a></li><li data-type='method'><a href="MovieStim.html#setMovie">setMovie</a></li><li data-type='method'><a href="MovieStim.html#stop">stop</a></li></ul></li><li><a href="MultiStairHandler.html">MultiStairHandler</a><ul class='methods'><li data-type='method'><a href="MultiStairHandler.html#_nextTrial">_nextTrial</a></li><li data-type='method'><a href="MultiStairHandler.html#_prepareStaircases">_prepareStaircases</a></li><li data-type='method'><a href="MultiStairHandler.html#_validateConditions">_validateConditions</a></li><li data-type='method'><a href="MultiStairHandler.html#addResponse">addResponse</a></li></ul></li><li><a href="Polygon.html">Polygon</a><ul class='methods'><li data-type='method'><a href="Polygon.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Polygon.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Polygon.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Polygon.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Polygon.html#contains">contains</a></li><li data-type='method'><a href="Polygon.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="Polygon.html#setEdges">setEdges</a></li><li data-type='method'><a href="Polygon.html#setRadius">setRadius</a></li><li data-type='method'><a href="Polygon.html#setVertices">setVertices</a></li></ul></li><li><a href="QuestHandler.html">QuestHandler</a><ul class='methods'><li data-type='method'><a href="QuestHandler.html#_estimateQuestValue">_estimateQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#_setupJsQuest">_setupJsQuest</a></li><li data-type='method'><a href="QuestHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="QuestHandler.html#confInterval">confInterval</a></li><li data-type='method'><a href="QuestHandler.html#getQuestValue">getQuestValue</a></li><li data-type='method'><a href="QuestHandler.html#mean">mean</a></li><li data-type='method'><a href="QuestHandler.html#mode">mode</a></li><li data-type='method'><a href="QuestHandler.html#quantile">quantile</a></li><li data-type='method'><a href="QuestHandler.html#sd">sd</a></li><li data-type='method'><a href="QuestHandler.html#setMethod">setMethod</a></li><li data-type='method'><a href="QuestHandler.html#simulate">simulate</a></li></ul></li><li><a href="Rect.html">Rect</a><ul class='methods'><li data-type='method'><a href="Rect.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Rect.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="Rect.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="Rect.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Rect.html#_updateVertices">_updateVertices</a></li><li data-type='method'><a href="Rect.html#contains">contains</a></li><li data-type='method'><a href="Rect.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="Rect.html#setHeight">setHeight</a></li><li data-type='method'><a href="Rect.html#setVertices">setVertices</a></li><li data-type='method'><a href="Rect.html#setWidth">setWidth</a></li></ul></li><li><a href="Scheduler.html">Scheduler</a><ul class='methods'><li data-type='method'><a href="Scheduler.html#add">add</a></li><li data-type='method'><a href="Scheduler.html#addConditional">addConditional</a></li><li data-type='method'><a href="Scheduler.html#start">start</a></li><li data-type='method'><a href="Scheduler.html#stop">stop</a></li></ul></li><li><a href="ServerManager.html">ServerManager</a><ul class='methods'><li data-type='method'><a href="ServerManager.html#_downloadResources">_downloadResources</a></li><li data-type='method'><a href="ServerManager.html#_listResources">_listResources</a></li><li data-type='method'><a href="ServerManager.html#_queryServerAPI">_queryServerAPI</a></li><li data-type='method'><a href="ServerManager.html#_setupPreloadQueue">_setupPreloadQueue</a></li><li data-type='method'><a href="ServerManager.html#closeSession">closeSession</a></li><li data-type='method'><a href="ServerManager.html#getConfiguration">getConfiguration</a></li><li data-type='method'><a href="ServerManager.html#getResource">getResource</a></li><li data-type='method'><a href="ServerManager.html#getResourceStatus">getResourceStatus</a></li><li data-type='method'><a href="ServerManager.html#getSurveyExperimentParameters">getSurveyExperimentParameters</a></li><li data-type='method'><a href="ServerManager.html#openSession">openSession</a></li><li data-type='method'><a href="ServerManager.html#prepareResources">prepareResources</a></li><li data-type='method'><a href="ServerManager.html#releaseResource">releaseResource</a></li><li data-type='method'><a href="ServerManager.html#resetStatus">resetStatus</a></li><li data-type='method'><a href="ServerManager.html#setStatus">setStatus</a></li><li data-type='method'><a href="ServerManager.html#uploadAudioVideo">uploadAudioVideo</a></li><li data-type='method'><a href="ServerManager.html#uploadData">uploadData</a></li><li data-type='method'><a href="ServerManager.html#uploadLog">uploadLog</a></li><li data-type='method'><a href="ServerManager.html#uploadSurveyResponse">uploadSurveyResponse</a></li><li data-type='method'><a href="ServerManager.html#waitForResources">waitForResources</a></li></ul></li><li><a href="ShapeStim.html">ShapeStim</a><ul class='methods'><li data-type='method'><a href="ShapeStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="ShapeStim.html#_getPixiPolygon">_getPixiPolygon</a></li><li data-type='method'><a href="ShapeStim.html#_getVertices_px">_getVertices_px</a></li><li data-type='method'><a href="ShapeStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="ShapeStim.html#contains">contains</a></li><li data-type='method'><a href="ShapeStim.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="ShapeStim.html#setVertices">setVertices</a></li></ul></li><li><a href="Shelf.html">Shelf</a><ul class='methods'><li data-type='method'><a href="Shelf.html#_checkAvailability">_checkAvailability</a></li><li data-type='method'><a href="Shelf.html#_checkKey">_checkKey</a></li><li data-type='method'><a href="Shelf.html#_getValue">_getValue</a></li><li data-type='method'><a href="Shelf.html#_updateValue">_updateValue</a></li><li data-type='method'><a href="Shelf.html#addIntegerValue">addIntegerValue</a></li><li data-type='method'><a href="Shelf.html#appendListValue">appendListValue</a></li><li data-type='method'><a href="Shelf.html#clearListValue">clearListValue</a></li><li data-type='method'><a href="Shelf.html#counterbalanceConfirm">counterbalanceConfirm</a></li><li data-type='method'><a href="Shelf.html#counterbalanceSelect">counterbalanceSelect</a></li><li data-type='method'><a href="Shelf.html#flipBooleanValue">flipBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getBooleanValue">getBooleanValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldNames">getDictionaryFieldNames</a></li><li data-type='method'><a href="Shelf.html#getDictionaryFieldValue">getDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#getDictionaryValue">getDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#getIntegerValue">getIntegerValue</a></li><li data-type='method'><a href="Shelf.html#getListValue">getListValue</a></li><li data-type='method'><a href="Shelf.html#getTextValue">getTextValue</a></li><li data-type='method'><a href="Shelf.html#incrementComponent">incrementComponent</a></li><li data-type='method'><a href="Shelf.html#popListValue">popListValue</a></li><li data-type='method'><a href="Shelf.html#setBooleanValue">setBooleanValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryFieldValue">setDictionaryFieldValue</a></li><li data-type='method'><a href="Shelf.html#setDictionaryValue">setDictionaryValue</a></li><li data-type='method'><a href="Shelf.html#setIntegerValue">setIntegerValue</a></li><li data-type='method'><a href="Shelf.html#setListValue">setListValue</a></li><li data-type='method'><a href="Shelf.html#setTextValue">setTextValue</a></li><li data-type='method'><a href="Shelf.html#shuffleListValue">shuffleListValue</a></li></ul></li><li><a href="Slider.html">Slider</a><ul class='methods'><li data-type='method'><a href="Slider.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="Slider.html#_anchorTextToNum">_anchorTextToNum</a></li><li data-type='method'><a href="Slider.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Slider.html#_getBoundingBox_px">_getBoundingBox_px</a></li><li data-type='method'><a href="Slider.html#_getPosition_px">_getPosition_px</a></li><li data-type='method'><a href="Slider.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="Slider.html#_granularise">_granularise</a></li><li data-type='method'><a href="Slider.html#_handlePointerDown">_handlePointerDown</a></li><li data-type='method'><a href="Slider.html#_handlePointerMove">_handlePointerMove</a></li><li data-type='method'><a href="Slider.html#_handlePointerUp">_handlePointerUp</a></li><li data-type='method'><a href="Slider.html#_isHorizontal">_isHorizontal</a></li><li data-type='method'><a href="Slider.html#_onChange">_onChange</a></li><li data-type='method'><a href="Slider.html#_posToRating">_posToRating</a></li><li data-type='method'><a href="Slider.html#_ratingToPos">_ratingToPos</a></li><li data-type='method'><a href="Slider.html#_removeEventListeners">_removeEventListeners</a></li><li data-type='method'><a href="Slider.html#_sanitizeAttributes">_sanitizeAttributes</a></li><li data-type='method'><a href="Slider.html#_setupBar">_setupBar</a></li><li data-type='method'><a href="Slider.html#_setupLabels">_setupLabels</a></li><li data-type='method'><a href="Slider.html#_setupMarker">_setupMarker</a></li><li data-type='method'><a href="Slider.html#_setupSlider">_setupSlider</a></li><li data-type='method'><a href="Slider.html#_setupStyle">_setupStyle</a></li><li data-type='method'><a href="Slider.html#_setupTicks">_setupTicks</a></li><li data-type='method'><a href="Slider.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Slider.html#contains">contains</a></li><li data-type='method'><a href="Slider.html#draw">draw</a></li><li data-type='method'><a href="Slider.html#getRating">getRating</a></li><li data-type='method'><a href="Slider.html#getRT">getRT</a></li><li data-type='method'><a href="Slider.html#hide">hide</a></li><li data-type='method'><a href="Slider.html#isMarkerDragging">isMarkerDragging</a></li><li data-type='method'><a href="Slider.html#recordRating">recordRating</a></li><li data-type='method'><a href="Slider.html#refresh">refresh</a></li><li data-type='method'><a href="Slider.html#release">release</a></li><li data-type='method'><a href="Slider.html#reset">reset</a></li><li data-type='method'><a href="Slider.html#setAnchor">setAnchor</a></li><li data-type='method'><a href="Slider.html#setAutoDraw">setAutoDraw</a></li><li data-type='method'><a href="Slider.html#setDepth">setDepth</a></li><li data-type='method'><a href="Slider.html#setMarkerPos">setMarkerPos</a></li><li data-type='method'><a href="Slider.html#setOri">setOri</a></li><li data-type='method'><a href="Slider.html#setPos">setPos</a></li><li data-type='method'><a href="Slider.html#setRating">setRating</a></li><li data-type='method'><a href="Slider.html#setReadOnly">setReadOnly</a></li><li data-type='method'><a href="Slider.html#setSize">setSize</a></li></ul></li><li><a href="SliderStar.html">SliderStar</a></li><li><a href="SpeechRecognition.html">SpeechRecognition</a><ul class='methods'><li data-type='method'><a href="SpeechRecognition.html#_onChange">_onChange</a></li><li data-type='method'><a href="SpeechRecognition.html#_prepareRecognition">_prepareRecognition</a></li><li data-type='method'><a href="SpeechRecognition.html#clearTranscripts">clearTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#getTranscripts">getTranscripts</a></li><li data-type='method'><a href="SpeechRecognition.html#start">start</a></li><li data-type='method'><a href="SpeechRecognition.html#stop">stop</a></li></ul></li><li><a href="StairHandler.html">StairHandler</a><ul class='methods'><li data-type='method'><a href="StairHandler.html#_decreaseValue">_decreaseValue</a></li><li data-type='method'><a href="StairHandler.html#_estimateStairValue">_estimateStairValue</a></li><li data-type='method'><a href="StairHandler.html#_increaseValue">_increaseValue</a></li><li data-type='method'><a href="StairHandler.html#_updateTrialList">_updateTrialList</a></li><li data-type='method'><a href="StairHandler.html#addResponse">addResponse</a></li><li data-type='method'><a href="StairHandler.html#getStairValue">getStairValue</a></li></ul></li><li><a href="Survey.html">Survey</a><ul class='methods'><li data-type='method'><a href="Survey.html#_augmentQuestionNames">_augmentQuestionNames</a></li><li data-type='method'><a href="Survey.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="Survey.html#_initSurveyJS">_initSurveyJS</a></li><li data-type='method'><a href="Survey.html#_onCurrentPageChanging">_onCurrentPageChanging</a></li><li data-type='method'><a href="Survey.html#_onFlowComplete">_onFlowComplete</a></li><li data-type='method'><a href="Survey.html#_onQuestionValueChanged">_onQuestionValueChanged</a></li><li data-type='method'><a href="Survey.html#_onSurveyJSComplete">_onSurveyJSComplete</a></li><li data-type='method'><a href="Survey.html#_processSurveyData">_processSurveyData</a></li><li data-type='method'><a href="Survey.html#_registerCustomExpressionFunctions">_registerCustomExpressionFunctions</a></li><li data-type='method'><a href="Survey.html#_registerCustomSurveyProperties">_registerCustomSurveyProperties</a></li><li data-type='method'><a href="Survey.html#_registerWidgets">_registerWidgets</a></li><li data-type='method'><a href="Survey.html#_runQuestionBlock">_runQuestionBlock</a></li><li data-type='method'><a href="Survey.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Survey.html#evaluateExpression">evaluateExpression</a></li><li data-type='method'><a href="Survey.html#getResponse">getResponse</a></li><li data-type='method'><a href="Survey.html#hide">hide</a></li><li data-type='method'><a href="Survey.html#onFinished">onFinished</a></li><li data-type='method'><a href="Survey.html#save">save</a></li><li data-type='method'><a href="Survey.html#setModel">setModel</a></li><li data-type='method'><a href="Survey.html#setSurveyId">setSurveyId</a></li><li data-type='method'><a href="Survey.html#setVariables">setVariables</a></li></ul></li><li><a href="TextBox.html">TextBox</a><ul class='methods'><li data-type='method'><a href="TextBox.html#_addEventListeners">_addEventListeners</a></li><li data-type='method'><a href="TextBox.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextBox.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextBox.html#_getTextInputOptions">_getTextInputOptions</a></li><li data-type='method'><a href="TextBox.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextBox.html#clear">clear</a></li><li data-type='method'><a href="TextBox.html#getText">getText</a></li><li data-type='method'><a href="TextBox.html#reset">reset</a></li><li data-type='method'><a href="TextBox.html#setAlignment">setAlignment</a></li><li data-type='method'><a href="TextBox.html#setBorderColor">setBorderColor</a></li><li data-type='method'><a href="TextBox.html#setColor">setColor</a></li><li data-type='method'><a href="TextBox.html#setFillColor">setFillColor</a></li><li data-type='method'><a href="TextBox.html#setFitToContent">setFitToContent</a></li><li data-type='method'><a href="TextBox.html#setFont">setFont</a></li><li data-type='method'><a href="TextBox.html#setLanguageStyle">setLanguageStyle</a></li><li data-type='method'><a href="TextBox.html#setLetterHeight">setLetterHeight</a></li><li data-type='method'><a href="TextBox.html#setSize">setSize</a></li><li data-type='method'><a href="TextBox.html#setText">setText</a></li></ul></li><li><a href="TextStim.html">TextStim</a><ul class='methods'><li data-type='method'><a href="TextStim.html#_estimateBoundingBox">_estimateBoundingBox</a></li><li data-type='method'><a href="TextStim.html#_getAnchor">_getAnchor</a></li><li data-type='method'><a href="TextStim.html#_getDefaultLetterHeight">_getDefaultLetterHeight</a></li><li data-type='method'><a href="TextStim.html#_getDefaultWrapWidth">_getDefaultWrapWidth</a></li><li data-type='method'><a href="TextStim.html#_getTextStyle">_getTextStyle</a></li><li data-type='method'><a href="TextStim.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="TextStim.html#getBoundingBox">getBoundingBox</a></li><li data-type='method'><a href="TextStim.html#getTextMetrics">getTextMetrics</a></li><li data-type='method'><a href="TextStim.html#setColor">setColor</a></li></ul></li><li><a href="TonePlayer.html">TonePlayer</a><ul class='methods'><li data-type='method'><a href="TonePlayer.html#_initSoundLibrary">_initSoundLibrary</a></li><li data-type='method'><a href="TonePlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TonePlayer.html#play">play</a></li><li data-type='method'><a href="TonePlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TonePlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TonePlayer.html#setTone">setTone</a></li><li data-type='method'><a href="TonePlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TonePlayer.html#stop">stop</a></li></ul></li><li><a href="TrackPlayer.html">TrackPlayer</a><ul class='methods'><li data-type='method'><a href="TrackPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="TrackPlayer.html#play">play</a></li><li data-type='method'><a href="TrackPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="TrackPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="TrackPlayer.html#setTrack">setTrack</a></li><li data-type='method'><a href="TrackPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="TrackPlayer.html#stop">stop</a></li></ul></li><li><a href="Transcript.html">Transcript</a></li><li><a href="Window.html">Window</a><ul class='methods'><li data-type='method'><a href="Window.html#_fullRefresh">_fullRefresh</a></li><li data-type='method'><a href="Window.html#_refresh">_refresh</a></li><li data-type='method'><a href="Window.html#_setupPixi">_setupPixi</a></li><li data-type='method'><a href="Window.html#_updateIfNeeded">_updateIfNeeded</a></li><li data-type='method'><a href="Window.html#_writeLogOnFlip">_writeLogOnFlip</a></li><li data-type='method'><a href="Window.html#addPixiObject">addPixiObject</a></li><li data-type='method'><a href="Window.html#adjustScreenSize">adjustScreenSize</a></li><li data-type='method'><a href="Window.html#callOnFlip">callOnFlip</a></li><li data-type='method'><a href="Window.html#close">close</a></li><li data-type='method'><a href="Window.html#closeFullScreen">closeFullScreen</a></li><li data-type='method'><a href="Window.html#getActualFrameRate">getActualFrameRate</a></li><li data-type='method'><a href="Window.html#logOnFlip">logOnFlip</a></li><li data-type='method'><a href="Window.html#removePixiObject">removePixiObject</a></li><li data-type='method'><a href="Window.html#render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="SoundPlayer.html">SoundPlayer</a><ul class='methods'><li data-type='method'><a href="SoundPlayer.html#getDuration">getDuration</a></li><li data-type='method'><a href="SoundPlayer.html#play">play</a></li><li data-type='method'><a href="SoundPlayer.html#setDuration">setDuration</a></li><li data-type='method'><a href="SoundPlayer.html#setLoops">setLoops</a></li><li data-type='method'><a href="SoundPlayer.html#setVolume">setVolume</a></li><li data-type='method'><a href="SoundPlayer.html#stop">stop</a></li></ul></li></ul><h3>Mixins</h3><ul><li><a href="module-core.WindowMixin.html">WindowMixin</a><ul class='methods'><li data-type='method'><a href="module-core.WindowMixin.html#_getHorLengthPix">_getHorLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthPix">_getLengthPix</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getLengthUnits">_getLengthUnits</a></li><li data-type='method'><a href="module-core.WindowMixin.html#_getVerLengthPix">_getVerLengthPix</a></li></ul></li><li><a href="module-util.ColorMixin.html">ColorMixin</a><ul class='methods'><li data-type='method'><a href="module-util.ColorMixin.html#getContrastedColor">getContrastedColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setColor">setColor</a></li><li data-type='method'><a href="module-util.ColorMixin.html#setContrast">setContrast</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#CELL_TYPES">CELL_TYPES</a></li><li><a href="global.html#handleBipolarMatrixRendering">handleBipolarMatrixRendering</a></li><li><a href="global.html#handleValueChange">handleValueChange</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">visual/Survey.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Survey Stimulus.
+ *
+ * @author Alain Pitiot and Nikita Agafonov
+ * @copyright (c) 2023 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @license Distributed under the terms of the MIT License
+ */
+
+import * as PIXI from "pixi.js-legacy";
+import { VisualStim } from "./VisualStim.js";
+import * as util from "../util/Util.js";
+import {Clock} from "../util/Clock.js";
+import {ExperimentHandler} from "../data/ExperimentHandler.js";
+
+// PsychoJS SurveyJS extensions:
+import registerSelectBoxWidget from "./survey/widgets/SelectBox.js";
+import registerSliderWidget from "./survey/widgets/SliderWidget.js";
+import registerSideBySideMatrix from "./survey/widgets/SideBySideMatrix.js";
+import registerMaxDiffMatrix from "./survey/widgets/MaxDiffMatrix.js";
+import registerSliderStar from "./survey/widgets/SliderStar.js";
+import MatrixBipolar from "./survey/components/MatrixBipolar.js";
+import DropdownExtensions from "./survey/components/DropdownExtensions.js";
+import customExpressionFunctionsArray from "./survey/extensions/customExpressionFunctions.js";
+
+
+
+/**
+ * Survey Stimulus.
+ *
+ * @extends VisualStim
+ */
+export class Survey extends VisualStim
+{
+	static SURVEY_EXPERIMENT_PARAMETERS = ["surveyId", "showStartDialog", "showEndDialog", "completionUrl", "cancellationUrl", "quitOnEsc"];
+
+	static SURVEY_FLOW_PLAYBACK_TYPES =
+	{
+		DIRECT: "QUESTION_BLOCK",
+		CONDITIONAL: "IF_THEN_ELSE_GROUP",
+		EMBEDDED_DATA: "VARIABLES",
+		RANDOMIZER: "RANDOM_GROUP",
+		SEQUENTIAL: "SEQUENTIAL_GROUP",
+		ENDSURVEY: "END"
+	};
+
+	static CAPTIONS =
+	{
+		NEXT: "Next"
+	};
+
+	static SURVEY_COMPLETION_CODES =
+	{
+		NORMAL: 0,
+		SKIP_TO_END_OF_BLOCK: 1,
+		SKIP_TO_END_OF_SURVEY: 2
+	};
+
+	static NODE_EXIT_CODES =
+	{
+		NORMAL: 0,
+		BREAK_FLOW: 1
+	};
+
+	/**
+	 * @memberOf module:visual
+	 * @param {Object} options
+	 * @param {String} options.name - the name used when logging messages from this stimulus
+	 * @param {Window} options.win - the associated Window
+	 * @param {string} [options.surveyId] - the survey id
+	 * @param {Object | string} [options.model] - the survey model
+	 * @param {string} [options.units= "norm"] - the units of the stimulus (e.g. for size, position, vertices)
+	 * @param {Array.&lt;number>} [options.pos= [0, 0]] - the position of the center of the stimulus
+	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
+	 * @param {number} [options.size] - the size of the rendered survey
+	 * @param {number} [options.depth= 0] - the depth (i.e. the z order)
+	 * @param {boolean} [options.autoDraw= false] - whether  the stimulus should be automatically drawn
+	 * 	on every frame flip
+	 * @param {boolean} [options.autoLog= false] - whether to log
+	 */
+	constructor({ name, win, model, surveyId, pos, units, ori, size, depth, autoDraw, autoLog } = {})
+	{
+		super({ name, win, units, ori, depth, pos, size, autoDraw, autoLog });
+
+		// Storing all existing signaturePad questions to properly handle their resize.
+		// Unfortunately signaturepad question type can't handle resizing properly by itself.
+		this._signaturePads = [];
+
+		// whether the user is done with the survey, independently of whether the survey is completed:
+		this.isFinished = false;
+
+		// accumulated completion flag updated after each survey node is completed
+		// note: 	this make it possible to track completion as we move through the survey flow.
+		// 				_isCompletedAll will be flipped to false whenever a survey node is not completed
+		this._isCompletedAll = true;
+
+		// timestamps associated to each question:
+		this._questionAnswerTimestamps = {};
+		// timestamps clock:
+		this._questionAnswerTimestampClock = new Clock();
+
+		this._overallSurveyResults = {};
+		this._surveyData = undefined;
+		this._surveyJSModel = undefined;
+		this._expressionsRunner = undefined;
+		this._lastPageSwitchHandledIdx = -1;
+		this._variables = {};
+
+		this._surveyRunningPromise = undefined;
+		this._surveyRunningPromiseResolve = undefined;
+		this._surveyRunningPromiseReject = undefined;
+		// callback triggered when the user is done with the survey: nothing to do by default
+		this._onFinishedCallback = () => {};
+
+		// init SurveyJS:
+		this._initSurveyJS();
+
+		// default size:
+		if (typeof size === "undefined")
+		{
+			this.size = (this.unit === "norm") ? [2.0, 2.0] : [1.0, 1.0];
+		}
+
+		this._addAttribute(
+			"model",
+			model
+		);
+
+		// the default surveyId is an uuid based on the experiment id (or name) and the survey name:
+		// this way, it is always the same within a given experiment
+		this._hasSelfGeneratedSurveyId = (typeof surveyId === "undefined");
+		const defaultSurveyId = (this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER) ?
+			util.makeUuid(`${name}@${this._psychoJS.config.gitlab.projectId}`) :
+			util.makeUuid(`${name}@${this._psychoJS.config.experiment.name}`);
+		this._addAttribute(
+			"surveyId",
+			surveyId,
+			defaultSurveyId
+		);
+
+
+		// estimate the bounding box:
+		this._estimateBoundingBox();
+
+		if (this._autoLog)
+		{
+			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
+		}
+	}
+
+	get isCompleted ()
+	{
+		return this.isFinished &amp;&amp; this._isCompletedAll;
+	}
+
+	/**
+	 * Setter for the model attribute.
+	 *
+	 * @param {Object | string} model - the survey model
+	 * @param {boolean} [log= false] - whether to log
+	 * @return {void}
+	 */
+	setModel(model, log = false)
+	{
+		const response = {
+			origin: "Survey.setModel",
+			context: `when setting the model of Survey: ${this._name}`,
+		};
+
+		try
+		{
+			// model is undefined: that's fine, but we raise a warning in case this is a symptom of an actual problem
+			if (typeof model === "undefined")
+			{
+				this.psychoJS.logger.warn(`setting the model of Survey: ${this._name} with argument: undefined.`);
+				this.psychoJS.logger.debug(`set the model of Survey: ${this._name} as: undefined`);
+			}
+			else
+			{
+				// model is a string: it should be the name of a resource, which we load
+				if (typeof model === "string")
+				{
+					const encodedModel = this.psychoJS.serverManager.getResource(model);
+					const decodedModel = new TextDecoder("utf-8").decode(encodedModel);
+					model = JSON.parse(decodedModel);
+				}
+
+				// model should now be an object:
+				if (typeof model !== "object")
+				{
+					throw "model is neither the name of a resource nor an object";
+				}
+
+				// if model is a straight-forward SurveyJS model, instead of a Pavlovia Survey super-flow model,
+				// convert it:
+				if (!('surveyFlow' in model))
+				{
+					model = {
+						surveys: [model],
+						embeddedData: [],
+						// surveysMap: {},
+						// questionMapsBySurvey: {},
+						surveyFlow: {
+							name: "root",
+							type: "SEQUENTIAL_GROUP",
+							nodes: [{
+								type: "QUESTION_BLOCK",
+								surveyIdx: 0
+							}]
+						},
+
+						surveySettings: { showPrevButton: false },
+
+						// surveyRunLogic: {},
+						inQuestionRandomization: {},
+						questionsOrderRandomization: [],
+						questionSkipLogic: {},
+
+						questionsConverted: -1,
+						questionsTotal: -1,
+						logs: []
+					};
+
+					this.psychoJS.logger.debug(`converted the legacy model to the new super-flow model: ${JSON.stringify(model)}`);
+				}
+
+				// mark the root (top-most) node:
+				model.surveyFlow.isRootNode = true;
+
+				this._surveyData = model;
+
+				// augment the question names with block names:
+				this._augmentQuestionNames();
+
+				this._setAttribute("model", model, log);
+				this._onChange(true, true)();
+			}
+		}
+		catch (error)
+		{
+			throw { ...response, error };
+		}
+	}
+
+	/**
+	 * Setter for the surveyId attribute.
+	 *
+	 * @param {string} surveyId - the survey Id
+	 * @param {boolean} [log= false] - whether to log
+	 * @return {void}
+	 */
+	setSurveyId(surveyId, log = false)
+	{
+		this._setAttribute("surveyId", surveyId, log);
+
+		// only update the model if a genuine surveyId was given as parameter to the Survey:
+		if (!this._hasSelfGeneratedSurveyId)
+		{
+			this.setModel(`${surveyId}.sid`, log);
+		}
+	}
+
+	/**
+	 * Set survey variables.
+	 *
+	 * @param {Object} variables - an object with a number of variable name/variable value pairs
+	 * @param {string[]} [excludedNames={}] - excluded variable names
+	 * @return {void}
+	 */
+	setVariables(variables, excludedNames)
+	{
+		// filter the variables and set them:
+		// const filteredVariables = {};
+		// for (const name in variables)
+		// {
+		// 	if (excludedNames.indexOf(name) === -1)
+		// 	{
+		// 		filteredVariables[name] = variables[name];
+		// 		this._surveyModel.setVariable(name, variables[name]);
+		// 	}
+		// }
+
+		// // set the values:
+		// this._surveyModel.mergeData(filteredVariables);
+
+		for (const name in variables)
+		{
+			if (excludedNames.indexOf(name) === -1)
+			{
+				this._variables[name] = variables[name];
+				// this._surveyData.variables[name] = variables[name];
+			}
+		}
+	}
+
+	/**
+	 * Evaluate an expression, taking into account the survey responses.
+	 *
+	 * @param {string} expression - the expression to evaluate
+	 * @returns {any} the evaluated expression
+	 */
+	evaluateExpression(expression)
+	{
+		if (typeof expression === "undefined" || typeof this._surveyJSModel === "undefined")
+		{
+			return undefined;
+		}
+
+		// modify the expression when it is a simple URL, without variables
+		// i.e. when there is no quote and no brackets
+		if (expression.indexOf("'") === -1 &amp;&amp; expression.indexOf("{") === -1)
+		{
+			expression = `'${expression}'`;
+		}
+
+		return this._surveyJSModel.runExpression(expression);
+	}
+
+	/**
+	 * Add a callback that will be triggered when the participant finishes the survey.
+	 *
+	 * @param callback - callback triggered when the participant finishes the survey
+	 * @return {void}
+	 */
+	onFinished(callback)
+	{
+		if (typeof this._surveyData === "undefined")
+		{
+			throw {
+				origin: "Survey.onFinished",
+				context: "when setting a callback triggered when the participant finishes the survey",
+				error: "the survey does not have a model"
+			};
+		}
+
+		// note: we cannot simply add the callback to surveyModel.onComplete since we first need
+		// to run _onSurveyComplete in order to collect data, estimate whether the survey is complete, etc.
+		if (typeof callback === "function")
+		{
+			this._onFinishedCallback = callback;
+		}
+		// this._surveyModel.onComplete.add(callback);
+	}
+
+	/**
+	 * Get the survey response.
+	 */
+	getResponse()
+	{
+		// if (typeof this._surveyModel === "undefined")
+		// {
+		// 	return {};
+		// }
+
+		// return this._surveyModel.data;
+
+		return this._overallSurveyResults;
+	}
+
+	/**
+	 * Upload the survey response to the pavlovia.org server.
+	 *
+	 * @returns {Promise&lt;ServerManager.UploadDataPromise>} a promise resolved when the survey response
+	 * 	has been saved
+	 */
+	save()
+	{
+		this._psychoJS.logger.info("[PsychoJS] Save survey response.");
+
+		// get the survey response and complement it with experimentInfo fields:
+		const response = this.getResponse();
+		for (const field in this.psychoJS.experiment.extraInfo)
+		{
+			if (Survey.SURVEY_EXPERIMENT_PARAMETERS.indexOf(field) === -1)
+			{
+				response[field] = this.psychoJS.experiment.extraInfo[field];
+			}
+		}
+
+		// add timing information:
+		for (const question in this._questionAnswerTimestamps)
+		{
+			response[`${question}_rt`] = this._questionAnswerTimestamps[question].timestamp;
+		}
+
+		// sort the questions and question response times alphabetically:
+		const sortedResponses = Object.keys(response).sort().reduce( (sorted, key) =>
+			{
+				sorted[key] = response[key];
+				return sorted;
+			},
+			{}
+		);
+
+		// if the response cannot be uploaded, e.g. the experiment is running locally, or
+		// if it is piloting mode, then we offer the response as a file for download:
+		if (this._psychoJS.getEnvironment() !== ExperimentHandler.Environment.SERVER ||
+			this._psychoJS.config.experiment.status !== "RUNNING" ||
+			this._psychoJS._serverMsg.has("__pilotToken"))
+		{
+			const filename = `survey_${this._surveyId}.json`;
+			const blob = new Blob([JSON.stringify(sortedResponses)], { type: "application/json" });
+
+			const anchor = document.createElement("a");
+			anchor.href = window.URL.createObjectURL(blob);
+			anchor.download = filename;
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+
+			return Promise.resolve({});
+		}
+
+		// otherwise, we do upload the survey response
+		// note: if the surveyId was self-generated instead of being a parameter of the constructor,
+		// we need to also upload the survey model, as a new survey might need to be created on the fly
+		// by the server for this experiment.
+		if (!this._hasSelfGeneratedSurveyId)
+		{
+			return this._psychoJS.serverManager.uploadSurveyResponse(
+				this._surveyId, sortedResponses, this.isCompleted
+			);
+		}
+		else
+		{
+			return this._psychoJS.serverManager.uploadSurveyResponse(
+				this._surveyId, sortedResponses, this.isCompleted, this._surveyData
+			);
+		}
+	}
+
+	/**
+	 * Hide this stimulus on the next frame draw.
+	 *
+	 * @override
+	 * @note We over-ride MinimalStim.hide such that we can remove the survey DOM element
+	 */
+	hide()
+	{
+		const surveyDiv = document.getElementById(this._surveyDivId);
+		if (surveyDiv !== null)
+		{
+			document.body.removeChild(surveyDiv);
+		}
+
+		super.hide();
+	}
+
+	/**
+	 * Estimate the bounding box.
+	 *
+	 * @override
+	 * @protected
+	 */
+	_estimateBoundingBox()
+	{
+		this._boundingBox = new PIXI.Rectangle(
+			this._pos[0] - this._size[0] / 2,
+			this._pos[1] - this._size[1] / 2,
+			this._size[0],
+			this._size[1],
+		);
+
+		// TODO take the orientation into account
+	}
+
+	/**
+	 * Update the stimulus, if necessary.
+	 *
+	 * @protected
+	 */
+	_updateIfNeeded()
+	{
+		if (!this._needUpdate)
+		{
+			return;
+		}
+		this._needUpdate = false;
+
+		// update the PIXI representation, if need be:
+		if (this._needPixiUpdate)
+		{
+			this._needPixiUpdate = false;
+
+			// if a survey div does not exist, create it:
+			if (document.getElementById(this._surveyDivId) === null)
+			{
+				document.body.insertAdjacentHTML("beforeend", `&lt;div id=${this._surveyDivId} class='survey'>&lt;/div>`);
+			}
+
+			// start the survey flow:
+			if (typeof this._surveyData !== "undefined")
+			{
+				this._runSurveyFlow(this._surveyData.surveyFlow, this._surveyData);
+			}
+		}
+
+		// TODO change the position, scale, anchor, z-index, etc.
+		// TODO update the size, taking into account the actual size of the survey
+		/*
+		this._pixi.zIndex = -this._depth;
+		this._pixi.alpha = this.opacity;
+
+		// set the scale:
+		const displaySize = this._getDisplaySize();
+		const size_px = util.to_px(displaySize, this.units, this.win);
+		const scaleX = size_px[0] / this._texture.width;
+		const scaleY = size_px[1] / this._texture.height;
+		this._pixi.scale.x = this.flipHoriz ? -scaleX : scaleX;
+		this._pixi.scale.y = this.flipVert ? scaleY : -scaleY;
+
+		// set the position, rotation, and anchor (image centered on pos):
+		this._pixi.position = to_pixiPoint(this.pos, this.units, this.win);
+		this._pixi.rotation = -this.ori * Math.PI / 180;
+		this._pixi.anchor.x = 0.5;
+		this._pixi.anchor.y = 0.5;
+*/
+	}
+
+	/**
+	 * Register custom SurveyJS expression functions.
+	 *
+	 * @protected
+	 * @return {void}
+	 */
+	_registerCustomExpressionFunctions (Survey, customFuncs = [])
+	{
+		for (let i = 0; i &lt; customFuncs.length; i++)
+		{
+			Survey.FunctionFactory.Instance.register(customFuncs[i].func.name, customFuncs[i].func, customFuncs[i].isAsync);
+		}
+	}
+
+	/**
+	 * Register SurveyJS widgets.
+	 *
+	 * @protected
+	 * @return {void}
+	 */
+	_registerWidgets(Survey)
+	{
+		registerSelectBoxWidget(Survey);
+		registerSliderWidget(Survey);
+		registerSideBySideMatrix(Survey);
+		registerMaxDiffMatrix(Survey);
+		registerSliderStar(Survey);
+
+		// load the widget style:
+		// TODO
+		// util.loadCss("./survey/css/widgets.css");
+	}
+
+	/**
+	 * Register custom Survey properties. Usially these are relevant for different question types.
+	 *
+	 * @protected
+	 * @return {void}
+	 */
+	_registerCustomSurveyProperties(Survey)
+	{
+		MatrixBipolar.registerSurveyProperties(Survey);
+		Survey.Serializer.addProperty("signaturepad", {
+			name: "maxSignatureWidth",
+			type: "number",
+			default: 500
+		});
+	}
+
+	_registerCustomComponentCallbacks(surveyModel)
+	{
+		MatrixBipolar.registerModelCallbacks(surveyModel);
+		DropdownExtensions.registerModelCallbacks(surveyModel);
+	}
+
+	/**
+	 * Callback triggered whenever the participant answer a question.
+	 *
+	 * @param survey
+	 * @param questionData
+	 * @protected
+	 */
+	_onQuestionValueChanged(survey, questionData)
+	{
+		if (typeof this._questionAnswerTimestamps[questionData.name] === "undefined")
+		{
+			this._questionAnswerTimestamps[questionData.name] = {
+				timestamp: 0
+			};
+		}
+		this._questionAnswerTimestamps[questionData.name].timestamp = this._questionAnswerTimestampClock.getTime();
+	}
+
+/*
+	// This probably needs to be moved to some kind of utils.js.
+	// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+	_FisherYatesShuffle (targetArray = [])
+	{
+		// Copying array to preserve initial data.
+		const out = Array.from(targetArray);
+		const len = targetArray.length;
+		let i, j, k;
+		for (i = len - 1; i >= 1; i--)
+		{
+			j = Math.floor(Math.random() * (i + 1));
+			k = out[j];
+			out[j] = out[i];
+			out[i] = k;
+		}
+
+		return out;
+	}
+
+	// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+	_InPlaceFisherYatesShuffle (inOutArray = [], startIdx, endIdx)
+	{
+		// Shuffling right in the input array.
+		let i, j, k;
+		for (i = endIdx; i >= startIdx; i--)
+		{
+			j = Math.floor(Math.random() * (i + 1));
+			k = inOutArray[j];
+			inOutArray[j] = inOutArray[i];
+			inOutArray[i] = k;
+		}
+
+		return inOutArray;
+	}
+*/
+
+	_composeModelWithRandomizedQuestions (surveyModel, inBlockRandomizationSettings)
+	{
+		let t = performance.now();
+		// Qualtrics's in-block randomization ignores presense of page breaks within the block.
+		// Hence creating a fresh survey data object with shuffled question order.
+		let questions = [];
+		let questionsMap = {};
+		let newSurveyModel =
+		{
+			pages:[{ elements: new Array(inBlockRandomizationSettings.questionsPerPage) }]
+		};
+		for (let i = 0; i &lt; surveyModel.pages.length; i++)
+		{
+			for (let j = 0; j &lt; surveyModel.pages[i].elements.length; j++)
+			{
+				questions.push(surveyModel.pages[i].elements[j]);
+				const k = questions.length - 1;
+				questionsMap[questions[k].name] = questions[k];
+			}
+		}
+
+		if (inBlockRandomizationSettings.layout.length > 0)
+		{
+			let j = 0;
+			let k = 0;
+			let curPage = 0;
+			let curElement = 0;
+
+			const shuffledSet0 = util.shuffle(Array.from(inBlockRandomizationSettings.set0));
+			const shuffledSet1 = util.shuffle(Array.from(inBlockRandomizationSettings.set1));
+			// const shuffledSet0 = this._FisherYatesShuffle(inBlockRandomizationSettings.set0);
+			// const shuffledSet1 = this._FisherYatesShuffle(inBlockRandomizationSettings.set1);
+			for (let i = 0; i &lt; inBlockRandomizationSettings.layout.length; i++)
+			{
+				// Create new page if questionsPerPage reached.
+				if (curElement === inBlockRandomizationSettings.questionsPerPage)
+				{
+					newSurveyModel.pages.push({ elements: new Array(inBlockRandomizationSettings.questionsPerPage) });
+					curPage++;
+					curElement = 0;
+				}
+
+				if (inBlockRandomizationSettings.layout[i] === "set0")
+				{
+					newSurveyModel.pages[curPage].elements[curElement] = questionsMap[shuffledSet0[j]];
+					j++;
+				}
+				else if (inBlockRandomizationSettings.layout[i] === "set1")
+				{
+					newSurveyModel.pages[curPage].elements[curElement] = questionsMap[shuffledSet1[k]];
+					k++;
+				}
+				else
+				{
+					newSurveyModel.pages[curPage].elements[curElement] = questionsMap[inBlockRandomizationSettings.layout[i]];
+				}
+				curElement++;
+			}
+		}
+		else if (inBlockRandomizationSettings.showOnly > 0)
+		{
+			// TODO: Check if there can be questionsPerPage applicable in this case.
+			const shuffledQuestions = util.shuffle(Array.from(questions));
+			// shuffledQuestions = this._FisherYatesShuffle(questions);
+			newSurveyModel.pages[0].elements = shuffledQuestions.splice(0, inBlockRandomizationSettings.showOnly);
+		}
+		else {
+			// TODO: Check if there can be questionsPerPage applicable in this case.
+			newSurveyModel.pages[0].elements = util.shuffle(Array.from(questions));
+			// newSurveyModel.pages[0].elements = this._FisherYatesShuffle(questions);
+		}
+		console.log("model recomposition took", performance.now() - t);
+		console.log("recomposed model:", newSurveyModel);
+		return newSurveyModel;
+	}
+
+	_applyInQuestionRandomization (questionData, inQuestionRandomizationSettings, surveyData)
+	{
+		let choicesFieldName;
+		let valueFieldName;
+		if (questionData.rows !== undefined)
+		{
+			choicesFieldName = "rows";
+			valueFieldName = "value";
+		}
+		else if (questionData.choices !== undefined)
+		{
+			choicesFieldName = "choices";
+			valueFieldName = "value";
+		}
+		else if (questionData.items !== undefined)
+		{
+			choicesFieldName = "items";
+			valueFieldName = "name";
+		}
+		else
+		{
+			console.log("[Survey runner]: Unknown choicesFieldName for", questionData);
+		}
+
+		if (inQuestionRandomizationSettings.randomizeAll)
+		{
+			questionData[choicesFieldName] = util.shuffle(Array.from(questionData[choicesFieldName]));
+			// questionData[choicesFieldName] = this._FisherYatesShuffle(questionData[choicesFieldName]);
+			// Handle dynamic choices.
+		}
+		else if (inQuestionRandomizationSettings.showOnly > 0)
+		{
+			questionData[choicesFieldName] = util.shuffle(Array.from(questionData[choicesFieldName]).splice(0, inQuestionRandomizationSettings.showOnly));
+			// questionData[choicesFieldName] = this._FisherYatesShuffle(questionData[choicesFieldName]).splice(0, inQuestionRandomizationSettings.showOnly);
+		}
+		else if (inQuestionRandomizationSettings.reverse)
+		{
+			questionData[choicesFieldName] = Math.round(Math.random()) === 1 ? questionData[choicesFieldName].reverse() : questionData[choicesFieldName];
+		}
+		else if (inQuestionRandomizationSettings.layout.length > 0)
+		{
+			const initialChoices = questionData[choicesFieldName];
+			let choicesMap = {};
+			// TODO: generalize further i.e. figure out how to calculate the length of array based on availability of sets.
+			const setIndices = [0, 0, 0];
+			for (let i = 0; i &lt; questionData[choicesFieldName].length; i++)
+			{
+				choicesMap[questionData[choicesFieldName][i][valueFieldName]] = questionData[choicesFieldName][i];
+			}
+
+			// Creating new array of choices to which we're going to write from randomized/reversed sets.
+			questionData[choicesFieldName] = new Array(inQuestionRandomizationSettings.layout.length);
+			const shuffledSet0 = util.shuffle(Array.from(inQuestionRandomizationSettings.set0));
+			const shuffledSet1 = util.shuffle(Array.from(inQuestionRandomizationSettings.set1));
+			// const shuffledSet0 = this._FisherYatesShuffle(inQuestionRandomizationSettings.set0);
+			// const shuffledSet1 = this._FisherYatesShuffle(inQuestionRandomizationSettings.set1);
+			const reversedSet = Math.round(Math.random()) === 1 ? inQuestionRandomizationSettings.reverseOrder.reverse() : inQuestionRandomizationSettings.reverseOrder;
+			for (let i = 0; i &lt; inQuestionRandomizationSettings.layout.length; i++)
+			{
+				if (inQuestionRandomizationSettings.layout[i] === "set0")
+				{
+					questionData[choicesFieldName][i] = choicesMap[shuffledSet0[ setIndices[0] ]];
+					setIndices[0]++;
+				}
+				else if (inQuestionRandomizationSettings.layout[i] === "set1")
+				{
+					questionData[choicesFieldName][i] = choicesMap[shuffledSet1[ setIndices[1] ]];
+					setIndices[1]++;
+				}
+				else if (inQuestionRandomizationSettings.layout[i] === "reverseOrder")
+				{
+					questionData[choicesFieldName][i] = choicesMap[reversedSet[ setIndices[2] ]];
+					setIndices[2]++;
+				}
+				else
+				{
+					questionData[choicesFieldName][i] = choicesMap[inQuestionRandomizationSettings.layout[i]];
+				}
+			}
+
+			if (inQuestionRandomizationSettings.layout.length &lt; initialChoices.length)
+			{
+				// Compose unused choices set.
+				// TODO: This is potentially how data loss can be avoided and thus no need to deepcopy model.
+				if (surveyData.unusedChoices === undefined)
+				{
+					surveyData.unusedChoices = {};
+				}
+				surveyData.unusedChoices[questionData.name] = {
+					// All other sets are always used entirely.
+					set1: shuffledSet1.splice(setIndices[1], shuffledSet1.length)
+				};
+				console.log("unused choices", questionData.name, surveyData.unusedChoices[questionData.name]);
+			}
+		}
+
+		// console.log(questionData);
+	}
+
+	/**
+	 * Go over required surveyModelData and apply randomization settings.
+	 * @protected
+	 */
+	_processSurveyData(surveyData, surveyIdx)
+	{
+		let newSurveyModel = undefined;
+
+		// Qualtrics's in-block randomization ignores the presence of page breaks within the block.
+		// Hence creating a fresh survey data object with shuffled question order.
+		if (typeof surveyData.questionsOrderRandomization[surveyIdx] !== "undefined")
+		{
+			newSurveyModel = this._composeModelWithRandomizedQuestions(
+				surveyData.surveys[surveyIdx],
+				surveyData.questionsOrderRandomization[surveyIdx]
+			);
+		}
+
+		// note: we need to check whether the survey model has a "pages" field since empty surveys do not:
+		if ("pages" in surveyData.surveys[surveyIdx])
+		{
+			// checking whether in-question randomization needs to be applied:
+			for (let i = 0; i &lt; surveyData.surveys[surveyIdx].pages.length; ++i)
+			{
+				for (let j = 0; j &lt; surveyData.surveys[surveyIdx].pages[i].elements.length; ++j)
+				{
+					if (typeof surveyData.inQuestionRandomization[surveyData.surveys[surveyIdx].pages[i].elements[j].name] !== "undefined")
+					{
+						if (typeof newSurveyModel === "undefined")
+						{
+							// Marking a deep copy of survey model input data, to avoid data loss if randomization returns a subset of choices.
+							// TODO: think of something more optimal.
+							newSurveyModel = JSON.parse(JSON.stringify(surveyData.surveys[surveyIdx]));
+						}
+						this._applyInQuestionRandomization(
+							newSurveyModel.pages[i].elements[j],
+							surveyData.inQuestionRandomization[newSurveyModel.pages[i].elements[j].name],
+							surveyData
+						);
+					}
+				}
+			}
+		}
+
+		if (typeof newSurveyModel === "undefined")
+		{
+			// No changes were made, just return original data.
+			newSurveyModel = surveyData.surveys[surveyIdx];
+		}
+		return newSurveyModel;
+	}
+
+	/**
+	 * Callback triggered when the participant changed the page.
+	 *
+	 * @protected
+	 */
+	_onCurrentPageChanging (surveyModel, options)
+	{
+		if (this._lastPageSwitchHandledIdx === options.oldCurrentPage.visibleIndex)
+		{
+			// When surveyModel.currentPage is called from this handler, pagechange event gets triggered again.
+			// Hence returning if we already handled this pagechange to avoid max callstack exceeded errors.
+			return;
+		}
+		this._lastPageSwitchHandledIdx = options.oldCurrentPage.visibleIndex;
+		const questions = surveyModel.getCurrentPageQuestions();
+
+		// It is guaranteed that the question with skip logic is always last on the page.
+		const lastQuestion = questions[questions.length - 1];
+		const skipLogic = this._surveyData.questionSkipLogic[lastQuestion.name];
+		if (skipLogic !== undefined)
+		{
+			this._expressionsRunner.expressionExecutor.setExpression(skipLogic.expression);
+			const result = this._expressionsRunner.run(surveyModel.data);
+			if (result)
+			{
+				options.allowChanging = false;
+
+				if (skipLogic.destination === "ENDOFSURVEY")
+				{
+					surveyModel.setCompleted();
+					this._surveyRunningPromiseResolve(Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY);
+				}
+				else if (skipLogic.destination === "ENDOFBLOCK")
+				{
+					surveyModel.setCompleted();
+					this._surveyRunningPromiseResolve(Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_BLOCK);
+				}
+				else
+				{
+					// skipLogic.destination is a question within the current survey (qualtrics block).
+					const targetQuestion = surveyModel.getQuestionByName(skipLogic.destination);
+					const page = surveyModel.getPageByQuestion(targetQuestion);
+					const pageQuestions = page.questions;
+					let i;
+					for (i = 0; i &lt; pageQuestions.length; i++)
+					{
+						if (pageQuestions[i] === targetQuestion)
+						{
+							break;
+						}
+						pageQuestions[i].visible = false;
+					}
+					targetQuestion.focus();
+					surveyModel.currentPage = page;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Callback triggered when the participant has completed a SurveyJS Question Block.
+	 *
+	 * @param {Object} node - super-flow QUESTION_BLOCK node
+	 * @param surveyModel		- the associated SurveyJS model
+	 * @param options				- the SurveyJS model options
+	 * @protected
+	 */
+	_onSurveyJSComplete(node, surveyModel, options)
+	{
+		// note: we need to add the node title to the responses
+		Object.assign(this._overallSurveyResults, surveyModel.data);
+
+
+		let completionCode = Survey.SURVEY_COMPLETION_CODES.NORMAL;
+		const questions = surveyModel.getAllQuestions();
+
+		// It is guaranteed that the question with skip logic is always last on the page.
+		const lastQuestion = questions[questions.length - 1];
+		const skipLogic = this._surveyData.questionSkipLogic[lastQuestion.name];
+		if (skipLogic !== undefined)
+		{
+			this._expressionsRunner.expressionExecutor.setExpression(skipLogic.expression);
+			const result = this._expressionsRunner.run(surveyModel.data);
+			if (result)
+			{
+				if (skipLogic.destination === "ENDOFSURVEY")
+				{
+					completionCode = Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY;
+					surveyModel.setCompleted();
+				}
+				else if (skipLogic.destination === "ENDOFBLOCK")
+				{
+					completionCode = Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_BLOCK;
+				}
+			}
+		}
+
+		surveyModel.stopTimer();
+
+		// check whether the survey was completed:
+		const surveyVisibleQuestions = this._surveyJSModel.getAllQuestions(true);
+		const nbAnsweredQuestions = surveyVisibleQuestions.reduce(
+			(count, question) =>
+			{
+				// note: the response of a html, ranking, checkbox, or comment question is empty if the user
+				// did not interact with it
+				const type = question.getType();
+				if (type === "html" ||
+					type === "ranking" ||
+					type === "checkbox" ||
+					type === "comment" ||
+					!question.isEmpty())
+				{
+					return count + 1;
+				}
+				else
+				{
+					return count;
+				}
+			},
+			0
+		);
+		this._isCompletedAll = this._isCompletedAll &amp;&amp; (nbAnsweredQuestions === surveyVisibleQuestions.length);
+		if (this._isCompletedAll === false)
+		{
+			this.psychoJS.logger.warn(`Flag _isCompletedAll is false!`);
+		}
+
+		this._surveyRunningPromiseResolve(completionCode);
+	}
+
+	/**
+	 * Callback triggered when we have run through the whole flow.
+	 *
+	 * @protected
+	 */
+	_onFlowComplete()
+	{
+		this.isFinished = true;
+		this._onFinishedCallback();
+	}
+
+	_onTextMarkdown(survey, options)
+	{
+		// TODO add sanitization / checks if required.
+		options.html = options.text;
+	}
+
+	/**
+	 * Run a QUESTION_BLOCK as a SurveyJS survey.
+	 *
+	 * @param {Object} node - super-flow QUESTION_BLOCK node
+	 * @param {Object} surveyData - the complete surveyData (model)
+	 * @protected
+	 */
+	_runQuestionBlock(node, surveyData)
+	{
+		this._lastPageSwitchHandledIdx = -1;
+		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
+
+		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
+		for (let j in this._variables)
+		{
+			// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
+			// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
+			this._surveyJSModel.variablesHash[j] = this._variables[j];
+			// this._surveyModel.setVariable(j, this._variables[j]);
+		}
+
+		if (!this._surveyJSModel.isInitialized)
+		{
+			this._registerCustomComponentCallbacks(this._surveyJSModel);
+			this._surveyJSModel.onValueChanged.add(this._onQuestionValueChanged.bind(this));
+			this._surveyJSModel.onCurrentPageChanging.add(this._onCurrentPageChanging.bind(this));
+			this._surveyJSModel.onComplete.add( (surveyJSModel, options) => this._onSurveyJSComplete(node, surveyJSModel, options) );
+			this._surveyJSModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
+			this._surveyJSModel.isInitialized = true;
+			this._surveyJSModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
+		}
+
+		const completeText = node.surveyIdx &lt; this._surveyData.surveys.length - 1 ? (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
+		jQuery(".survey").Survey({
+			model: this._surveyJSModel,
+			showItemsInOrder: "column",
+			completeText,
+			...surveyData.surveySettings
+		});
+
+		this._questionAnswerTimestampClock.reset();
+
+		// TODO: should this be conditional?
+		this._surveyJSModel.startTimer();
+
+		this._surveyRunningPromise = new Promise((res, rej) => {
+			this._surveyRunningPromiseResolve = res;
+			this._surveyRunningPromiseReject = rej;
+		});
+
+		return this._surveyRunningPromise;
+	}
+
+	/**
+	 *
+	 * @param node
+	 * @param surveyData
+	 * @param prevBlockResults
+	 * @return {Promise&lt;number>}
+	 * @private
+	 */
+	async _runSurveyFlow(node, surveyData, prevBlockResults = {})
+	{
+		let nodeExitCode = Survey.NODE_EXIT_CODES.NORMAL;
+
+		if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
+		{
+			const dataset = Object.assign({}, this._overallSurveyResults, this._variables);
+			this._expressionsRunner.expressionExecutor.setExpression(node.condition);
+			if (this._expressionsRunner.run(dataset) &amp;&amp; node.nodes[0] !== undefined)
+			{
+				nodeExitCode = await this._runSurveyFlow(node.nodes[0], surveyData, prevBlockResults);
+			}
+			else if (node.nodes[1] !== undefined)
+			{
+				nodeExitCode = await this._runSurveyFlow(node.nodes[1], surveyData, prevBlockResults);
+			}
+		}
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.RANDOMIZER)
+		{
+			util.shuffle(node.nodes, Math.random, 0, node.nodes.length - 1);
+		}
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.EMBEDDED_DATA)
+		{
+			let t = performance.now();
+			const surveyBlockData = surveyData.embeddedData[node.dataIdx];
+			for (let j = 0; j &lt; surveyBlockData.length; j++)
+			{
+				// TODO: handle the rest data types.
+				if (surveyBlockData[j].type === "Custom")
+				{
+					// Variable value can be an expression. Check if so and if valid - run it.
+					// surveyBlockData is an array so all the variables in it are in order they were declared in Qualtrics.
+					// This means this._variables is saturated gradually with the data necessary to perform a computation.
+					// It's guaranteed to be there, unless there are declaration order mistakes.
+					this._expressionsRunner.expressionExecutor.setExpression(surveyBlockData[j].value);
+					if (this._expressionsRunner.expressionExecutor.canRun())
+					{
+						this._variables[surveyBlockData[j].key] = this._expressionsRunner.run(this._variables);
+					}
+					else
+					{
+						this._variables[surveyBlockData[j].key] = surveyBlockData[j].value;
+					}
+				}
+			}
+			console.log("embedded data variables accumulation took", performance.now() - t);
+		}
+
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
+		{
+			if (this._surveyJSModel)
+			{
+				this._surveyJSModel.setCompleted();
+			}
+			console.log("EndSurvey block encountered, exiting.");
+			nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
+		}
+
+		// QUESTION_BLOCK:
+		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
+		{
+			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData);
+			Object.assign({}, prevBlockResults, this._surveyJSModel.data);
+
+			// SkipLogic had destination set to ENDOFSURVEY.
+			if (surveyCompletionCode === Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
+			{
+				nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
+			}
+		}
+
+		// run through the children nodes of this node:
+		if (nodeExitCode === Survey.NODE_EXIT_CODES.NORMAL &amp;&amp;
+			node.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL &amp;&amp;
+			node.nodes instanceof Array)
+		{
+			for (const childNode of node.nodes)
+			{
+				nodeExitCode = await this._runSurveyFlow(childNode, surveyData, prevBlockResults);
+				if (nodeExitCode === Survey.NODE_EXIT_CODES.BREAK_FLOW)
+				{
+					break;
+				}
+			}
+		}
+
+		// if we have just run through the top node, mark the whole flow as completed:
+		if (node.isRootNode)
+		{
+			this._onFlowComplete();
+		}
+
+		return nodeExitCode;
+	}
+
+	_resetState ()
+	{
+		this._lastPageSwitchHandledIdx = -1;
+	}
+
+	_handleWindowResize(e)
+	{
+		if (this._surveyJSModel)
+		{
+			for (let i = this._signaturePads.length - 1; i >= 0; i--)
+			{
+				// As of writing this (24.03.2023). SurveyJS doesn't have a proper event
+				// for question being removed from nested locations, such as dynamic panel.
+				// However, surveyJS will set .signaturePad property to null once the question is removed.
+				// Utilising this knowledge to sync our lists.
+				if (this._signaturePads[ i ].question.signaturePad)
+				{
+					this._signaturePads[ i ].question.signatureWidth = Math.min(
+						this._signaturePads[i].question.maxSignatureWidth,
+						this._signaturePads[ i ].htmlElement.getBoundingClientRect().width
+					);
+				}
+				else
+				{
+					// Signature pad was removed. Syncing list.
+					this._signaturePads.splice(i, 1);
+				}
+			}
+		}
+	}
+
+	_addEventListeners()
+	{
+		window.addEventListener("resize", (e) => this._handleWindowResize(e));
+	}
+
+	_handleAfterQuestionRender (sender, options)
+	{
+		if (options.question.getType() === "signaturepad")
+		{
+			this._signaturePads.push(options);
+			options.question.signatureWidth = Math.min(options.question.maxSignatureWidth, options.htmlElement.getBoundingClientRect().width);
+		}
+	}
+
+	/**
+	 * Init the SurveyJS.io library and various extensions, setup the theme.
+	 *
+	 * @protected
+	 */
+	_initSurveyJS()
+	{
+		// note: the Survey.js libraries must be added to the list of resources in PsychoJS.start:
+		// psychoJS.start({ resources: [ {'surveyLibrary': true}, ... ], ...});
+
+		// id of the SurveyJS html div:
+		this._surveyDivId = `survey-${this._name}`;
+
+		this._registerCustomExpressionFunctions(window.Survey, customExpressionFunctionsArray);
+		this._registerWidgets(window.Survey);
+		this._registerCustomSurveyProperties(window.Survey);
+		this._addEventListeners();
+		this._expressionsRunner = new window.Survey.ExpressionRunner();
+
+		// setup the survey theme:
+		window.Survey.Serializer.getProperty("expression", "minWidth").defaultValue = "100px";
+		window.Survey.settings.minWidth = "100px";
+		window.Survey.StylesManager.applyTheme("defaultV2");
+
+		// load the desired style:
+		// TODO
+		// util.loadCss("./survey/css/grey_style.css");
+	}
+
+	/**
+	 * Augment the model question names with model names.
+	 *
+	 * @protected
+	 */
+	_augmentQuestionNames()
+	{
+		if (!("surveys" in this._surveyData))
+		{
+			return;
+		}
+
+		const surveys = this._surveyData["surveys"];
+		for (const survey of surveys)
+		{
+			if (!("title" in survey) || !("pages" in survey))
+			{
+				continue;
+			}
+
+			for (const page of survey["pages"])
+			{
+				
+			}
+		}
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 29 2024 13:54:05 GMT+0200 (Central European Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
