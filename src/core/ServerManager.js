@@ -1533,8 +1533,8 @@ export class ServerManager extends PsychObject
 	_setupPreloadQueue()
 	{
 		const response = {
-			origin: "ServerManager._setupPreloadQueue",
-			context: "when setting up a preload queue"
+			origin: "ServerManager.[preload]",
+			context: "when downloading resources"
 		};
 
 		this._preloadQueue = new createjs.LoadQueue(true, "", true);

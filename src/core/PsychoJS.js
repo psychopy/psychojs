@@ -640,8 +640,8 @@ export class PsychoJS
 
 			if (showOK)
 			{
-				let text = "Thank you for your patience. ";
-				text += (typeof message !== "undefined") ? message : "Goodbye!";
+				const defaultMsg = "Thank you for your patience. Goodbye!";
+				const text = (typeof message !== "undefined") ? message : defaultMsg;
 				this._gui.dialog({
 					message: text,
 					onOK: onTerminate

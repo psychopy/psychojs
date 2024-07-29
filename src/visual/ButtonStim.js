@@ -114,11 +114,6 @@ export class ButtonStim extends TextBox
 			[],
 		);
 
-		this._addAttribute(
-			"numClicks",
-			0,
-		);
-
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${util.toString(this)}`);
@@ -143,5 +138,20 @@ export class ButtonStim extends TextBox
 	get isClicked()
 	{
 		return this.listener.isPressedIn(this, [1, 0, 0]);
+	}
+
+	/**
+	 * Clear the previously stored times on and times off.
+	 *
+	 * @returns {void}
+	 */
+	reset()
+	{
+		this.wasClicked = this.isClicked;
+
+		this.timesOn = [];
+		this.timesOff = [];
+
+		super.reset();
 	}
 }
