@@ -2,8 +2,7 @@
  * Manager handling the recording of audio signal.
  *
  * @author Alain Pitiot and Sotiri Bakagiannis
- * @version 2022.2.3
- * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 

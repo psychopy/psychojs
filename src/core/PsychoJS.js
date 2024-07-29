@@ -3,8 +3,7 @@
  * Main component of the PsychoJS library.
  *
  * @author Alain Pitiot
- * @version 2022.2.3
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -188,8 +187,8 @@ export class PsychoJS
 		// whether to save results at the end of the experiment:
 		this._saveResults = saveResults;
 
+		this.logger.info("[PsychoJS] Version 2024.2.0");
 		this.logger.info("[PsychoJS] Initialised.");
-		this.logger.info("[PsychoJS] @version 2024.1.0");
 
 		// hide the initialisation message:
 		const root = document.getElementById("root");
@@ -640,8 +639,8 @@ export class PsychoJS
 
 			if (showOK)
 			{
-				let text = "Thank you for your patience. ";
-				text += (typeof message !== "undefined") ? message : "Goodbye!";
+				const defaultMsg = "Thank you for your patience. Goodbye!";
+				const text = (typeof message !== "undefined") ? message : defaultMsg;
 				this._gui.dialog({
 					message: text,
 					onOK: onTerminate
