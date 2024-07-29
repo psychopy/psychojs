@@ -2,8 +2,7 @@
  * Grating Stimulus.
  *
  * @author Nikita Agafonov
- * @version 2021.2.3
- * @copyright (c) 2020-2022 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 

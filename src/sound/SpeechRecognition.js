@@ -2,7 +2,6 @@
  * Manager handling the live transcription of speech into text.
  *
  * @author Alain Pitiot
- * @version 2022.2.3
  * @copyright (c) 2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

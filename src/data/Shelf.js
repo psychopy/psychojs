@@ -3,7 +3,6 @@
  * server, and can be accessed and manipulated in a concurrent fashion.
  *
  * @author Alain Pitiot
- * @version 2021.2.3
  * @copyright (c) 2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

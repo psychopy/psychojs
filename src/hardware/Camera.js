@@ -3,7 +3,6 @@
  * Manager handling the recording of video signal.
  *
  * @author Alain Pitiot
- * @version 2022.2.0
  * @copyright (c) 2022 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */

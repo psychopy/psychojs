@@ -2,7 +2,6 @@
  * Survey Stimulus.
  *
  * @author Alain Pitiot and Nikita Agafonov
- * @version 2022.3
  * @copyright (c) 2023 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
