@@ -71,6 +71,7 @@ export class ButtonStim extends TextBox
 			win,
 			name,
 			text,
+			placeholder: text,
 			font,
 			pos,
 			size,

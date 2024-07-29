@@ -21,7 +21,7 @@ export class PsychObject extends EventEmitter
 {
 	/**
 	 * @param {module:core.PsychoJS} psychoJS - the PsychoJS instance
-	 * @param {string} name - the name of the object (mostly useful for debugging)
+	 * @param {string} [name] - the name of the object (mostly useful for debugging)
 	 */
 	constructor(psychoJS, name)
 	{
