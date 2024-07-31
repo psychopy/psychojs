@@ -1234,7 +1234,7 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Augment the model question names with model names.
+	 * Augment the model question names with block names.
 	 *
 	 * @protected
 	 */
@@ -1245,18 +1245,50 @@ export class Survey extends VisualStim
 			return;
 		}
 
-		const surveys = this._surveyData["surveys"];
-		for (const survey of surveys)
+		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions
+		// in the corresponding survey:
+		const updateQuestionNames = (node) =>
 		{
-			if (!("title" in survey) || !("pages" in survey))
+			if (node.type === "QUESTION_BLOCK")
 			{
-				continue;
+				// get the associated survey:
+				if (("surveyIdx" in node) && (node.surveyIdx < this._surveyData.surveys.length))
+				{
+					const survey = this._surveyData.surveys[node.surveyIdx];
+
+					// update all questions on all pages:
+					if ("pages" in survey)
+					{
+						for (const page of survey.pages)
+						{
+							// iterate over all questions:
+							for (const question of page.elements)
+							{
+								// if the question has no title, set it to the name
+								// (since we are going to change the name)
+								if (!("title" in question))
+								{
+									question.title = question.name;
+								}
+
+								// augment the name of the question with the name of the block:
+								question.name = `${node.name}/${question.name}`;
+							}
+						}
+					}
+				}
 			}
 
-			for (const page of survey["pages"])
+			// if this node has children, iterate over all of them:
+			if ("nodes" in node)
 			{
-				
+				for (const childNode of node.nodes)
+				{
+					updateQuestionNames(childNode);
+				}
 			}
-		}
+		};
+		updateQuestionNames(this._surveyData.surveyFlow);
+
 	}
 }
