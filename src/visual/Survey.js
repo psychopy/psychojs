@@ -1234,7 +1234,7 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Augment the model question names with block names.
+	 * Augment the model question names and variables with block names.
 	 *
 	 * @protected
 	 */
@@ -1245,8 +1245,19 @@ export class Survey extends VisualStim
 			return;
 		}
 
-		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions
-		// in the corresponding survey:
+		// augment all variables
+		// note: we do not update variables with a / in them, since they have already been
+		// augmented by the designer
+		const augmentVariables = (nodeName, txt) =>
+		{
+			// the below regex captures any sequence of characters between { and } that does not contain /:
+			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
+
+			//`{${nodeName}/$1}`);
+		};
+
+		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
+		// and the names of the variables, in the corresponding survey:
 		const updateQuestionNames = (node) =>
 		{
 			if (node.type === "QUESTION_BLOCK")
@@ -1273,6 +1284,16 @@ export class Survey extends VisualStim
 
 								// augment the name of the question with the name of the block:
 								question.name = `${node.name}/${question.name}`;
+
+								// augment the variables in visibleIf and defaultValueExpression:
+								if ("visibleIf" in question)
+								{
+									question.visibleIf = augmentVariables(node.name, question.visibleIf);
+								}
+								if ("defaultValueExpression" in question)
+								{
+									question.defaultValueExpression = augmentVariables(node.name, question.defaultValueExpression);
+								}
 							}
 						}
 					}
