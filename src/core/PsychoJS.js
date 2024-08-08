@@ -143,7 +143,7 @@ export class PsychoJS
 		});
 
 		// add the pavlovia server to the list of hosts:
-		const pavloviaHosts = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/", "https://devlovia.org/run/", "https://run.devlovia.org/"]);
+		const pavloviaHosts = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/"]);
 		this._hosts = Array.from(pavloviaHosts);
 
 		// GUI:

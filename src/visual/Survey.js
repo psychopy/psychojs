@@ -2,7 +2,7 @@
  * Survey Stimulus.
  *
  * @author Alain Pitiot and Nikita Agafonov
- * @copyright (c) 2023 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -194,7 +194,10 @@ export class Survey extends VisualStim
 				// convert it:
 				if (!('surveyFlow' in model))
 				{
+					const surveyName = ("surveyName" in model) ? model.surveyName : "<unknown survey>";
+
 					model = {
+						surveyName,
 						surveys: [model],
 						embeddedData: [],
 						// surveysMap: {},
@@ -204,6 +207,7 @@ export class Survey extends VisualStim
 							type: "SEQUENTIAL_GROUP",
 							nodes: [{
 								type: "QUESTION_BLOCK",
+								name: "block_1",
 								surveyIdx: 0
 							}]
 						},
@@ -1272,7 +1276,10 @@ export class Survey extends VisualStim
 								}
 
 								// augment the name of the question with the name of the block:
-								question.name = `${node.name}/${question.name}`;
+								if (typeof node.name !== "undefined")
+								{
+									question.name = `${node.name}/${question.name}`;
+								}
 							}
 						}
 					}
@@ -1289,6 +1296,5 @@ export class Survey extends VisualStim
 			}
 		};
 		updateQuestionNames(this._surveyData.surveyFlow);
-
 	}
 }
