@@ -1018,6 +1018,18 @@ export class Survey extends VisualStim
 		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
 
 		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
+
+		for (const name in this._variables)
+		{
+			// use non-augmented names here (i.e. not <block name>/<variable name>) to deal with variables
+			// passed as URL parameters:
+			this._surveyJSModel.setVariable(name, this._variables[name]);
+
+			// also use augmented names:
+			this._surveyJSModel.setVariable(`${node.name}/${name}`, this._variables[name]);
+		}
+/*
+		// Nikita approach:
 		for (let j in this._variables)
 		{
 			// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
@@ -1025,6 +1037,7 @@ export class Survey extends VisualStim
 			this._surveyJSModel.variablesHash[j] = this._variables[j];
 			// this._surveyModel.setVariable(j, this._variables[j]);
 		}
+*/
 
 		if (!this._surveyJSModel.isInitialized)
 		{
@@ -1238,7 +1251,7 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Augment the model question names with block names.
+	 * Augment the model question names and variables with block names.
 	 *
 	 * @protected
 	 */
@@ -1249,8 +1262,19 @@ export class Survey extends VisualStim
 			return;
 		}
 
-		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions
-		// in the corresponding survey:
+		// augment all variables
+		// note: we do not update variables with a / in them, since they have already been
+		// augmented by the designer
+		const augmentVariables = (nodeName, txt) =>
+		{
+			// the below regex captures any sequence of characters between { and } that does not contain /:
+			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
+
+			//`{${nodeName}/$1}`);
+		};
+
+		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
+		// and the names of the variables, in the corresponding survey:
 		const updateQuestionNames = (node) =>
 		{
 			if (node.type === "QUESTION_BLOCK")
@@ -1265,20 +1289,45 @@ export class Survey extends VisualStim
 					{
 						for (const page of survey.pages)
 						{
-							// iterate over all questions:
-							for (const question of page.elements)
+							// go over all fields of the page, and augment all variables
+							// note: this is much more generic than going over specific fields,
+							// such as visibleIf, enableIf, etc.
+							for (const field in page)
 							{
-								// if the question has no title, set it to the name
-								// (since we are going to change the name)
-								if (!("title" in question))
+								if (page.hasOwnProperty(field) && typeof page[field] === "string")
 								{
-									question.title = question.name;
+									page[field] = augmentVariables(node.name, page[field]);
 								}
+							}
 
-								// augment the name of the question with the name of the block:
-								if (typeof node.name !== "undefined")
+							// iterate over all elements:
+							if ("elements" in page)
+							{
+								for (const element of page.elements)
 								{
-									question.name = `${node.name}/${question.name}`;
+									// if the element has no title, set it to the name
+									// (since we are going to change the name)
+									if (!("title" in element))
+									{
+										element.title = element.name;
+									}
+
+									// augment the name of the element with the name of the block:
+									if (typeof node.name !== "undefined")
+									{
+										element.name = `${node.name}/${element.name}`;
+									}
+
+									// go over all fields of the element, and augment all variables
+									// note: this is much more generic than going over specific fields, such as visibleIf, enableIf,
+									// expression, etc.
+									for (const field in element)
+									{
+										if (element.hasOwnProperty(field) && typeof element[field] === "string")
+										{
+											element[field] = augmentVariables(node.name, element[field]);
+										}
+									}
 								}
 							}
 						}
@@ -1295,6 +1344,9 @@ export class Survey extends VisualStim
 				}
 			}
 		};
+
 		updateQuestionNames(this._surveyData.surveyFlow);
+
+		console.log("augmented surveys: ", JSON.stringify(this._surveyData.surveys));
 	}
 }
