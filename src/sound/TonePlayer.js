@@ -203,6 +203,11 @@ export class TonePlayer extends SoundPlayer
 		}
 	}
 
+	getNativeContext()
+	{
+		return this._synth.context._context._nativeAudioContext;
+	}
+	
 	/**
 	 * Start playing the sound.
 	 *
