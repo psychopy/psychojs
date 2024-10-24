@@ -38,6 +38,7 @@ export class Microphone extends PsychObject
 		this._addAttribute("name", name, "microphone");
 		this._addAttribute("format", format, "audio/webm;codecs=opus", this._onChange);
 		this._addAttribute("sampleRateHz", sampleRateHz, 48000, this._onChange);
+		this._addAttribute("policyWhenFull", "warn");
 		this._addAttribute("clock", clock, new Clock());
 		this._addAttribute("autoLog", autoLog, autoLog);
 		this._addAttribute("status", PsychoJS.Status.NOT_STARTED);

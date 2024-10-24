@@ -1012,13 +1012,14 @@ export class Survey extends VisualStim
 	 * @param {Object} surveyData - the complete surveyData (model)
 	 * @protected
 	 */
-	_runQuestionBlock(node, surveyData)
+	_runQuestionBlock(node, surveyData, prevBlockResults)
 	{
 		this._lastPageSwitchHandledIdx = -1;
 		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
 
 		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
 
+		console.log("running block: ", node.name, "variables=", this._variables, "prevBlockResults=", prevBlockResults);
 		for (const name in this._variables)
 		{
 			// use non-augmented names here (i.e. not <block name>/<variable name>) to deal with variables
@@ -1028,16 +1029,23 @@ export class Survey extends VisualStim
 			// also use augmented names:
 			this._surveyJSModel.setVariable(`${node.name}/${name}`, this._variables[name]);
 		}
-/*
-		// Nikita approach:
-		for (let j in this._variables)
+
+		// turn the results from the previous blocks into variables for this block:
+		for (const name in prevBlockResults)
 		{
-			// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
-			// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
-			this._surveyJSModel.variablesHash[j] = this._variables[j];
-			// this._surveyModel.setVariable(j, this._variables[j]);
+			this._surveyJSModel.setVariable(name, prevBlockResults[name]);
 		}
-*/
+
+		/*
+				// Nikita approach:
+				for (let j in this._variables)
+				{
+					// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
+					// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
+					this._surveyJSModel.variablesHash[j] = this._variables[j];
+					// this._surveyModel.setVariable(j, this._variables[j]);
+				}
+		*/
 
 		if (!this._surveyJSModel.isInitialized)
 		{
@@ -1142,8 +1150,8 @@ export class Survey extends VisualStim
 		// QUESTION_BLOCK:
 		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
 		{
-			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData);
-			Object.assign({}, prevBlockResults, this._surveyJSModel.data);
+			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData, prevBlockResults);
+			Object.assign(prevBlockResults, this._surveyJSModel.data);
 
 			// SkipLogic had destination set to ENDOFSURVEY.
 			if (surveyCompletionCode === Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
@@ -1269,8 +1277,6 @@ export class Survey extends VisualStim
 		{
 			// the below regex captures any sequence of characters between { and } that does not contain /:
 			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
-
-			//`{${nodeName}/$1}`);
 		};
 
 		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
