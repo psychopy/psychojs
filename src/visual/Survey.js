@@ -77,7 +77,7 @@ export class Survey extends VisualStim
 	 * 	on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether to log
 	 */
-	constructor({ name, win, model, surveyId, pos, units, ori, size, depth, autoDraw, autoLog } = {})
+	constructor({ name, win, model, surveyId, saveOnPageChange, pos, units, ori, size, depth, autoDraw, autoLog } = {})
 	{
 		super({ name, win, units, ori, depth, pos, size, autoDraw, autoLog });
 
@@ -120,10 +120,8 @@ export class Survey extends VisualStim
 			this.size = (this.unit === "norm") ? [2.0, 2.0] : [1.0, 1.0];
 		}
 
-		this._addAttribute(
-			"model",
-			model
-		);
+		this._addAttribute("model", model);
+		this._addAttribute("saveOnPageChange", saveOnPageChange, false);
 
 		// the default surveyId is an uuid based on the experiment id (or name) and the survey name:
 		// this way, it is always the same within a given experiment
@@ -862,8 +860,17 @@ export class Survey extends VisualStim
 	 *
 	 * @protected
 	 */
-	_onCurrentPageChanging (surveyModel, options)
+	_onCurrentPageChanging(surveyModel, options)
 	{
+		// if partial saving is activated, then save the results:
+		if (this._saveOnPageChange)
+		{
+			Object.assign(this._overallSurveyResults, surveyModel.data);
+
+			// TODO queue the saves?
+			this.save();
+		}
+
 		if (this._lastPageSwitchHandledIdx === options.oldCurrentPage.visibleIndex)
 		{
 			// When surveyModel.currentPage is called from this handler, pagechange event gets triggered again.
@@ -928,7 +935,6 @@ export class Survey extends VisualStim
 	{
 		// note: we need to add the node title to the responses
 		Object.assign(this._overallSurveyResults, surveyModel.data);
-
 
 		let completionCode = Survey.SURVEY_COMPLETION_CODES.NORMAL;
 		const questions = surveyModel.getAllQuestions();
@@ -1019,7 +1025,7 @@ export class Survey extends VisualStim
 
 		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
 
-		console.log("running block: ", node.name, "variables=", this._variables, "prevBlockResults=", prevBlockResults);
+		// console.log("running block: ", node.name, "variables=", this._variables, "prevBlockResults=", prevBlockResults);
 		for (const name in this._variables)
 		{
 			// use non-augmented names here (i.e. not <block name>/<variable name>) to deal with variables
@@ -1134,7 +1140,7 @@ export class Survey extends VisualStim
 					}
 				}
 			}
-			console.log("embedded data variables accumulation took", performance.now() - t);
+			// console.log("embedded data variables accumulation took", performance.now() - t);
 		}
 
 		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
