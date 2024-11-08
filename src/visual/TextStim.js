@@ -201,7 +201,7 @@ export class TextStim extends util.mix(VisualStim).with(ColorMixin)
     
 
 		// estimate the bounding box (using TextMetrics):
-		this._estimateBoundingBox();
+		// this._estimateBoundingBox();
 
     // this.fontRenderMaxScalar = 1;
     
