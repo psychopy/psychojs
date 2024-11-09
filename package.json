@@ -37,6 +37,7 @@
     "pixi-filters": "^5.0.0",
     "pixi.js-legacy": "^6.0.4",
     "seedrandom": "^3.0.5",
+    "simple-notify": "^1.0.5",
     "tone": "^14.7.77",
     "xlsx": "^0.18.5"
   },
