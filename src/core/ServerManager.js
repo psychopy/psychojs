@@ -496,8 +496,17 @@ export class ServerManager extends PsychObject
 	 *
 	 * @param {String | Array.<{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the
 	 *   list of resources or a single resource
+	 * @param {Object} downloadOptions - the download options for those resources
 	 */
-	async prepareResources(resources = [])
+	async prepareResources(
+		resources = [],
+		downloadOptions = {
+			testConnection: false,
+			maxAttempts: 0,
+			attemptPeriod_ms: 0,
+			participantMsg: () => undefined
+		}
+	)
 	{
 		const response = {
 			origin: "ServerManager.prepareResources",
@@ -649,10 +658,12 @@ export class ServerManager extends PsychObject
 								path = "https://pavlovia.org/api/v2/proxy/" + path;
 							}
 
+							downloadOptions.nbAttempts = 1;
 							this._resources.set(name, {
 								status: ServerManager.ResourceStatus.REGISTERED,
 								path,
 								data: undefined,
+								downloadOptions: Object.assign({}, downloadOptions)
 							});
 							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 
@@ -680,14 +691,24 @@ export class ServerManager extends PsychObject
 			{
 				return new Promise((resolve, reject) =>
 				{
-					const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
+					const resourceUuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
 					{
 						if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
 						{
-							this.off(ServerManager.Event.RESOURCE, uuid);
+							this.off(ServerManager.Event.RESOURCE, resourceUuid);
 							resolve();
 						}
 					});
+
+					const statusUuid = this.on(ServerManager.Event.STATUS, (status) =>
+					{
+						if (status === ServerManager.Status.ERROR)
+						{
+							this.off(ServerManager.Event.STATUS, statusUuid);
+							reject();
+						}
+					});
+
 
 					this._downloadResources(resourcesToDownload);
 				});
@@ -696,8 +717,7 @@ export class ServerManager extends PsychObject
 		catch (error)
 		{
 			console.error("error", error);
-			throw Object.assign(response, { error });
-			// throw { ...response, error: error };
+			throw { ...response, error };
 		}
 	}
 
@@ -1559,7 +1579,7 @@ export class ServerManager extends PsychObject
 			pathStatusData.data = event.result;
 			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
 
-			++self._nbLoadedResources;
+			++ self._nbLoadedResources;
 			self.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.RESOURCE_DOWNLOADED,
 				resource: event.item.id,
@@ -1582,37 +1602,90 @@ export class ServerManager extends PsychObject
 		// error: we throw an exception
 		this._preloadQueue.addEventListener("error", (event) =>
 		{
-			self.setStatus(ServerManager.Status.ERROR);
+			console.error(event);
+
 			if (typeof event.item !== "undefined")
 			{
-				const pathStatusData = self._resources.get(event.item.id);
-				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
-				throw Object.assign(response, {
-					error: "unable to download resource: " + event.item.id + " (" + event.title + ")",
-				});
+				self._processLoadingError(event.item.id);
+			}
+			else if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
+			{
+				self._processLoadingError(event.data.id);
 			}
 			else
 			{
-				console.error(event);
-
-				if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
-				{
-					const id = event.data.id;
-					const title = event.data.src;
-
-					throw Object.assign(response, {
-						error: "unable to download resource: " + id + " (" + title + ")",
-					});
-				}
-				else
-				{
-					throw Object.assign(response, {
-						error: "unspecified download error",
-					});
-				}
+				throw { ...response, error: "unspecified download error" };
 			}
 		});
 	}
+
+	/**
+	 * Process a loading error.
+	 *
+	 * @protected
+	 * @param {string} id - the resource id
+	 */
+	_processLoadingError(id)
+	{
+		const response = {
+			origin: "ServerManager._processLoadingError",
+			context: "when processing a loading error"
+		};
+
+		const resource = this._resources.get(id);
+
+		// if we have run out of download attempts, throw an error:
+		if (resource.downloadOptions.nbAttempts >= resource.downloadOptions.maxAttempts)
+		{
+			resource.status = ServerManager.ResourceStatus.ERROR;
+			this.setStatus(ServerManager.Status.ERROR);
+
+			throw { ...response, error: `unable to download resource: ${id} (${resource.path})` };
+		}
+		else
+		{
+			// show a message to the participant, if need be:
+			const msg = resource.downloadOptions.participantMsg(resource);
+			if (typeof msg !== "undefined")
+			{
+				new Notify({
+					status: 'warning',
+					title: `resource: ${id}`,
+					text: msg,
+					effect: 'fade',
+					speed: 300,
+					customClass: '',
+					customIcon: '',
+					showIcon: true,
+					showCloseButton: true,
+					autoclose: true,
+					autotimeout: resource.downloadOptions.attemptPeriod_ms * 0.8,
+					notificationsGap: null,
+					notificationsPadding: 0,
+					type: 'outline',
+					position: 'right bottom',
+					customWrapper: '',
+				});
+			}
+
+			// schedule another attempt:
+			++ resource.downloadOptions.nbAttempts;
+
+			setTimeout(
+				() =>
+				{
+					this._preloadQueue.loadFile({
+						id,
+						src: resource.path,
+						crossOrigin: "Anonymous"
+					})
+				},
+				resource.downloadOptions.attemptPeriod_ms
+			);
+		}
+	}
+
+
 
 	/**
 	 * Query the pavlovia server API.
