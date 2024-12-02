@@ -128,7 +128,7 @@ export class QuestHandler extends TrialHandler
 	 * 	as a response to a valid, usable trial
 	 * @returns {void}
 	 */
-	addResponse(response, value, doAddData = true, doGiveToQuest = true){
+	addResponse(response, value, doAddData = true, doGiveToQuest = true, doResetQuest = false){
 		// check that response is either 0 or 1, or an array of only 0s and 1s:
 		if (response !== 0 && response !== 1 && !(response instanceof Array && response.every(r => [0,1].includes(r))))
 		{
@@ -148,7 +148,9 @@ export class QuestHandler extends TrialHandler
 			}
 		}
 
-		if (doGiveToQuest) {
+		if (doResetQuest) {
+			this.reset();
+		} else if (doGiveToQuest) {
 			// update the QUEST pdf:
 			if (typeof value !== "undefined")
 			{
@@ -167,6 +169,7 @@ export class QuestHandler extends TrialHandler
 				}
 			}
 		}
+		
 
 		if (!this._finished)
 		{
@@ -174,7 +177,8 @@ export class QuestHandler extends TrialHandler
 
 			// estimate the next value of the QUEST variable
 			// (and update the trial list and snapshots):
-			this._estimateQuestValue();
+			if (!doResetQuest) this._estimateQuestValue(); // doResetQuest sets a value for this._questValue already
+			
 		}
 	}
 
@@ -290,6 +294,16 @@ export class QuestHandler extends TrialHandler
 		{
 			return CI;
 		}
+	}
+
+	/**
+	 * Preserve the current threshold estimate, then reset QUEST's internal state.
+	 * @returns {number} The preserved threshold estimate
+	 */
+	reset() {
+	  const currentEstimate = this.getQuestValue(); 
+	  this._setupJsQuest(); // Reset internal state
+	  this._questValue = currentEstimate;  
 	}
 
 	/**

@@ -110,7 +110,7 @@ export class MultiStairHandler extends TrialHandler
 	 * 	as a response to a valid, usable trial
 	 * @returns {void}
 	 */
-	addResponse(response, value, doGiveToQuest = true)
+	addResponse(response, value, doGiveToQuest = true, doResetQuest = false)
 	{
 		// check that response is either 0 or 1, or an array of only 0s and 1s:
 		if (response !== 0 && response !== 1 && !(response instanceof Array && response.every(r => [0,1].includes(r))))
@@ -129,11 +129,12 @@ export class MultiStairHandler extends TrialHandler
 		}
 
 		this._psychoJS.experiment.addData("trialGivenToQuest", doGiveToQuest);
+		this._psychoJS.experiment.addData("questResetByThresholdPracticeUntilCorrectBool", doResetQuest);
 
 		if (!this._finished)
 		{
 			// update the current staircase, but do not add the response again:
-			this._currentStaircase.addResponse(response, value, false, doGiveToQuest);
+			this._currentStaircase.addResponse(response, value, false, doGiveToQuest, doResetQuest);
 
 			// TODO Find out how to repeat bad trials
 			// if (!doGiveToQuest){
