@@ -55,7 +55,6 @@ export class MultiStairHandler extends TrialHandler
 		randomSeed,
 		name,
 		autoLog,
-		duplicates = 1, // aka subtrials-per-Trial
 	} = {})
 	{
 		super({
@@ -76,13 +75,6 @@ export class MultiStairHandler extends TrialHandler
 		this._addAttribute("stairType", stairType, MultiStairHandler.StaircaseType.SIMPLE);
 		this._addAttribute("conditions", conditions, [undefined]);
 		this._addAttribute("nTrials", nTrials);
-
-		// Support grouping multiple trials into one, ie duplicating a trial into multiple
-		// eg for targetKind===repeatedLetters, one scientist-specified trial becomes two trials here (one for each response)
-		this._duplicates = duplicates;
-
-		// aka which sub-trial we're on currently
-		this._duplicatedTrialCardinal = 0; // Repeat this condition from value from 1 to this._duplicates
 
 		if (typeof randomSeed !== "undefined")
 		{
@@ -110,8 +102,9 @@ export class MultiStairHandler extends TrialHandler
 	 * 	as a response to a valid, usable trial
 	 * @returns {void}
 	 */
-	addResponse(response, value, doGiveToQuest = true, doResetQuest = false)
+	addResponse(response, value, doGiveToQuest = true, doResetQuest = false, doRetryTrial = false)
 	{
+		console.log(`!. addResponse resetQuest:${doResetQuest}, retryTrial:${doRetryTrial}`);
 		// check that response is either 0 or 1, or an array of only 0s and 1s:
 		if (response !== 0 && response !== 1 && !(response instanceof Array && response.every(r => [0,1].includes(r))))
 		{
@@ -136,15 +129,20 @@ export class MultiStairHandler extends TrialHandler
 			// update the current staircase, but do not add the response again:
 			this._currentStaircase.addResponse(response, value, false, doGiveToQuest, doResetQuest);
 
-			// TODO Find out how to repeat bad trials
-			// if (!doGiveToQuest){
-				// If this was a bad trial, put back in the list of possible conditions
-				// this.trialKey = util.shuffle([...this.trialKey, this._currentStaircase._name]);
-			// }
-
 			// move onto the next trial:
 			this._nextTrial();
 		}
+	}
+	addTrial(condition="") {
+		const errBase = "Failed to add trial. ";
+		if (condition === "") throw errBase + "Empty condition label.";
+		if (condition.split("_").length !== 2) throw errBase + `Invalid condition label, ${condition}`;
+
+		console.log("!. adding condition", condition);
+		this.trialKey.push(condition);
+		this._currentStaircase.nRemaining++;
+		// this._currentStaircase.nReps++;
+		// this._currentStaircase.nStim++;
 	}
 
 	/**
@@ -240,10 +238,7 @@ export class MultiStairHandler extends TrialHandler
 					{
 						args.nTrials = this._nTrials;
 					}
-					if (
-						!args.hasOwnProperty("_duplicatedConditionCardinal") ||
-						args._duplicatedConditionCardinal === 1
-					) this.trialKey.push(...Array(args.nTrials).fill(args.name));
+					this.trialKey.push(...Array(args.nTrials).fill(args.name));
 
 					handler = new QuestHandler(args);
 				}
@@ -258,7 +253,6 @@ export class MultiStairHandler extends TrialHandler
 				this._staircases.push(handler);
 			}
 			this.trialKey = util.shuffle(this.trialKey);
-			this.trialKey = util.repeatEveryElement(this.trialKey, this._duplicates);
 
 			this._currentPass = [];
 			this._currentStaircase = null;
@@ -289,6 +283,7 @@ export class MultiStairHandler extends TrialHandler
 			if (this._currentPass.length === 0)
 			{
 				this._currentPass = this._staircases.filter( handler => !handler.finished );
+				console.log("!. currentPass empty , multi._nextTrial", this._currentPass);
 
 				if (this._multiMethod === TrialHandler.Method.SEQUENTIAL)
 				{
@@ -307,14 +302,9 @@ export class MultiStairHandler extends TrialHandler
 						// const handler = this._currentPass[index];
 						// this._currentPass = [handler];
 
-						this._duplicatedTrialCardinal = (this._duplicatedTrialCardinal % this._duplicates) + 1;
+						this.trialKey = util.shuffle(this.trialKey);
 						const nextConditionName = this.trialKey.shift();
-						let handler;
-						if (this._staircases.every(s => s.hasOwnProperty("_duplicatedConditionCardinal"))){
-							handler = this._staircases.filter(staircase => staircase._name === nextConditionName && staircase._duplicatedConditionCardinal === this._duplicatedTrialCardinal)[0];
-						} else {
-							handler = this._staircases.filter(staircase => staircase._name === nextConditionName)[0];
-						}
+						const handler = this._staircases.filter(staircase => staircase._name === nextConditionName)[0];
 						this._currentPass = [handler];
 					}
 				}
@@ -322,7 +312,9 @@ export class MultiStairHandler extends TrialHandler
 
 
 			// pick the next staircase in the pass:
+			console.log("!. this._currentPass multi", this._currentPass);
 			this._currentStaircase = this._currentPass.shift();
+			console.log("!. multi._currentStaircase look for condition label", this._currentStaircase);
 
 
 			// test for termination:

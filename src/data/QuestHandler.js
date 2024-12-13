@@ -34,7 +34,6 @@ import {TrialHandler} from "./TrialHandler.js";
  * @param {number} [options.grain=0.01] - quantization of the internal table
  * @param {string} options.name - name of the handler
  * @param {boolean} [options.autoLog= false] - whether or not to log
- * @param {number} [options._duplicatedConditionCardinal=1] - which cardinal, or sub-trial, this is
  */
 export class QuestHandler extends TrialHandler
 {
@@ -58,7 +57,6 @@ export class QuestHandler extends TrialHandler
 		gamma,
 		grain,
 		name,
-		_duplicatedConditionCardinal,
 		autoLog
 	} = {})
 	{
@@ -84,7 +82,6 @@ export class QuestHandler extends TrialHandler
 		this._addAttribute("gamma", gamma, 0.5);
 		this._addAttribute("grain", grain, 0.01);
 		this._addAttribute("method", method, QuestHandler.Method.QUANTILE);
-		this._addAttribute("_duplicatedConditionCardinal", _duplicatedConditionCardinal, 1);
 
 		// setup jsQuest:
 		this._setupJsQuest();

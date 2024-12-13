@@ -170,6 +170,7 @@ export class TrialHandler extends PsychObject
 
 				this.thisIndex = this._trialSequence[this.thisRepN][this.thisTrialN];
 				this.thisTrial = this.trialList[this.thisIndex];
+				console.log(`!. TrialHander repN:${this.thisRepN}, trialN:${this.thisTrialN}, [trialSeq, thisIndex, thisTrial]`, this._trialSequence, this.thisIndex, this.thisTrial);
 				// this.ran = 1;
 				this.ran = doesTrialCount ? 1 : 0;
 				// this.order = this.thisN;
