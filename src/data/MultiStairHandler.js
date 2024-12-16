@@ -104,7 +104,6 @@ export class MultiStairHandler extends TrialHandler
 	 */
 	addResponse(response, value, doGiveToQuest = true, doResetQuest = false, doRetryTrial = false)
 	{
-		console.log(`!. addResponse resetQuest:${doResetQuest}, retryTrial:${doRetryTrial}`);
 		// check that response is either 0 or 1, or an array of only 0s and 1s:
 		if (response !== 0 && response !== 1 && !(response instanceof Array && response.every(r => [0,1].includes(r))))
 		{
@@ -138,7 +137,6 @@ export class MultiStairHandler extends TrialHandler
 		if (condition === "") throw errBase + "Empty condition label.";
 		if (condition.split("_").length !== 2) throw errBase + `Invalid condition label, ${condition}`;
 
-		console.log("!. adding condition", condition);
 		this.trialKey.push(condition);
 		this._currentStaircase.nRemaining++;
 		// this._currentStaircase.nReps++;
@@ -283,7 +281,6 @@ export class MultiStairHandler extends TrialHandler
 			if (this._currentPass.length === 0)
 			{
 				this._currentPass = this._staircases.filter( handler => !handler.finished );
-				console.log("!. currentPass empty , multi._nextTrial", this._currentPass);
 
 				if (this._multiMethod === TrialHandler.Method.SEQUENTIAL)
 				{
@@ -312,9 +309,7 @@ export class MultiStairHandler extends TrialHandler
 
 
 			// pick the next staircase in the pass:
-			console.log("!. this._currentPass multi", this._currentPass);
 			this._currentStaircase = this._currentPass.shift();
-			console.log("!. multi._currentStaircase look for condition label", this._currentStaircase);
 
 
 			// test for termination:
