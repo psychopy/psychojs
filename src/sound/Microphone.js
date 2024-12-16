@@ -50,6 +50,25 @@ export class Microphone extends PsychObject
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
 		}
+
+		// prepare a device field for parity with PsychoPy, until PsychoPy builder
+		// code generator adequately deals with it (i.e. removes device
+		// and does not call reopen):
+		this.device = {
+			reopen: () =>
+			{
+				this._psychoJS.logger.warn("Microphone.device.reopen does not do anything, it is there for parity with PsychoPy.");
+			},
+
+			getCurrentVolume: (options) =>
+			{
+				this._psychoJS.logger.warn("Microphone.device.getCurrentVolume always returns 0, it is there for parity with PsychoPy.");
+
+				const vol = new Map();
+				vol[0] = 0;
+				return vol;
+			}
+		};
 	}
 
 	/**

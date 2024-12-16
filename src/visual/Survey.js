@@ -180,6 +180,16 @@ export class Survey extends VisualStim
 					const encodedModel = this.psychoJS.serverManager.getResource(model);
 					const decodedModel = new TextDecoder("utf-8").decode(encodedModel);
 					model = JSON.parse(decodedModel);
+
+					// make sure that [Previous] buttons appear by default:
+					if (!('surveySettings' in model))
+					{
+						model['surveySettings'] = { showPrevButton: true };
+					}
+					else
+					{
+						model['surveySettings']['showPrevButton'] = true;
+					}
 				}
 
 				// model should now be an object:
@@ -210,7 +220,7 @@ export class Survey extends VisualStim
 							}]
 						},
 
-						surveySettings: { showPrevButton: false },
+						surveySettings: { showPrevButton: true },
 
 						// surveyRunLogic: {},
 						inQuestionRandomization: {},
