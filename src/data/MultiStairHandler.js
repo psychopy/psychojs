@@ -123,6 +123,8 @@ export class MultiStairHandler extends TrialHandler
 		this._psychoJS.experiment.addData("trialGivenToQuest", doGiveToQuest);
 		this._psychoJS.experiment.addData("questResetByThresholdPracticeUntilCorrectBool", doResetQuest);
 
+		if (doRetryTrial && this._currentStaircase && this._currentStaircase._name) this.addTrial(this._currentStaircase._name);
+
 		if (!this._finished)
 		{
 			// update the current staircase, but do not add the response again:
