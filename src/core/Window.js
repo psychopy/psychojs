@@ -417,6 +417,7 @@ export class Window extends PsychObject
 			height: this._size[1],
 			backgroundColor: this.color.int,
 			resolution: window.devicePixelRatio,
+			preserveDrawingBuffer: true,
 		});
 		this._renderer.view.style.transform = "translatez(0)";
 		this._renderer.view.style.position = "absolute";
