@@ -384,7 +384,7 @@ export class GUI
 						error = error.substring(1, 1000);
 					}
 
-					stackCode += "<li><b>" + error + "</b></li>";
+					stackCode += "<li>" + error + "</li>";
 					break;
 				}
 			}
@@ -400,9 +400,9 @@ export class GUI
 			else
 			{
 				htmlCode = '<div id="msgDialog" title="Error">';
-				htmlCode += '<p class="validateTips">Unfortunately we encountered the following error:</p>';
+				htmlCode += '<p class="validateTips">The experiment has ended with this error:</p>';
 				htmlCode += stackCode;
-				htmlCode += `<p class="psychojs-alert-text">Click the REPORT button to report the error to the EasyEyes team. We will try to fix it. Thank you for your help.</p>`;
+				// htmlCode += `<p class="psychojs-alert-text">Click the REPORT button to report the error to the EasyEyes team. We will try to fix it. Thank you for your help.</p>`;
 				htmlCode += "</div>";
 
 				titleColour = "red";
