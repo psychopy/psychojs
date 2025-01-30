@@ -386,31 +386,16 @@ export class GUI
 					{
 						error = error.substring(1, 1000);
 					}
-					if(websiteRepoLastCommitDeploy.current !== undefined){
+					try{
+						const BC = status.block_condition
+						const text = `block: ${status.block}, condition: ${status.block_condition.split("_")[1]}, trial: ${status.trial}<br>
+									  conditionName: ${paramReader.read("conditionName", BC)}<br>
+									  experiment: ${thisExperimentInfo.experiment}<br>`
+						error += text
+					  } catch (e) {
+						  console.error("Error when trying to add block, condition information to error message: " + e)
+					  }
 					
-						const time = new Date(websiteRepoLastCommitDeploy.current).toLocaleDateString(
-							undefined,
-							{
-							  dateStyle: "medium",
-							},) + " " + 
-						  
-						  new Date(websiteRepoLastCommitDeploy.current).toLocaleString(
-							undefined,
-							{
-							  timeStyle: "short",
-							},
-						  ) + " " + util.getTimezoneName()
-						  try{
-						  const BC = status.block_condition
-						  const text = `block: ${status.block}, condition: ${status.block_condition.split("_")[1]}, trial: ${status.trial}<br>
-										conditionName: ${paramReader.read("conditionName", BC)}<br>
-										experiment: ${thisExperimentInfo.experiment}<br>
-										Compiler updated ${time}<br>`
-						  error += text
-						} catch (e) {
-							console.error("Error when trying to add block, condition, compiler update date information to error message: " + e)
-						}
-					}
 					psychoJS.experiment.addData("error", error);
 					stackCode += "<li>" + error + "</li>";
 					break;
@@ -428,7 +413,7 @@ export class GUI
 			else
 			{
 				htmlCode = '<div id="msgDialog" title="Error">';
-				htmlCode += '<p class="validateTips">The experiment has ended with this error:</p>';
+				htmlCode += '<p class="validateTips">The study ended with this error:</p>';
 				htmlCode += stackCode;
 				// htmlCode += `<p class="psychojs-alert-text">Click the REPORT button to report the error to the EasyEyes team. We will try to fix it. Thank you for your help.</p>`;
 				htmlCode += "</div>";
