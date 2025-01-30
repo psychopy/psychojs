@@ -15,6 +15,9 @@ import { Scheduler } from "../util/Scheduler.js";
 import * as util from "../util/Util.js";
 import { PsychoJS } from "./PsychoJS.js";
 import { ServerManager } from "./ServerManager.js";
+import { status, thisExperimentInfo, websiteRepoLastCommitDeploy } from "../../../components/global.js";
+import { paramReader } from "../../../threshold.js";
+import { psychoJS } from "../../../components/globalPsychoJS.js";
 
 /**
  * @class
@@ -383,7 +386,32 @@ export class GUI
 					{
 						error = error.substring(1, 1000);
 					}
-
+					if(websiteRepoLastCommitDeploy.current !== undefined){
+					
+						const time = new Date(websiteRepoLastCommitDeploy.current).toLocaleDateString(
+							undefined,
+							{
+							  dateStyle: "medium",
+							},) + " " + 
+						  
+						  new Date(websiteRepoLastCommitDeploy.current).toLocaleString(
+							undefined,
+							{
+							  timeStyle: "short",
+							},
+						  ) + " " + util.getTimezoneName()
+						  try{
+						  const BC = status.block_condition
+						  const text = `block: ${status.block}, condition: ${status.block_condition.split("_")[1]}, trial: ${status.trial}<br>
+										conditionName: ${paramReader.read("conditionName", BC)}<br>
+										experiment: ${thisExperimentInfo.experiment}<br>
+										Compiler updated ${time}<br>`
+						  error += text
+						} catch (e) {
+							console.error("Error when trying to add block, condition, compiler update date information to error message: " + e)
+						}
+					}
+					psychoJS.experiment.addData("error", error);
 					stackCode += "<li>" + error + "</li>";
 					break;
 				}

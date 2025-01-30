@@ -313,7 +313,6 @@ export class ExperimentHandler extends PsychObject
 			}
 		}
 
-		console.log("attributes", attributes);
 
 		let data = this._trialsData;
 		// if the experiment data have to be cleared, we first make a copy of them:
@@ -322,7 +321,6 @@ export class ExperimentHandler extends PsychObject
 			data = this._trialsData.slice();
 			this._trialsData = [];
 		}
-		console.log("data", data);
 
 		// save to a .csv file:
 		if (this._psychoJS.config.experiment.saveFormat === ExperimentHandler.SaveFormat.CSV)
@@ -348,8 +346,6 @@ export class ExperimentHandler extends PsychObject
 			}${experimentName}_${session}_${datetime}`;
 			const key = `${filenameWithoutPath}${tag}.csv`;
 
-			console.log("key", key);
-			console.log("csv", csv);
 			
 			if (
 				this._psychoJS.getEnvironment() === ExperimentHandler.Environment.SERVER
