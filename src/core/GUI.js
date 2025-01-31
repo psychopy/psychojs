@@ -395,6 +395,29 @@ export class GUI
 					  } catch (e) {
 						  console.error("Error when trying to add block, condition information to error message: " + e)
 					  }
+
+					try{
+						const commit = websiteRepoLastCommitDeploy.current
+						if(commit !== undefined){
+							const time = new Date(commit).toLocaleDateString(
+								undefined,
+								{
+								  dateStyle: "medium",
+								},
+							  )+ " " +
+							  new Date(commit).toLocaleString(
+								undefined,
+								{
+								  timeStyle: "short",
+								},
+							  ) + " " +
+							  util.getTimezoneName()
+							  error += `Compiler updated ${time}<br>`
+						}
+						
+					}catch(e){
+						console.error("Error when trying to add compiler updated date information to error message: " + e)
+					}
 					
 					psychoJS.experiment.addData("error", error);
 					stackCode += "<li>" + error + "</li>";
