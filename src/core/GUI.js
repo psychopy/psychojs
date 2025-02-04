@@ -338,6 +338,7 @@ export class GUI
 		showOK = true,
 		onOK,
 		okText = "OK",
+		addErrorToPsychoJS = true,
 	} = {})
 	{
 		// close the previously opened dialog box, if there is one:
@@ -418,8 +419,10 @@ export class GUI
 					}catch(e){
 						console.error("Error when trying to add compiler updated date information to error message: " + e)
 					}
+					if(addErrorToPsychoJS){
+						psychoJS.experiment.addData("error", error);
+					}
 					
-					psychoJS.experiment.addData("error", error);
 					stackCode += "<li>" + error + "</li>";
 					break;
 				}
