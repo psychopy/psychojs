@@ -8,3 +8,4 @@ export * from "./PsychoJS.js";
 export * from "./ServerManager.js";
 export * from "./Window.js";
 export * from "./WindowMixin.js";
+export * from "../util/Clock.js";
