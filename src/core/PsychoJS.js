@@ -217,6 +217,7 @@ export class PsychoJS
 		autoLog,
 		setResolution = 0,
 		setResolutionUnit = "pxPerDeg",
+		scaleMode = "linear",
 	} = {})
 	{
 		this.logger.info("[PsychoJS] Open Window.");
@@ -240,6 +241,7 @@ export class PsychoJS
 			autoLog,
 			setResolution,
 			setResolutionUnit,
+			scaleMode,
 		});
 	}
 

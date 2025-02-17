@@ -34,6 +34,7 @@ import { XYPxOfDeg, XYDegOfPx } from "../../../components/multiple-displays/util
  * @param {boolean} [options.autoLog= true] whether or not to log
  * @param {number} [options.setResolution= 0] the resolution to be set
  * @param {string} [options.setResolutionUnit= 'pxPerDeg'] the unit of the resolution
+ * @param {string} [options.scaleMode= 'linear'] the scale mode for the renderer
  */
 export class Window extends PsychObject
 {
@@ -59,6 +60,7 @@ export class Window extends PsychObject
 		autoLog = true,
 		setResolution = 0,
 		setResolutionUnit = "pxPerDeg",
+		scaleMode = "linear"
 	} = {})
 	{
 		super(psychoJS, name);
@@ -77,6 +79,7 @@ export class Window extends PsychObject
 		this._addAttribute("size", []);
 		this._addAttribute("setResolution", setResolution);
 		this._addAttribute("setResolutionUnit", setResolutionUnit);
+		this._addAttribute("scaleMode", scaleMode);
 
 		// setup PIXI:
 		this._setupPixi();
@@ -437,13 +440,19 @@ export class Window extends PsychObject
 			}
 		}
 
+		// Convert scaleMode string to PIXI constant and set it globally
+		PIXI.settings.SCALE_MODE = this._scaleMode.toLowerCase() === "nearest" 
+			? PIXI.SCALE_MODES.NEAREST 
+			: PIXI.SCALE_MODES.LINEAR;
+
 		this._renderer = PIXI.autoDetectRenderer({
 			width: this._size[0],
 			height: this._size[1],
 			backgroundColor: this.color.int,
 			resolution: resolution,
-			preserveDrawingBuffer: true,
+			preserveDrawingBuffer: true
 		});
+		console.log("..this._renderer", this._renderer, PIXI.settings.SCALE_MODE);	
 		this._renderer.view.style.transform = "translatez(0)";
 		this._renderer.view.style.position = "absolute";
 		document.body.appendChild(this._renderer.view);
@@ -469,6 +478,15 @@ export class Window extends PsychObject
 		};
 		window.addEventListener("resize", this._resizeCallback);
 		window.addEventListener("orientationchange", this._resizeCallback);
+
+		// Suppose _scaleMode is either "nearest" or "linear".
+		if (this._scaleMode.toLowerCase() === "nearest") {
+			// Force blocky rendering on the canvas element.
+			this._renderer.view.style.imageRendering = "pixelated";
+		} else {
+			// For smooth scaling.
+			this._renderer.view.style.imageRendering = "auto";
+		}
 	}
 
 	/**
@@ -545,6 +563,33 @@ export class Window extends PsychObject
 		this._setResolutionUnit = unit;
 
 		// Create new renderer with updated resolution
+		this._setupPixi();
+
+		// Force refresh all stimuli
+		this._fullRefresh();
+	}
+
+	// Add method to change scale mode during experiment
+	changeScaleMode(newScaleMode, newResolution, unit = "pxPerDeg") {
+		if (!this._renderer) {
+			return;
+		}
+
+		this._scaleMode = newScaleMode;
+		
+		// Store current state
+		const currentBgColor = this._renderer.backgroundColor;
+		
+		// Remove old renderer
+		if (document.body.contains(this._renderer.view)) {
+			document.body.removeChild(this._renderer.view);
+		}
+
+		// Update resolution settings
+		this._setResolution = newResolution;
+		this._setResolutionUnit = unit;
+
+		// Create new renderer with updated scale mode
 		this._setupPixi();
 
 		// Force refresh all stimuli
