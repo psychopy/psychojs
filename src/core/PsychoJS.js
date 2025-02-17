@@ -202,6 +202,8 @@ export class PsychoJS
 	 * @param {boolean} [options.autoLog] whether or not to log
 	 * @param {boolean} [options.waitBlanking] whether or not to wait for all rendering operations to be done
 	 * before flipping
+	 * @param {number} [options.setResolution] the resolution of the window
+	 * @param {string} [options.setResolutionUnit] the unit of the resolution
 	 * @throws {Object.<string, *>} exception if a window has already been opened
 	 *
 	 * @public
@@ -213,6 +215,8 @@ export class PsychoJS
 		units,
 		waitBlanking,
 		autoLog,
+		setResolution = 0,
+		setResolutionUnit = "pxPerDeg",
 	} = {})
 	{
 		this.logger.info("[PsychoJS] Open Window.");
@@ -234,6 +238,8 @@ export class PsychoJS
 			units,
 			waitBlanking,
 			autoLog,
+			setResolution,
+			setResolutionUnit,
 		});
 	}
 

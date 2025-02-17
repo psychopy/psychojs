@@ -12,6 +12,9 @@ import { MonotonicClock } from "../util/Clock.js";
 import { Color } from "../util/Color.js";
 import { PsychObject } from "../util/PsychObject.js";
 import { Logger } from "./Logger.js";
+import { targetEccentricityDeg, viewingDistanceCm } from "../../../components/global.js";
+import { Screens } from "../../../components/multiple-displays/globals.ts";
+import { XYPxOfDeg, XYDegOfPx } from "../../../components/multiple-displays/utils.ts";
 
 /**
  * <p>Window displays the various stimuli of the experiment.</p>
@@ -29,6 +32,8 @@ import { Logger } from "./Logger.js";
  * @param {boolean} [options.waitBlanking= false] whether or not to wait for all rendering operations to be done
  * before flipping
  * @param {boolean} [options.autoLog= true] whether or not to log
+ * @param {number} [options.setResolution= 0] the resolution to be set
+ * @param {string} [options.setResolutionUnit= 'pxPerDeg'] the unit of the resolution
  */
 export class Window extends PsychObject
 {
@@ -52,6 +57,8 @@ export class Window extends PsychObject
 		units = "pix",
 		waitBlanking = false,
 		autoLog = true,
+		setResolution = 0,
+		setResolutionUnit = "pxPerDeg",
 	} = {})
 	{
 		super(psychoJS, name);
@@ -68,6 +75,8 @@ export class Window extends PsychObject
 		this._addAttribute("waitBlanking", waitBlanking);
 		this._addAttribute("autoLog", autoLog);
 		this._addAttribute("size", []);
+		this._addAttribute("setResolution", setResolution);
+		this._addAttribute("setResolutionUnit", setResolutionUnit);
 
 		// setup PIXI:
 		this._setupPixi();
@@ -407,16 +416,32 @@ export class Window extends PsychObject
 	 */
 	_setupPixi()
 	{
-		// the size of the PsychoJS Window is always that of the browser
 		this._size[0] = window.innerWidth;
 		this._size[1] = window.innerHeight;
 
-		// create a PIXI renderer and add it to the document:
+		let desiredPxPerCm, actualPxPerCm; 
+		let resolution = window.devicePixelRatio;
+
+		if (this._setResolution > 0) {
+			if (this._setResolutionUnit === "pxPerDeg") {
+				
+				const degPerCm = 10* Math.atan(0.1 / viewingDistanceCm.current)
+				desiredPxPerCm = this._setResolution * degPerCm;
+				actualPxPerCm = Screens[0].pxPerCm;
+				resolution = desiredPxPerCm / actualPxPerCm;
+				
+			} else {
+				desiredPxPerCm = this._setResolution;
+				actualPxPerCm = Screens[0].pxPerCm;
+				resolution = desiredPxPerCm / actualPxPerCm;
+			}
+		}
+
 		this._renderer = PIXI.autoDetectRenderer({
 			width: this._size[0],
 			height: this._size[1],
 			backgroundColor: this.color.int,
-			resolution: window.devicePixelRatio,
+			resolution: resolution,
 			preserveDrawingBuffer: true,
 		});
 		this._renderer.view.style.transform = "translatez(0)";
@@ -494,5 +519,35 @@ export class Window extends PsychObject
 		}
 
 		this._msgToBeLogged = [];
+	}
+
+	/**
+	 * Change the resolution of the PIXI renderer
+	 * 
+	 * @param {number} newResolution - The new resolution value to set
+	 * @param {string} [unit="pxPerDeg"] - The unit of the resolution ("pxPerDeg" or "pxPerCm")
+	 */
+	changeResolution(newResolution, unit = "pxPerDeg") {
+		if (!this._renderer) {
+			return;
+		}
+
+		// Store current state
+		const currentBgColor = this._renderer.backgroundColor;
+		
+		// Remove old renderer
+		if (document.body.contains(this._renderer.view)) {
+			document.body.removeChild(this._renderer.view);
+		}
+
+		// Update resolution settings
+		this._setResolution = newResolution;
+		this._setResolutionUnit = unit;
+
+		// Create new renderer with updated resolution
+		this._setupPixi();
+
+		// Force refresh all stimuli
+		this._fullRefresh();
 	}
 }
