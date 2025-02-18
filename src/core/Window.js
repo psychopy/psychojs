@@ -501,21 +501,26 @@ export class Window extends PsychObject
 	 */
 	static _resizePixiRenderer(pjsWindow, event)
 	{
+		// If the renderer no longer exists, exit immediately to avoid errors.
+		if (!pjsWindow._renderer) {
+			return;
+		}
+
 		pjsWindow._psychoJS.logger.debug("resizing Window: ", pjsWindow._name, "event:", JSON.stringify(event));
 
-		// update the size of the PsychoJS Window:
+		// Update the size of the PsychoJS Window:
 		pjsWindow._size[0] = window.innerWidth;
 		pjsWindow._size[1] = window.innerHeight;
 
-		// update the PIXI renderer:
+		// Update the PIXI renderer:
 		pjsWindow._renderer.view.style.width = pjsWindow._size[0] + "px";
 		pjsWindow._renderer.view.style.height = pjsWindow._size[1] + "px";
 		pjsWindow._renderer.view.style.left = "0px";
 		pjsWindow._renderer.view.style.top = "0px";
 		pjsWindow._renderer.resize(pjsWindow._size[0], pjsWindow._size[1]);
 
-		// setup the container such that (0,0) is at the centre of the window
-		// with positive coordinates to the right and top:
+		// Setup the container such that (0,0) is at the centre of the window with positive
+		// coordinates to the right and top:
 		pjsWindow._rootContainer.position.x = pjsWindow._size[0] / 2.0;
 		pjsWindow._rootContainer.position.y = pjsWindow._size[1] / 2.0;
 		pjsWindow._rootContainer.scale.y = -1;
