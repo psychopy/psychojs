@@ -428,7 +428,7 @@ export class Window extends PsychObject
 		if (this._setResolution > 0) {
 			if (this._setResolutionUnit === "pxPerDeg") {
 				
-				const degPerCm = 10* Math.atan(0.1 / viewingDistanceCm.current)
+				const degPerCm = 10* Math.atan(0.1 / viewingDistanceCm.current) * 180 / Math.PI;
 				desiredPxPerCm = this._setResolution * degPerCm;
 				actualPxPerCm = Screens[0].pxPerCm;
 				resolution = desiredPxPerCm / actualPxPerCm;
