@@ -156,11 +156,10 @@ export class Sound extends PsychObject
 	{
 		if (!(sound instanceof Sound))
 		{
-			throw {
-				origin: "Sound.setSound",
-				context: "when setting the sound",
-				error: "the argument should be an instance of the Sound class.",
-			};
+			// if given something other than a Sound, do setValue instead
+			this.setValue(sound, log);
+			
+			return this;
 		}
 
 		this._setAttribute("value", sound.value, log);
