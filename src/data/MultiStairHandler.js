@@ -100,9 +100,12 @@ export class MultiStairHandler extends TrialHandler
 	 * @param{number | undefined} [value] - optional intensity / contrast / threshold
 	 * @param{boolean} [doGiveToQuest = true] - whether or not to give the response to QUEST, ie
 	 * 	as a response to a valid, usable trial
+	 * @param{boolean} [doResetQuest = false] - whether to reset the Quest algorithm
+	 * @param{boolean} [doRetryTrial = false] - whether to retry this trial
+	 * @param{boolean} [isConditionFinished = false] - whether this condition has reached its target number of good trials
 	 * @returns {void}
 	 */
-	addResponse(response, value, doGiveToQuest = true, doResetQuest = false, doRetryTrial = false)
+	addResponse(response, value, doGiveToQuest = true, doResetQuest = false, doRetryTrial = false, isConditionFinished = false)
 	{
 		// check that response is either 0 or 1, or an array of only 0s and 1s:
 		if (response !== 0 && response !== 1 && !(response instanceof Array && response.every(r => [0,1].includes(r))))
@@ -129,6 +132,12 @@ export class MultiStairHandler extends TrialHandler
 		{
 			// update the current staircase, but do not add the response again:
 			this._currentStaircase.addResponse(response, value, false, doGiveToQuest, doResetQuest);
+
+			// If EasyEyes has determined this condition is finished, remove any remaining trials for it
+			if (isConditionFinished) {
+				// Remove any remaining trials for this condition from the trialKey
+				this.trialKey = this.trialKey.filter(key => key !== this._currentStaircase._name);
+			}
 
 			// move onto the next trial:
 			this._nextTrial();
