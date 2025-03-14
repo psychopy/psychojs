@@ -114,6 +114,7 @@ export class ExperimentHandler extends PsychObject
 		this._trialsKeys = [];
 		this._trialsData = [];
 		this._currentTrialData = {};
+		this.experimentClock = new MonotonicClock();
 
 		this._experimentEnded = false;
 	}
@@ -256,6 +257,8 @@ export class ExperimentHandler extends PsychObject
 		this._trialsData.push(this._currentTrialData);
 
 		this._currentTrialData = {};
+		this._currentTrialData["secs"] = this.experimentClock.getTime();
+		console.log("!. date being added", this._currentTrialData["secs"]);
 	}
 
 	/**
