@@ -417,7 +417,7 @@ export class GUI
 								},
 							  ) + " " +
 							  util.getTimezoneName()
-							  error += `<br> Compiler updated ${time}<br>`
+							  error += `<span style="display:block; margin-top:10px;">Compiler updated ${time}</span>`
 						}
 						
 					}catch(e){
