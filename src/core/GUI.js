@@ -389,17 +389,28 @@ export class GUI
 					}
 					try{
 						const BC = status.block_condition
-
-						const text = "<br>block: " + status.block +
-						", condition: " + status.block_condition.split("_")[1] +
-						", trial: " + status.trial + "<br>" +
-						"conditionName: " + paramReader.read("conditionName", BC) + "<br>" +
-						"experiment: " + thisExperimentInfo.experiment + "<br>";
+						let block = 0
+						let condition = ""
+						let trial = 0
+						let conditionName = ""
+						if(BC){
+							block = status.block
+							condition = status.block_condition.split("_")[1]
+							trial = status.trial
+							conditionName = paramReader.read("conditionName", BC)
+						}
+						const text = `<span style="display:block; margin-top:10px;">
+							block: ${block}, 
+							condition: ${condition}, 
+							trial: ${trial}<br>
+							conditionName: ${conditionName}<br>
+							experiment: ${thisExperimentInfo.experiment}
+						</span>`;
 						 
 						error += text
-					  } catch (e) {
-						  console.error("Error when trying to add block, condition information to error message: " + e)
-					  }
+					} catch (e) {
+						console.error("Error when trying to add block, condition information to error message: " + e)
+					}
 
 					try{
 						const commit = websiteRepoLastCommitDeploy.current
@@ -417,7 +428,7 @@ export class GUI
 								},
 							  ) + " " +
 							  util.getTimezoneName()
-							  error += `<span style="display:block; margin-top:10px;">Compiler updated ${time}</span>`
+							  error += `<span style="display:block; margin-top:0px;">Compiler updated ${time}</span>`
 						}
 						
 					}catch(e){
