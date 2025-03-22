@@ -149,25 +149,28 @@ export class Sound extends PsychObject
 	/**
 	 * Set the sound value.
 	 *
-	 * @param {object} sound - a sound instance to replace the current one
+	 * @param {object} value - a sound instance or a sound value, to replace the current one
 	 * @param {boolean} [log= true] - whether to log
 	 */
-	setSound(sound, log = true)
+	setSound(value, log = true)
 	{
-		if (!(sound instanceof Sound))
+		if (value instanceof Sound)
 		{
-			throw {
-				origin: "Sound.setSound",
-				context: "when setting the sound",
-				error: "the argument should be an instance of the Sound class.",
-			};
+			const sound = value;
+			this._setAttribute("value", sound.value, log);
+
+			// reset the player, if need be:
+			if (typeof this._player !== "undefined")
+			{
+				this._player = this._player.constructor.accept(this);
+			}
 		}
 
-		this._setAttribute("value", sound.value, log);
-
-		if (typeof this._player !== "undefined")
+		// if value is not a type Sound, we use setValue:
+		else
 		{
-			this._player = this._player.constructor.accept(this);
+			// TODO how to specificy the octave?
+			this.setValue(value, 4, log);
 		}
 
 		return this;

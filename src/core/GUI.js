@@ -167,22 +167,16 @@ export class GUI
 					const value = dictionary[key];
 					const keyId = "form-input-" + keyIdx;
 
-					// only create an input if the key is not in the URL:
+					// only create an input if the key is not in the URL
+					// note: we also need to deal with the option extensions
 					const cleanedDictKey = key.trim().toLowerCase();
-					const isIncluded = !(cleanedDictKey in excludedInfo);
-					/*let inUrl = false;
-					infoFromUrl.forEach((urlValue, urlKey) =>
+					let isIncluded = !(cleanedDictKey in excludedInfo);
+					if (isIncluded && (cleanedDictKey.slice(-4) === "|req" || cleanedDictKey.slice(-4) === "|cfg" || cleanedDictKey.slice(-4) === "|fix" || cleanedDictKey.slice(-4) === "|opt"))
 					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
-						{
-							inUrl = true;
-							// break;
-						}
-					});*/
+						isIncluded = !(cleanedDictKey.slice(0, -4) in excludedInfo);
+					}
 
 					if (isIncluded)
-					// if (!inUrl)
 					{
 						atLeastOneIncludedKey = true;
 
@@ -611,19 +605,22 @@ export class GUI
 		// update the dictionary:
 		Object.keys(this._dictionary).forEach((key, keyIdx) =>
 		{
+			const value = this._dictionary[key];
+
+			// deal with field options:
+			if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+			{
+				delete this._dictionary[key];
+				key = key.slice(0, -4);
+				this._dictionary[key] = value;
+			}
+
 			const input = document.getElementById("form-input-" + keyIdx);
 			if (input)
 			{
-				// deal with field options:
-				if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
-				{
-					delete this._dictionary[key];
-					key = key.slice(0, -4);
-				}
 				this._dictionary[key] = input.value;
 			}
 		});
-
 
 		// Start Tone here, since a user action is required to initiate the audio context:
 		Tone.start();

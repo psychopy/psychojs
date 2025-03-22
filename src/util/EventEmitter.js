@@ -107,7 +107,7 @@ export class EventEmitter
 	/**
 	 * Emit an event with a given name and associated data.
 	 *
-	 * @param {String} name - the name of the event
+	 * @param {String | Symbol } name - the name of the event
 	 * @param {object} data - the data of the event
 	 * @return {boolean} true if at least one listener has been registered for that event, and false otherwise
 	 */

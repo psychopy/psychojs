@@ -59,6 +59,10 @@ export class ServerManager extends PsychObject
 		this._resourcesWithDownloadError = new Map();
 		this._setupPreloadQueue();
 
+		// if "face-api.js" and "face-api-models" are passed as resources to PsychoJS.start,
+		// then we use _faceApiModelsResource to load the models upon completion of the loading of the face-api library
+		this._faceApiModelsResource = undefined;
+
 		// throttling period for calls to uploadData and uploadLog (in mn):
 		// note: 	(a) the period is potentially updated when a session is opened to reflect that associated with
 		//						the experiment on the back-end database
@@ -135,7 +139,7 @@ export class ServerManager extends PsychObject
 	/**
 	 * Open a session for this experiment on the pavlovia server.
 	 *
-	 * @param {Object} params - the open session parameters
+	 * @param {Object} params - the session parameters
 	 *
 	 * @returns {Promise<ServerManager.OpenSessionPromise>} the response
 	 */
@@ -155,7 +159,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions`,
 					params,
@@ -235,11 +239,11 @@ export class ServerManager extends PsychObject
 	/**
 	 * Close the session for this experiment on the pavlovia server.
 	 *
-	 * @param {boolean} [isCompleted= false] - whether the experiment was completed
+	 * @param {Object} params 					- the session parameters
 	 * @param {boolean} [sync= false] - whether to communicate with the server in a synchronous manner
 	 * @returns {Promise<ServerManager.CloseSessionPromise> | void} the response
 	 */
-	async closeSession(isCompleted = false, sync = false)
+	async closeSession(params = {}, sync = false)
 	{
 		const response = {
 			origin: "ServerManager.closeSession",
@@ -256,10 +260,9 @@ export class ServerManager extends PsychObject
 				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
 				+ "/sessions/" + this._psychoJS.config.session.token + "/delete";
 			const formData = new FormData();
-			formData.append("isCompleted", isCompleted);
-			if (typeof this._psychoJS._surveyId !== "undefined")
+			for (const key in params)
 			{
-				formData.append("surveyId", this._psychoJS._surveyId);
+				formData.append(key, params[key]);
 			}
 
 			navigator.sendBeacon(url, formData);
@@ -273,18 +276,10 @@ export class ServerManager extends PsychObject
 			{
 				try
 				{
-					const data = {
-						isCompleted
-					};
-					if (typeof this._psychoJS._surveyId !== "undefined")
-					{
-						data["surveyId"] = this._psychoJS._surveyId;
-					}
-
-					const deleteResponse = await this._queryServerAPI(
+					const deleteResponse = await this.queryServer(
 						"DELETE",
 						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}`,
-						data,
+						params,
 						"FORM"
 					);
 
@@ -329,16 +324,15 @@ export class ServerManager extends PsychObject
 
 		if (typeof resource === "undefined")
 		{
-			// throw { ...response, error: 'unknown resource' };
-			throw Object.assign(response, {error: "unknown resource"});
+			throw { ...response, error: 'unknown resource' };
 		}
 
 		if (errorIfNotDownloaded && resource.status !== ServerManager.ResourceStatus.DOWNLOADED)
 		{
-			throw Object.assign(response, {
-				error: name + " is not available for use (yet), its current status is: "
-					+ util.toString(resource.status),
-			});
+			throw {
+				...response,
+				error: `${name} is not available for use (yet), its current status is: ${util.toString(resource.status)}`
+			};
 		}
 
 		return resource.data;
@@ -376,7 +370,7 @@ export class ServerManager extends PsychObject
 	 * Get the status of a single resource or the reduced status of an array of resources.
 	 *
 	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
-	 * that is the status furthest away from DOWNLOADED, with the status ordered as follow:
+	 * that is the status furthest away from DOWNLOADED, with the status ordered as follows:
 	 * ERROR (furthest from DOWNLOADED), REGISTERED, DOWNLOADING, and DOWNLOADED</p>
 	 * <p>For example, given three resources:
 	 * <ul>
@@ -708,7 +702,6 @@ export class ServerManager extends PsychObject
 						}
 					});
 
-
 					this._downloadResources(resourcesToDownload);
 				});
 			}
@@ -869,7 +862,7 @@ export class ServerManager extends PsychObject
 			{
 				try
 				{
-					const postResponse = await this._queryServerAPI(
+					const postResponse = await this.queryServer(
 						"POST",
 						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}/results`,
 						{key, value},
@@ -927,7 +920,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${self._psychoJS.config.session.token}/logs`,
 					data,
@@ -1003,7 +996,16 @@ export class ServerManager extends PsychObject
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
-			const participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
+
+			let participant = "PARTICIPANT";
+			if (typeof info.participant === "string" && info.participant.length > 0)
+			{
+				participant = info.participant;
+			}
+			if (typeof info.participantId === "string" && info.participantId.length > 0)
+			{
+				participant = info.participantId;
+			}
 			const experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
 			const datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
 			const filename = participant + "_" + experimentName + "_" + datetime + "_" + tag;
@@ -1124,7 +1126,7 @@ export class ServerManager extends PsychObject
 					info.participant :
 					"PARTICIPANT";
 
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`surveys/${surveyId}`,
 					{
@@ -1183,7 +1185,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const getResponse = await this._queryServerAPI(
+				const getResponse = await this.queryServer(
 					"GET",
 					`surveys/${surveyId}/experiment`
 				);
@@ -1246,7 +1248,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const getResponse = await this._queryServerAPI(
+				const getResponse = await this.queryServer(
 					"GET",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/resources`,
 					data
@@ -1370,6 +1372,13 @@ export class ServerManager extends PsychObject
 				surveyModelResources.push(name);
 			}
 
+			// face-api models
+			// note: the models need to be loaded *after* the face-api library has been loaded
+			else if (name === "face-api-models")
+			{
+				this._faceApiModelsResource = resource;
+			}
+
 			// all other extensions handled by preload.js (download type decided by preload.js):
 			else
 			{
@@ -1385,7 +1394,8 @@ export class ServerManager extends PsychObject
 		if (preloadManifest.length > 0)
 		{
 			this._preloadQueue.loadManifest(preloadManifest);
-		} else
+		}
+		else
 		{
 			if (this._nbLoadedResources === resources.size)
 			{
@@ -1531,8 +1541,9 @@ export class ServerManager extends PsychObject
 
 			howl.on("loaderror", (id, error) =>
 			{
-				// throw { ...response, error: 'unable to download resource: ' + name + ' (' + util.toString(error) + ')' };
-				throw Object.assign(response, {error: "unable to download resource: " + name + " (" + util.toString(error) + ")"});
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				throw { ...response, error: `unable to download resource: ${name}: ${util.toString(error)}` };
 			});
 
 			howl.load();
@@ -1568,17 +1579,58 @@ export class ServerManager extends PsychObject
 		});
 
 		// the loading of a specific resource has completed:
-		this._preloadQueue.addEventListener("fileload", (event) =>
+		this._preloadQueue.addEventListener("fileload", async (event) =>
 		{
 			const pathStatusData = self._resources.get(event.item.id);
 			pathStatusData.data = event.result;
 			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
 
-			++self._nbLoadedResources;
+			++ self._nbLoadedResources;
 			self.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.RESOURCE_DOWNLOADED,
 				resource: event.item.id,
 			});
+
+			// if this resource is "face-api.js" and a "face-api-models" resource has been given,
+			// then download the models
+			if (event.item.id === "face-api.js" && typeof self._faceApiModelsResource !== "undefined")
+			{
+				self._faceApiModelsResource.status = ServerManager.ResourceStatus.DOWNLOADING;
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOADING_RESOURCE,
+					resource: "face-api-models",
+				});
+
+				try
+				{
+					await faceapi.nets.tinyFaceDetector.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceLandmark68Net.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceRecognitionNet.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceExpressionNet.loadFromUri(self._faceApiModelsResource.path);
+				}
+				catch (error)
+				{
+					console.error(error);
+					self.setStatus(ServerManager.Status.ERROR);
+					self._faceApiModelsResource.status = ServerManager.ResourceStatus.ERROR;
+					throw { ...response, error: `unable to download resource: face-api-models: ${error}`};
+				}
+
+				self._faceApiModelsResource.status = ServerManager.ResourceStatus.DOWNLOADED;
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.RESOURCE_DOWNLOADED,
+					resource: "face-api-models",
+				});
+
+				++ self._nbLoadedResources;
+				if (self._nbLoadedResources === self._resources.size)
+				{
+					self.setStatus(ServerManager.Status.READY);
+					self.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
+				}
+			}
 		});
 
 		// the loading of all given resources completed:
@@ -1735,21 +1787,22 @@ export class ServerManager extends PsychObject
 	/**
 	 * Query the pavlovia server API.
 	 *
-	 * @protected
-	 * @param method	the HTTP method, i.e. GET, PUT, POST, or DELETE
-	 * @param path		the resource path, without the server address
-	 * @param data		the data to be sent
-	 * @param {string} [contentType="JSON"]	the content type, either JSON or FORM
+	 * @param method												- the HTTP method, i.e. GET, PUT, POST, or DELETE
+	 * @param url														- the resource url, without the server address
+	 * @param data													- the data to be sent
+	 * @param {string} [contentType="JSON"]	- the content type, either JSON or FORM
+	 * @returns {Promise<Response>}						the fetch response
 	 */
-	_queryServerAPI(method, path, data, contentType = "JSON")
+	queryServer(method, url, data, contentType = "JSON")
 	{
-		const fullPath = `${this._psychoJS.config.pavlovia.URL}/api/v2/${path}`;
+		// add the server api url (v2 currently):
+		const fullUrl = `${this._psychoJS.config.pavlovia.URL}/api/v2/${url}`;
 
 		if (method === "PUT" || method === "POST" || method === "DELETE")
 		{
 			if (contentType === "JSON")
 			{
-				return fetch(fullPath, {
+				return fetch(fullUrl, {
 					method,
 					mode: 'cors',
 					cache: 'no-cache',
@@ -1769,7 +1822,7 @@ export class ServerManager extends PsychObject
 					formData.append(attribute, data[attribute]);
 				}
 
-				return fetch(fullPath, {
+				return fetch(fullUrl, {
 					method,
 					mode: 'cors',
 					cache: 'no-cache',
@@ -1783,10 +1836,10 @@ export class ServerManager extends PsychObject
 
 		if (method === "GET")
 		{
-			let url = new URL(fullPath);
+			const url = new URL(fullUrl);
 			url.search = new URLSearchParams(data).toString();
 
-			return fetch(url, {
+			return fetch(url.href, {
 				method: "GET",
 				mode: "cors",
 				cache: "no-cache",
