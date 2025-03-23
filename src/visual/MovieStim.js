@@ -482,7 +482,7 @@ export class MovieStim extends VisualStim
 	 * @param {string} url - url of a YouTube video
 	 * @param {boolean} [log= false] - whether to log
 	 */
-	async setYouTubeUrl(url = "", log = false)
+	async setYoutubeUrl(url = "", log = false)
 	{
 		if (url.length === 0)
 		{
