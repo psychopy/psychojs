@@ -91,7 +91,7 @@ export class ServerManager extends PsychObject
 	{
 		const response = {
 			origin: "ServerManager.getConfiguration",
-			context: "when reading the configuration file: " + configURL,
+			context: "when reading the configuration file: " + configURL
 		};
 
 		this._psychoJS.logger.debug("reading the configuration file: " + configURL);
