@@ -522,4 +522,58 @@ export class Microphone extends PsychObject
 			self._status = PsychoJS.Status.ERROR;
 		};
 	}
+
+	/**
+	 * Setup an estimator for the microphone volume.
+	 *
+	 * @note This is adapted from https://stackoverflow.com/a/64650826
+	 * @protected
+	 */
+	async _setupVolumeEstimator()
+	{
+		this._volumeCallback = null;
+		this._volumeId = null;
+
+		try
+		{
+			const audioStream = await navigator.mediaDevices.getUserMedia({
+				audio: {
+					echoCancellation: true
+				}
+			});
+			const audioContext = new AudioContext();
+			const audioSource = audioContext.createMediaStreamSource(audioStream);
+
+			const analyser = audioContext.createAnalyser();
+			analyser.fftSize = 512;
+			analyser.minDecibels = -127;
+			analyser.maxDecibels = 0;
+			analyser.smoothingTimeConstant = 0.4;
+
+			audioSource.connect(analyser);
+
+			const volumes = new Uint8Array(analyser.frequencyBinCount);
+			this._volumeCallback = () =>
+			{
+				analyser.getByteFrequencyData(volumes);
+
+				let volumeSum = 0;
+				for (const volume of volumes)
+				{
+					volumeSum += volume;
+				}
+				const averageVolume = volumeSum / volumes.length;
+
+				this._volume = averageVolume * 100.0 / (analyser.maxDecibels - analyser.minDecibels);
+			};
+		}
+		catch(error)
+		{
+			throw {
+				origin: "Microphone._setupVolumeEstimator",
+				context: "when setting up a volume estimator for microphone: " + this._name,
+				error
+			};
+		}
+	}
 }

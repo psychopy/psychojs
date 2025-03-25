@@ -12,7 +12,6 @@ import { PsychObject } from "../util/PsychObject.js";
 import { AudioClipPlayer } from "./AudioClipPlayer.js";
 import { TonePlayer } from "./TonePlayer.js";
 import { TrackPlayer } from "./TrackPlayer.js";
-import {isBoolean} from "tone";
 
 /**
  * <p>This class handles sound playing (tones and tracks)</p>
