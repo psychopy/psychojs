@@ -258,7 +258,6 @@ export class ExperimentHandler extends PsychObject
 
 		this._currentTrialData = {};
 		this._currentTrialData["secs"] = this.experimentClock.getTime();
-		console.log("!. date being added", this._currentTrialData["secs"]);
 	}
 
 	/**
@@ -317,11 +316,11 @@ export class ExperimentHandler extends PsychObject
 		}
 
 
-		let data = this._trialsData;
-		// if the experiment data have to be cleared, we first make a copy of them:
+		let data;
+		({data, attributes} = this._orderOutput(this._trialsData, attributes));
+
 		if (clear)
 		{
-			data = this._trialsData.slice();
 			this._trialsData = [];
 		}
 
@@ -560,6 +559,28 @@ export class ExperimentHandler extends PsychObject
 
 		return attributes;
 	}
+
+	_orderOutput(data, attributes) {
+		if (data.length === 0 || attributes.length === 0 || !this._psychoJS || this._psychoJS.inputParameters.length === 0) return {data: data, attributes: attributes};
+		const inputParameters = [...this._psychoJS.inputParameters];
+		const excludeAttributes = ["expName", "name", "blockNumber", "_s", "setSession", "targetMeasuredDurationFrames"];
+		attributes = attributes.filter(a => !excludeAttributes.includes(a));
+		const prependAttributes = ["experiment", "date", "WebGL_Report", "longTask"];
+		const inputAttributes = inputParameters.filter(a => attributes.includes(a));
+		const outputAttributes = attributes.filter(a => !inputParameters.includes(a) && !prependAttributes.includes(a));
+		const orderedAttributes = [...prependAttributes, ...inputAttributes, ...outputAttributes];
+		const orderingObj = {}; 
+		for (const a of orderedAttributes) {
+			orderingObj[a] = null;
+		}
+		for (let i=0; i<data.length; i++) {
+			for (const a of excludeAttributes) {
+				if(data[i].hasOwnProperty(a)) delete data[i][a];
+			}
+			data[i] = Object.assign(orderingObj, data[i]);
+		}
+		return {data: data, attributes: orderedAttributes};
+}
 }
 
 /**

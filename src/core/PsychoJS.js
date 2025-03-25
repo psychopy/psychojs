@@ -120,6 +120,7 @@ export class PsychoJS
 	} = {})
 	{
     this.fontRenderMaxPx = fontRenderMaxPx;
+	this.inputParameters = [];
 		// logging:
 		this._logger = new Logger(this, (debug) ? log4javascript.Level.DEBUG : log4javascript.Level.INFO);
 		this._captureErrors();
