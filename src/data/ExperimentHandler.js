@@ -577,7 +577,7 @@ export class ExperimentHandler extends PsychObject
 			for (const a of excludeAttributes) {
 				if(data[i].hasOwnProperty(a)) delete data[i][a];
 			}
-			data[i] = Object.assign(orderingObj, data[i]);
+			data[i] = Object.assign({}, orderingObj, data[i]);
 		}
 		return {data: data, attributes: orderedAttributes};
 }
