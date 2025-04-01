@@ -3,7 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sijia Zhao - fine-grained resource loading
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2025 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -219,8 +219,14 @@ export class GUI
 
 							markup += "</select>";
 						}
+
+						// if the value is a boolean, we use a checkbox:
+						else if (typeof value === "boolean")
+						{
+							markup += `<input type='checkbox' name='${key}' id='${keyId}' class='checkbox' ${value ? 'checked' : ''} />`;
+						}
+
 						// otherwise we use a single string input:
-						//if (typeof value === 'string')
 						else
 						{
 							markup += `<input type='text' name='${key}' id='${keyId}' value='${value}' class='text'>`;
@@ -618,7 +624,14 @@ export class GUI
 			const input = document.getElementById("form-input-" + keyIdx);
 			if (input)
 			{
-				this._dictionary[key] = input.value;
+				if (input.type === "checkbox")
+				{
+					this._dictionary[key] = input.checked;
+				}
+				else
+				{
+					this._dictionary[key] = input.value;
+				}
 			}
 		});
 
