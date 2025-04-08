@@ -478,7 +478,7 @@ export class ExperimentHandler extends PsychObject
 		const datetime = calibrationTime.current
 		const experimentName = this._psychoJS.config.experiment.name;
 		const suffix = i == 0 ? "sound" : `M${i}`;
-		const filename = `${participant}_${experimentName}_${session}_${datetime}_${suffix}.json`;
+		const filename = `${experimentName}_${participant}_${session}_${datetime}_${suffix}.json`;
 		const contentType = "application/json;charset=utf-8;";
 
 		const anchor = document.createElement("a");
