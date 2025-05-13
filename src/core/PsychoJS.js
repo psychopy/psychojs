@@ -190,7 +190,7 @@ export class PsychoJS
 		// whether to save results at the end of the experiment:
 		this._saveResults = saveResults;
 
-		this.logger.info("[PsychoJS] Version 2025.1.0");
+		this.logger.info("[PsychoJS] Version 2025.1.1");
 		this.logger.info("[PsychoJS] Initialised.");
 
 		// hide the initialisation message:
