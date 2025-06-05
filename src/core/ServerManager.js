@@ -57,7 +57,7 @@ export class ServerManager extends PsychObject
 		this._resources = new Map();
 		this._nbLoadedResources = 0;
 		this._resourcesWithDownloadError = new Map();
-		this._setupPreloadQueue();
+		this._preloadQueue = this._setupPreloadQueue();
 
 		// if "face-api.js" and "face-api-models" are passed as resources to PsychoJS.start,
 		// then we use _faceApiModelsResource to load the models upon completion of the loading of the face-api library
@@ -680,7 +680,8 @@ export class ServerManager extends PsychObject
 				});
 
 				return Promise.resolve();
-			} else
+			}
+			else
 			{
 				return new Promise((resolve, reject) =>
 				{
@@ -689,6 +690,13 @@ export class ServerManager extends PsychObject
 						if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
 						{
 							this.off(ServerManager.Event.RESOURCE, resourceUuid);
+
+							// we need to make sure that the frame rate calculations use 60fps (Window.getActualFrameRate)
+							// even when much time has been spent loading resources with the scheduler not moving forward
+							// (otherwise psychoJS.window.monitorFramePeriod is very wrong in the experiment code)
+							this._psychoJS.scheduler._lastTimestamp = undefined;
+							this._psychoJS.scheduler._timestamp = performance.now();
+
 							resolve();
 						}
 					});
@@ -698,6 +706,10 @@ export class ServerManager extends PsychObject
 						if (status === ServerManager.Status.ERROR)
 						{
 							this.off(ServerManager.Event.STATUS, statusUuid);
+
+							this._psychoJS.scheduler._lastTimestamp = undefined;
+							this._psychoJS.scheduler._timestamp = performance.now();
+
 							reject();
 						}
 					});
@@ -1562,12 +1574,13 @@ export class ServerManager extends PsychObject
 			context: "when downloading resources"
 		};
 
-		this._preloadQueue = new createjs.LoadQueue(true, "", true);
+		const queue = new createjs.LoadQueue(true, "", true);
 
+		// set up the callbacks:
 		const self = this;
 
 		// the loading of a specific resource has started:
-		this._preloadQueue.addEventListener("filestart", (event) =>
+		queue.addEventListener("filestart", (event) =>
 		{
 			const pathStatusData = self._resources.get(event.item.id);
 			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
@@ -1579,7 +1592,7 @@ export class ServerManager extends PsychObject
 		});
 
 		// the loading of a specific resource has completed:
-		this._preloadQueue.addEventListener("fileload", async (event) =>
+		queue.addEventListener("fileload", async (event) =>
 		{
 			const pathStatusData = self._resources.get(event.item.id);
 			pathStatusData.data = event.result;
@@ -1634,9 +1647,10 @@ export class ServerManager extends PsychObject
 		});
 
 		// the loading of all given resources completed:
-		this._preloadQueue.addEventListener("complete", (event) =>
+		queue.addEventListener("complete", (event) =>
 		{
 			self._preloadQueue.close();
+
 			if (self._nbLoadedResources === self._resources.size)
 			{
 				self.setStatus(ServerManager.Status.READY);
@@ -1646,20 +1660,24 @@ export class ServerManager extends PsychObject
 			}
 		});
 
-		// error: we throw an exception
-		this._preloadQueue.addEventListener("error", async (event) =>
+		// error: we inform the participant or throw an exception
+		queue.addEventListener("error", async (event) =>
 		{
 			if (typeof event.item !== "undefined")
 			{
 				await self._processLoadingError(event.item.id);
-			} else if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
+			}
+			else if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
 			{
 				await self._processLoadingError(event.data.id);
-			} else
+			}
+			else
 			{
 				throw {...response, error: "unspecified download error"};
 			}
 		});
+
+		return queue;
 	}
 
 	/**
@@ -1677,7 +1695,7 @@ export class ServerManager extends PsychObject
 
 		const resource = this._resources.get(id);
 
-		// schedule the download of the give resource:
+		// schedule the download of the given resource:
 		const scheduleDownload = (rsc) =>
 		{
 			this._resourcesWithDownloadError.delete(rsc.name);
@@ -1753,7 +1771,8 @@ export class ServerManager extends PsychObject
 			this.setStatus(ServerManager.Status.ERROR);
 
 			throw {...response, error: `unable to download resource: ${id} (${resource.path})`};
-		} else
+		}
+		else
 		{
 			// show a message to the participant, if need be:
 			const msg = resource.downloadOptions.onDownloadError(resource);
