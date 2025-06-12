@@ -206,9 +206,16 @@ export class MovieStim extends VisualStim
 			}
 			else
 			{
-				// if movie is a string, then it should be the name of a resource, which we get:
+				// if movie is a string, then it should either be the name of a resource, or a YouTube URL:
 				if (typeof movie === "string")
 				{
+					// test whether movie is a YouTube URL:
+					if (movie.indexOf("https://www.youtube.com/watch?") === 0)
+					{
+						return this.setYoutubeUrl(movie, log);
+					}
+					
+					// since it is not a URL, it must be the name of a resource:
 					movie = this.psychoJS.serverManager.getResource(movie);
 				}
 
