@@ -1473,7 +1473,7 @@ export class ServerManager extends PsychObject
 
 			try
 			{
-				const getResponse = await this._queryServerAPI("GET", `surveys/${resource.path}/model`);
+				const getResponse = await this.queryServer("GET", `surveys/${resource.path}/model`);
 
 				const getModelResponse = await getResponse.json();
 
