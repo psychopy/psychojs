@@ -771,7 +771,10 @@ export class ServerManager extends PsychObject
 						const errorMsg = util.getRequestError(jqXHR, textStatus, errorThrown);
 						console.error("error:", errorMsg);
 
-						reject(Object.assign(response, { error: errorMsg }));
+						// Include more detailed error information in the rejection
+						const jqXHRStatus = jqXHR && jqXHR.status ? jqXHR.status : "";
+						const detailedError = `${errorMsg} (HTTP ${jqXHRStatus}: ${textStatus})`;
+						reject(Object.assign(response, { error: detailedError }));
 					});
 			});
 		}

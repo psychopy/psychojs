@@ -383,7 +383,7 @@ export class GUI
 				else
 				{
 					// limit the size of the error:
-					if (error.length >= 1000)
+					if (error && error.length >= 1000)
 					{
 						error = error.substring(1, 1000);
 					}

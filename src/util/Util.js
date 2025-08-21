@@ -701,7 +701,32 @@ export function getRequestError(jqXHR, textStatus, errorThrown)
 
 	if (typeof jqXHR.responseJSON !== "undefined")
 	{
-		errorMsg = jqXHR.responseJSON;
+		// If responseJSON is an object, extract meaningful error info
+		if (typeof jqXHR.responseJSON === "object")
+		{
+			if (jqXHR.responseJSON.error)
+			{
+				errorMsg = jqXHR.responseJSON.error;
+				// Add additional details if available
+				if (jqXHR.responseJSON.details)
+				{
+					errorMsg += " - " + jqXHR.responseJSON.details;
+				}
+				if (jqXHR.responseJSON.code)
+				{
+					errorMsg += " (Code: " + jqXHR.responseJSON.code + ")";
+				}
+			}
+			else
+			{
+				// Fallback: stringify the entire object
+				errorMsg = JSON.stringify(jqXHR.responseJSON);
+			}
+		}
+		else
+		{
+			errorMsg = jqXHR.responseJSON;
+		}
 	}
 	else if (typeof jqXHR.responseText !== "undefined")
 	{
