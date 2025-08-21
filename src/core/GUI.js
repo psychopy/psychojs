@@ -404,7 +404,14 @@ export class GUI
 							condition: ${condition}, 
 							trial: ${trial}<br>
 							conditionName: ${conditionName}<br>
-							experiment: ${thisExperimentInfo.experiment}
+							experiment: ${thisExperimentInfo.experiment}<br>
+							current time: ${new Date().toLocaleString(
+								undefined,
+								{
+								  dateStyle: "medium",
+								},
+							  ) + " " + new Date().toLocaleString(undefined, { timeStyle: "short" }) + " " + util.getTimezoneName()
+							}<br>
 						</span>`;
 						 
 						error += text
