@@ -250,7 +250,9 @@ export class ExperimentHandler extends PsychObject
 		{
 			if (this.extraInfo.hasOwnProperty(a))
 			{
-				this._currentTrialData[a] = this.extraInfo[a];
+				// Record the time NOW, vs at the start of the experiment
+				const val = a === "date" ? this.getDateTimeString() : this.extraInfo[a];
+				this._currentTrialData[a] = val;
 			}
 		}
 
@@ -260,6 +262,9 @@ export class ExperimentHandler extends PsychObject
 		this._currentTrialData["secs"] = this.experimentClock.getTime();
 	}
 
+  	getDateTimeString() {
+		return MonotonicClock.getDateStr() + " " + MonotonicClock.getTimeZone();
+	}
 	/**
 	 * Save the results of the experiment.
 	 *
@@ -565,7 +570,7 @@ export class ExperimentHandler extends PsychObject
 		const inputParameters = [...this._psychoJS.inputParameters];
 		const excludeAttributes = ["expName", "name", "blockNumber", "_s", "setSession", "targetMeasuredDurationFrames"];
 		attributes = attributes.filter(a => !excludeAttributes.includes(a));
-		const prependAttributes = ["experiment", "date", "WebGL_Report", "longTask"];
+		const prependAttributes = ["experiment", "date"];
 		const inputAttributes = inputParameters.filter(a => attributes.includes(a));
 		const outputAttributes = attributes.filter(a => !inputParameters.includes(a) && !prependAttributes.includes(a));
 		const orderedAttributes = [...prependAttributes, ...inputAttributes, ...outputAttributes];
@@ -574,10 +579,10 @@ export class ExperimentHandler extends PsychObject
 			orderingObj[a] = null;
 		}
 		for (let i=0; i<data.length; i++) {
-			for (const a of excludeAttributes) {
+			for (const a of excludeAttributes) { // EXCLUDE
 				if(data[i].hasOwnProperty(a)) delete data[i][a];
 			}
-			data[i] = Object.assign({}, orderingObj, data[i]);
+			data[i] = Object.assign({}, orderingObj, data[i]); // ORDER
 		}
 		return {data: data, attributes: orderedAttributes};
 }

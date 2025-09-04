@@ -98,7 +98,7 @@ export class MonotonicClock
 		const date = new Date();
 		// Merge default options with any provided options
 		const options = Object.assign({
-			timeZoneName: "short"
+			timeZoneName: "shortOffset"
 		}, optionsMaybe);
 	
 		// Create a DateTimeFormat object with the specified locale and options
@@ -106,13 +106,12 @@ export class MonotonicClock
 		// Format the date into parts
 		const parts = dateTimeFormat.formatToParts(date);
 	
-		// Extract and format the relevant parts: the literal (usually includes comma or space) and the time zone name
-		const timeZone = parts.find(part => part.type === "timeZoneName").value;
+		// Get time zone as offset, eg UTC-3
+		const timeZoneOffset = parts.find(part => part.type === "timeZoneName").value;
 		// const literal = parts.find(part => part.type === "literal")?.value || '';
-		const timeZoneUTC = timeZone.replace("GMT", "UTC");
+		const timeZoneUTC = timeZoneOffset.replace("GMT", "UTC");
 	
 		// Return a formatted string combining the literal and the time zone name
-		console.log(timeZoneUTC);
 		return timeZoneUTC;
 	}
 
