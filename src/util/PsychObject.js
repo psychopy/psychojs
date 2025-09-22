@@ -128,7 +128,7 @@ export class PsychObject extends EventEmitter
 		}
 		if (typeof attributeValue == "undefined")
 		{
-			console.warn(`${attributeName} @ ${this._name.replace(/[-]*[0-9]/g, "").slice(0, 10)}... [undefined]`);
+			// console.warn(`${attributeName} @ ${this._name.replace(/[-]*[0-9]/g, "").slice(0, 10)}... [undefined]`);
 			// this._psychoJS.logger.warn("setting the value of attribute: " + attributeName + " in PsychObject: " + this._name + " as: undefined");
 		}
 
