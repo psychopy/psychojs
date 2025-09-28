@@ -174,6 +174,9 @@ export class MovieStim extends VisualStim
 		const videoElement = document.createElement("video");
 		this._hasFastSeek = (typeof videoElement.fastSeek === "function");
 
+		// scheduled seek timepoint:
+		this._scheduledSeekTimePoint = null;
+
 		if (this._autoLog)
 		{
 			this._psychoJS.experimentLogger.exp(`Created ${this.name} = ${this.toString()}`);
@@ -426,6 +429,12 @@ export class MovieStim extends VisualStim
 		}
 
 		this.setVolume(this._volume, true);
+
+		// if a seek has been scheduled, apply it now that the player is ready:
+		if (this._scheduledSeekTimePoint)
+		{
+			this.seek(this._scheduledSeekTimePoint);
+		}
 	}
 
 	/**
@@ -667,9 +676,16 @@ export class MovieStim extends VisualStim
 				}
 			}
 		}
+
 		else if (typeof this._youTubePlayer !== "undefined" && this._youTubePlayerIsReady)
 		{
 			this._youTubePlayer.seekTo(timePoint);
+		}
+
+		else
+		{
+			// schedule a seek:
+			this._scheduledSeekTimePoint = timePoint;
 		}
 	}
 
