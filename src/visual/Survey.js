@@ -496,7 +496,7 @@ export class Survey extends VisualStim
 			// if a survey div does not exist, create it:
 			if (document.getElementById(this._surveyDivId) === null)
 			{
-				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey'></div>`);
+				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey' dir='auto'></div>`);
 			}
 
 			// start the survey flow:
