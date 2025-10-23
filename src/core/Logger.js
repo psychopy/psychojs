@@ -70,6 +70,7 @@ export class Logger
 	 * Change the logging level.
 	 *
 	 * @param {module:core.Logger.ServerLevel} serverLevel - the new logging level
+	 * @returns {void}
 	 */
 	setLevel(serverLevel)
 	{
@@ -83,6 +84,7 @@ export class Logger
 	 * @param {string} msg - the message to be logged.
 	 * @param {number} [time] - the logging time
 	 * @param {object} [obj] - the associated object (e.g. a Trial)
+	 * @returns {void}
 	 */
 	exp(msg, time, obj)
 	{
@@ -95,6 +97,7 @@ export class Logger
 	 * @param {string} msg - the message to be logged.
 	 * @param {number} [time] - the logging time
 	 * @param {object} [obj] - the associated object (e.g. a Trial)
+	 * @returns {void}
 	 */
 	data(msg, time, obj)
 	{
@@ -108,6 +111,7 @@ export class Logger
 	 * @param {module:core.Logger.ServerLevel} level - logging level
 	 * @param {number} [time] - the logging time
 	 * @param {object} [obj] - the associated object (e.g. a Trial)
+	 * @returns {void}
 	 */
 	log(msg, level, time, obj)
 	{
@@ -160,7 +164,7 @@ export class Logger
 				{
 					const msg = `<p>[time= ${time.toFixed(3)}] More than ${this._throttling.threshold} messages were logged in the past ${this._throttling.window}s.</p>`
 						+ `<p>We are now throttling: only 1 in ${this._throttling.factor} messages will be logged.</p>`
-						+ `<p>You may want to change your experiment's logging level. Please see <a href="https://www.psychopy.org/api/logging.html">psychopy.org/api/logging.html</a> for details.</p>`;
+						+ "<p>You may want to change your experiment's logging level. Please see <a href=\"https://www.psychopy.org/api/logging.html\">psychopy.org/api/logging.html</a> for details.</p>";
 
 					// console warning:
 					this._psychoJS.logger.warn(msg);
@@ -192,10 +196,8 @@ export class Logger
 					// no logging
 					return true;
 				}
-				else
-				{
-					this._throttling.index = 0;
-				}
+
+				this._throttling.index = 0;
 			}
 			else
 			{
@@ -219,11 +221,11 @@ export class Logger
 	 * <p>Note: the logs are compressed using Pako's zlib algorithm.
 	 * See https://github.com/nodeca/pako for details.</p>
 	 */
-	async flush()
+	flush()
 	{
 		const response = {
 			origin: "Logger.flush",
-			context: "when flushing participant's logs for experiment: " + this._psychoJS.config.experiment.fullpath,
+			context: `when flushing participant's logs for experiment: ${this._psychoJS.config.experiment.fullpath}`
 		};
 
 		this._psychoJS.logger.info("[PsychoJS] Flush server logs.");
@@ -232,12 +234,10 @@ export class Logger
 		let formattedLogs = "";
 		for (const log of this._serverLogs)
 		{
-			let formattedLog = util.toString(log.time)
-				+ "\t" + Symbol.keyFor(log.level)
-				+ "\t" + log.msg;
+			let formattedLog = `${util.toString(log.time)}\t${Symbol.keyFor(log.level)}\t${log.msg}`;
 			if (log.obj !== "undefined")
 			{
-				formattedLog += "\t" + log.obj;
+				formattedLog += `\t${log.obj}`;
 			}
 			formattedLog += "\n";
 
@@ -260,7 +260,7 @@ export class Logger
 					// const utf16DeflatedLogs = pako.deflate(unescape(encodeURIComponent(formattedLogs)), {to: 'string'});
 					const base64DeflatedLogs = btoa(utf16DeflatedLogs);
 
-					return await this._psychoJS.serverManager.uploadLog(base64DeflatedLogs, true);
+					return this._psychoJS.serverManager.uploadLog(base64DeflatedLogs, true);
 				}
 				catch (error)
 				{
@@ -271,12 +271,12 @@ export class Logger
 			// the pako compression library is not present, we do not compress the logs:
 			else
 			{
-				return await this._psychoJS.serverManager.uploadLog(formattedLogs, false);
+				return this._psychoJS.serverManager.uploadLog(formattedLogs, false);
 			}
 		}
 		else
 		{
-			this._psychoJS.logger.debug("\n" + formattedLogs);
+			this._psychoJS.logger.debug(`\n${formattedLogs}`);
 		}
 	}
 
@@ -307,7 +307,7 @@ export class Logger
 				if (detectedBrowser === "Firefox")
 				{
 					// look for entry immediately after those of log4javascript:
-					for (let entry of stackEntries)
+					for (const entry of stackEntries)
 					{
 						if (entry.indexOf("log4javascript.min.js") <= 0)
 						{
@@ -321,7 +321,9 @@ export class Logger
 					const file = buf[buf.length - 3].split("/").pop();
 					const method = relevantEntry.split("@")[0];
 
-					return method + " " + file + ":" + line;
+					// note: since we package the PsychoJS library, file & line do not make sense any longer
+					return method;
+					// return method + " " + file + ":" + line;
 				}
 				else if (detectedBrowser === "Safari")
 				{
@@ -332,19 +334,19 @@ export class Logger
 					relevantEntry = stackEntries.pop();
 
 					let buf = relevantEntry.split(" ");
-					let fileLine = buf.pop();
+					const fileLine = buf.pop();
 					const method = buf.pop();
 					buf = fileLine.split(":");
 					buf.pop();
 					const line = buf.pop();
 					const file = buf.pop().split("/").pop();
 
-					return method + " " + file + ":" + line;
+					// note: since we package the PsychoJS library, file & line do not make sense any longer
+					return method;
+					// return method + " " + file + ":" + line;
 				}
-				else
-				{
-					return "unknown";
-				}
+
+				return "unknown";
 			}
 		});
 
@@ -394,12 +396,12 @@ Logger.ServerLevel = {
  * @protected
  */
 Logger._ServerLevelValue = {
-	"CRITICAL": 50,
-	"ERROR": 40,
-	"WARNING": 30,
-	"DATA": 25,
-	"EXP": 22,
-	"INFO": 20,
-	"DEBUG": 10,
-	"NOTSET": 0,
+	CRITICAL: 50,
+	ERROR: 40,
+	WARNING: 30,
+	DATA: 25,
+	EXP: 22,
+	INFO: 20,
+	DEBUG: 10,
+	NOTSET: 0,
 };

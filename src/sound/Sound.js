@@ -149,25 +149,49 @@ export class Sound extends PsychObject
 	/**
 	 * Set the sound value.
 	 *
-	 * @param {object} sound - a sound instance to replace the current one
-	 * @param {boolean} [log= true] - whether to log
+	 * @note We use a rest variable here to make it possible for PsychoPy's code generator to use
+	 * setSound as though it were setValue, e.g. to pass it a string value and an octave.
+	 *
+	 * @param {object} value - a sound instance or a sound value, to replace the current one
+	 * @param {...*} [args] - the rest of the arguments, such as a {number} octave or a {boolean} log
 	 */
-	setSound(sound, log = true)
+	setSound(value, ...args)
 	{
-		if (!(sound instanceof Sound))
+		if ((value instanceof Sound))
 		{
-			throw {
-				origin: "Sound.setSound",
-				context: "when setting the sound",
-				error: "the argument should be an instance of the Sound class.",
-			};
+			const sound = value;
+
+			// log is true by default:
+			let log = true;
+
+			// if we have one more argument, it should be {boolean} log:
+			if (args.length > 0)
+			{
+				const argType = typeof args[0];
+				if (argType !== "boolean")
+				{
+					throw {
+						origin: "Sound.setSound",
+						context: "when setting the sound value",
+						error: `the second argument should be {boolean} log, instead got: ${argType}`
+					};
+				}
+
+				log = args[0];
+			}
+
+			this._setAttribute("value", sound.value, log);
+
+			// reset the player, if need be:
+			if (typeof this._player !== "undefined") {
+				this._player = this._player.constructor.accept(this);
+			}
 		}
 
-		this._setAttribute("value", sound.value, log);
-
-		if (typeof this._player !== "undefined")
+		// if value is not a type Sound, we use setValue:
+		else
 		{
-			this._player = this._player.constructor.accept(this);
+			this.setValue(value, ...args);
 		}
 
 		return this;

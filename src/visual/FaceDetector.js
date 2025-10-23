@@ -7,6 +7,7 @@
  */
 
 import {PsychoJS} from "../core/PsychoJS.js";
+import {ServerManager} from "../core/ServerManager.js";
 import * as util from "../util/Util.js";
 import { to_pixiPoint } from "../util/Pixi.js";
 import {Color} from "../util/Color.js";
@@ -37,9 +38,11 @@ export class FaceDetector extends VisualStim
 	 * @param {Array.<number>} [options.pos= [0, 0]] - the position of the center of the stimulus
 	 * @param {string} [options.units= 'norm'] - the units of the stimulus vertices, size and position
 	 * @param {number} [options.ori= 0.0] - the orientation (in degrees)
-	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not specified)
+	 * @param {number} [options.size] - the size of the rendered image (the size of the image will be used if size is not
+	 *   specified)
 	 * @param {number} [options.opacity= 1.0] - the opacity
-	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every frame flip
+	 * @param {boolean} [options.autoDraw= false] - whether or not the stimulus should be automatically drawn on every
+	 *   frame flip
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
 	constructor({name, win, input, modelDir, faceApiUrl, units, ori, opacity, pos, size, autoDraw, autoLog} = {})
@@ -63,9 +66,9 @@ export class FaceDetector extends VisualStim
 	}
 
 	/**
-	 * Query whether or not the face detector is ready to detect.
+	 * Query whether the face detector is ready to detect.
 	 *
-	 * @returns {boolean} whether or not the face detector is ready to detect
+	 * @returns {boolean} whether the face detector is ready to detect
 	 */
 	isReady()
 	{
@@ -83,7 +86,7 @@ export class FaceDetector extends VisualStim
 	{
 		const response = {
 			origin: "FaceDetector.setInput",
-			context: "when setting the video of FaceDetector: " + this._name
+			context: `when setting the video of FaceDetector: ${this._name}`
 		};
 
 		try
@@ -197,28 +200,55 @@ export class FaceDetector extends VisualStim
 	/**
 	 * Init the Face-API library.
 	 *
+	 * This method checks whether the Face API models have been already loaded as resources.
+	 * If not, it will load them here, asynchronously. In that situation, it is the responsibility of
+	 * the experiment designer to make sure that the experiment does not start using the detector
+	 * before it is ready to use: isReady() === true
+	 *
 	 * @protected
 	 */
 	async _initFaceApi()
 	{
-/*
-		// load the library:
-		await this._psychoJS.serverManager.prepareResources([
-			{
-				"name": "face-api.js",
-				"path": this.faceApiUrl,
-				"download": true
-			}
-		]);
-*/
+		const response = {
+			origin: "FaceDetector._initFaceApi",
+			context: "when initialising Face API"
+		};
 
-		// load the models:
 		this._modelsLoaded = false;
-		await faceapi.nets.tinyFaceDetector.loadFromUri(this._modelDir);
-		await faceapi.nets.faceLandmark68Net.loadFromUri(this._modelDir);
-		await faceapi.nets.faceRecognitionNet.loadFromUri(this._modelDir);
-		await faceapi.nets.faceExpressionNet.loadFromUri(this._modelDir);
-		this._modelsLoaded = true;
+
+		// if the modelDir parameter is "face-api-model", then it is a resource:
+		if (this._modelDir === "face-api-models")
+		{
+			// if the models have already been loaded, then do nothing,
+			const modelStatus = this.psychoJS.serverManager.getResourceStatus(this._modelDir);
+			if (modelStatus === ServerManager.ResourceStatus.DOWNLOADED)
+			{
+				this._modelsLoaded = true;
+				return;
+			}
+
+			// otherwise, the only other possible option is that there was an error
+			// when loading them at the start of PsychoJS:
+			// if (modelStatus === ServerManager.ResourceStatus.ERROR)
+			throw { ...response, error: "there was an error when loading the Face API models as resources."};
+		}
+
+		// load the models, if possible:
+		if (this._modelDir)
+		{
+			try
+			{
+				await faceapi.nets.tinyFaceDetector.loadFromUri(this._modelDir);
+				await faceapi.nets.faceLandmark68Net.loadFromUri(this._modelDir);
+				await faceapi.nets.faceRecognitionNet.loadFromUri(this._modelDir);
+				await faceapi.nets.faceExpressionNet.loadFromUri(this._modelDir);
+			}
+			catch (error)
+			{
+				console.error(error);
+				throw { ...response, error: `unable to download Face API models from URL: ${this._modelDir}: ${error}`};
+			}
+		}
 	}
 
 	/**

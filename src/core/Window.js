@@ -347,7 +347,7 @@ export class Window extends PsychObject
 		}
 
 		// call the callOnFlip functions and remove them:
-		for (let callback of this._flipCallbacks)
+		for (const callback of this._flipCallbacks)
 		{
 			callback["function"](...callback["arguments"]);
 		}

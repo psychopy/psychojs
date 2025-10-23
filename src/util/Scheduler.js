@@ -144,8 +144,16 @@ export class Scheduler
 				return;
 			}
 
+			// make it possible for outside classes, e.g. ServerManager, to manipulate the timestamp
+			// this is useful when dealing with resources, for instance
+			if (typeof self._timestamp !== "undefined")
+			{
+				timestamp = self._timestamp;
+				self._timestamp = undefined;
+			}
+
 			// store frame delta for `Window.getActualFrameRate()`
-			const lastTimestamp = self._lastTimestamp === undefined ? timestamp : self._lastTimestamp;
+			const lastTimestamp = (self._lastTimestamp === undefined) ? timestamp : self._lastTimestamp;
 
 			self._lastDelta = timestamp - lastTimestamp;
 			self._lastTimestamp = timestamp;

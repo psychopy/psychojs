@@ -35,7 +35,7 @@ export class EventManager
 
 		// mouse info:
 		// note: (a) clocks are reset on mouse button presses
-		//       (b) the mouse listeners are added to the PIXI renderer, upon the latter's creation (see  Window.js)
+		//       (b) the mouse listeners are added to the PIXI renderer, upon the latter's creation (see Window.js)
 		this._mouseInfo = {
 			pos: [0, 0],
 			wheelRel: [0.0, 0.0],

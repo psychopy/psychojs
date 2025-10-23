@@ -25,7 +25,8 @@ export class StairHandler extends TrialHandler
 	 * @param {number} options.startVal - initial guess for the threshold
 	 * @param {number} options.minVal - minimum value for the threshold
 	 * @param {number} options.maxVal - maximum value for the threshold
-	 * @param {number} options.nTrials - maximum number of trials
+	 * @param {number} options.nTrials - minimum number of trials
+	 * @param {number} [options.maxTrials=200] - maximum number of trials
 	 * @param {string} options.name - name of the handler
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
@@ -36,6 +37,7 @@ export class StairHandler extends TrialHandler
 		minVal,
 		maxVal,
 		nTrials,
+		maxTrials = 200,
 		nReversals,
 		nUp,
 		nDown,
@@ -53,7 +55,7 @@ export class StairHandler extends TrialHandler
 			name,
 			autoLog,
 			method: TrialHandler.Method.SEQUENTIAL,
-			trialList: Array(nTrials),
+			trialList: Array(maxTrials),
 			nReps: 1
 		});
 
@@ -64,6 +66,7 @@ export class StairHandler extends TrialHandler
 		this._addAttribute("maxVal", maxVal, Number.MAX_VALUE);
 
 		this._addAttribute("nTrials", nTrials);
+		this._addAttribute("maxTrials", maxTrials);
 
 		this._addAttribute("nReversals", nReversals, null);
 		this._addAttribute("nUp", nUp, 1);
@@ -77,16 +80,30 @@ export class StairHandler extends TrialHandler
 
 		this._addAttribute("extraArgs", extraArgs);
 
-		// turn stepSizes into an array if it is not one already:
+		// turn stepSizes into an array of numbers if it is not one already:
 		if (!Array.isArray(this._stepSizes))
 		{
 			this._stepSizes = [this._stepSizes];
 		}
+		this._stepSizes = this._stepSizes.map(Number);
 
 		this._variableStep = (this._stepSizes.length > 1);
 		this._currentStepSize = this._stepSizes[0];
-		
-		// TODO update the variables, a la staircase.py :nReversals, stepSizes, etc.
+
+		if (this._nReversals === null)
+		{
+			this._nReversals = this._stepSizes.length;
+		}
+		else
+		{
+			// make sure that nReversals is at least the length of stepSizes:
+			if (this._nReversals < this._stepSizes.length)
+			{
+				this._psychoJS.logger.warn(`the given nReversals: ${this._nReversals} is smaller than the number of step sizes: ${this._stepSizes.length}`);
+				this._nReversals = this._stepSizes.length;
+			}
+		}
+
 
 		// setup the stair's starting point:
 		this._stairValue = this._startVal;

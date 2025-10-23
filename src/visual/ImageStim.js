@@ -271,6 +271,12 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 		}
 	}
 
+	/**
+	 *	Sets the amount of blur for image stimuli.
+	 *
+	 * @param {number} blurVal - the amount of blur. 0 is no blur, max is as high as you like.
+	 * @param {boolean} [log=false] - whether or not to log.
+	 */
 	setBlurVal (blurVal = 0, log = false)
 	{
 		this._setAttribute("blurVal", blurVal, log);
@@ -357,7 +363,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 				// Not using PIXI.Texture.from() on purpose, as it caches both PIXI.Texture and PIXI.BaseTexture.
 				// As a result of that we can have multiple ImageStim instances using same PIXI.BaseTexture,
 				// thus changing texture related properties like interpolation, or calling _pixi.destroy(true)
-				// will affect all ImageStims who happen to share that BaseTexture.
+				// will affect all ImageStims which happen to share that BaseTexture.
 				const texOpts =
 				{
 					scaleMode: this._interpolate ? PIXI.SCALE_MODES.LINEAR : PIXI.SCALE_MODES.NEAREST

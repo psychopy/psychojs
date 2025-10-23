@@ -143,7 +143,7 @@ export class PsychoJS
 		});
 
 		// add the pavlovia server to the list of hosts:
-		const pavloviaHosts = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/", "https://devlovia.org/run/", "https://run.devlovia.org/"]);
+		const pavloviaHosts = new Set([...hosts, "https://pavlovia.org/run/", "https://run.pavlovia.org/"]);
 		this._hosts = Array.from(pavloviaHosts);
 
 		// GUI:
@@ -160,6 +160,9 @@ export class PsychoJS
 
 		// Shelf:
 		this._shelf = new Shelf({psychoJS: this});
+
+		// server messages:
+		this._serverMsg = new Map();
 
 		// redirection URLs:
 		this._cancellationUrl = undefined;
@@ -187,7 +190,7 @@ export class PsychoJS
 		// whether to save results at the end of the experiment:
 		this._saveResults = saveResults;
 
-		this.logger.info("[PsychoJS] Version 2024.2.0");
+		this.logger.info("[PsychoJS] Version 2025.1.1");
 		this.logger.info("[PsychoJS] Initialised.");
 
 		// hide the initialisation message:
@@ -259,7 +262,8 @@ export class PsychoJS
 	}
 
 	/**
-	 * Set the completion and cancellation URL to which the participant will be redirect at the end of the experiment.
+	 * Set the completion and cancellation URL to which the participant will be redirected
+	 * at the end of the experiment.
 	 *
 	 * @param {string} completionUrl  - the completion URL
 	 * @param {string} cancellationUrl - the cancellation URL
@@ -274,7 +278,8 @@ export class PsychoJS
 	 * Schedule a task.
 	 *
 	 * @param {module:util.Scheduler~Task} task - the task to be scheduled
-	 * @param {*} [args] - arguments for that task
+	 * @param {*} [args] - the arguments for that task
+	 * @returns {void}
 	 */
 	schedule(task, args)
 	{
@@ -290,9 +295,10 @@ export class PsychoJS
 	/**
 	 * Schedule a series of task based on a condition.
 	 *
-	 * @param {PsychoJS.condition} condition
+	 * @param {PsychoJS.condition} condition - the condition
 	 * @param {Scheduler} thenScheduler - scheduler to run if the condition is true
 	 * @param {Scheduler} elseScheduler - scheduler to run if the condition is false
+	 * @returns {void}
 	 */
 	scheduleCondition(condition, thenScheduler, elseScheduler)
 	{
@@ -370,18 +376,22 @@ export class PsychoJS
 			// if the experiment is running on the server:
 			if (this.getEnvironment() === ExperimentHandler.Environment.SERVER)
 			{
-				// open a session:
-				const params = {};
+				// get the various session parameters:
+				this._sessionParams = {};
 				if (this._serverMsg.has("__pilotToken"))
 				{
-					params.pilotToken = this._serverMsg.get("__pilotToken");
+					this._sessionParams.pilotToken = this._serverMsg.get("__pilotToken");
+				}
+				if (this._serverMsg.has("__participantId"))
+				{
+					this._sessionParams.participantId = this._serverMsg.get("__participantId");
 				}
 				if (typeof surveyId !== "undefined")
 				{
-					params.surveyId = surveyId;
+					this._sessionParams.surveyId = surveyId;
 					this._surveyId = surveyId;
 				}
-				await this._serverManager.openSession(params);
+				await this._serverManager.openSession(this._sessionParams);
 
 				// warn the user when they attempt to close the tab or browser:
 				this.beforeunloadCallback = (event) =>
@@ -420,7 +430,8 @@ export class PsychoJS
 						}
 
 						// close the session:
-						self._serverManager.closeSession(false, true);
+						this._sessionParams.isCompleted = false;
+						self._serverManager.closeSession(this._sessionParams, true);
 					}
 
 					if (typeof self._window !== "undefined")
@@ -478,7 +489,6 @@ export class PsychoJS
 					this._scheduler.start();
 				}
 			}
-
 		}
 		catch (error)
 		{
@@ -552,7 +562,7 @@ export class PsychoJS
 	 * @param {boolean} [options.isCompleted = false] - whether the participant has completed the experiment
 	 * @return {void}
 	 */
-	async quit({ message, isCompleted = false, closeWindow = true, showOK = true } = {})
+	async quit({ message, isCompleted = false, closeWindow = true, showOK = true, closeBrowserTab = false } = {})
 	{
 		this.logger.info("[PsychoJS] Quit.");
 
@@ -603,7 +613,8 @@ export class PsychoJS
 			if (isServerEnv)
 			{
 				this.gui.finishDialogNextStep("closing the session");
-				await this._serverManager.closeSession(isCompleted);
+				this._sessionParams.isCompleted = isCompleted;
+				await this._serverManager.closeSession(this._sessionParams);
 			}
 
 			// thank participant for waiting, and either quit or redirect:
@@ -634,6 +645,12 @@ export class PsychoJS
 				else if (!isCompleted && typeof this._cancellationUrl !== "undefined")
 				{
 					window.location = this._cancellationUrl;
+				}
+
+				// close the browser tab, if requested:
+				if (closeBrowserTab)
+				{
+					window.close();
 				}
 			};
 

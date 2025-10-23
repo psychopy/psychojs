@@ -584,6 +584,65 @@ export class Shelf extends PsychObject
 	}
 
 	/**
+	 * Check the status of a counterbalanced design.
+	 *
+	 * @param {string[]} key					key as an array of key components
+	 * @return {Promise<{boolean}>}		an object with a boolean indicating whether the design is finished
+	 */
+	async counterbalanceStatus(key)
+	{
+		const response = {
+			origin: 'Shelf.counterbalanceStatus',
+			context: `when checking the status of the counterbalanced design with key: ${JSON.stringify(key)}`
+		};
+
+		try
+		{
+			await this._checkAvailability("counterbalanceStatus");
+			this._checkKey(key);
+
+			// prepare the request:
+			const url = `${this._psychoJS.config.pavlovia.URL}/api/v2/shelf/${this._psychoJS.config.session.token}/counterbalance/status`;
+			const data = {
+				key
+			};
+
+			// query the server:
+			const putResponse = await fetch(url, {
+				method: 'PUT',
+				mode: 'cors',
+				cache: 'no-cache',
+				credentials: 'same-origin',
+				redirect: 'follow',
+				referrerPolicy: 'no-referrer',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			// convert the response to json:
+			const document = await putResponse.json();
+
+			if (putResponse.status !== 200)
+			{
+				throw ('error' in document) ? document.error : document;
+			}
+
+			// return the result:
+			this._status = Shelf.Status.READY;
+			return {
+				finished: document.finished,
+			};
+		}
+		catch (error)
+		{
+			this._status = Shelf.Status.ERROR;
+			throw {...response, error};
+		}
+	}
+
+	/**
 	 * Confirm or cancel a participant's participation to a counterbalanced design.
 	 *
 	 * @note the required participant token is the one returned by a call to counterBalanceSelect
@@ -591,7 +650,7 @@ export class Shelf extends PsychObject
 	 * @param {string[]} key							- key as an array of key components
 	 * @param {string} participantToken		- the participant token
 	 * @param {boolean} confirmed					- when the participant's participation is confirmed or cancelled
-	 * @return {Promise<{string, boolean, string}>}		an object with the name of the participant group, and
+	 * @return {Promise<{string, boolean}>}		an object with the name of the participant group, and
 	 * 	whether all groups have been depleted
 	 */
 	async counterbalanceConfirm(key, participantToken, confirmed)
