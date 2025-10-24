@@ -37,6 +37,14 @@ export class ExperimentHandler extends PsychObject
 	}
 
 	/**
+	 * Get the current trial data.
+	 */
+	get thisEntry()
+	{
+		return this._currentTrialData;
+	}
+
+	/**
 	 * Legacy experiment getters.
 	 */
 	get _thisEntry()

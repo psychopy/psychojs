@@ -8,13 +8,14 @@
  * @license Distributed under the terms of the MIT License
  */
 
-import { Howl } from "howler";
-import { ExperimentHandler } from "../data/ExperimentHandler.js";
-import { Clock, MonotonicClock } from "../util/Clock.js";
-import { PsychObject } from "../util/PsychObject.js";
+import {Howl} from "howler";
+import Notify from 'simple-notify';
+import {ExperimentHandler} from "../data/ExperimentHandler.js";
+import {Clock, MonotonicClock} from "../util/Clock.js";
+import {PsychObject} from "../util/PsychObject.js";
 import * as util from "../util/Util.js";
-import { Scheduler } from "../util/Scheduler.js";
-import { PsychoJS } from "./PsychoJS.js";
+import {Scheduler} from "../util/Scheduler.js";
+import {PsychoJS} from "./PsychoJS.js";
 
 /**
  * <p>This manager handles all communications between the experiment running in the participant's browser and the
@@ -43,19 +44,24 @@ export class ServerManager extends PsychObject
 	 * @param {boolean} [options.autoLog= false] - whether or not to log
 	 */
 	constructor({
-		psychoJS,
-		autoLog = false,
-	} = {})
+								psychoJS,
+								autoLog = false,
+							} = {})
 	{
 		super(psychoJS);
 
 		// session:
 		this._session = {};
 
-		// resources is a map of <name: string, { path: string, status: ResourceStatus, data: any }>
+		// resources is a map of <name: string, { name: string, path: string, status: ResourceStatus, data: any }>
 		this._resources = new Map();
 		this._nbLoadedResources = 0;
-		this._setupPreloadQueue();
+		this._resourcesWithDownloadError = new Map();
+		this._preloadQueue = this._setupPreloadQueue();
+
+		// if "face-api.js" and "face-api-models" are passed as resources to PsychoJS.start,
+		// then we use _faceApiModelsResource to load the models upon completion of the loading of the face-api library
+		this._faceApiModelsResource = undefined;
 
 		// throttling period for calls to uploadData and uploadLog (in mn):
 		// note: 	(a) the period is potentially updated when a session is opened to reflect that associated with
@@ -85,7 +91,7 @@ export class ServerManager extends PsychObject
 	{
 		const response = {
 			origin: "ServerManager.getConfiguration",
-			context: "when reading the configuration file: " + configURL,
+			context: "when reading the configuration file: " + configURL
 		};
 
 		this._psychoJS.logger.debug("reading the configuration file: " + configURL);
@@ -105,22 +111,20 @@ export class ServerManager extends PsychObject
 				if (getResponse.status === 404)
 				{
 					throw "the configuration file could not be found";
-				}
-				else if (getResponse.status !== 200)
+				} else if (getResponse.status !== 200)
 				{
 					throw `unable to read the configuration file: status= ${getResponse.status}`;
 				}
 
 				// the configuration file should be valid json:
 				const config = await getResponse.json();
-				resolve(Object.assign(response, { config }));
-			}
-			catch (error)
+				resolve(Object.assign(response, {config}));
+			} catch (error)
 			{
 				self.setStatus(ServerManager.Status.ERROR);
 				console.error("error:", error);
 
-				reject(Object.assign(response, { error }));
+				reject(Object.assign(response, {error}));
 			}
 		});
 	}
@@ -135,7 +139,7 @@ export class ServerManager extends PsychObject
 	/**
 	 * Open a session for this experiment on the pavlovia server.
 	 *
-	 * @param {Object} params - the open session parameters
+	 * @param {Object} params - the session parameters
 	 *
 	 * @returns {Promise<ServerManager.OpenSessionPromise>} the response
 	 */
@@ -155,7 +159,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions`,
 					params,
@@ -194,8 +198,7 @@ export class ServerManager extends PsychObject
 				if ("keys" in experiment)
 				{
 					self._psychoJS.config.experiment.keys = experiment.keys;
-				}
-				else
+				} else
 				{
 					self._psychoJS.config.experiment.keys = [];
 				}
@@ -216,9 +219,8 @@ export class ServerManager extends PsychObject
 				}
 
 				self.setStatus(ServerManager.Status.READY);
-				resolve({...response, token: openSessionResponse.token, status: openSessionResponse.status });
-			}
-			catch (error)
+				resolve({...response, token: openSessionResponse.token, status: openSessionResponse.status});
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
@@ -237,11 +239,11 @@ export class ServerManager extends PsychObject
 	/**
 	 * Close the session for this experiment on the pavlovia server.
 	 *
-	 * @param {boolean} [isCompleted= false] - whether the experiment was completed
+	 * @param {Object} params 					- the session parameters
 	 * @param {boolean} [sync= false] - whether to communicate with the server in a synchronous manner
 	 * @returns {Promise<ServerManager.CloseSessionPromise> | void} the response
 	 */
-	async closeSession(isCompleted = false, sync = false)
+	async closeSession(params = {}, sync = false)
 	{
 		const response = {
 			origin: "ServerManager.closeSession",
@@ -256,12 +258,11 @@ export class ServerManager extends PsychObject
 		{
 			const url = this._psychoJS.config.pavlovia.URL
 				+ "/api/v2/experiments/" + this._psychoJS.config.gitlab.projectId
-				+ "/sessions/"  + this._psychoJS.config.session.token + "/delete";
+				+ "/sessions/" + this._psychoJS.config.session.token + "/delete";
 			const formData = new FormData();
-			formData.append("isCompleted", isCompleted);
-			if (typeof this._psychoJS._surveyId !== "undefined")
+			for (const key in params)
 			{
-				formData.append("surveyId", this._psychoJS._surveyId);
+				formData.append(key, params[key]);
 			}
 
 			navigator.sendBeacon(url, formData);
@@ -275,18 +276,10 @@ export class ServerManager extends PsychObject
 			{
 				try
 				{
-					const data = {
-						isCompleted
-					};
-					if (typeof this._psychoJS._surveyId !== "undefined")
-					{
-						data["surveyId"] = this._psychoJS._surveyId;
-					}
-
-					const deleteResponse = await this._queryServerAPI(
+					const deleteResponse = await this.queryServer(
 						"DELETE",
 						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}`,
-						data,
+						params,
 						"FORM"
 					);
 
@@ -299,9 +292,8 @@ export class ServerManager extends PsychObject
 
 					self.setStatus(ServerManager.Status.READY);
 					self._psychoJS.config.session.status = "CLOSED";
-					resolve({ ...response, ...closeSessionResponse });
-				}
-				catch (error)
+					resolve({...response, ...closeSessionResponse});
+				} catch (error)
 				{
 					console.error(error);
 					self.setStatus(ServerManager.Status.ERROR);
@@ -328,23 +320,22 @@ export class ServerManager extends PsychObject
 			context: "when getting the value of resource: " + name,
 		};
 
-		const pathStatusData = this._resources.get(name);
+		const resource = this._resources.get(name);
 
-		if (typeof pathStatusData === "undefined")
+		if (typeof resource === "undefined")
 		{
-			// throw { ...response, error: 'unknown resource' };
-			throw Object.assign(response, { error: "unknown resource" });
+			throw { ...response, error: 'unknown resource' };
 		}
 
-		if (errorIfNotDownloaded && pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+		if (errorIfNotDownloaded && resource.status !== ServerManager.ResourceStatus.DOWNLOADED)
 		{
-			throw Object.assign(response, {
-				error: name + " is not available for use (yet), its current status is: "
-					+ util.toString(pathStatusData.status),
-			});
+			throw {
+				...response,
+				error: `${name} is not available for use (yet), its current status is: ${util.toString(resource.status)}`
+			};
 		}
 
-		return pathStatusData.data;
+		return resource.data;
 	}
 
 	/**
@@ -361,9 +352,9 @@ export class ServerManager extends PsychObject
 			context: "when releasing resource: " + name,
 		};
 
-		const pathStatusData = this._resources.get(name);
+		const resource = this._resources.get(name);
 
-		if (typeof pathStatusData === "undefined")
+		if (typeof resource === "undefined")
 		{
 			return false;
 		}
@@ -379,7 +370,7 @@ export class ServerManager extends PsychObject
 	 * Get the status of a single resource or the reduced status of an array of resources.
 	 *
 	 * <p>If an array of resources is given, getResourceStatus returns a single, reduced status
-	 * that is the status furthest away from DOWNLOADED, with the status ordered as follow:
+	 * that is the status furthest away from DOWNLOADED, with the status ordered as follows:
 	 * ERROR (furthest from DOWNLOADED), REGISTERED, DOWNLOADING, and DOWNLOADED</p>
 	 * <p>For example, given three resources:
 	 * <ul>
@@ -410,7 +401,7 @@ export class ServerManager extends PsychObject
 		}
 		if (!Array.isArray(names))
 		{
-			throw Object.assign(response, { error: "names should be either a string or an array of strings" });
+			throw Object.assign(response, {error: "names should be either a string or an array of strings"});
 		}
 		const statusOrder = new Map([
 			[Symbol.keyFor(ServerManager.ResourceStatus.ERROR), 0],
@@ -421,9 +412,9 @@ export class ServerManager extends PsychObject
 		let reducedStatus = ServerManager.ResourceStatus.DOWNLOADED;
 		for (const name of names)
 		{
-			const pathStatusData = this._resources.get(name);
+			const resource = this._resources.get(name);
 
-			if (typeof pathStatusData === "undefined")
+			if (typeof resource === "undefined")
 			{
 				// throw { ...response, error: 'unknown resource' };
 				throw Object.assign(response, {
@@ -432,10 +423,10 @@ export class ServerManager extends PsychObject
 			}
 
 			// update the reduced status according to the order given by statusOrder:
-			if (statusOrder.get(Symbol.keyFor(pathStatusData.status)) <
+			if (statusOrder.get(Symbol.keyFor(resource.status)) <
 				statusOrder.get(Symbol.keyFor(reducedStatus)))
 			{
-				reducedStatus = pathStatusData.status;
+				reducedStatus = resource.status;
 			}
 		}
 
@@ -456,11 +447,11 @@ export class ServerManager extends PsychObject
 		const statusKey = (typeof status === "symbol") ? Symbol.keyFor(status) : null;
 		if (!statusKey)
 		{ // throw { ...response, error: 'status must be a symbol' };
-			throw Object.assign(response, { error: "status must be a symbol" });
+			throw Object.assign(response, {error: "status must be a symbol"});
 		}
 		if (!ServerManager.Status.hasOwnProperty(statusKey))
 		{ // throw { ...response, error: 'unknown status' };
-			throw Object.assign(response, { error: "unknown status" });
+			throw Object.assign(response, {error: "unknown status"});
 		}
 
 		this._status = status;
@@ -496,8 +487,18 @@ export class ServerManager extends PsychObject
 	 *
 	 * @param {String | Array.<{name: string, path: string, download: boolean} | String | Symbol>} [resources=[]] - the
 	 *   list of resources or a single resource
+	 * @param {Object} downloadOptions - the download options for those resources
 	 */
-	async prepareResources(resources = [])
+	async prepareResources(
+		resources = [],
+		downloadOptions = {
+			testConnection: false,
+			maxAttempts: 0,
+			attemptPeriod_ms: 0,
+			onDownloadError: () => undefined,
+			onAttemptRunOut: undefined
+		}
+	)
 	{
 		const response = {
 			origin: "ServerManager.prepareResources",
@@ -543,6 +544,7 @@ export class ServerManager extends PsychObject
 						{
 							const path = serverResponse.resourceDirectory + "/" + name;
 							this._resources.set(name, {
+								name,
 								status: ServerManager.ResourceStatus.REGISTERED,
 								path,
 								data: undefined,
@@ -552,7 +554,7 @@ export class ServerManager extends PsychObject
 						}
 					}
 				}
-				// if the experiment is hosted locally (localhost) or if specific resources were given
+					// if the experiment is hosted locally (localhost) or if specific resources were given
 				// then we register those specific resources, if they have not been registered already
 				else
 				{
@@ -635,24 +637,27 @@ export class ServerManager extends PsychObject
 						}
 					}
 
-					for (let { name, path, download } of resources)
+					for (let {name, path, download} of resources)
 					{
 						if (!this._resources.has(name))
 						{
 							// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 							// not hosted on pavlovia.org:
-							if ( (path.toLowerCase().indexOf("www.") === 0 ||
+							if ((path.toLowerCase().indexOf("www.") === 0 ||
 									path.toLowerCase().indexOf("http:") === 0 ||
 									path.toLowerCase().indexOf("https:") === 0) &&
-								(path.indexOf("pavlovia.org") === -1) )
+								(path.indexOf("pavlovia.org") === -1))
 							{
 								path = "https://pavlovia.org/api/v2/proxy/" + path;
 							}
 
+							downloadOptions.nbAttempts = 1;
 							this._resources.set(name, {
+								name,
 								status: ServerManager.ResourceStatus.REGISTERED,
 								path,
 								data: undefined,
+								downloadOptions: Object.assign({}, downloadOptions)
 							});
 							this._psychoJS.logger.debug(`registered resource: name= ${name}, path= ${path}`);
 
@@ -680,24 +685,42 @@ export class ServerManager extends PsychObject
 			{
 				return new Promise((resolve, reject) =>
 				{
-					const uuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
+					const resourceUuid = this.on(ServerManager.Event.RESOURCE, (signal) =>
 					{
 						if (signal.message === ServerManager.Event.DOWNLOAD_COMPLETED)
 						{
-							this.off(ServerManager.Event.RESOURCE, uuid);
+							this.off(ServerManager.Event.RESOURCE, resourceUuid);
+
+							// we need to make sure that the frame rate calculations use 60fps (Window.getActualFrameRate)
+							// even when much time has been spent loading resources with the scheduler not moving forward
+							// (otherwise psychoJS.window.monitorFramePeriod is very wrong in the experiment code)
+							this._psychoJS.scheduler._lastTimestamp = undefined;
+							this._psychoJS.scheduler._timestamp = performance.now();
+
 							resolve();
+						}
+					});
+
+					const statusUuid = this.on(ServerManager.Event.STATUS, (status) =>
+					{
+						if (status === ServerManager.Status.ERROR)
+						{
+							this.off(ServerManager.Event.STATUS, statusUuid);
+
+							this._psychoJS.scheduler._lastTimestamp = undefined;
+							this._psychoJS.scheduler._timestamp = performance.now();
+
+							reject();
 						}
 					});
 
 					this._downloadResources(resourcesToDownload);
 				});
 			}
-		}
-		catch (error)
+		} catch (error)
 		{
 			console.error("error", error);
-			throw Object.assign(response, { error });
-			// throw { ...response, error: error };
+			throw {...response, error};
 		}
 	}
 
@@ -729,15 +752,15 @@ export class ServerManager extends PsychObject
 				// if resources is an empty array, we consider all registered resources:
 				if (resources.length === 0)
 				{
-					for (const [name, { status, path, data }] of this._resources)
+					for (const [name, resource] of this._resources)
 					{
-						resources.push({ name, path });
+						resources.push({name, path: resource.path});
 					}
 				}
 
 				// only download those resources not already downloaded and not downloading:
 				const resourcesToDownload = new Set();
-				for (let { name, path } of resources)
+				for (let {name, path} of resources)
 				{
 					// to deal with potential CORS issues, we use the pavlovia.org proxy for resources
 					// not hosted on pavlovia.org:
@@ -751,10 +774,10 @@ export class ServerManager extends PsychObject
 						path = "https://pavlovia.org/api/v2/proxy/" + path;
 					}
 
-					const pathStatusData = this._resources.get(name);
+					const resource = this._resources.get(name);
 
 					// the resource has not been registered yet:
-					if (typeof pathStatusData === "undefined")
+					if (typeof resource === "undefined")
 					{
 						self._resources.set(name, {
 							status: ServerManager.ResourceStatus.REGISTERED,
@@ -767,7 +790,7 @@ export class ServerManager extends PsychObject
 					}
 
 					// the resource has been registered but is not downloaded yet:
-					else if (typeof pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					else if (typeof resource.status !== ServerManager.ResourceStatus.DOWNLOADED)
 					{ // else if (typeof pathStatusData.data === 'undefined')
 						self._waitForDownloadComponent.resources.add(name);
 					}
@@ -784,10 +807,10 @@ export class ServerManager extends PsychObject
 				// check whether all resources have been downloaded:
 				for (const name of self._waitForDownloadComponent.resources)
 				{
-					const pathStatusData = this._resources.get(name);
+					const resource = this._resources.get(name);
 
 					// the resource has not been downloaded yet: loop this component
-					if (pathStatusData.status !== ServerManager.ResourceStatus.DOWNLOADED)
+					if (resource.status !== ServerManager.ResourceStatus.DOWNLOADED)
 					{ // if (typeof pathStatusData.data === 'undefined')
 						return Scheduler.Event.FLIP_REPEAT;
 					}
@@ -827,7 +850,7 @@ export class ServerManager extends PsychObject
 		const checkThrottling = (typeof this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp !== "undefined");
 		if (checkThrottling && (now - this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp < this._uploadThrottlePeriod * 60))
 		{
-			return Promise.reject({ ...response, error: "upload canceled by throttling"});
+			return Promise.reject({...response, error: "upload canceled by throttling"});
 		}
 		this._psychoJS.config.experiment.resultsUpload.lastUploadTimestamp = now;
 
@@ -851,10 +874,10 @@ export class ServerManager extends PsychObject
 			{
 				try
 				{
-					const postResponse = await this._queryServerAPI(
+					const postResponse = await this.queryServer(
 						"POST",
 						`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${this._psychoJS.config.session.token}/results`,
-						{ key, value },
+						{key, value},
 						"FORM"
 					);
 					const uploadDataResponse = await postResponse.json();
@@ -865,9 +888,8 @@ export class ServerManager extends PsychObject
 					}
 
 					self.setStatus(ServerManager.Status.READY);
-					resolve({ ...response, ...uploadDataResponse });
-				}
-				catch (error)
+					resolve({...response, ...uploadDataResponse});
+				} catch (error)
 				{
 					console.error(error);
 					self.setStatus(ServerManager.Status.ERROR);
@@ -910,7 +932,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/sessions/${self._psychoJS.config.session.token}/logs`,
 					data,
@@ -925,9 +947,8 @@ export class ServerManager extends PsychObject
 				}
 
 				self.setStatus(ServerManager.Status.READY);
-				resolve({...response, ...uploadLogsResponse });
-			}
-			catch (error)
+				resolve({...response, ...uploadLogsResponse});
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
@@ -951,7 +972,13 @@ export class ServerManager extends PsychObject
 	 *   default message informing the participant to wait for the data to be uploaded to the server
 	 * @returns {Promise<ServerManager.UploadDataPromise>} the response
 	 */
-	async uploadAudioVideo({mediaBlob, tag, waitForCompletion = false, showDialog = false, dialogMsg = "Please wait a few moments while the data is uploading to the server"})
+	async uploadAudioVideo({
+													 mediaBlob,
+													 tag,
+													 waitForCompletion = false,
+													 showDialog = false,
+													 dialogMsg = "Please wait a few moments while the data is uploading to the server"
+												 })
 	{
 		const response = {
 			origin: "ServerManager.uploadAudio",
@@ -981,7 +1008,16 @@ export class ServerManager extends PsychObject
 
 			// prepare the request:
 			const info = this.psychoJS.experiment.extraInfo;
-			const participant = ((typeof info.participant === "string" && info.participant.length > 0) ? info.participant : "PARTICIPANT");
+
+			let participant = "PARTICIPANT";
+			if (typeof info.participant === "string" && info.participant.length > 0)
+			{
+				participant = info.participant;
+			}
+			if (typeof info.participantId === "string" && info.participantId.length > 0)
+			{
+				participant = info.participantId;
+			}
 			const experimentName = (typeof info.expName !== "undefined") ? info.expName : this.psychoJS.config.experiment.name;
 			const datetime = ((typeof info.date !== "undefined") ? info.date : MonotonicClock.getDateStr());
 			const filename = participant + "_" + experimentName + "_" + datetime + "_" + tag;
@@ -1061,13 +1097,12 @@ export class ServerManager extends PsychObject
 
 			this.setStatus(ServerManager.Status.READY);
 			return postMediaResponse;
-		}
-		catch (error)
+		} catch (error)
 		{
 			this.setStatus(ServerManager.Status.ERROR);
 			console.error(error);
 
-			throw { ...response, error };
+			throw {...response, error};
 		}
 	}
 
@@ -1103,7 +1138,7 @@ export class ServerManager extends PsychObject
 					info.participant :
 					"PARTICIPANT";
 
-				const postResponse = await this._queryServerAPI(
+				const postResponse = await this.queryServer(
 					"POST",
 					`surveys/${surveyId}`,
 					{
@@ -1123,9 +1158,8 @@ export class ServerManager extends PsychObject
 				}
 
 				self.setStatus(ServerManager.Status.READY);
-				resolve({ ...response, ...uploadDataResponse });
-			}
-			catch (error)
+				resolve({...response, ...uploadDataResponse});
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
@@ -1163,7 +1197,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const getResponse = await this._queryServerAPI(
+				const getResponse = await this.queryServer(
 					"GET",
 					`surveys/${surveyId}/experiment`
 				);
@@ -1190,9 +1224,8 @@ export class ServerManager extends PsychObject
 				}
 
 				self.setStatus(ServerManager.Status.READY);
-				resolve({ ...response, ...getExperimentParametersResponse });
-			}
-			catch (error)
+				resolve({...response, ...getExperimentParametersResponse});
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
@@ -1227,7 +1260,7 @@ export class ServerManager extends PsychObject
 		{
 			try
 			{
-				const getResponse = await this._queryServerAPI(
+				const getResponse = await this.queryServer(
 					"GET",
 					`experiments/${this._psychoJS.config.gitlab.projectId}/resources`,
 					data
@@ -1247,9 +1280,8 @@ export class ServerManager extends PsychObject
 				}
 
 				self.setStatus(ServerManager.Status.READY);
-				resolve({ ...response, resources: data.resources, resourceDirectory: data.resourceDirectory });
-			}
-			catch (error)
+				resolve({...response, resources: data.resources, resourceDirectory: data.resourceDirectory});
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
@@ -1299,17 +1331,17 @@ export class ServerManager extends PsychObject
 				this.psychoJS.logger.warn(`"${name}" does not appear to have an extension, which may negatively impact its loading. We highly recommend you add an extension.`);
 			}
 
-			const pathStatusData = this._resources.get(name);
-			if (typeof pathStatusData === "undefined")
+			const resource = this._resources.get(name);
+			if (typeof resource === "undefined")
 			{
-				throw Object.assign(response, { error: name + " has not been previously registered" });
+				throw Object.assign(response, {error: name + " has not been previously registered"});
 			}
-			if (pathStatusData.status !== ServerManager.ResourceStatus.REGISTERED)
+			if (resource.status !== ServerManager.ResourceStatus.REGISTERED)
 			{
-				throw Object.assign(response, { error: name + " is already downloaded or is currently already downloading" });
+				throw Object.assign(response, {error: name + " is already downloaded or is currently already downloading"});
 			}
 
-			const pathParts = pathStatusData.path.toLowerCase().split(".");
+			const pathParts = resource.path.toLowerCase().split(".");
 			const pathExtension = (pathParts.length > 1) ? pathParts.pop() : undefined;
 
 			// preload.js with forced binary:
@@ -1317,17 +1349,17 @@ export class ServerManager extends PsychObject
 			{
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
-					src: pathStatusData.path,
+					src: resource.path,
 					type: createjs.Types.BINARY,
 					crossOrigin: "Anonymous",
 				} /*)*/);
 			}
 
-			/* note: ascii .csv are adequately handled in binary format, no need to treat them separately
-			// forced text for .csv:
-			else if (['csv'].indexOf(resourceExtension) > -1)
-				manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
-			*/
+				/* note: ascii .csv are adequately handled in binary format, no need to treat them separately
+				// forced text for .csv:
+				else if (['csv'].indexOf(resourceExtension) > -1)
+					manifest.push({ id: resourceName, src: resourceName, type: createjs.Types.TEXT });
+				*/
 
 			// sound files:
 			else if (["mp3", "mpeg", "opus", "ogg", "oga", "wav", "aac", "caf", "m4a", "weba", "dolby", "flac"].indexOf(extension) > -1)
@@ -1341,7 +1373,7 @@ export class ServerManager extends PsychObject
 			}
 
 			// font files:
-			else if (["ttf", "otf", "woff", "woff2","eot"].indexOf(pathExtension) > -1)
+			else if (["ttf", "otf", "woff", "woff2", "eot"].indexOf(pathExtension) > -1)
 			{
 				fontResources.push(name);
 			}
@@ -1352,12 +1384,19 @@ export class ServerManager extends PsychObject
 				surveyModelResources.push(name);
 			}
 
+			// face-api models
+			// note: the models need to be loaded *after* the face-api library has been loaded
+			else if (name === "face-api-models")
+			{
+				this._faceApiModelsResource = resource;
+			}
+
 			// all other extensions handled by preload.js (download type decided by preload.js):
 			else
 			{
 				preloadManifest.push(/*new createjs.LoadItem().set(*/ {
 					id: name,
-					src: pathStatusData.path,
+					src: resource.path,
 					crossOrigin: "Anonymous",
 				} /*)*/);
 			}
@@ -1382,22 +1421,22 @@ export class ServerManager extends PsychObject
 		// start loading fonts:
 		for (const name of fontResources)
 		{
-			const pathStatusData = this._resources.get(name);
-			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+			const resource = this._resources.get(name);
+			resource.status = ServerManager.ResourceStatus.DOWNLOADING;
 			this.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.DOWNLOADING_RESOURCE,
 				resource: name,
 			});
 
-			const pathExtension = pathStatusData.path.toLowerCase().split(".").pop();
+			const pathExtension = resource.path.toLowerCase().split(".").pop();
 			try
 			{
-				const newFont = await new FontFace(name, `url('${pathStatusData.path}') format('${pathExtension}')`).load();
+				const newFont = await new FontFace(name, `url('${resource.path}') format('${pathExtension}')`).load();
 				document.fonts.add(newFont);
 
 				++this._nbLoadedResources;
 
-				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				resource.status = ServerManager.ResourceStatus.DOWNLOADED;
 				this.emit(ServerManager.Event.RESOURCE, {
 					message: ServerManager.Event.RESOURCE_DOWNLOADED,
 					resource: name,
@@ -1410,12 +1449,11 @@ export class ServerManager extends PsychObject
 						message: ServerManager.Event.DOWNLOAD_COMPLETED,
 					});
 				}
-			}
-			catch (error)
+			} catch (error)
 			{
 				console.error(error);
 				this.setStatus(ServerManager.Status.ERROR);
-				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
+				resource.status = ServerManager.ResourceStatus.ERROR;
 				throw Object.assign(response, {
 					error: `unable to download resource: ${name}: ${error}`
 				});
@@ -1426,8 +1464,8 @@ export class ServerManager extends PsychObject
 		const self = this;
 		for (const name of surveyModelResources)
 		{
-			const pathStatusData = this._resources.get(name);
-			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+			const resource = this._resources.get(name);
+			resource.status = ServerManager.ResourceStatus.DOWNLOADING;
 			this.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.DOWNLOADING_RESOURCE,
 				resource: name,
@@ -1435,7 +1473,7 @@ export class ServerManager extends PsychObject
 
 			try
 			{
-				const getResponse = await this._queryServerAPI("GET", `surveys/${pathStatusData.path}/model`);
+				const getResponse = await this.queryServer("GET", `surveys/${resource.path}/model`);
 
 				const getModelResponse = await getResponse.json();
 
@@ -1454,9 +1492,9 @@ export class ServerManager extends PsychObject
 
 				// note: we encode the json model as a string since it will be decoded in Survey.setModel,
 				// just like the model loaded directly from a resource by preloadJS
-				pathStatusData.data = new TextEncoder().encode(JSON.stringify(getModelResponse['model']));
+				resource.data = new TextEncoder().encode(JSON.stringify(getModelResponse['model']));
 
-				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				resource.status = ServerManager.ResourceStatus.DOWNLOADED;
 				self.emit(ServerManager.Event.RESOURCE, {
 					message: ServerManager.Event.RESOURCE_DOWNLOADED,
 					resource: name,
@@ -1469,12 +1507,11 @@ export class ServerManager extends PsychObject
 						message: ServerManager.Event.DOWNLOAD_COMPLETED,
 					});
 				}
-			}
-			catch(error)
+			} catch (error)
 			{
 				console.error(error);
 				self.setStatus(ServerManager.Status.ERROR);
-				throw { ...response, error: `unable to download resource: ${name}: ${util.toString(error)}` };
+				throw {...response, error: `unable to download resource: ${name}: ${util.toString(error)}`};
 			}
 		}
 
@@ -1482,14 +1519,14 @@ export class ServerManager extends PsychObject
 		// TODO load them sequentially, not all at once!
 		for (const name of soundResources)
 		{
-			const pathStatusData = this._resources.get(name);
-			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
+			const resource = this._resources.get(name);
+			resource.status = ServerManager.ResourceStatus.DOWNLOADING;
 			this.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.DOWNLOADING_RESOURCE,
 				resource: name,
 			});
 			const howl = new Howl({
-				src: pathStatusData.path,
+				src: resource.path,
 				preload: false,
 				autoplay: false,
 			});
@@ -1497,9 +1534,9 @@ export class ServerManager extends PsychObject
 			howl.on("load", (event) =>
 			{
 				++self._nbLoadedResources;
-				pathStatusData.data = howl;
+				resource.data = howl;
 
-				pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
+				resource.status = ServerManager.ResourceStatus.DOWNLOADED;
 				self.emit(ServerManager.Event.RESOURCE, {
 					message: ServerManager.Event.RESOURCE_DOWNLOADED,
 					resource: name,
@@ -1516,8 +1553,9 @@ export class ServerManager extends PsychObject
 
 			howl.on("loaderror", (id, error) =>
 			{
-				// throw { ...response, error: 'unable to download resource: ' + name + ' (' + util.toString(error) + ')' };
-				throw Object.assign(response, { error: "unable to download resource: " + name + " (" + util.toString(error) + ")" });
+				console.error(error);
+				self.setStatus(ServerManager.Status.ERROR);
+				throw { ...response, error: `unable to download resource: ${name}: ${util.toString(error)}` };
 			});
 
 			howl.load();
@@ -1536,12 +1574,13 @@ export class ServerManager extends PsychObject
 			context: "when downloading resources"
 		};
 
-		this._preloadQueue = new createjs.LoadQueue(true, "", true);
+		const queue = new createjs.LoadQueue(true, "", true);
 
+		// set up the callbacks:
 		const self = this;
 
 		// the loading of a specific resource has started:
-		this._preloadQueue.addEventListener("filestart", (event) =>
+		queue.addEventListener("filestart", (event) =>
 		{
 			const pathStatusData = self._resources.get(event.item.id);
 			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADING;
@@ -1553,23 +1592,65 @@ export class ServerManager extends PsychObject
 		});
 
 		// the loading of a specific resource has completed:
-		this._preloadQueue.addEventListener("fileload", (event) =>
+		queue.addEventListener("fileload", async (event) =>
 		{
 			const pathStatusData = self._resources.get(event.item.id);
 			pathStatusData.data = event.result;
 			pathStatusData.status = ServerManager.ResourceStatus.DOWNLOADED;
 
-			++self._nbLoadedResources;
+			++ self._nbLoadedResources;
 			self.emit(ServerManager.Event.RESOURCE, {
 				message: ServerManager.Event.RESOURCE_DOWNLOADED,
 				resource: event.item.id,
 			});
+
+			// if this resource is "face-api.js" and a "face-api-models" resource has been given,
+			// then download the models
+			if (event.item.id === "face-api.js" && typeof self._faceApiModelsResource !== "undefined")
+			{
+				self._faceApiModelsResource.status = ServerManager.ResourceStatus.DOWNLOADING;
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.DOWNLOADING_RESOURCE,
+					resource: "face-api-models",
+				});
+
+				try
+				{
+					await faceapi.nets.tinyFaceDetector.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceLandmark68Net.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceRecognitionNet.loadFromUri(self._faceApiModelsResource.path);
+					await faceapi.nets.faceExpressionNet.loadFromUri(self._faceApiModelsResource.path);
+				}
+				catch (error)
+				{
+					console.error(error);
+					self.setStatus(ServerManager.Status.ERROR);
+					self._faceApiModelsResource.status = ServerManager.ResourceStatus.ERROR;
+					throw { ...response, error: `unable to download resource: face-api-models: ${error}`};
+				}
+
+				self._faceApiModelsResource.status = ServerManager.ResourceStatus.DOWNLOADED;
+				self.emit(ServerManager.Event.RESOURCE, {
+					message: ServerManager.Event.RESOURCE_DOWNLOADED,
+					resource: "face-api-models",
+				});
+
+				++ self._nbLoadedResources;
+				if (self._nbLoadedResources === self._resources.size)
+				{
+					self.setStatus(ServerManager.Status.READY);
+					self.emit(ServerManager.Event.RESOURCE, {
+						message: ServerManager.Event.DOWNLOAD_COMPLETED,
+					});
+				}
+			}
 		});
 
 		// the loading of all given resources completed:
-		this._preloadQueue.addEventListener("complete", (event) =>
+		queue.addEventListener("complete", (event) =>
 		{
 			self._preloadQueue.close();
+
 			if (self._nbLoadedResources === self._resources.size)
 			{
 				self.setStatus(ServerManager.Status.READY);
@@ -1579,59 +1660,168 @@ export class ServerManager extends PsychObject
 			}
 		});
 
-		// error: we throw an exception
-		this._preloadQueue.addEventListener("error", (event) =>
+		// error: we inform the participant or throw an exception
+		queue.addEventListener("error", async (event) =>
 		{
-			self.setStatus(ServerManager.Status.ERROR);
 			if (typeof event.item !== "undefined")
 			{
-				const pathStatusData = self._resources.get(event.item.id);
-				pathStatusData.status = ServerManager.ResourceStatus.ERROR;
-				throw Object.assign(response, {
-					error: "unable to download resource: " + event.item.id + " (" + event.title + ")",
-				});
+				await self._processLoadingError(event.item.id);
+			}
+			else if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
+			{
+				await self._processLoadingError(event.data.id);
 			}
 			else
 			{
-				console.error(event);
-
-				if (event.title === "FILE_LOAD_ERROR" && typeof event.data !== "undefined")
-				{
-					const id = event.data.id;
-					const title = event.data.src;
-
-					throw Object.assign(response, {
-						error: "unable to download resource: " + id + " (" + title + ")",
-					});
-				}
-				else
-				{
-					throw Object.assign(response, {
-						error: "unspecified download error",
-					});
-				}
+				throw {...response, error: "unspecified download error"};
 			}
 		});
+
+		return queue;
+	}
+
+	/**
+	 * Process a loading error.
+	 *
+	 * @protected
+	 * @param {string} id - the resource id
+	 */
+	async _processLoadingError(id)
+	{
+		const response = {
+			origin: "ServerManager._processLoadingError",
+			context: "when processing a loading error"
+		};
+
+		const resource = this._resources.get(id);
+
+		// schedule the download of the given resource:
+		const scheduleDownload = (rsc) =>
+		{
+			this._resourcesWithDownloadError.delete(rsc.name);
+
+			++rsc.downloadOptions.nbAttempts;
+			setTimeout(
+				() =>
+				{
+					this._preloadQueue.loadFile({
+						id: rsc.name,
+						src: rsc.path,
+						crossOrigin: "Anonymous"
+					});
+				},
+				rsc.downloadOptions.attemptPeriod_ms
+			);
+		};
+
+		// we have run out of download attempts:
+		if (resource.downloadOptions.nbAttempts >= resource.downloadOptions.maxAttempts)
+		{
+			// if there is a message for when attempts run out, we show it in a pop-up dialog box and
+			// offer the user the possibility to either quit the experiment, or to try again:
+			if (typeof resource.downloadOptions.onAttemptRunOut != "undefined")
+			{
+				this._resourcesWithDownloadError.set(resource.name, resource);
+
+				let msg = resource.downloadOptions.onAttemptRunOut;
+				msg += "<ul>";
+				for (const [name, _] of this._resourcesWithDownloadError)
+				{
+					msg += `<li>${name}</li>`;
+				}
+				msg += "</ul>";
+
+				// we have run out of download attempts, we present the participant with a message
+				// with the list of resources that could not be downloaded
+				try
+				{
+					await this._psychoJS.gui.dialog({
+						warning: msg,
+						OKLabel: "Try again",
+						onOK: () =>
+						{
+							for (const [name, _] of this._resourcesWithDownloadError)
+							{
+								const rsc = this._resources.get(name);
+
+								// reset the number of attempts:
+								rsc.downloadOptions.nbAttempts = 0;
+
+								// schedule another attempt:
+								scheduleDownload(rsc);
+							}
+						},
+						showCancel: true,
+						cancelLabel: "Quit",
+						onCancel: () => this._psychoJS.quit({
+							isCompleted: false
+						})
+					});
+				} catch (error)
+				{
+					// note: the purpose of this try/catch is to catch the promise rejection triggered by gui.dialog()
+					// when the user clicks on [Quit]
+				}
+
+				return;
+			}
+
+			// otherwise, raise an error:
+			resource.status = ServerManager.ResourceStatus.ERROR;
+			this.setStatus(ServerManager.Status.ERROR);
+
+			throw {...response, error: `unable to download resource: ${id} (${resource.path})`};
+		}
+		else
+		{
+			// show a message to the participant, if need be:
+			const msg = resource.downloadOptions.onDownloadError(resource);
+			if (typeof msg !== "undefined")
+			{
+				new Notify({
+					status: 'warning',
+					title: `resource: ${id}`,
+					text: msg,
+					effect: 'fade',
+					speed: 300,
+					customClass: '',
+					customIcon: '',
+					showIcon: true,
+					showCloseButton: true,
+					autoclose: true,
+					autotimeout: resource.downloadOptions.attemptPeriod_ms * 0.8,
+					notificationsGap: null,
+					notificationsPadding: 0,
+					type: 'outline',
+					position: 'right bottom',
+					customWrapper: '',
+				});
+			}
+
+			// schedule another attempt:
+			scheduleDownload(resource);
+		}
 	}
 
 	/**
 	 * Query the pavlovia server API.
 	 *
-	 * @protected
-	 * @param method	the HTTP method, i.e. GET, PUT, POST, or DELETE
-	 * @param path		the resource path, without the server address
-	 * @param data		the data to be sent
-	 * @param {string} [contentType="JSON"]	the content type, either JSON or FORM
+	 * @param method												- the HTTP method, i.e. GET, PUT, POST, or DELETE
+	 * @param url														- the resource url, without the server address
+	 * @param data													- the data to be sent
+	 * @param {string} [contentType="JSON"]	- the content type, either JSON or FORM
+	 * @returns {Promise<Response>}						the fetch response
 	 */
-	_queryServerAPI(method, path, data, contentType = "JSON")
+	queryServer(method, url, data, contentType = "JSON")
 	{
-		const fullPath = `${this._psychoJS.config.pavlovia.URL}/api/v2/${path}`;
+		// add the server api url (v2 currently):
+		const fullUrl = `${this._psychoJS.config.pavlovia.URL}/api/v2/${url}`;
 
 		if (method === "PUT" || method === "POST" || method === "DELETE")
 		{
 			if (contentType === "JSON")
 			{
-				return fetch(fullPath, {
+				return fetch(fullUrl, {
 					method,
 					mode: 'cors',
 					cache: 'no-cache',
@@ -1643,8 +1833,7 @@ export class ServerManager extends PsychObject
 					},
 					body: JSON.stringify(data)
 				});
-			}
-			else
+			} else
 			{
 				const formData = new FormData();
 				for (const attribute in data)
@@ -1652,7 +1841,7 @@ export class ServerManager extends PsychObject
 					formData.append(attribute, data[attribute]);
 				}
 
-				return fetch(fullPath, {
+				return fetch(fullUrl, {
 					method,
 					mode: 'cors',
 					cache: 'no-cache',
@@ -1666,10 +1855,10 @@ export class ServerManager extends PsychObject
 
 		if (method === "GET")
 		{
-			let url = new URL(fullPath);
+			const url = new URL(fullUrl);
 			url.search = new URLSearchParams(data).toString();
 
-			return fetch(url, {
+			return fetch(url.href, {
 				method: "GET",
 				mode: "cors",
 				cache: "no-cache",

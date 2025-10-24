@@ -3,7 +3,7 @@
  *
  * @author Alain Pitiot
  * @author Sijia Zhao - fine-grained resource loading
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2025 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -167,22 +167,16 @@ export class GUI
 					const value = dictionary[key];
 					const keyId = "form-input-" + keyIdx;
 
-					// only create an input if the key is not in the URL:
+					// only create an input if the key is not in the URL
+					// note: we also need to deal with the option extensions
 					const cleanedDictKey = key.trim().toLowerCase();
-					const isIncluded = !(cleanedDictKey in excludedInfo);
-					/*let inUrl = false;
-					infoFromUrl.forEach((urlValue, urlKey) =>
+					let isIncluded = !(cleanedDictKey in excludedInfo);
+					if (isIncluded && (cleanedDictKey.slice(-4) === "|req" || cleanedDictKey.slice(-4) === "|cfg" || cleanedDictKey.slice(-4) === "|fix" || cleanedDictKey.slice(-4) === "|opt"))
 					{
-						const cleanedUrlKey = urlKey.trim().toLowerCase();
-						if (cleanedUrlKey === cleanedDictKey)
-						{
-							inUrl = true;
-							// break;
-						}
-					});*/
+						isIncluded = !(cleanedDictKey.slice(0, -4) in excludedInfo);
+					}
 
 					if (isIncluded)
-					// if (!inUrl)
 					{
 						atLeastOneIncludedKey = true;
 
@@ -225,8 +219,14 @@ export class GUI
 
 							markup += "</select>";
 						}
+
+						// if the value is a boolean, we use a checkbox:
+						else if (typeof value === "boolean")
+						{
+							markup += `<input type='checkbox' name='${key}' id='${keyId}' class='checkbox' ${value ? 'checked' : ''} />`;
+						}
+
 						// otherwise we use a single string input:
-						//if (typeof value === 'string')
 						else
 						{
 							markup += `<input type='text' name='${key}' id='${keyId}' value='${value}' class='text'>`;
@@ -328,8 +328,10 @@ export class GUI
 	 * @param {Object.<string, *>} options.error - an exception
 	 * @param {string} options.warning - a warning message
 	 * @param {boolean} [options.showOK=true] - whether to show the OK button
+	 * @param {string} [options.OKLabel="OK"] - the label for the OK button
 	 * @param {GUI.onOK} [options.onOK] - function called when the participant presses the OK button
 	 * @param {boolean} [options.showCancel=false] - whether to show the Cancel button
+	 * @param {string} [options.cancelLabel="OK"] - the label for the Cancel button
 	 * @param {GUI.onCancel} [options.onCancel] - function called when the participant presses the Cancel button
 	 */
 	dialog({
@@ -337,154 +339,157 @@ export class GUI
 		warning,
 		error,
 		showOK = true,
+		OKLabel = "OK",
 		onOK,
 		showCancel = false,
+		cancelLabel = "Cancel",
 		onCancel
 	} = {})
 	{
-		// close the previously opened dialog box, if there is one:
-		this.closeDialog();
-
-		// prepare the markup for the a11y-dialog:
-		let markup = "<div class='dialog-container' id='experiment-dialog' aria-hidden='true' role='alertdialog'>";
-		markup += "<div class='dialog-overlay'></div>";
-		markup += "<div class='dialog-content'>";
-
-		// we are displaying an error:
-		if (typeof error !== "undefined")
+		// return a promise:
+		return new Promise( async (resolve, reject) =>
 		{
-			this._psychoJS.logger.fatal(util.toString(error));
+			// close the previously opened dialog box, if there is one:
+			this.closeDialog();
 
-			// deal with null error:
-			if (!error)
-			{
-				error = "Unspecified JavaScript error";
-			}
+			// prepare the markup for the a11y-dialog:
+			let markup = "<div class='dialog-container' id='experiment-dialog' aria-hidden='true' role='alertdialog'>";
+			markup += "<div class='dialog-overlay'></div>";
+			markup += "<div class='dialog-content'>";
 
-			// go through the error stack and look for errorCode if there is one:
-			let errorCode = null;
-			let stackCode = "<ul>";
-			while (true)
+			// we are displaying an error:
+			if (typeof error !== "undefined")
 			{
-				if (typeof error === "object" && "errorCode" in error)
+				this._psychoJS.logger.fatal(util.toString(error));
+
+				// deal with null error:
+				if (!error)
 				{
-					errorCode = error.errorCode;
+					error = "Unspecified JavaScript error";
 				}
 
-				if (typeof error === "object" && "context" in error)
+				// go through the error stack and look for errorCode if there is one:
+				let errorCode = null;
+				let stackCode = "<ul>";
+				while (true)
 				{
-					stackCode += "<li>" + error.context + "</li>";
-					error = error.error;
-				}
-				else
-				{
-					// limit the size of the error:
-					if (error.length >= 1000)
+					if (typeof error === "object" && "errorCode" in error)
 					{
-						error = error.substring(1, 1000);
+						errorCode = error.errorCode;
 					}
 
-					stackCode += "<li><b>" + error + "</b></li>";
-					break;
+					if (typeof error === "object" && "context" in error)
+					{
+						stackCode += "<li>" + error.context + "</li>";
+						error = error.error;
+					} else
+					{
+						// limit the size of the error:
+						if (error.length >= 1000)
+						{
+							error = error.substring(1, 1000);
+						}
+
+						stackCode += "<li><b>" + error + "</b></li>";
+						break;
+					}
+				}
+				stackCode += "</ul>";
+
+				// if we found an errorCode, we replace the stack-based message by a more user-friendly one:
+				if (errorCode)
+				{
+					const error = this._userFriendlyError(errorCode);
+					markup += `<div id='experiment-dialog-title' class='dialog-title ${error.class}'><p>${error.title}</p></div>`;
+					markup += "<div class='scrollable-container'>";
+					markup += `<p>${error.text}</p>`;
+					markup += "</div>";
+				} else
+				{
+					markup += `<div id='experiment-dialog-title' class='dialog-title dialog-error'><p>Error</p></div>`;
+					markup += "<div class='scrollable-container'>";
+					markup += `<p>Unfortunately we encountered the following error:</p>`;
+					markup += stackCode;
+					markup += "<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>";
+					markup += "</div>";
 				}
 			}
-			stackCode += "</ul>";
 
-			// if we found an errorCode, we replace the stack-based message by a more user-friendly one:
-			if (errorCode)
+			// we are displaying a warning:
+			else if (typeof warning !== "undefined")
 			{
-				const error = this._userFriendlyError(errorCode);
-				markup += `<div id='experiment-dialog-title' class='dialog-title ${error.class}'><p>${error.title}</p></div>`;
+				markup += `<div id='experiment-dialog-title' class='dialog-title dialog-warning'><p>Warning</p></div>`;
 				markup += "<div class='scrollable-container'>";
-				markup += `<p>${error.text}</p>`;
+				markup += `<p>${warning}</p>`;
 				markup += "</div>";
 			}
-			else
+
+			// we are displaying a message:
+			else if (typeof message !== "undefined")
 			{
-				markup += `<div id='experiment-dialog-title' class='dialog-title dialog-error'><p>Error</p></div>`;
+				markup += "<div id='experiment-dialog-title' class='dialog-title'><p>Message</p></div>";
 				markup += "<div class='scrollable-container'>";
-				markup += `<p>Unfortunately we encountered the following error:</p>`;
-				markup += stackCode;
-				markup += "<p>Try to run the experiment again. If the error persists, contact the experiment designer.</p>";
+				markup += `<p>${message}</p>`;
 				markup += "</div>";
 			}
-		}
 
-		// we are displaying a warning:
-		else if (typeof warning !== "undefined")
-		{
-			markup += `<div id='experiment-dialog-title' class='dialog-title dialog-warning'><p>Warning</p></div>`;
-			markup += "<div class='scrollable-container'>";
-			markup += `<p>${warning}</p>`;
-			markup += "</div>";
-		}
-
-		// we are displaying a message:
-		else if (typeof message !== "undefined")
-		{
-			markup += "<div id='experiment-dialog-title' class='dialog-title'><p>Message</p></div>";
-			markup += "<div class='scrollable-container'>";
-			markup += `<p>${message}</p>`;
-			markup += "</div>";
-		}
-
-		// if (showOK || showCancel)
-		// {
-		// 	markup += "<hr>";
-		// }
-		if (showCancel || showOK)
-		{
-			markup += "<div class='dialog-button-group'>";
-			if (showCancel)
+			if (showCancel || showOK)
 			{
-				markup += "<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>Cancel</button>";
+				markup += "<div class='dialog-button-group'>";
+				if (showCancel)
+				{
+					markup += `<button id='dialogCancel' class='dialog-button' aria-label='Close dialog'>${cancelLabel}</button>`;
+				}
+				if (showOK)
+				{
+					markup += `<button id='dialogOK' class='dialog-button' aria-label='Close dialog'>${OKLabel}</button>`;
+				}
+				markup += "</div>"; // button-group
 			}
+			markup += "</div></div>";
+
+			// replace root by the markup code:
+			const dialogElement = document.getElementById("root");
+			dialogElement.innerHTML = markup;
+
+			// init and open the dialog box:
+			const dialogDiv = document.getElementById("experiment-dialog");
+			this._dialog = new A11yDialog(dialogDiv);
+			this._dialog.show();
+
+			// button callbacks:
 			if (showOK)
 			{
-				markup += "<button id='dialogOK' class='dialog-button' aria-label='Close dialog'>Ok</button>";
+				this._okButton = document.getElementById("dialogOK");
+				this._okButton.onclick = () =>
+				{
+					this.closeDialog();
+					resolve();
+
+					// execute callback function:
+					if (typeof onOK !== "undefined")
+					{
+						onOK();
+					}
+				};
 			}
-			markup += "</div>"; // button-group
-		}
-		markup += "</div></div>";
 
-		// replace root by the markup code:
-		const dialogElement = document.getElementById("root");
-		dialogElement.innerHTML = markup;
-
-		// init and open the dialog box:
-		const dialogDiv = document.getElementById("experiment-dialog");
-		this._dialog = new A11yDialog(dialogDiv);
-		this._dialog.show();
-
-		// button callbacks:
-		if (showOK)
-		{
-			this._okButton = document.getElementById("dialogOK");
-			this._okButton.onclick = () =>
+			if (showCancel)
 			{
-				this.closeDialog();
-
-				// execute callback function:
-				if (typeof onOK !== "undefined")
+				this._cancelButton = document.getElementById("dialogCancel");
+				this._cancelButton.onclick = () =>
 				{
-					onOK();
-				}
-			};
-		}
-		if (showCancel)
-		{
-			this._cancelButton = document.getElementById("dialogCancel");
-			this._cancelButton.onclick = () =>
-			{
-				this.closeDialog();
+					this.closeDialog();
+					reject();
 
-				// execute callback function:
-				if (typeof onCancel !== "undefined")
-				{
-					onCancel();
-				}
-			};
-		}
+					// execute callback function:
+					if (typeof onCancel !== "undefined")
+					{
+						onCancel();
+					}
+				};
+			}
+		});
 	}
 
 	/**
@@ -606,19 +611,29 @@ export class GUI
 		// update the dictionary:
 		Object.keys(this._dictionary).forEach((key, keyIdx) =>
 		{
+			const value = this._dictionary[key];
+
+			// deal with field options:
+			if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+			{
+				delete this._dictionary[key];
+				key = key.slice(0, -4);
+				this._dictionary[key] = value;
+			}
+
 			const input = document.getElementById("form-input-" + keyIdx);
 			if (input)
 			{
-				// deal with field options:
-				if (key.slice(-4) === "|req" || key.slice(-4) === "|cfg" || key.slice(-4) === "|fix" || key.slice(-4) === "|opt")
+				if (input.type === "checkbox")
 				{
-					delete this._dictionary[key];
-					key = key.slice(0, -4);
+					this._dictionary[key] = input.checked;
 				}
-				this._dictionary[key] = input.value;
+				else
+				{
+					this._dictionary[key] = input.value;
+				}
 			}
 		});
-
 
 		// Start Tone here, since a user action is required to initiate the audio context:
 		Tone.start();

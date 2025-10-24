@@ -2,7 +2,7 @@
  * Survey Stimulus.
  *
  * @author Alain Pitiot and Nikita Agafonov
- * @copyright (c) 2023 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -77,7 +77,7 @@ export class Survey extends VisualStim
 	 * 	on every frame flip
 	 * @param {boolean} [options.autoLog= false] - whether to log
 	 */
-	constructor({ name, win, model, surveyId, pos, units, ori, size, depth, autoDraw, autoLog } = {})
+	constructor({ name, win, model, surveyId, saveOnPageChange, pos, units, ori, size, depth, autoDraw, autoLog } = {})
 	{
 		super({ name, win, units, ori, depth, pos, size, autoDraw, autoLog });
 
@@ -120,10 +120,8 @@ export class Survey extends VisualStim
 			this.size = (this.unit === "norm") ? [2.0, 2.0] : [1.0, 1.0];
 		}
 
-		this._addAttribute(
-			"model",
-			model
-		);
+		this._addAttribute("model", model);
+		this._addAttribute("saveOnPageChange", saveOnPageChange, false);
 
 		// the default surveyId is an uuid based on the experiment id (or name) and the survey name:
 		// this way, it is always the same within a given experiment
@@ -182,6 +180,16 @@ export class Survey extends VisualStim
 					const encodedModel = this.psychoJS.serverManager.getResource(model);
 					const decodedModel = new TextDecoder("utf-8").decode(encodedModel);
 					model = JSON.parse(decodedModel);
+
+					// make sure that [Previous] buttons appear by default:
+					if (!('surveySettings' in model))
+					{
+						model['surveySettings'] = { showPrevButton: true };
+					}
+					else
+					{
+						model['surveySettings']['showPrevButton'] = true;
+					}
 				}
 
 				// model should now be an object:
@@ -194,7 +202,10 @@ export class Survey extends VisualStim
 				// convert it:
 				if (!('surveyFlow' in model))
 				{
+					const surveyName = ("surveyName" in model) ? model.surveyName : "<unknown survey>";
+
 					model = {
+						surveyName,
 						surveys: [model],
 						embeddedData: [],
 						// surveysMap: {},
@@ -204,11 +215,12 @@ export class Survey extends VisualStim
 							type: "SEQUENTIAL_GROUP",
 							nodes: [{
 								type: "QUESTION_BLOCK",
+								name: "block_1",
 								surveyIdx: 0
 							}]
 						},
 
-						surveySettings: { showPrevButton: false },
+						surveySettings: { showPrevButton: true },
 
 						// surveyRunLogic: {},
 						inQuestionRandomization: {},
@@ -484,7 +496,7 @@ export class Survey extends VisualStim
 			// if a survey div does not exist, create it:
 			if (document.getElementById(this._surveyDivId) === null)
 			{
-				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey'></div>`);
+				document.body.insertAdjacentHTML("beforeend", `<div id=${this._surveyDivId} class='survey' dir='auto'></div>`);
 			}
 
 			// start the survey flow:
@@ -858,8 +870,17 @@ export class Survey extends VisualStim
 	 *
 	 * @protected
 	 */
-	_onCurrentPageChanging (surveyModel, options)
+	_onCurrentPageChanging(surveyModel, options)
 	{
+		// if partial saving is activated, then save the results:
+		if (this._saveOnPageChange)
+		{
+			Object.assign(this._overallSurveyResults, surveyModel.data);
+
+			// TODO queue the saves?
+			this.save();
+		}
+
 		if (this._lastPageSwitchHandledIdx === options.oldCurrentPage.visibleIndex)
 		{
 			// When surveyModel.currentPage is called from this handler, pagechange event gets triggered again.
@@ -924,7 +945,6 @@ export class Survey extends VisualStim
 	{
 		// note: we need to add the node title to the responses
 		Object.assign(this._overallSurveyResults, surveyModel.data);
-
 
 		let completionCode = Survey.SURVEY_COMPLETION_CODES.NORMAL;
 		const questions = surveyModel.getAllQuestions();
@@ -1008,19 +1028,40 @@ export class Survey extends VisualStim
 	 * @param {Object} surveyData - the complete surveyData (model)
 	 * @protected
 	 */
-	_runQuestionBlock(node, surveyData)
+	_runQuestionBlock(node, surveyData, prevBlockResults)
 	{
 		this._lastPageSwitchHandledIdx = -1;
 		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
 
 		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
-		for (let j in this._variables)
+
+		// console.log("running block: ", node.name, "variables=", this._variables, "prevBlockResults=", prevBlockResults);
+		for (const name in this._variables)
 		{
-			// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
-			// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
-			this._surveyJSModel.variablesHash[j] = this._variables[j];
-			// this._surveyModel.setVariable(j, this._variables[j]);
+			// use non-augmented names here (i.e. not <block name>/<variable name>) to deal with variables
+			// passed as URL parameters:
+			this._surveyJSModel.setVariable(name, this._variables[name]);
+
+			// also use augmented names:
+			this._surveyJSModel.setVariable(`${node.name}/${name}`, this._variables[name]);
 		}
+
+		// turn the results from the previous blocks into variables for this block:
+		for (const name in prevBlockResults)
+		{
+			this._surveyJSModel.setVariable(name, prevBlockResults[name]);
+		}
+
+		/*
+				// Nikita approach:
+				for (let j in this._variables)
+				{
+					// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
+					// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
+					this._surveyJSModel.variablesHash[j] = this._variables[j];
+					// this._surveyModel.setVariable(j, this._variables[j]);
+				}
+		*/
 
 		if (!this._surveyJSModel.isInitialized)
 		{
@@ -1109,7 +1150,7 @@ export class Survey extends VisualStim
 					}
 				}
 			}
-			console.log("embedded data variables accumulation took", performance.now() - t);
+			// console.log("embedded data variables accumulation took", performance.now() - t);
 		}
 
 		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
@@ -1125,8 +1166,8 @@ export class Survey extends VisualStim
 		// QUESTION_BLOCK:
 		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
 		{
-			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData);
-			Object.assign({}, prevBlockResults, this._surveyJSModel.data);
+			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData, prevBlockResults);
+			Object.assign(prevBlockResults, this._surveyJSModel.data);
 
 			// SkipLogic had destination set to ENDOFSURVEY.
 			if (surveyCompletionCode === Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
@@ -1234,7 +1275,7 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Augment the model question names with model names.
+	 * Augment the model question names and variables with block names.
 	 *
 	 * @protected
 	 */
@@ -1245,18 +1286,89 @@ export class Survey extends VisualStim
 			return;
 		}
 
-		const surveys = this._surveyData["surveys"];
-		for (const survey of surveys)
+		// augment all variables
+		// note: we do not update variables with a / in them, since they have already been
+		// augmented by the designer
+		const augmentVariables = (nodeName, txt) =>
 		{
-			if (!("title" in survey) || !("pages" in survey))
+			// the below regex captures any sequence of characters between { and } that does not contain /:
+			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
+		};
+
+		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
+		// and the names of the variables, in the corresponding survey:
+		const updateQuestionNames = (node) =>
+		{
+			if (node.type === "QUESTION_BLOCK")
 			{
-				continue;
+				// get the associated survey:
+				if (("surveyIdx" in node) && (node.surveyIdx < this._surveyData.surveys.length))
+				{
+					const survey = this._surveyData.surveys[node.surveyIdx];
+
+					// update all questions on all pages:
+					if ("pages" in survey)
+					{
+						for (const page of survey.pages)
+						{
+							// go over all fields of the page, and augment all variables
+							// note: this is much more generic than going over specific fields,
+							// such as visibleIf, enableIf, etc.
+							for (const field in page)
+							{
+								if (page.hasOwnProperty(field) && typeof page[field] === "string")
+								{
+									page[field] = augmentVariables(node.name, page[field]);
+								}
+							}
+
+							// iterate over all elements:
+							if ("elements" in page)
+							{
+								for (const element of page.elements)
+								{
+									// if the element has no title, set it to the name
+									// (since we are going to change the name)
+									if (!("title" in element))
+									{
+										element.title = element.name;
+									}
+
+									// augment the name of the element with the name of the block:
+									if (typeof node.name !== "undefined")
+									{
+										element.name = `${node.name}/${element.name}`;
+									}
+
+									// go over all fields of the element, and augment all variables
+									// note: this is much more generic than going over specific fields, such as visibleIf, enableIf,
+									// expression, etc.
+									for (const field in element)
+									{
+										if (element.hasOwnProperty(field) && typeof element[field] === "string")
+										{
+											element[field] = augmentVariables(node.name, element[field]);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 
-			for (const page of survey["pages"])
+			// if this node has children, iterate over all of them:
+			if ("nodes" in node)
 			{
-				
+				for (const childNode of node.nodes)
+				{
+					updateQuestionNames(childNode);
+				}
 			}
-		}
+		};
+
+		updateQuestionNames(this._surveyData.surveyFlow);
+
+		console.log("augmented surveys: ", JSON.stringify(this._surveyData.surveys));
 	}
 }
