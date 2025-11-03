@@ -373,13 +373,6 @@ export class Survey extends VisualStim
 	 */
 	getResponse()
 	{
-		// if (typeof this._surveyModel === "undefined")
-		// {
-		// 	return {};
-		// }
-
-		// return this._surveyModel.data;
-
 		return this._overallSurveyResults;
 	}
 
@@ -849,12 +842,14 @@ export class Survey extends VisualStim
 	 *
 	 * @protected
 	 */
-	_onCurrentPageChanging(surveyModel, options)
+	_onCurrentPageChanging(node, surveyJSModel, options)
 	{
+		console.log("_onCurrentPageChanging for node:", node);
+
 		// if partial saving is activated, then save the results:
 		if (this._saveOnPageChange)
 		{
-			Object.assign(this._overallSurveyResults, surveyModel.data);
+			Object.assign(this._overallSurveyResults, surveyJSModel.data);
 
 			// TODO queue the saves?
 			this.save();
@@ -867,7 +862,8 @@ export class Survey extends VisualStim
 			return;
 		}
 		this._lastPageSwitchHandledIdx = options.oldCurrentPage.visibleIndex;
-		const questions = surveyModel.getCurrentPageQuestions();
+
+		const questions = surveyJSModel.getCurrentPageQuestions();
 
 		// It is guaranteed that the question with skip logic is always last on the page.
 		const lastQuestion = questions[questions.length - 1];
@@ -875,26 +871,26 @@ export class Survey extends VisualStim
 		if (skipLogic !== undefined)
 		{
 			this._expressionsRunner.expressionExecutor.setExpression(skipLogic.expression);
-			const result = this._expressionsRunner.run(surveyModel.data);
+			const result = this._expressionsRunner.run(surveyJSModel.data);
 			if (result)
 			{
 				options.allowChanging = false;
 
 				if (skipLogic.destination === "ENDOFSURVEY")
 				{
-					surveyModel.setCompleted();
+					surveyJSModel.setCompleted();
 					this._blockPromiseResolve(Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY);
 				}
 				else if (skipLogic.destination === "ENDOFBLOCK")
 				{
-					surveyModel.setCompleted();
+					surveyJSModel.setCompleted();
 					this._blockPromiseResolve(Survey.SURVEY_EVENT.SKIP_TO_END_OF_BLOCK);
 				}
 				else
 				{
 					// skipLogic.destination is a question within the current survey (qualtrics block).
-					const targetQuestion = surveyModel.getQuestionByName(skipLogic.destination);
-					const page = surveyModel.getPageByQuestion(targetQuestion);
+					const targetQuestion = surveyJSModel.getQuestionByName(skipLogic.destination);
+					const page = surveyJSModel.getPageByQuestion(targetQuestion);
 					const pageQuestions = page.questions;
 					let i;
 					for (i = 0; i < pageQuestions.length; i++)
@@ -906,7 +902,7 @@ export class Survey extends VisualStim
 						pageQuestions[i].visible = false;
 					}
 					targetQuestion.focus();
-					surveyModel.currentPage = page;
+					surveyJSModel.currentPage = page;
 				}
 			}
 		}
@@ -927,6 +923,13 @@ export class Survey extends VisualStim
 		// note: we need to add the node title to the responses
 		Object.assign(this._overallSurveyResults, surveyJSModel.data);
 		node.data = surveyJSModel.data;
+
+		// since _onCurrentPageChanging is not triggered when the surveyJS ends, we need to save here as well
+		if (this._saveOnPageChange)
+		{
+			// TODO queue the saves?
+			this.save();
+		}
 
 		let completionStatus = Survey.SURVEY_EVENT.NEXT_NODE;
 		const questions = surveyJSModel.getAllQuestions();
@@ -1040,24 +1043,34 @@ export class Survey extends VisualStim
 		}
 
 		// turn the results from the previous blocks into variables for this block:
-		// TODO this won't work if the user pressed the [Previous] button from the next node
 		for (const name in prevBlockResults)
 		{
-			this._surveyJSModel.setVariable(name, prevBlockResults[name]);
+			// TODO it appears that if we turn results from this block into variables for this block, the result disappear
+			//  from _surveyJSModel.data: why is that?!?
+			// make sure that name is not a question:
+			let nameIsQuestion = false;
+			for (let question of this._surveyJSModel.getAllQuestions())
+			{
+				if (question.name === name)
+				{
+					nameIsQuestion = true;
+					break;
+				}
+			}
+			if (!nameIsQuestion)
+			{
+				this._surveyJSModel.setVariable(name, prevBlockResults[name]);
+			}
 		}
-
-		// if results for this node are already available in _overallSurveyResults, then
-		// pre-configure the surveyJS model:
-		// TODO
 
 		// initialise the SurveyJS survey, if need be:
 		if (!this._surveyJSModel.isInitialized)
 		{
-			console.log("Init surveyJS for node:", node);
+			console.log("Init surveyJS for node:", node, "with prevBlockResults:", prevBlockResults);
 
 			this._registerCustomComponentCallbacks(this._surveyJSModel);
 			this._surveyJSModel.onValueChanged.add(this._onQuestionValueChanged.bind(this));
-			this._surveyJSModel.onCurrentPageChanging.add(this._onCurrentPageChanging.bind(this));
+			this._surveyJSModel.onCurrentPageChanging.add( (surveyJSModel, options) => this._onCurrentPageChanging(node, surveyJSModel, options) );
 			this._surveyJSModel.onComplete.add( (surveyJSModel, options) => this._onSurveyJSComplete(node, surveyJSModel, options) );
 			this._surveyJSModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
 			this._surveyJSModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
@@ -1075,6 +1088,7 @@ export class Survey extends VisualStim
 
 					// add the current SurveyJS survey's data to the overall results:
 					Object.assign(this._overallSurveyResults, this._surveyJSModel.data);
+					node.data = this._surveyJSModel.data;
 
 					// move to the previous block (if there is one):
 					this._blockPromiseResolve(Survey.SURVEY_EVENT.PREV_NODE);
@@ -1333,7 +1347,7 @@ export class Survey extends VisualStim
 		const augmentVariables = (nodeName, txt) =>
 		{
 			// the below regex captures any sequence of characters between { and } that does not contain /:
-			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
+			return txt.replace(/\{([^\/}]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
 		};
 
 		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
