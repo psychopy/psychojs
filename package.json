@@ -24,7 +24,9 @@
     "lint:css": "csslint src",
     "lint:js": "eslint src",
     "lint:scripts": "eslint scripts --ext .cjs",
-    "start": "npm run build"
+    "start": "npm run build",
+    "test": "jest",
+    "test:quest": "jest tests/quest-handler*.test.js"
   },
   "dependencies": {
     "howler": "^2.2.3",
@@ -36,10 +38,13 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@jest/globals": "^30.2.0",
     "csslint": "^1.0.5",
     "esbuild": "^0.15.16",
     "eslint": "^8.29.0",
-    "jsdoc": "^3.6.11"
+    "jest": "^30.2.0",
+    "jsdoc": "^3.6.11",
+    "ts-jest": "^29.4.5"
   },
   "engines": {
     "node": ">=14.15.0",

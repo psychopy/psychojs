@@ -149,7 +149,7 @@ export class TrialHandler extends PsychObject
 					if (this.nRemaining === 0)
 					{
 						// this only indicated that the scheduling is done, not that the loop is finished
-						// this.finished = true;
+						 this._finished = true;
 					}
 
 					// start a new repetition:
