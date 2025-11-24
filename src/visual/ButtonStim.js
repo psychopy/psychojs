@@ -92,6 +92,30 @@ export class ButtonStim extends TextBox
 			autoLog,
 			boxFn
 		});
+		// Fix for the multiline text not being displayed correctly (displayed in one line)
+		// The default value of the multiline attribute is false.
+		// Revised version make sure that the multiline attribute is set correctly
+		this._multiline = typeof text === 'string' && text.includes('\n') ? true : false;
+		
+		// Another place in TextBox.js should also be revised accordingly
+		// the _addListeners() function in TextInput.js was skipped in the ButtonStim
+		/* if (!(this instanceof ButtonStim))
+			{
+				this._pixi._addListeners();
+				this._addEventListeners();
+			} */
+		
+		// the first two lines of _addListeners() are necessary for the
+		// display and update of multiline text in the ButtonStim,
+		// without influencing other listeners of the ButtonStim
+		/* _addListeners() {
+			this.on("added", this._onAdded.bind(this)),
+      		this.on("removed", this._onRemoved.bind(this)),
+      		this._dom_input.addEventListener("keydown",this._onInputKeyDown.bind(this)),
+      		this._dom_input.addEventListener("input", this._onInputInput.bind(this)),
+      		this._dom_input.addEventListener("keyup", this._onInputKeyUp.bind(this)),
+      		this._dom_input.addEventListener("focus", this._onFocused.bind(this)),
+      		this._dom_input.addEventListener("blur", this._onBlurred.bind(this));} */
 
 		this.psychoJS.logger.debug("create a new Button with name: ", name);
 

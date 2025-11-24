@@ -187,7 +187,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._letterHeight / 2.0,
 			this._onChange(true, true),
 		);
-
+		this._multiline = typeof text === 'string' && text.includes('\n') ? true : false;
 		this._addAttribute("multiline", multiline, false, this._onChange(true, true));
 		this._addAttribute("editable", editable, false, this._onChange(true, true));
 		this._addAttribute("autofocus", autofocus, true, this._onChange(true, false));
@@ -519,7 +519,15 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
-				height: this._fitToContent ? "auto" : (this._multiline ? `${height_px}px` : undefined),
+				// fix the issue of incorect height and unchangeable size in ButtonStim
+				// Default "multiline" was set to "false" in ButtonStim
+				// So the height was always set to "undefined" in ButtonStim
+				// Revised version would check and set claculated ${height_px} if ButtonStim
+				height: this._fitToContent 
+				? "auto"
+				: (this._multiline || this instanceof ButtonStim)
+				? `${height_px}px`
+				: undefined,
 				width: this._fitToContent ? "auto" : `${width_px}px`,
 				maxWidth: `${this.win.size[0]}px`,
 				maxHeight: `${this.win.size[1]}px`,
@@ -585,10 +593,15 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			this._pixi = new TextInput(this._getTextInputOptions());
 
 			// listeners required for regular textboxes, but may cause problems with button stimuli
-			if (!(this instanceof ButtonStim))
-			{
+			// if is not a ButtonStim, call _addListeners() to add textBox listeners
+			// if is a ButtonStim, only add first two lines of _addListeners() to correctly display
+			// and update the multiline text, without influencing other listeners
+			if (!(this instanceof ButtonStim)) {
 				this._pixi._addListeners();
 				this._addEventListeners();
+
+			} else {this._pixi.on("added", this._pixi._onAdded.bind(this._pixi)),
+				this._pixi.on("removed", this._pixi._onRemoved.bind(this._pixi));
 			}
 
 			// check if other TextBox instances are already in focus
