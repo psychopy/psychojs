@@ -194,7 +194,7 @@ export class ImageStim extends util.mix(VisualStim).with(ColorMixin)
 			}
 
 			const existingImage = this.getImage();
-			const hasChanged = existingImage ? existingImage.src !== image.src : true;
+			const hasChanged = existingImage && image ? existingImage.src !== image.src : existingImage || image;
 
 			this._setAttribute("image", image, log);
 
