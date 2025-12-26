@@ -135,6 +135,19 @@ export class Clock extends MonotonicClock
 	}
 
 	/**
+	 * Progress the current time of the clock.
+	 *
+	 * @param {number} [deltaTime] the time (s) to be added to the clock's current time
+	 */
+	addTime(deltaTime)
+	{
+		this._timeAtLastReset -= deltaTime;
+	}
+
+	/**
+	 * DEPRECATED: Clock.add() is deprecated in favor of .addTime() due to the counterintuitive 
+	 * design (it added time to the baseline, which reduced the values returned from getTime() )
+	 * 
 	 * Add more time to the clock's 'start' time (t0).
 	 *
 	 * <p>Note: by adding time to t0, the current time is pushed forward (it becomes
