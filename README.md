@@ -4,6 +4,14 @@
 [![Automated Test (full)](https://github.com/psychopy/psychojs/actions/workflows/Automated%20Test%20(full).yml/badge.svg)](https://github.com/psychopy/psychojs/actions/workflows/Automated%20Test%20(full).yml)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
 
+---
+
+**Announcement!**
+
+We are excited to announce that PsychoPy will be hosting a 3-day in-person code-sprint at the University of Nottingham from 15-17 April 2024. The code sprint will be an opportunity for us to get together in person and improve PsychoPy/JS. Anyone who would like to attend will need to fill out the [online application](https://run.pavlovia.org/pavlovia/survey/?surveyId=171ed328-d5ea-4819-83dc-9ba00ef5683b) by 31 January 2024. Those selected will be notified by the end of February.
+
+---
+
 PsychoJS is a JavaScript library that makes it possible to run neuroscience, psychology, and psychophysics experiments in a browser. It is the online counterpart of the [PsychoPy](http://www.psychopy.org/) Python library. 
 
 You can create online experiments from the [PsychoPy Builder](http://www.psychopy.org/builder/builder.html), you can find and adapt existing experiments on [pavlovia.org](https://www.pavlovia.org), or create them from scratch.
