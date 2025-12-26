@@ -1,0 +1,69 @@
+import numpy as np
+import pandas as pd
+from psychopy import visual, core, event, gui, monitors
+import random
+
+# --- 1. Monitor Setup ---
+# Ensures 4.2 degrees at 2 meters distance
+mon = monitors.Monitor('experiment_mon', width=50, distance=200) 
+win = visual.Window(size=[1920, 1080], fullscr=True, monitor=mon, units='deg', color=[-0.5, -0.5, -0.5])
+
+# --- 2. Experiment Parameters ---
+LETTERS = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+CONTRAST_LEVELS = np.linspace(-1, -20, 20) # 20 levels of darkening
+STRIP_COUNT = 20
+FRAG_DUR = 0.1  # 100ms per fragment
+ECCENTRICITY = 2.1  # 2.1 arc degrees off-center
+LETTER_HEIGHT = 4.2 # 4.2 visual angle
+
+# --- 3. Outline Letter Function ---
+def draw_outline_letter(text, contrast_val):
+    # Mapping -1 to -20 scale to PsychoPy -1 to 1 color space
+    color_mapped = np.interp(contrast_val, [-20, -1], [-1, -0.2])
+    
+    # Draw letter multiple times with slight offsets to simulate 'Outline'
+    offsets = [(-0.02, 0), (0.02, 0), (0, -0.02), (0, 0.02)]
+    for off in offsets:
+        visual.TextStim(win, text=text, font='Arial', height=LETTER_HEIGHT, 
+                        color=[color_mapped]*3, pos=(ECCENTRICITY + off[0], off[1])).draw()
+
+# --- 4. Main Experiment Loop ---
+data_log = []
+
+for contrast in CONTRAST_LEVELS:
+    random.shuffle(LETTERS) # Randomized without replacement per level
+    
+    for char in LETTERS:
+        # Randomize orientation per trial
+        orientation = random.choice([0, 90, 45]) # Vertical, Horizontal, Diagonal
+        
+        # Sequential strip reveal logic
+        sweep_range = np.linspace(-3, 3, STRIP_COUNT)
+        for step in sweep_range:
+            # 1. Draw the letter
+            draw_outline_letter(char, contrast)
+            
+            # 2. Apply masking strips
+            # Use an aperture to show only one strip at a time
+            with visual.Aperture(win, size=(0.3, 10), pos=(ECCENTRICITY + step, 0), ori=orientation):
+                win.flip()
+                core.wait(FRAG_DUR)
+
+        # 5. Collect Response (Experimenter blinded)
+        resp_dlg = gui.Dlg(title="Response")
+        resp_dlg.addField('Recognized Letter:')
+        resp_dlg.show()
+        
+        user_answer = resp_dlg.data[0].upper() if resp_dlg.OK else "N/A"
+        data_log.append({
+            'Contrast': contrast,
+            'Letter': char,
+            'Response': user_answer,
+            'Correct': 1 if user_answer == char else 0,
+            'Orientation': orientation
+        })
+
+# Save results
+pd.DataFrame(data_log).to_csv('experiment_data.csv', index=False)
+win.close()
+core.quit()
