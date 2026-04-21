@@ -2,7 +2,7 @@
  * Survey Stimulus.
  *
  * @author Alain Pitiot and Nikita Agafonov
- * @copyright (c) 2017-2020 Ilixa Ltd. (http://ilixa.com) (c) 2020-2024 Open Science Tools Ltd. (https://opensciencetools.org)
+ * @copyright (c) 2020-2025 Open Science Tools Ltd. (https://opensciencetools.org)
  * @license Distributed under the terms of the MIT License
  */
 
@@ -23,7 +23,6 @@ import DropdownExtensions from "./survey/components/DropdownExtensions.js";
 import customExpressionFunctionsArray from "./survey/extensions/customExpressionFunctions.js";
 
 
-
 /**
  * Survey Stimulus.
  *
@@ -33,9 +32,9 @@ export class Survey extends VisualStim
 {
 	static SURVEY_EXPERIMENT_PARAMETERS = ["surveyId", "showStartDialog", "showEndDialog", "completionUrl", "cancellationUrl", "quitOnEsc"];
 
-	static SURVEY_FLOW_PLAYBACK_TYPES =
+	static NODE_TYPE =
 	{
-		DIRECT: "QUESTION_BLOCK",
+		QUESTION_BLOCK: "QUESTION_BLOCK",
 		CONDITIONAL: "IF_THEN_ELSE_GROUP",
 		EMBEDDED_DATA: "VARIABLES",
 		RANDOMIZER: "RANDOM_GROUP",
@@ -48,13 +47,22 @@ export class Survey extends VisualStim
 		NEXT: "Next"
 	};
 
-	static SURVEY_COMPLETION_CODES =
+	static SURVEY_EVENT =
 	{
-		NORMAL: 0,
-		SKIP_TO_END_OF_BLOCK: 1,
-		SKIP_TO_END_OF_SURVEY: 2
+		// move onto the next node, in the survey flow:
+		NEXT_NODE: 0,
+
+		// move onto the previous node, in the survey flow:
+		PREV_NODE: 1,
+
+		// skip to the end of the block:
+		SKIP_TO_END_OF_BLOCK: 3,
+
+		// skip to the end of the survey flow:
+		SKIP_TO_END_OF_SURVEY: 4
 	};
 
+	// TODO we should get rid of NODE_EXIT_CODES entirely, and use only SURVEY_EVENT instead
 	static NODE_EXIT_CODES =
 	{
 		NORMAL: 0,
@@ -85,7 +93,7 @@ export class Survey extends VisualStim
 		// Unfortunately signaturepad question type can't handle resizing properly by itself.
 		this._signaturePads = [];
 
-		// whether the user is done with the survey, independently of whether the survey is completed:
+		// whether the user is done with the survey, independently of whether the survey is fully completed:
 		this.isFinished = false;
 
 		// accumulated completion flag updated after each survey node is completed
@@ -99,15 +107,23 @@ export class Survey extends VisualStim
 		this._questionAnswerTimestampClock = new Clock();
 
 		this._overallSurveyResults = {};
-		this._surveyData = undefined;
+
+		// the super-flow survey
+		// note: surveyModel is either a copy of model if model is a super-flow survey, or it is a super-flow version
+		// of model
+		this._surveyModel = undefined;
+		// the currently running surveyJS survey
 		this._surveyJSModel = undefined;
+
 		this._expressionsRunner = undefined;
 		this._lastPageSwitchHandledIdx = -1;
 		this._variables = {};
 
-		this._surveyRunningPromise = undefined;
-		this._surveyRunningPromiseResolve = undefined;
-		this._surveyRunningPromiseReject = undefined;
+		// the promise associated with the running of a flow's QUESTION_BLOCK, i.e. a SurveyJS survey
+		this._blockPromise = undefined;
+		this._blockPromiseResolve = undefined;
+		this._blockPromiseReject = undefined;
+
 		// callback triggered when the user is done with the survey: nothing to do by default
 		this._onFinishedCallback = () => {};
 
@@ -134,7 +150,6 @@ export class Survey extends VisualStim
 			surveyId,
 			defaultSurveyId
 		);
-
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
@@ -238,7 +253,7 @@ export class Survey extends VisualStim
 				// mark the root (top-most) node:
 				model.surveyFlow.isRootNode = true;
 
-				this._surveyData = model;
+				this._surveyModel = model;
 
 				// augment the question names with block names:
 				this._augmentQuestionNames();
@@ -299,7 +314,7 @@ export class Survey extends VisualStim
 			if (excludedNames.indexOf(name) === -1)
 			{
 				this._variables[name] = variables[name];
-				// this._surveyData.variables[name] = variables[name];
+				// this._surveyModel.variables[name] = variables[name];
 			}
 		}
 	}
@@ -335,7 +350,7 @@ export class Survey extends VisualStim
 	 */
 	onFinished(callback)
 	{
-		if (typeof this._surveyData === "undefined")
+		if (typeof this._surveyModel === "undefined")
 		{
 			throw {
 				origin: "Survey.onFinished",
@@ -358,13 +373,6 @@ export class Survey extends VisualStim
 	 */
 	getResponse()
 	{
-		// if (typeof this._surveyModel === "undefined")
-		// {
-		// 	return {};
-		// }
-
-		// return this._surveyModel.data;
-
 		return this._overallSurveyResults;
 	}
 
@@ -435,7 +443,7 @@ export class Survey extends VisualStim
 		else
 		{
 			return this._psychoJS.serverManager.uploadSurveyResponse(
-				this._surveyId, sortedResponses, this.isCompleted, this._surveyData
+				this._surveyId, sortedResponses, this.isCompleted, this._surveyModel
 			);
 		}
 	}
@@ -500,9 +508,9 @@ export class Survey extends VisualStim
 			}
 
 			// start the survey flow:
-			if (typeof this._surveyData !== "undefined")
+			if (typeof this._surveyModel !== "undefined")
 			{
-				this._runSurveyFlow(this._surveyData.surveyFlow, this._surveyData);
+				this._runSurveyFlow(this._surveyModel.surveyFlow);
 			}
 		}
 
@@ -600,43 +608,6 @@ export class Survey extends VisualStim
 		}
 		this._questionAnswerTimestamps[questionData.name].timestamp = this._questionAnswerTimestampClock.getTime();
 	}
-
-/*
-	// This probably needs to be moved to some kind of utils.js.
-	// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-	_FisherYatesShuffle (targetArray = [])
-	{
-		// Copying array to preserve initial data.
-		const out = Array.from(targetArray);
-		const len = targetArray.length;
-		let i, j, k;
-		for (i = len - 1; i >= 1; i--)
-		{
-			j = Math.floor(Math.random() * (i + 1));
-			k = out[j];
-			out[j] = out[i];
-			out[i] = k;
-		}
-
-		return out;
-	}
-
-	// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-	_InPlaceFisherYatesShuffle (inOutArray = [], startIdx, endIdx)
-	{
-		// Shuffling right in the input array.
-		let i, j, k;
-		for (i = endIdx; i >= startIdx; i--)
-		{
-			j = Math.floor(Math.random() * (i + 1));
-			k = inOutArray[j];
-			inOutArray[j] = inOutArray[i];
-			inOutArray[i] = k;
-		}
-
-		return inOutArray;
-	}
-*/
 
 	_composeModelWithRandomizedQuestions (surveyModel, inBlockRandomizationSettings)
 	{
@@ -816,8 +787,9 @@ export class Survey extends VisualStim
 	/**
 	 * Go over required surveyModelData and apply randomization settings.
 	 * @protected
+	 * @todo remove surveyData from the signature and use this._surveyModel instead!
 	 */
-	_processSurveyData(surveyData, surveyIdx)
+	_processSurveyJSModel(surveyData, surveyIdx)
 	{
 		let newSurveyModel = undefined;
 
@@ -870,12 +842,14 @@ export class Survey extends VisualStim
 	 *
 	 * @protected
 	 */
-	_onCurrentPageChanging(surveyModel, options)
+	_onCurrentPageChanging(node, surveyJSModel, options)
 	{
+		console.log("_onCurrentPageChanging for node:", node);
+
 		// if partial saving is activated, then save the results:
 		if (this._saveOnPageChange)
 		{
-			Object.assign(this._overallSurveyResults, surveyModel.data);
+			Object.assign(this._overallSurveyResults, surveyJSModel.data);
 
 			// TODO queue the saves?
 			this.save();
@@ -888,34 +862,35 @@ export class Survey extends VisualStim
 			return;
 		}
 		this._lastPageSwitchHandledIdx = options.oldCurrentPage.visibleIndex;
-		const questions = surveyModel.getCurrentPageQuestions();
+
+		const questions = surveyJSModel.getCurrentPageQuestions();
 
 		// It is guaranteed that the question with skip logic is always last on the page.
 		const lastQuestion = questions[questions.length - 1];
-		const skipLogic = this._surveyData.questionSkipLogic[lastQuestion.name];
+		const skipLogic = this._surveyModel.questionSkipLogic[lastQuestion.name];
 		if (skipLogic !== undefined)
 		{
 			this._expressionsRunner.expressionExecutor.setExpression(skipLogic.expression);
-			const result = this._expressionsRunner.run(surveyModel.data);
+			const result = this._expressionsRunner.run(surveyJSModel.data);
 			if (result)
 			{
 				options.allowChanging = false;
 
 				if (skipLogic.destination === "ENDOFSURVEY")
 				{
-					surveyModel.setCompleted();
-					this._surveyRunningPromiseResolve(Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY);
+					surveyJSModel.setCompleted();
+					this._blockPromiseResolve(Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY);
 				}
 				else if (skipLogic.destination === "ENDOFBLOCK")
 				{
-					surveyModel.setCompleted();
-					this._surveyRunningPromiseResolve(Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_BLOCK);
+					surveyJSModel.setCompleted();
+					this._blockPromiseResolve(Survey.SURVEY_EVENT.SKIP_TO_END_OF_BLOCK);
 				}
 				else
 				{
 					// skipLogic.destination is a question within the current survey (qualtrics block).
-					const targetQuestion = surveyModel.getQuestionByName(skipLogic.destination);
-					const page = surveyModel.getPageByQuestion(targetQuestion);
+					const targetQuestion = surveyJSModel.getQuestionByName(skipLogic.destination);
+					const page = surveyJSModel.getPageByQuestion(targetQuestion);
 					const pageQuestions = page.questions;
 					let i;
 					for (i = 0; i < pageQuestions.length; i++)
@@ -927,7 +902,7 @@ export class Survey extends VisualStim
 						pageQuestions[i].visible = false;
 					}
 					targetQuestion.focus();
-					surveyModel.currentPage = page;
+					surveyJSModel.currentPage = page;
 				}
 			}
 		}
@@ -937,40 +912,50 @@ export class Survey extends VisualStim
 	 * Callback triggered when the participant has completed a SurveyJS Question Block.
 	 *
 	 * @param {Object} node - super-flow QUESTION_BLOCK node
-	 * @param surveyModel		- the associated SurveyJS model
+	 * @param surveyJSModel	- the associated SurveyJS model
 	 * @param options				- the SurveyJS model options
 	 * @protected
 	 */
-	_onSurveyJSComplete(node, surveyModel, options)
+	_onSurveyJSComplete(node, surveyJSModel, options)
 	{
-		// note: we need to add the node title to the responses
-		Object.assign(this._overallSurveyResults, surveyModel.data);
+		console.log("_onSurveyJSComplete for node:", node);
 
-		let completionCode = Survey.SURVEY_COMPLETION_CODES.NORMAL;
-		const questions = surveyModel.getAllQuestions();
+		// note: we need to add the node title to the responses
+		Object.assign(this._overallSurveyResults, surveyJSModel.data);
+		node.data = surveyJSModel.data;
+
+		// since _onCurrentPageChanging is not triggered when the surveyJS ends, we need to save here as well
+		if (this._saveOnPageChange)
+		{
+			// TODO queue the saves?
+			this.save();
+		}
+
+		let completionStatus = Survey.SURVEY_EVENT.NEXT_NODE;
+		const questions = surveyJSModel.getAllQuestions();
 
 		// It is guaranteed that the question with skip logic is always last on the page.
 		const lastQuestion = questions[questions.length - 1];
-		const skipLogic = this._surveyData.questionSkipLogic[lastQuestion.name];
+		const skipLogic = this._surveyModel.questionSkipLogic[lastQuestion.name];
 		if (skipLogic !== undefined)
 		{
 			this._expressionsRunner.expressionExecutor.setExpression(skipLogic.expression);
-			const result = this._expressionsRunner.run(surveyModel.data);
+			const result = this._expressionsRunner.run(surveyJSModel.data);
 			if (result)
 			{
 				if (skipLogic.destination === "ENDOFSURVEY")
 				{
-					completionCode = Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY;
-					surveyModel.setCompleted();
+					completionStatus = Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY;
+					surveyJSModel.setCompleted();
 				}
 				else if (skipLogic.destination === "ENDOFBLOCK")
 				{
-					completionCode = Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_BLOCK;
+					completionStatus = Survey.SURVEY_EVENT.SKIP_TO_END_OF_BLOCK;
 				}
 			}
 		}
 
-		surveyModel.stopTimer();
+		surveyJSModel.stopTimer();
 
 		// check whether the survey was completed:
 		const surveyVisibleQuestions = this._surveyJSModel.getAllQuestions(true);
@@ -1001,7 +986,8 @@ export class Survey extends VisualStim
 			this.psychoJS.logger.warn(`Flag _isCompletedAll is false!`);
 		}
 
-		this._surveyRunningPromiseResolve(completionCode);
+		// resolve the QUESTION_BLOCK / SurveyJS promise:
+		this._blockPromiseResolve(completionStatus);
 	}
 
 	/**
@@ -1022,20 +1008,30 @@ export class Survey extends VisualStim
 	}
 
 	/**
-	 * Run a QUESTION_BLOCK as a SurveyJS survey.
+	 * Prepare a SurveyJS survey to run the given QUESTION_BLOCK node, and start it.
 	 *
 	 * @param {Object} node - super-flow QUESTION_BLOCK node
-	 * @param {Object} surveyData - the complete surveyData (model)
+	 * @param {Object} prevBlockResults
 	 * @protected
 	 */
-	_runQuestionBlock(node, surveyData, prevBlockResults)
+	_runQuestionBlock(node, prevBlockResults)
 	{
 		this._lastPageSwitchHandledIdx = -1;
-		let surveyModelInput = this._processSurveyData(surveyData, node.surveyIdx);
+		let processedSurveyJSModel = this._processSurveyJSModel(this._surveyModel, node.surveyIdx);
 
-		this._surveyJSModel = new window.Survey.Model(surveyModelInput);
+		this._surveyJSModel = new window.Survey.Model(processedSurveyJSModel);
+
+		// if we are returning to a previously visited node and there is data associated with it,
+		// e.g. if the user presses the [Previous] button at the start of the second QUESTION_BLOCK,
+		// we set the surveyJS data field, which prefills the answers:
+		if ("data" in node)
+		{
+			this._surveyJSModel.data = node.data;
+		}
 
 		// console.log("running block: ", node.name, "variables=", this._variables, "prevBlockResults=", prevBlockResults);
+
+		// prepare the variables:
 		for (const name in this._variables)
 		{
 			// use non-augmented names here (i.e. not <block name>/<variable name>) to deal with variables
@@ -1049,37 +1045,68 @@ export class Survey extends VisualStim
 		// turn the results from the previous blocks into variables for this block:
 		for (const name in prevBlockResults)
 		{
-			this._surveyJSModel.setVariable(name, prevBlockResults[name]);
+			// TODO it appears that if we turn results from this block into variables for this block, the result disappear
+			//  from _surveyJSModel.data: why is that?!?
+			// make sure that name is not a question:
+			let nameIsQuestion = false;
+			for (let question of this._surveyJSModel.getAllQuestions())
+			{
+				if (question.name === name)
+				{
+					nameIsQuestion = true;
+					break;
+				}
+			}
+			if (!nameIsQuestion)
+			{
+				this._surveyJSModel.setVariable(name, prevBlockResults[name]);
+			}
 		}
 
-		/*
-				// Nikita approach:
-				for (let j in this._variables)
-				{
-					// Adding variables directly to hash to get higher performance (this is instantaneous compared to .setVariable()).
-					// At this stage we don't care to trigger all the callbacks like .setVariable() does, since this is very beginning of survey presentation.
-					this._surveyJSModel.variablesHash[j] = this._variables[j];
-					// this._surveyModel.setVariable(j, this._variables[j]);
-				}
-		*/
-
+		// initialise the SurveyJS survey, if need be:
 		if (!this._surveyJSModel.isInitialized)
 		{
+			console.log("Init surveyJS for node:", node, "with prevBlockResults:", prevBlockResults);
+
 			this._registerCustomComponentCallbacks(this._surveyJSModel);
 			this._surveyJSModel.onValueChanged.add(this._onQuestionValueChanged.bind(this));
-			this._surveyJSModel.onCurrentPageChanging.add(this._onCurrentPageChanging.bind(this));
+			this._surveyJSModel.onCurrentPageChanging.add( (surveyJSModel, options) => this._onCurrentPageChanging(node, surveyJSModel, options) );
 			this._surveyJSModel.onComplete.add( (surveyJSModel, options) => this._onSurveyJSComplete(node, surveyJSModel, options) );
 			this._surveyJSModel.onTextMarkdown.add(this._onTextMarkdown.bind(this));
-			this._surveyJSModel.isInitialized = true;
 			this._surveyJSModel.onAfterRenderQuestion.add(this._handleAfterQuestionRender.bind(this));
+
+			// add a [Previous] button at the start of the block, if it is not the first block:
+			this._surveyJSModel.addNavigationItem({
+				id: "survey_block_previous", title: "Previous", visibleIndex: 0,
+				visible: new window.Survey.ComputedUpdater(() => {
+					// only the first page of the survey, and not for the first block:
+					return this._surveyJSModel.currentPageNo === 0 && !node.isFirstBlock;
+				}),
+				action: () => {
+					// make sure that _onSurveyJSComplete is not called:
+					this._surveyJSModel.onComplete.clear();
+
+					// add the current SurveyJS survey's data to the overall results:
+					Object.assign(this._overallSurveyResults, this._surveyJSModel.data);
+					node.data = this._surveyJSModel.data;
+
+					// move to the previous block (if there is one):
+					this._blockPromiseResolve(Survey.SURVEY_EVENT.PREV_NODE);
+				},
+				innerCss: 'sd-btn sd-navigation__prev-btn',
+			});
+
+			this._surveyJSModel.isInitialized = true;
 		}
 
-		const completeText = node.surveyIdx < this._surveyData.surveys.length - 1 ? (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
+		const completeText = node.surveyIdx < this._surveyModel.surveys.length - 1 ? (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
+
+		// run the SurveyJS survey:
 		jQuery(".survey").Survey({
 			model: this._surveyJSModel,
 			showItemsInOrder: "column",
 			completeText,
-			...surveyData.surveySettings
+			...this._surveyModel.surveySettings
 		});
 
 		this._questionAnswerTimestampClock.reset();
@@ -1087,49 +1114,53 @@ export class Survey extends VisualStim
 		// TODO: should this be conditional?
 		this._surveyJSModel.startTimer();
 
-		this._surveyRunningPromise = new Promise((res, rej) => {
-			this._surveyRunningPromiseResolve = res;
-			this._surveyRunningPromiseReject = rej;
+		// prepare a promise, which will be resolved upon completion of the SurveyJS survey:
+		this._blockPromise = new Promise((res, rej) => {
+			this._blockPromiseResolve = res;
+			this._blockPromiseReject = rej;
 		});
 
-		return this._surveyRunningPromise;
+		return this._blockPromise;
 	}
 
 	/**
 	 *
 	 * @param node
-	 * @param surveyData
 	 * @param prevBlockResults
 	 * @return {Promise<number>}
 	 * @private
 	 */
-	async _runSurveyFlow(node, surveyData, prevBlockResults = {})
+	async _runSurveyFlow(node, prevBlockResults = {})
 	{
-		let nodeExitCode = Survey.NODE_EXIT_CODES.NORMAL;
+		let surveyEvent = Survey.SURVEY_EVENT.NEXT_NODE;
+		// let nodeExitCode = Survey.NODE_EXIT_CODES.NORMAL;
 
-		if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL)
+		// CONDITIONAL: run the flow on one of thw two conditional branches
+		if (node.type === Survey.NODE_TYPE.CONDITIONAL)
 		{
 			const dataset = Object.assign({}, this._overallSurveyResults, this._variables);
 			this._expressionsRunner.expressionExecutor.setExpression(node.condition);
 			if (this._expressionsRunner.run(dataset) && node.nodes[0] !== undefined)
 			{
-				nodeExitCode = await this._runSurveyFlow(node.nodes[0], surveyData, prevBlockResults);
+				surveyEvent = await this._runSurveyFlow(node.nodes[0], prevBlockResults);
 			}
 			else if (node.nodes[1] !== undefined)
 			{
-				nodeExitCode = await this._runSurveyFlow(node.nodes[1], surveyData, prevBlockResults);
+				surveyEvent = await this._runSurveyFlow(node.nodes[1], prevBlockResults);
 			}
 		}
 
-		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.RANDOMIZER)
+		// RANDOMISER: we shuffle the node's children in place
+		else if (node.type === Survey.NODE_TYPE.RANDOMIZER)
 		{
 			util.shuffle(node.nodes, Math.random, 0, node.nodes.length - 1);
 		}
 
-		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.EMBEDDED_DATA)
+		// EMBEDDED_DATA
+		else if (node.type === Survey.NODE_TYPE.EMBEDDED_DATA)
 		{
 			let t = performance.now();
-			const surveyBlockData = surveyData.embeddedData[node.dataIdx];
+			const surveyBlockData = this._surveyModel.embeddedData[node.dataIdx];
 			for (let j = 0; j < surveyBlockData.length; j++)
 			{
 				// TODO: handle the rest data types.
@@ -1153,41 +1184,62 @@ export class Survey extends VisualStim
 			// console.log("embedded data variables accumulation took", performance.now() - t);
 		}
 
-		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.ENDSURVEY)
+		else if (node.type === Survey.NODE_TYPE.ENDSURVEY)
 		{
 			if (this._surveyJSModel)
 			{
 				this._surveyJSModel.setCompleted();
 			}
 			console.log("EndSurvey block encountered, exiting.");
-			nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
+			surveyEvent = Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY;
+			// nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
 		}
 
 		// QUESTION_BLOCK:
-		else if (node.type === Survey.SURVEY_FLOW_PLAYBACK_TYPES.DIRECT)
+		else if (node.type === Survey.NODE_TYPE.QUESTION_BLOCK)
 		{
-			const surveyCompletionCode = await this._runQuestionBlock(node, surveyData, prevBlockResults);
-			Object.assign(prevBlockResults, this._surveyJSModel.data);
+			surveyEvent = await this._runQuestionBlock(node, prevBlockResults);
+			Object.assign(prevBlockResults, node.data);
+			// Object.assign(prevBlockResults, this._surveyJSModel.data);
 
-			// SkipLogic had destination set to ENDOFSURVEY.
-			if (surveyCompletionCode === Survey.SURVEY_COMPLETION_CODES.SKIP_TO_END_OF_SURVEY)
-			{
-				nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
-			}
+			// if (blockEvent === Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY)
+			// {
+			// 	nodeExitCode = Survey.NODE_EXIT_CODES.BREAK_FLOW;
+			// }
 		}
 
 		// run through the children nodes of this node:
-		if (nodeExitCode === Survey.NODE_EXIT_CODES.NORMAL &&
-			node.type !== Survey.SURVEY_FLOW_PLAYBACK_TYPES.CONDITIONAL &&
+		if (surveyEvent === Survey.SURVEY_EVENT.NEXT_NODE &&
+			node.type !== Survey.NODE_TYPE.CONDITIONAL &&
 			node.nodes instanceof Array)
+		// if (nodeExitCode === Survey.NODE_EXIT_CODES.NORMAL &&
+		// 		node.type !== Survey.NODE_TYPE.CONDITIONAL &&
+		// 		node.nodes instanceof Array)
 		{
-			for (const childNode of node.nodes)
+			let childIndex = 0;
+			while (childIndex < node.nodes.length)
 			{
-				nodeExitCode = await this._runSurveyFlow(childNode, surveyData, prevBlockResults);
-				if (nodeExitCode === Survey.NODE_EXIT_CODES.BREAK_FLOW)
+				const childNode = node.nodes[childIndex];
+				surveyEvent = await this._runSurveyFlow(childNode, prevBlockResults);
+
+				if (surveyEvent === Survey.SURVEY_EVENT.SKIP_TO_END_OF_SURVEY)
 				{
 					break;
 				}
+
+				if (surveyEvent === Survey.SURVEY_EVENT.NEXT_NODE)
+				{
+					++childIndex;
+				}
+				else if (surveyEvent === Survey.SURVEY_EVENT.PREV_NODE && childIndex > 0)
+				{
+					--childIndex;
+				}
+
+				// if (nodeExitCode === Survey.NODE_EXIT_CODES.BREAK_FLOW)
+				// {
+				// 	break;
+				// }
 			}
 		}
 
@@ -1197,7 +1249,8 @@ export class Survey extends VisualStim
 			this._onFlowComplete();
 		}
 
-		return nodeExitCode;
+		return surveyEvent;
+		// return nodeExitCode;
 	}
 
 	_resetState ()
@@ -1281,10 +1334,12 @@ export class Survey extends VisualStim
 	 */
 	_augmentQuestionNames()
 	{
-		if (!("surveys" in this._surveyData))
+		if (!("surveys" in this._surveyModel))
 		{
 			return;
 		}
+
+		let isFirstBlock = true;
 
 		// augment all variables
 		// note: we do not update variables with a / in them, since they have already been
@@ -1292,7 +1347,7 @@ export class Survey extends VisualStim
 		const augmentVariables = (nodeName, txt) =>
 		{
 			// the below regex captures any sequence of characters between { and } that does not contain /:
-			return txt.replace(/\{([^\/]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
+			return txt.replace(/\{([^\/}]+)\}/g, (match, variable) => `{${nodeName}/${variable}}`);
 		};
 
 		// go over all QUESTION_BLOCK of the surveyFlow, and update the names of the questions,
@@ -1301,10 +1356,16 @@ export class Survey extends VisualStim
 		{
 			if (node.type === "QUESTION_BLOCK")
 			{
-				// get the associated survey:
-				if (("surveyIdx" in node) && (node.surveyIdx < this._surveyData.surveys.length))
+				node.isFirstBlock = isFirstBlock;
+				if (isFirstBlock)
 				{
-					const survey = this._surveyData.surveys[node.surveyIdx];
+					isFirstBlock = false;
+				}
+
+				// get the associated survey:
+				if (("surveyIdx" in node) && (node.surveyIdx < this._surveyModel.surveys.length))
+				{
+					const survey = this._surveyModel.surveys[node.surveyIdx];
 
 					// update all questions on all pages:
 					if ("pages" in survey)
@@ -1367,8 +1428,8 @@ export class Survey extends VisualStim
 			}
 		};
 
-		updateQuestionNames(this._surveyData.surveyFlow);
+		updateQuestionNames(this._surveyModel.surveyFlow);
 
-		console.log("augmented surveys: ", JSON.stringify(this._surveyData.surveys));
+		console.log("augmented surveys: ", JSON.stringify(this._surveyModel.surveys));
 	}
 }
