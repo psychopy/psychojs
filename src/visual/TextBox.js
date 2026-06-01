@@ -13,6 +13,7 @@ import * as util from "../util/Util.js";
 import { ButtonStim } from "./ButtonStim.js";
 import { TextInput } from "./TextInput.js";
 import { VisualStim } from "./VisualStim.js";
+import showdown from "showdown";
 
 /**
  * @extends VisualStim
@@ -64,6 +65,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			opacity,
 			depth,
 			text,
+			formattingSyntax,
 			placeholder,
 			font,
 			letterHeight,
@@ -92,11 +94,19 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 	{
 		super({ name, win, pos, anchor, size, units, ori, opacity, depth, clipMask, autoDraw, autoLog });
 
+		// note: it is important to have "formattingSyntax" added before "text"
+		// since the former influences the latter
+		this._addAttribute(
+			"formattingSyntax",
+			formattingSyntax,
+			"raw"
+		);
 		this._addAttribute(
 			"text",
 			text,
 			""
 		);
+
 		this._addAttribute(
 			"placeholder",
 			placeholder,
@@ -503,11 +513,24 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 			};
 		}
 
+		// if the formattingSyntax is "md", then translate the text from MD to HTML:
+		if (this._formattingSyntax === "md")
+		{
+			const converter = new showdown.Converter();
+			converter.setFlavor('vanilla');
+			this._text = converter.makeHtml(this._text);
+
+			// since showdown won't take care of [color=xx][/color], we handle it ourselves:
+			// TODO also handle [color=(1, -1, -1) space=rgb]
+			const colorRegex = /\[color=([^\]]+)\](.*?)\[\/color\]/gi;
+			this._text = this._text.replace(colorRegex, '<span style="color: $1">$2</span>');
+		}
+
 		return {
 			// input style properties eventually become CSS, so same syntax applies
 			input: {
 				display: "flex",
-				flexDirection: "column",
+				alignItems: alignmentStyles[1],
 				fontFamily: this._font,
 				fontSize: `${letterHeight_px}px`,
 				color: this._color === undefined || this._color === null ? 'transparent' : new Color(this._color).hex,
@@ -519,6 +542,7 @@ export class TextBox extends util.mix(VisualStim).with(ColorMixin)
 				padding: `${padding_px}px`,
 				multiline: this._multiline,
 				text: this._text,
+				formattingSyntax: this._formattingSyntax,
 				height: this._fitToContent ? "auto" : (this._multiline ? `${height_px}px` : undefined),
 				width: this._fitToContent ? "auto" : `${width_px}px`,
 				maxWidth: `${this.win.size[0]}px`,
