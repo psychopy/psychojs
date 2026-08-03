@@ -21,6 +21,7 @@ import registerSliderStar from "./survey/widgets/SliderStar.js";
 import MatrixBipolar from "./survey/components/MatrixBipolar.js";
 import DropdownExtensions from "./survey/components/DropdownExtensions.js";
 import customExpressionFunctionsArray from "./survey/extensions/customExpressionFunctions.js";
+import showdown from "showdown";
 
 
 /**
@@ -153,6 +154,10 @@ export class Survey extends VisualStim
 
 		// estimate the bounding box:
 		this._estimateBoundingBox();
+
+		// prepare a Markdown to HTML converter:
+		this._mdConverter = new showdown.Converter();
+		this._mdConverter.setFlavor('vanilla');
 
 		if (this._autoLog)
 		{
@@ -1003,8 +1008,20 @@ export class Survey extends VisualStim
 
 	_onTextMarkdown(survey, options)
 	{
-		// TODO add sanitization / checks if required.
-		options.html = options.text;
+		// convert MarkDown to HTML:
+		const html = this._mdConverter.makeHtml(options.text);
+
+		// sanitize the HTML code:
+		let sanitizedHtml = html;
+		// - the converter adds <p></p> around all text, so we strip them:
+		if (sanitizedHtml.startsWith("<p>"))
+		{
+			sanitizedHtml = sanitizedHtml.substring(3, sanitizedHtml.length-4);
+		}
+
+		// TODO more?
+
+		options.html = sanitizedHtml;
 	}
 
 	/**
@@ -1099,15 +1116,21 @@ export class Survey extends VisualStim
 			this._surveyJSModel.isInitialized = true;
 		}
 
-		const completeText = node.surveyIdx < this._surveyModel.surveys.length - 1 ? (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT) : undefined;
-
-		// run the SurveyJS survey:
-		jQuery(".survey").Survey({
+		const jquerySurvey = {
 			model: this._surveyJSModel,
 			showItemsInOrder: "column",
-			completeText,
 			...this._surveyModel.surveySettings
-		});
+		};
+
+		// if the survey flow consists of several nodes and this one is not the last one
+		// then replace COMPLETE by NEXT:
+		if (node.surveyIdx < this._surveyModel.surveys.length - 1)
+		{
+			jquerySurvey.completeText = (this._surveyJSModel.pageNextText || Survey.CAPTIONS.NEXT);
+		}
+
+		// run the SurveyJS survey:
+		jQuery(".survey").Survey(jquerySurvey);
 
 		this._questionAnswerTimestampClock.reset();
 
@@ -1402,8 +1425,8 @@ export class Survey extends VisualStim
 									}
 
 									// go over all fields of the element, and augment all variables
-									// note: this is much more generic than going over specific fields, such as visibleIf, enableIf,
-									// expression, etc.
+									// note: this is much more generic than going over specific fields,
+									// such as visibleIf, enableIf, expression, etc.
 									for (const field in element)
 									{
 										if (element.hasOwnProperty(field) && typeof element[field] === "string")
