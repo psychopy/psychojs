@@ -201,12 +201,13 @@ export class Survey extends VisualStim
 					const decodedModel = new TextDecoder("utf-8").decode(encodedModel);
 					model = JSON.parse(decodedModel);
 
-					// make sure that [Previous] buttons appear by default:
+					// make sure that [Previous] buttons appear by default, without overriding an
+					// explicitly configured value (e.g. showPrevButton: false set by the researcher):
 					if (!('surveySettings' in model))
 					{
 						model['surveySettings'] = { showPrevButton: true };
 					}
-					else
+					else if (!('showPrevButton' in model['surveySettings']))
 					{
 						model['surveySettings']['showPrevButton'] = true;
 					}
@@ -240,7 +241,7 @@ export class Survey extends VisualStim
 							}]
 						},
 
-						surveySettings: { showPrevButton: true },
+						surveySettings: { showPrevButton: (typeof model.showPrevButton === "boolean") ? model.showPrevButton : true },
 
 						// surveyRunLogic: {},
 						inQuestionRandomization: {},
