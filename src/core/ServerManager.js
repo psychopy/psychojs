@@ -1431,7 +1431,7 @@ export class ServerManager extends PsychObject
 			const pathExtension = resource.path.toLowerCase().split(".").pop();
 			try
 			{
-				const newFont = await new FontFace(name, `url('${resource.path}') format('${pathExtension}')`).load();
+				const newFont = await new FontFace(name, `url('${resource.path}')`).load();
 				document.fonts.add(newFont);
 
 				++this._nbLoadedResources;

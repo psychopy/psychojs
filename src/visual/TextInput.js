@@ -182,7 +182,15 @@ export class TextInput extends PIXI.Container
 		if (this._dom_input.tagName === "INPUT" || this._dom_input.tagName === "TEXTAREA") {
 			this._dom_input.value = text;
 		} else {
-			this._dom_input.innerText = text;
+			if (this.getInputStyle("formattingSyntax") === "raw")
+			{
+				this._dom_input.innerText = text;
+			}
+			else {
+				// note: we wrap the text inside <span></span> so display: flex
+				// aligns the container rather than the individual elements when text is HTML
+				this._dom_input.innerHTML = `<span>${text}</span>`;
+			}
 		}
 		if (this._substituted)
 		{
@@ -261,6 +269,7 @@ export class TextInput extends PIXI.Container
 			// this._dom_input = document.createElement("textarea");
 			// this._dom_input.style.resize = "none";
 			this._dom_input = document.createElement("div");
+
 			this._dom_input.contentEditable = "true";
 		}
 		else
@@ -785,9 +794,11 @@ export class TextInput extends PIXI.Container
 
 		let org_transform = this._dom_input.style.transform;
 		let org_display = this._dom_input.style.display;
+
 		this._dom_input.style.transform = "";
 		this._dom_input.style.display = "block";
 		let bounds = this._dom_input.getBoundingClientRect();
+
 		this._dom_input.style.transform = org_transform;
 		this._dom_input.style.display = org_display;
 
