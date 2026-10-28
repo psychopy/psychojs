@@ -261,7 +261,7 @@ export class Survey extends VisualStim
 				this._surveyModel = model;
 
 				// augment the question names with block names:
-				this._augmentQuestionNames();
+				// this._augmentQuestionNames();
 
 				this._setAttribute("model", model, log);
 				this._onChange(true, true)();
